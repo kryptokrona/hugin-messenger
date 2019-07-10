@@ -8,6 +8,15 @@ const Datastore = require('nedb');
 
 var player = require('play-sound')(opts = {})
 
+function escapeHtml(unsafe) {
+    return unsafe
+         // .replace(/&/g, "&amp;")
+         .replace(/</g, "&lt;")
+         .replace(/>/g, "&gt;")
+         .replace(/"/g, "&quot;")
+         .replace(/'/g, "&#039;");
+ }
+
 
 
 const rmt = require('electron').remote;
@@ -535,7 +544,7 @@ $('#message_form').keypress(function (e) {
 
   if (e.which == 13) {
     message = $('#message_form').val();
-    sendMessage(message);
+    sendMessage(escapeHtml(message));
     return false;    //<---- Add this line
   }
 });
