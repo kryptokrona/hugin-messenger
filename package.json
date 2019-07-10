@@ -1,0 +1,49 @@
+{
+  "name": "hugin-messenger",
+  "productName": "HuginMessenger",
+  "version": "0.0.1",
+  "description": "A messenger app built on top of the kryptokrona blockchain",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist-win": "./node_modules/.bin/electron-builder --x64 --win -c.extraResources=./bin/kryptokrona-service.exe",
+    "dist-lin": "./node_modules/.bin/electron-builder --x64 --linux -c.extraResources=./bin/kryptokrona-service",
+    "dist-mac": "./node_modules/.bin/electron-builder --x64 --mac -c.extraResources=./bin/kryptokrona-service"
+  },
+  "repository": "https://github.com/kryptokrona/hugin-messenger",
+  "keywords": [
+    "Electron",
+    "quick",
+    "start",
+    "tutorial",
+    "demo"
+  ],
+  "author": "GitHub",
+  "license": "CC0-1.0",
+  "devDependencies": {
+    "electron": "~1.8.2",
+    "electron-builder": "^20.40.2"
+  },
+  "dependencies": {
+    "app-root-dir": "^1.0.2",
+    "bigintjs": "^0.3.5",
+    "child_process": "^1.0.2",
+    "copy-to-clipboard": "^3.2.0",
+    "electron-log": "^2.2.14",
+    "electron-settings": "^3.1.4",
+    "identicon.js": "^2.3.2",
+    "int-to-rgb": "^1.0.0",
+    "jayson": "^2.0.5",
+    "jquery": "^3.3.1",
+    "md5": "^2.2.1",
+    "moment": "^2.22.2",
+    "nedb": "^1.8.0",
+    "node-notifier": "^5.4.0",
+    "play-sound": "^1.1.3",
+    "turtlecoin-walletd-rpc-js": "^0.7.2",
+    "tweetnacl": "^1.0.1",
+    "tweetnacl-util": "^0.15.0",
+    "write": "^1.0.3",
+    "xhr": "^2.4.1"
+  }
+}

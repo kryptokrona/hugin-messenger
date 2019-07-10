@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <title>Hugin Messenger</title>
+
+  </head>
+  <body>
+
+
+
+    <overlay>
+
+      <div class="wrapper">
+
+        <div id="welcome">
+
+          <h1>Welcome to Hugin Messenger!</h1>
+
+          <span id="creating-wallet">
+
+            <div class="lds-ripple"><div></div><div></div></div>
+
+            <p>Creating account..</p>
+
+          </span>
+
+        </div>
+
+
+
+      </div>
+
+    </overlay>
+
+    <header>
+<button id="close-app"></button>
+      <img id="avatar" src="static/logo.svg" />
+
+      <div id="headerText" class="inline">
+        <div id="currentAddr" class="inline">
+
+
+          <span class="description">Payment address</span>&nbsp;
+          <span id="currentAddrSpan">Loading..</span>
+        <br>
+
+          <span class="description">Message key</span>&nbsp;
+          <span id="currentPubKey">Loading..</span>
+
+        </div>
+        <button class="inline" id="copyBoth">COPY</button>
+      </div>
+
+      <div id="balance" class="inline">
+        <span class="description" style="padding-left: 25px;">Balance</span><br>
+        <div id="balance-box">
+          <span id="balancetext">Loading..</span>
+          <span id="lockedBalanceText"></span>
+          <img src="static/logo_light.svg" id="xkr-logo"/>
+        </div>
+      </div>
+
+      </div>
+    </header>
+
+
+
+
+
+    <div id="container">
+
+      <div id="wallet_summary" style="display: none;">
+
+        <h1>Wallet summary</h1>
+
+      </div>
+
+    <div id="messages_page">
+
+      <div id="messages_sidebar">
+
+        <div id="top_messages_sidebar">
+          <img id="search_icon" src="static/search.svg" />
+          <input class="text-field" id="search_messages" type="text" placeholder="Search.."></input>
+          <div id="new_chat">+</div>
+        </div>
+
+      <ul id="messages_contacts">
+
+      </ul>
+
+      <div id="bottombar">
+        <div id="daemon_status">
+          <span id="status_icon">&nbsp;</span>&nbsp;
+          <span id="network_status">Not connected</span>&nbsp;
+          <span id="blockcount"></span>
+
+        </div>
+      </div>
+
+      </div>
+
+
+      <div id="messages_currentchat">
+        <div id="currentchat_header_wrapper">
+        <div id="currentchat_header">
+          <span id="recipient_span">
+            <span>To: </span>
+            <input id="recipient_form" type="text" placeholder="Paste SEKR address here"></input>
+            <span class="checkmark">✓</span>
+
+          </span>
+       </div>
+       <div id="currentchat_pubkey">
+         <span id="recipient_pubkey_span">
+           <span>Message key: </span>
+           <input id="recipient_pubkey_form" type="text" placeholder="Paste message key here"></input>
+           <span class="checkmark">✓</span>
+         </span>
+      </div>
+    </div>
+
+       <div id="messages_pane">
+       <ul id="messages">
+
+         <div id="welcome_alpha" style="width:90%;padding: 15px; padding-left: ; margin-top:-30px; margin-left: -40px; background: url('static/hugin.png'); background-repeat: no-repeat;; background-size: 50%; background-position: -70px -40px">
+           <div style="width:70%; margin-left:45%;">
+           <h2>Welcome to Hugin Messenger!</h2>
+           <p>Please note that this is an alpha release, the encryption of this system is yet to be peer reviewed, so act accordingly!</p>
+           <p>If you notice any bugs, please send a description of the bug to this address: <span style="display: inline-block; width: 200px; height: 15px; overflow: hidden; text-overflow: ellipsis; font-family:monospace">SEKReYvAsPsAWHN9Yu6zMeEQgA5J7EeGf74EHs7KYhLxZAv12BJbuZA5Nj9HYTA2meZDkxggKXvGcdtdJBAUct1VU9wZhaB2bafb40e3e1b118e74c734b251df4802fda6bd0d3f55a34608470e5d635f05253872</span></p>
+           <p>Make sure you include an exhaustive description of the bug, and steps to reproduce. All reported bugs will be compensated with XKR. The reward is depending on the severity of the bug.</p>
+           <h3>Happy chatting!</h3>
+         </div>
+         </div>
+
+       </ul>
+     </div>
+        <div id="currentchat_footer">
+          <div id="loading_border"></div>
+          <input id="message_form" type="text" placeholder="Message"></input>
+          <div id="payment_message"></div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <div id="send_payment" class="hidden">
+      <div id="payment_container">
+
+      <h1>Send Payment</h1>
+
+      <div id="payment_sent" class="hidden">
+
+        <h2 id="payment_sent_h2">Payment sent!</h2>
+
+        <img id="success" src="static/success.svg" />
+        <br><br>
+        <a id="paymentLink" class="fadeIn" target="_blank"></a>
+        <p class="fadeIn">
+          Click on the hash to track your transaction!
+        </p>
+
+      </div>
+
+      <div id="payment_form">
+
+        <span class="description">Address</span><br>
+        <input id="payment_rec_addr" type="text" placeholder="SEKR..."></input><br>
+
+              <span class="description">Payment ID (optional)</span><br>
+              <input id="payment_id" type="text" placeholder="32 hexadecimal characters"></input>
+
+
+
+
+          <span class="description">Amount</span><br>
+
+          <div id="payment_amount_wrap">
+
+              <input id="payment_amount" type="number" placeholder="1" value="1"></input>
+
+
+          </div>
+
+        <!-- <div class="form_col">
+        <span class="description">Mixin</span><br>
+        <input id="mixin" type="number" placeholder="0-3"></input>
+      </div> -->
+      <br><br>
+
+      <div id="sliders">
+        <div class="slidecontainer" id="mixinslider">
+          <span class="description">Mixin: <span id="mixinValue">3</span></span><br>
+          <input type="range" min="0" max="5" value="5" class="slider" id="myRange">
+        </div>
+        <div class="slidecontainer" id="feeslider">
+          <span class="description">Fee: <span id="feeValue">1</span></span><br>
+          <input type="range" min="0.1" max="10" value="0.1" class="slider" id="myRange2">
+        </div>
+      </div>
+
+      <div id="sendbutton_sendpage">
+        <p id="sendbuttontext_sendpage">Pay</p>
+    </div>
+
+
+    </div>
+
+    </div>
+
+  </div>
+
+
+    <!-- <div id="payment_sent" style="display: none;">
+
+      <h1 id="payment_sent_h1">Payment sent!</h1>
+
+      <img id="success" src="static/success.svg" />
+      <br><br>
+      <a id="paymentLink" class="fadeIn" target="_blank"></a>
+      <p class="fadeIn">
+        Click on the hash to track your transaction!
+      </p>
+
+    </div> -->
+
+    <div id="history_page" style="display: none;">
+
+      <h1>History</h1>
+
+      <ul id="history_list">
+
+      </ul>
+
+    </div>
+
+    <div id="settings_page" style="display: none;">
+
+      <h1>Settings</h1>
+
+      <div id="settings_list">
+
+        <h2>Connection</h2>
+
+        <p style="display: inline-block;">Public node:</p>
+        <div style="display: inline-block;" class="flipswitch">
+            <input type="checkbox" name="flipswitch" class="flipswitch-cb" id="fs" checked>
+            <label class="flipswitch-label" for="fs">
+                <div class="flipswitch-inner"></div>
+                <div class="flipswitch-switch"></div>
+            </label>
+        </div>
+
+
+
+      </div>
+
+    </div>
+
+
+
+    <div id="container_next">
+
+    </div>
+
+  </div>
+
+
+
+
+    <script>
+      // You can also require other files to run in this process
+      require('./renderer.js')
+      require('./messages.js')
+    </script>
+  </body>
+</html>
