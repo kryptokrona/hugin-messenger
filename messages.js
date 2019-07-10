@@ -233,7 +233,7 @@ function save_messages(transactions) {
 
           }
 
-          message = payload_json.msg;
+          message = escapeHtml(payload_json.msg);
 
           console.log(message);
 
@@ -1086,7 +1086,7 @@ function save_message(message_json) {
 
       if (docs.length == 0) {
 
-      message_db = {"conversation": conversation, "type":type, "message":message_json.msg, "timestamp": message_json.t};-
+      message_db = {"conversation": conversation, "type":type, "message":escapeHtml(message_json.msg), "timestamp": message_json.t};-
 
       db.insert(message_db);
 
