@@ -1,8 +1,8 @@
 # hugin messenger
 
-A messengaging service powered by the kryptokrona blockchain
+A messaging service powered by the kryptokrona blockchain
 
-##Usage
+## Usage
 
 Clone and npm install, then use electron . to start the app.
 
