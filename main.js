@@ -10,8 +10,6 @@ const xhr = require('xhr')
 
 const {autoUpdater} = require("electron-updater");
 
-autoUpdater.checkForUpdatesAndNotify();
-
 var Menu = electron.Menu;
 const {ipcMain} = require('electron');
 ipcMain.on('close-me', (evt, arg) => {
@@ -41,6 +39,8 @@ function createWindow () {
     protocol: 'file:',
     slashes: true
   }))
+
+  autoUpdater.checkForUpdatesAndNotify();
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
