@@ -1,13 +1,13 @@
 {
   "name": "hugin-messenger",
   "productName": "HuginMessenger",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "A messenger app built on top of the kryptokrona blockchain",
   "main": "main.js",
   "repository": "https://github.com/kryptokrona/hugin-messenger",
   "scripts": {
     "start": "electron .",
-    "dist-win": "./node_modules/.bin/electron-builder --x64 --win -c.extraResources=./bin/kryptokrona-service.exe",
+    "dist-win": "./node_modules/.bin/electron-builder --x64 --win -c.extraResources=./bin/kryptokrona-service.exe -p always",
     "dist-lin": "./node_modules/.bin/electron-builder --x64 --linux -c.extraResources=./bin/kryptokrona-service",
     "dist-mac": "./node_modules/.bin/electron-builder --x64 --mac -c.extraResources=./bin/kryptokrona-service",
     "publish": " ./node_modules/.bin/electron-builder -p always"
