@@ -8,6 +8,8 @@ const path = require('path')
 const url = require('url')
 const xhr = require('xhr')
 
+const {autoUpdater} = require("electron-updater");
+
 var Menu = electron.Menu;
 const {ipcMain} = require('electron');
 ipcMain.on('close-me', (evt, arg) => {
