@@ -9,7 +9,7 @@
     "start": "electron .",
     "dist-win": "./node_modules/.bin/electron-builder --x64 --win -c.extraResources=./bin/kryptokrona-service.exe -p always",
     "dist-lin": "./node_modules/.bin/electron-builder --x64 --linux -c.extraResources=./bin/kryptokrona-service",
-    "dist-mac": "./node_modules/.bin/electron-builder --x64 --mac -c.extraResources=./bin/kryptokrona-service",
+    "dist-mac": "./node_modules/.bin/electron-builder --x64 --mac -c.extraResources=./bin/kryptokrona-service -p always",
     "publish": " ./node_modules/.bin/electron-builder -p always"
   },
   "build": {

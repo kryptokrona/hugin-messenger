@@ -91,9 +91,9 @@ app.on('ready', function()  {
 
 autoUpdater.on('update-downloaded', () => {
 
-  autoUpdater.quitAndInstall())
+  autoUpdater.quitAndInstall()
 
-}
+});
 
 
 // In this file you can include the rest of your app's specific main process
