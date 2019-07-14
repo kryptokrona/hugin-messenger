@@ -10,6 +10,10 @@ const xhr = require('xhr')
 
 const {autoUpdater} = require("electron-updater");
 
+autoUpdater.logger = require("electron-log")
+autoUpdater.logger.transports.file.level = "info"
+
+
 var Menu = electron.Menu;
 const {ipcMain} = require('electron');
 ipcMain.on('close-me', (evt, arg) => {
@@ -82,8 +86,14 @@ app.on('before-quit', function() {
 })
 
 app.on('ready', function()  {
-  autoUpdater.checkForUpdatesAndNotify();
+  autoUpdater.checkForUpdates();
 });
+
+autoUpdater.on('update-downloaded', () => {
+
+  autoUpdater.quitAndInstall())
+
+}
 
 
 // In this file you can include the rest of your app's specific main process
