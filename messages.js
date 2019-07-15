@@ -4,6 +4,7 @@ const copy = require( 'copy-to-clipboard' );
 
 const notifier = require('node-notifier');
 
+
 const Datastore = require('nedb');
 
 var player = require('play-sound')(opts = {})
@@ -820,6 +821,7 @@ function getConversation(address) {
 $("#messages_contacts").on("click", "li", function(){
     $('#message_form').focus();
     $('#recipient_form').val($(this).find('.contact_address').text());
+    $(this).removeClass('unread_message');
     print_conversation($(this).find('.contact_address').text());
 });
 
@@ -1401,13 +1403,25 @@ async function get_new_conversations() {
       if (payload_json.t > latest_transaction_time) {
 
         if ($('#recipient_form').val() == payload_json.from){
+
           // If a new message is received, and it's from the active contacts
+          // this function will print the new message in the messages field.
+
           // NOTE: Sent messages will be automatically printed by the send
           // message function, not this one.
+
           avatar_base64 = get_avatar(payload_json.from);
           $('#messages').append('<li class="received_message"><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + payload_json.msg + '</p><span class="time">' + moment(payload_json.t).fromNow() + '</span></li>');
+
           // Scroll to bottom
           $('#messages_pane').scrollTop($('#messages').height());
+
+        } else {
+
+          notifier.notify({
+            title: payload_json.from,
+            message: payload_json.msg
+          });
 
         }
 
@@ -1426,12 +1440,17 @@ async function get_new_conversations() {
 
 
         if ( $('.' + conversation_address).width() > 0 ){
+          // If there is a contact in the sidebar,
+          // then we update it, and move it to the top.
 
-        $('.' + conversation_address).find('.listed_message').text(payload_json.msg).parent().detach().prependTo("#messages_contacts");
+        $('.' + conversation_address).find('.listed_message').text(payload_json.msg).parent().detach().prependTo("#messages_contacts").addClass('unread_message');
+
       } else {
-        $('#messages_contacts').prepend('<li class="active_contact ' + conversation_address + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + get_avatar(conversation_address) + '" /><span class="contact_address">' + conversation_address + '</span><br><span class="listed_message">'+payload_json.msg+'</li>');
+        // If there isn't one, create one
+
+        $('#messages_contacts').prepend('<li class="active_contact unread_message ' + conversation_address + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + get_avatar(conversation_address) + '" /><span class="contact_address">' + conversation_address + '</span><br><span class="listed_message">'+payload_json.msg+'</li>');
       }
-        //alert("New message: " + payload_json.msg);
+
       }
 
 

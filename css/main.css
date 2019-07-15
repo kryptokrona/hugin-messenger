@@ -1042,6 +1042,19 @@ overlay p {
   word-wrap: break-word;
   font-size:10pt;
   padding-left: 50px;
+  position: relative;
+}
+
+.unread_message::after {
+  position: absolute;
+  height: 8px;
+  width: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255, 0.3);
+  top: calc(50% - 4px);
+  right: 55px;
+  display: block;
+  content: " ";
 }
 
 .contact_address {
