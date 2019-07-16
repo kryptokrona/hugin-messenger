@@ -63,6 +63,8 @@ let walletd = new TurtleCoinWalletd(
   rpc_pw
 )
 
+walletd.logging = false;
+
 const messageWallet = settings.get('messageWallet');
 
 if (!messageWallet) {
