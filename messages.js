@@ -2,9 +2,6 @@ window.$ = window.jQuery = require('jquery');
 
 const copy = require( 'copy-to-clipboard' );
 
-const notifier = require('node-notifier');
-
-
 const Datastore = require('nedb');
 
 var player = require('play-sound')(opts = {})
@@ -1418,10 +1415,14 @@ async function get_new_conversations() {
 
         } else {
 
-          notifier.notify({
-            title: payload_json.from,
-            message: payload_json.msg
-          });
+          let myNotification = new Notification(payload_json.from, {
+            body: payload_json.msg
+          })
+
+          myNotification.onclick = () => {
+            print_conversation(payload_json.from);
+          }
+
 
         }
 
