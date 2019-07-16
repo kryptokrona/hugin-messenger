@@ -1623,58 +1623,6 @@ $("document").ready(function(){
 
   lastMessage =  Date.now();
 
-  $("#amount_plus").mousedown(function(){
-
-    let i = 0;
-
-    timeout = setInterval(function(){
-        // Do something continuously
-
-        value = $('#payment_amount').val();
-        new_value = parseInt(value) + (i * 100);
-        $('#payment_amount').val( new_value );
-        i++;
-
-    }, 100);
-
-    return false;
-});
-
-$("#amount_minus").mousedown(function(){
-
-  let i = 0;
-
-  timeout = setInterval(function(){
-      // Do something continuously
-
-      value = $('#payment_amount').val();
-      new_value = parseInt(value) - (i * 100);
-      if ( new_value > 0 ) {
-        $('#payment_amount').val(new_value);
-      }
-      i++;
-
-  }, 100);
-
-  return false;
-});
-
-  $('#amount_plus').click(function(){
-    value = $('#payment_amount').val();
-    $('#payment_amount').val(parseInt(value)+1);
-  });
-
-  $('#amount_minus').click(function(){
-
-    value = $('#payment_amount').val();
-    new_value = parseInt(value) - 1;
-
-    if ( new_value > 0 ) {
-      $('#payment_amount').val(new_value);
-    }
-
-  });
-
   $('#new_chat').click(function(){
     $('#recipient_form').val('');
     $('#currentchat_pubkey').hide();
@@ -1687,17 +1635,6 @@ let locked = $('#lockedBalanceText').text();
 
 window.setInterval(function(){
 
-  if ( locked != $('#lockedBalanceText').text()) {
-
-    locked = $('#lockedBalanceText').text();
-
-    player.play(appPath + '/static/newmessage.mp3', function(err){
-      if (err) throw err
-    })
-
-  }
-
   get_new_conversations();
-
 
 },3000);

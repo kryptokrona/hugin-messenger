@@ -1047,10 +1047,10 @@ overlay p {
 
 .unread_message::after {
   position: absolute;
-  height: 8px;
-  width: 8px;
+  height: 3px;
+  width: 3px;
   border-radius: 50%;
-  background: rgba(255,255,255, 0.3);
+  background-color: #00CAFF;
   top: calc(50% - 4px);
   right: 55px;
   display: block;
