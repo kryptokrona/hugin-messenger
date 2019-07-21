@@ -1,10 +1,9 @@
 window.$ = window.jQuery = require('jquery');
 
 const copy = require( 'copy-to-clipboard' );
+const notifier = require('node-notifier');
 
 const Datastore = require('nedb');
-
-var player = require('play-sound')(opts = {})
 
 function escapeHtml(unsafe) {
     return unsafe
@@ -1000,12 +999,6 @@ function updateMessages() {
 
                   if ($('#recipient_form').val() != senderAddr) {
 
-                    notifier.notify({
-                      title: 'New message:',
-                      message: message,
-                      sound: appPath + '/static/newmessage.mp3'
-                    });
-
                   }
 
 
@@ -1415,13 +1408,26 @@ async function get_new_conversations() {
 
         } else {
 
-          let myNotification = new Notification(payload_json.from, {
-            body: payload_json.msg
-          })
+          notifier.notify({
+            title: payload_json.from,
+            message: payload_json.msg,
+            wait: true // Wait with callback, until user action is taken against notification
+          });
 
-          myNotification.onclick = () => {
+          notifier.on('click', function(notifierObject, options) {
+            // Triggers if `wait: true` and user clicks notification
             print_conversation(payload_json.from);
-          }
+
+          });
+          //
+          //
+          // let myNotification = new Notification(payload_json.from, {
+          //   body: payload_json.msg
+          // })
+          //
+          // myNotification.onclick = () => {
+          //   print_conversation(payload_json.from);
+          // }
 
 
         }
