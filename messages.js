@@ -509,6 +509,7 @@ $('#recipient_form').on('input', function() {
           } else {
             $('#recipient_form').val(open_alias_address);
           }
+          $('#message_form').prop('placeholder','Write to ' +  wallets[0].name);
         }
 
 
