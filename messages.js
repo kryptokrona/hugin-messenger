@@ -2,6 +2,7 @@ window.$ = window.jQuery = require('jquery');
 
 const copy = require( 'copy-to-clipboard' );
 const notifier = require('node-notifier');
+const { openAlias } = require('openAlias');
 
 const Datastore = require('nedb');
 
@@ -482,6 +483,40 @@ function sendMessage(message) {
 $('#recipient_form').on('input', function() {
 
   text = $('#recipient_form').val();
+
+  if(text.substr(text.length - 7) == '.xkr.se') {
+    console.log('wop');
+    let oaname = '';
+      try {
+      openAlias(text).then(wallets => {
+
+          console.log(wallets);
+
+        if (wallets) {
+
+          let open_alias_address = wallets[0].address;
+          text = open_alias_address;
+          if (text.length == 163) {
+            // If both addr and pub key is put in
+            let addr = text.substring(0,99);
+            let pubkey = text.substring(99,163);
+            $('#currentchat_pubkey').show();
+            $('#recipient_form').val(addr);
+            $('#recipient_pubkey_form').val(pubkey);
+            $('#recipient_pubkey_span').find('.checkmark').fadeIn();
+            $('#recipient_span').find('.checkmark').fadeIn();
+            $('#message_form').attr('disabled',false);
+          } else {
+            $('#recipient_form').val(open_alias_address);
+          }
+        }
+
+
+      });
+    } catch {
+
+    }
+  }
 
   if (text.substring(0,4) == 'SEKR') {
 
