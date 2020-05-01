@@ -2,7 +2,7 @@ window.$ = window.jQuery = require('jquery');
 
 const copy = require( 'copy-to-clipboard' );
 const notifier = require('node-notifier');
-const { openAlias } = require('openAlias');
+const { openAlias } = require('openalias');
 
 const Datastore = require('nedb');
 
@@ -1628,9 +1628,7 @@ async function print_conversation(conversation) {
 
 }
 
-$("document").ready(function(){
-
-
+function loadWallets() {
   walletd.getAddresses()
   .then(resp => {
     currentAddr = resp.body.result.addresses[0];
@@ -1657,7 +1655,14 @@ $("document").ready(function(){
   })
   .catch(err => {
     console.log(err)
+    loadWallets();
   })
+}
+
+$("document").ready(function(){
+
+
+  loadWallets();
 
 
   $('#copyBoth').click(function(){

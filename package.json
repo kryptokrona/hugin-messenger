@@ -32,7 +32,7 @@
   "license": "CC0-1.0",
   "devDependencies": {
     "electron": "^3.0.0",
-    "electron-builder": "^20.40.2"
+    "electron-builder": "^22.1.0"
   },
   "dependencies": {
     "app-root-dir": "^1.0.2",
