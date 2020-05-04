@@ -55,6 +55,7 @@
     "turtlecoin-walletd-rpc-js": "^0.7.2",
     "tweetnacl": "^1.0.1",
     "tweetnacl-util": "^0.15.0",
+    "webtorrent": "^0.108.1",
     "write": "^1.0.3",
     "xhr": "^2.4.1"
   }

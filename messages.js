@@ -6,6 +6,51 @@ const { openAlias } = require('openalias');
 
 const Datastore = require('nedb');
 
+var WebTorrent = require('webtorrent');
+
+var client = new WebTorrent()
+let status = () => {
+  setTimeout(function(){
+    console.log(client.torrents);
+    status()
+  }, 5000)
+}
+status();
+// When user drops files on the browser, create a new torrent and start seeding it!
+// dragDrop('#messages_pane', function (files) {
+//   client.seed(files, function (torrent) {
+//     console.log('Client is seeding ' + torrent.magnetURI)
+//   })
+// })
+
+var holder = document.getElementById('messages_pane');
+
+        holder.ondragover = () => {
+            return false;
+        };
+
+        holder.ondragleave = () => {
+            return false;
+        };
+
+        holder.ondragend = () => {
+            return false;
+        };
+
+        holder.ondrop = (e) => {
+            e.preventDefault();
+
+            for (let f of e.dataTransfer.files) {
+              client.seed(f.path, function (torrent) {
+              console.log('Client is seeding ' + torrent.magnetURI)
+
+
+              })
+            }
+
+            return false;
+        };
+
 function escapeHtml(unsafe) {
     return unsafe
          // .replace(/&/g, "&amp;")
@@ -16,6 +61,44 @@ function escapeHtml(unsafe) {
  }
 
 
+ let handleMagnetLink = (magnetLinks, element) => {
+
+             //alert(magnetLinks[0]);
+             let torrentId = magnetLinks[0];
+             client.add(torrentId, function (torrent) {
+             // Torrents can contain many files. Let's use the .mp4 file
+             console.log(torrent.files);
+             let file = torrent.files.find(function (file) {
+               return file.name.endsWith('.mp4')
+             })
+
+               function onProgress () {
+
+                 let percent = Math.round(torrent.progress * 100 * 100) / 100;
+                 console.log(percent);
+
+
+               }
+
+             if (!file) {
+               return;
+             }
+
+         // Display the file by adding it to the DOM.
+         // Supports video, audio, image files, and more!
+
+         //let post_element = document.getElementById(tx_id);
+         let post_element = document.getElementById(element);
+         console.log(element);
+         console.log(post_element);
+         file.appendTo(post_element);
+         //$('#'+tx_id).append(file.name);
+         //delete magnetLinks;
+         //alert(file.name);
+
+       });
+
+ }
 
 const rmt = require('electron').remote;
 
@@ -374,12 +457,21 @@ let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json
           }
 
 
+
+
           // create a base64 encoded SVG
           avatar_base64 = get_avatar(sendAddr);
 
           $('#welcome_alpha').remove();
+          console.log( JSON.parse(fromHex(payload_hex)).t );
 
-          $('#messages').append('<li class="sent_message"><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + payload_json.msg + '</p><span class="time">' + moment(payload_json.t).fromNow() + '</span></li>');
+          $('#messages').append('<li class="sent_message" id="' + JSON.parse(fromHex(payload_hex)).t + '"><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + payload_json.msg + '</p><span class="time">' + moment(payload_json.t).fromNow() + '</span></li>');
+
+
+          let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(message);
+          if (magnetLinks) {
+            handleMagnetLink(magnetLinks, JSON.parse(fromHex(payload_hex)).t);
+          }
 
           // Scroll to bottom
           $('#messages_pane').scrollTop($('#messages').height());
