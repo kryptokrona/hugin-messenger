@@ -9,6 +9,10 @@ const Datastore = require('nedb');
 var WebTorrent = require('webtorrent');
 
 var client = new WebTorrent()
+//
+// client.remove('7cf7bfdaafeffcc3dec1e4cfe2e4350126032788');
+// client.remove('7e607d31899e7839e36b70496519bcc5ca4aadac');
+
 let status = () => {
   setTimeout(function(){
     console.log(client.torrents);
@@ -40,16 +44,19 @@ var holder = document.getElementById('messages_pane');
         holder.ondrop = (e) => {
             e.preventDefault();
 
-            for (let f of e.dataTransfer.files) {
-              client.seed(f.path, function (torrent) {
-              console.log('Client is seeding ' + torrent.magnetURI)
+            if (!$('#recipient_form').val()) { return false; } else {
 
+            for (let f of e.dataTransfer.files) {
+              client.seed(f, function (torrent) {
+              console.log('Client is seeding ' + torrent.magnetURI)
+              send_message(torrent.magnetURI.replace('&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&tr=wss%3A%2F%2Ftracker.fastcast.nz',''));
 
               })
             }
 
             return false;
         };
+        }
 
 function escapeHtml(unsafe) {
     return unsafe
@@ -64,11 +71,12 @@ function escapeHtml(unsafe) {
  let handleMagnetLink = (magnetLinks, element) => {
 
              //alert(magnetLinks[0]);
-             let torrentId = magnetLinks[0];
+             let torrentId = magnetLinks[0]+'&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&tr=wss%3A%2F%2Ftracker.fastcast.nz';
              client.add(torrentId, function (torrent) {
              // Torrents can contain many files. Let's use the .mp4 file
              console.log(torrent.files);
              let file = torrent.files.find(function (file) {
+               file.appendTo(document.getElementById(element));
                return file.name.endsWith('.mp4')
              })
 
@@ -452,8 +460,8 @@ let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json
           db.insert(db_json);
 
           // Add new message to conversation
-          if (message.substring(0, 22) == "data:image/jpeg;base64") {
-            message = "<img src='" + message + "' />";
+          if (payload_json.msg.substring(0, 22) == "data:image/jpeg;base64") {
+            payload_json.msg = "<img src='" + payload_json.msg + "' />";
           }
 
 
@@ -468,7 +476,7 @@ let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json
           $('#messages').append('<li class="sent_message" id="' + JSON.parse(fromHex(payload_hex)).t + '"><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + payload_json.msg + '</p><span class="time">' + moment(payload_json.t).fromNow() + '</span></li>');
 
 
-          let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(message);
+          let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(payload_json.msg);
           if (magnetLinks) {
             handleMagnetLink(magnetLinks, JSON.parse(fromHex(payload_hex)).t);
           }
@@ -806,6 +814,14 @@ function printMessages(transactions, address) {
                       message = "<img src='" + message + "' />";
                     }
 
+                    console.log('habbening');
+                    //
+                    // let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(payload_json.msg);
+                    // if (magnetLinks) {
+                    //   handleMagnetLink(magnetLinks, JSON.parse(fromHex(payload_hex)).t);
+                    // }
+
+
                     senderAddr = payload_json.from;
                     receiverAddr = payload_json.to;
                     timestamp = JSON.parse(payload).t;
@@ -855,6 +871,12 @@ function printMessages(transactions, address) {
                   }
                   avatar_base64 = get_avatar(hash);
 
+                  console('this is dood?');
+                            //
+                            // let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(sortedMessages[i].message);
+                            // if (magnetLinks) {
+                            //   handleMagnetLink(magnetLinks, sortedMessages[i].timestamp);
+                            // }
                   $('#messages').append('<li class="' + sortedMessages[i].type + '_message"><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + sortedMessages[i].message + '</p><span class="time">' + moment(sortedMessages[i].timestamp).fromNow() + '</span></li>');
 
               }
@@ -1529,7 +1551,14 @@ async function get_new_conversations() {
           // message function, not this one.
 
           avatar_base64 = get_avatar(payload_json.from);
-          $('#messages').append('<li class="received_message"><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + payload_json.msg + '</p><span class="time">' + moment(payload_json.t).fromNow() + '</span></li>');
+
+
+          let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(payload_json.msg);
+          if (magnetLinks) {
+            handleMagnetLink(magnetLinks, payload_json.t);
+          }
+
+          $('#messages').append('<li class="received_message" id=' + payload_json.t + '><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + payload_json.msg + '</p><span class="time">' + moment(payload_json.t).fromNow() + '</span></li>');
 
           // Scroll to bottom
           $('#messages_pane').scrollTop($('#messages').height());
@@ -1709,7 +1738,13 @@ async function print_conversation(conversation) {
     }
     avatar_base64 = get_avatar(hash);
 
-    $('#messages').append('<li timestamp="' + messages[n].timestamp + '" class="' + messages[n].type + '_message"><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + messages[n].message + '</p><span class="time">' + moment(messages[n].timestamp).fromNow() + '</span></li>');
+    //
+    // let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(messages[n].message);
+    // if (magnetLinks) {
+    //   handleMagnetLink(magnetLinks, messages[n].timestamp);
+    // }
+
+    $('#messages').append('<li id="' + messages[n].timestamp + '" timestamp="' + messages[n].timestamp + '" class="' + messages[n].type + '_message"><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + messages[n].message + '</p><span class="time">' + moment(messages[n].timestamp).fromNow() + '</span></li>');
 
 
   }
