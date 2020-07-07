@@ -31,7 +31,7 @@
   "author": "kryptokrona ",
   "license": "CC0-1.0",
   "devDependencies": {
-    "electron": "^3.0.0",
+    "electron": "^9.1.0",
     "electron-builder": "^22.1.0"
   },
   "dependencies": {
