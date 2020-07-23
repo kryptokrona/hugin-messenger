@@ -310,7 +310,7 @@ window.setInterval(function(){
   getHistory();
   updateAddresses();
 
-},3000);
+},10000);
 
 window.setInterval(function() {
   walletd.save();

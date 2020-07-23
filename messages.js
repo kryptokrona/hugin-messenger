@@ -481,7 +481,7 @@ function sendMessage(message) {
 // Detect valid address input into recipient forms
 
 $('#recipient_form').on('input', function() {
-
+console.log('wopwop');
   text = $('#recipient_form').val();
 
   if(text.substr(text.length - 7) == '.xkr.se') {
@@ -1685,4 +1685,4 @@ window.setInterval(function(){
 
   get_new_conversations();
 
-},3000);
+},30000);
