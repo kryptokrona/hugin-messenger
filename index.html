@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
     <title>Hugin Messenger</title>
 
   </head>
@@ -57,8 +58,8 @@
         <span class="description" style="padding-left: 25px;">Balance</span><br>
         <div id="balance-box">
           <span id="balancetext">Loading..</span>
-          <span id="lockedBalanceText"></span>
-          <img src="static/logo_light.svg" id="xkr-logo"/>
+          <span id="lockedBalanceText" style="font-size: 50%"></span>
+          <span id='balancelogo'></span>
         </div>
       </div>
 
@@ -82,9 +83,9 @@
       <div id="messages_sidebar">
 
         <div id="top_messages_sidebar">
-          <img id="search_icon" src="static/search.svg" />
+          <div id="search_icon"><i class="fa fa-search"></i></div>
           <input disabled="true" class="text-field" id="search_messages" type="text" placeholder="Search.."></input>
-          <div id="new_chat">+</div>
+          <div id="settings_icon"><i class="fa fa-cogs"></i></div>
         </div>
 
       <ul id="messages_contacts">
@@ -105,6 +106,7 @@
 
       <div id="messages_currentchat">
         <div id="currentchat_header_wrapper">
+          <div id="new_chat">+</div>
         <div id="currentchat_header">
           <span id="recipient_span">
             <span>To: </span>
@@ -140,7 +142,7 @@
         <div id="currentchat_footer">
           <div id="loading_border"></div>
           <input id="message_form" type="text" placeholder="Message"></input>
-          <div id="payment_message"></div>
+          <div id="payment_message">$</div>
 
         </div>
       </div>
@@ -275,6 +277,7 @@
       // You can also require other files to run in this process
       require('./renderer.js')
       require('./messages.js')
+
     </script>
   </body>
 </html>
