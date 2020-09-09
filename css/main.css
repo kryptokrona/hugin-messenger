@@ -1548,3 +1548,21 @@ color: black;
 
 
   }
+
+
+  .sent_message button {
+      display: none;
+  }
+#drop-overlay {
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  backdrop-filter: blur(5px);
+  text-align: center;
+  vertical-align: middle;
+  font-size:25pt;
+  padding-top: 20%;
+  z-index: 9999999999;
+}

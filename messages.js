@@ -8,18 +8,18 @@ const Datastore = require('nedb');
 
 var WebTorrent = require('webtorrent');
 
-var client = new WebTorrent()
+
 //
 // client.remove('7cf7bfdaafeffcc3dec1e4cfe2e4350126032788');
 // client.remove('7e607d31899e7839e36b70496519bcc5ca4aadac');
-
-let status = () => {
-  setTimeout(function(){
-    console.log(client.torrents);
-    status()
-  }, 5000)
-}
-status();
+//
+// let status = () => {
+//   setTimeout(function(){
+//     console.log(client.torrents);
+//     status()
+//   }, 5000)
+// }
+// status();
 // When user drops files on the browser, create a new torrent and start seeding it!
 // dragDrop('#messages_pane', function (files) {
 //   client.seed(files, function (torrent) {
@@ -30,22 +30,25 @@ status();
 var holder = document.getElementById('messages_pane');
 
         holder.ondragover = () => {
+          $('#drop-overlay').stop().fadeIn(1);
             return false;
         };
 
         holder.ondragleave = () => {
+            $('#drop-overlay').stop().fadeOut();
             return false;
         };
 
         holder.ondragend = () => {
+          //$('#drop-overlay').hide();
             return false;
         };
 
         holder.ondrop = (e) => {
             e.preventDefault();
-
+            $('#drop-overlay').stop().fadeOut();
             if (!$('#recipient_form').val()) { return false; } else {
-
+            var client = new WebTorrent();
             for (let f of e.dataTransfer.files) {
               client.seed(f, function (torrent) {
               console.log('Client is seeding ' + torrent.magnetURI)
@@ -67,46 +70,54 @@ function escapeHtml(unsafe) {
          .replace(/'/g, "&#039;");
  }
 
+let downloadMagnet = (magnetLink, element) => {
+  // MOVE CODE BELOW
+
+  var client = new WebTorrent();
+   console.log('Starting torrent!');
+   let torrentId = magnetLink+'&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&tr=wss%3A%2F%2Ftracker.fastcast.nz';
+   client.add(torrentId, function (torrent) {
+
+
+
+      torrent.on('done', function () {
+        console.log('done!!');
+        let file = torrent.files.find(function (file) {
+          file.appendTo(document.getElementById(element).getElementsByTagName('p')[0]);
+        });
+        $('#messages_pane').scrollTop($('#messages').height());
+        //torrent.destroy();
+        //client.destroy();
+
+        if (!file) {
+          return;
+        }
+
+
+        return;
+
+   // Display the file by adding it to the DOM.
+   // Supports video, audio, image files, and more!
+
+   //let post_element = document.getElementById(tx_id);
+
+   //$('#'+tx_id).append(file.name);
+   //delete magnetLinks;
+   //alert(file.name);
+
+ });
+
+});
+}
 
  let handleMagnetLink = (magnetLinks, element) => {
 
-             //alert(magnetLinks[0]);
-             let torrentId = magnetLinks[0]+'&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&tr=wss%3A%2F%2Ftracker.fastcast.nz';
-             client.add(torrentId, function (torrent) {
-             // Torrents can contain many files. Let's use the .mp4 file
-             console.log(torrent.files);
-             let file = torrent.files.find(function (file) {
-               file.appendTo(document.getElementById(element));
-               return file.name.endsWith('.mp4')
-             })
-
-               function onProgress () {
-
-                 let percent = Math.round(torrent.progress * 100 * 100) / 100;
-                 console.log(percent);
+        $('#' + element).find('p').text($('#' + element).find('p').text().replace(magnetLinks[0], magnetLinks[0].split('=')[2]));
 
 
-               }
+        $('#' + element).find('p').append('<button class="download-button">Download</button>').click(function(){ downloadMagnet(magnetLinks[0], element) });
 
-             if (!file) {
-               return;
-             }
-
-         // Display the file by adding it to the DOM.
-         // Supports video, audio, image files, and more!
-
-         //let post_element = document.getElementById(tx_id);
-         let post_element = document.getElementById(element);
-         console.log(element);
-         console.log(post_element);
-         file.appendTo(post_element);
-         //$('#'+tx_id).append(file.name);
-         //delete magnetLinks;
-         //alert(file.name);
-
-       });
-
- }
+}
 
 const rmt = require('electron').remote;
 
@@ -473,13 +484,17 @@ let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json
           $('#welcome_alpha').remove();
           console.log( JSON.parse(fromHex(payload_hex)).t );
 
-          $('#messages').append('<li class="sent_message" id="' + JSON.parse(fromHex(payload_hex)).t + '"><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + payload_json.msg + '</p><span class="time">' + moment(payload_json.t).fromNow() + '</span></li>');
 
+          $('#messages').append('<li class="sent_message" id="' + JSON.parse(fromHex(payload_hex)).t + '"><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + payload_json.msg + '</p><span class="time">' + moment(payload_json.t).fromNow() + '</span></li>');
 
           let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(payload_json.msg);
           if (magnetLinks) {
             handleMagnetLink(magnetLinks, JSON.parse(fromHex(payload_hex)).t);
           }
+
+
+
+
 
           // Scroll to bottom
           $('#messages_pane').scrollTop($('#messages').height());
@@ -822,6 +837,7 @@ function printMessages(transactions, address) {
                     // }
 
 
+
                     senderAddr = payload_json.from;
                     receiverAddr = payload_json.to;
                     timestamp = JSON.parse(payload).t;
@@ -872,11 +888,12 @@ function printMessages(transactions, address) {
                   avatar_base64 = get_avatar(hash);
 
                   console('this is dood?');
-                            //
-                            // let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(sortedMessages[i].message);
-                            // if (magnetLinks) {
-                            //   handleMagnetLink(magnetLinks, sortedMessages[i].timestamp);
-                            // }
+
+                  let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(sortedMessages[i].message);
+                  if (magnetLinks) {
+                    handleMagnetLink(magnetLinks, sortedMessages[i].timestamp);
+                  }
+
                   $('#messages').append('<li class="' + sortedMessages[i].type + '_message"><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + sortedMessages[i].message + '</p><span class="time">' + moment(sortedMessages[i].timestamp).fromNow() + '</span></li>');
 
               }
@@ -1553,12 +1570,17 @@ async function get_new_conversations() {
           avatar_base64 = get_avatar(payload_json.from);
 
 
+
+
+          $('#messages').append('<li class="received_message" id=' + payload_json.t + '><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + payload_json.msg + '</p><span class="time">' + moment(payload_json.t).fromNow() + '</span></li>');
+
           let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(payload_json.msg);
+
           if (magnetLinks) {
             handleMagnetLink(magnetLinks, payload_json.t);
           }
 
-          $('#messages').append('<li class="received_message" id=' + payload_json.t + '><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + payload_json.msg + '</p><span class="time">' + moment(payload_json.t).fromNow() + '</span></li>');
+
 
           // Scroll to bottom
           $('#messages_pane').scrollTop($('#messages').height());
@@ -1738,13 +1760,14 @@ async function print_conversation(conversation) {
     }
     avatar_base64 = get_avatar(hash);
 
-    //
-    // let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(messages[n].message);
-    // if (magnetLinks) {
-    //   handleMagnetLink(magnetLinks, messages[n].timestamp);
-    // }
 
     $('#messages').append('<li id="' + messages[n].timestamp + '" timestamp="' + messages[n].timestamp + '" class="' + messages[n].type + '_message"><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + messages[n].message + '</p><span class="time">' + moment(messages[n].timestamp).fromNow() + '</span></li>');
+
+
+      let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(messages[n].message);
+      if (magnetLinks) {
+        handleMagnetLink(magnetLinks, messages[n].timestamp);
+      }
 
 
   }
