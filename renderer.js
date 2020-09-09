@@ -307,7 +307,7 @@ window.setInterval(function(){
 
   updateBalance(currentAddr);
   updateStatus();
-  getHistory();
+  //getHistory();
   updateAddresses();
 
 },10000);

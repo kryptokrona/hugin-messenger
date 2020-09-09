@@ -78,23 +78,24 @@ let downloadMagnet = (magnetLink, element) => {
    let torrentId = magnetLink+'&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&tr=wss%3A%2F%2Ftracker.fastcast.nz';
    client.add(torrentId, function (torrent) {
 
+     let file = torrent.files.find(function (file) {
+       file.appendTo(document.getElementById(element).getElementsByTagName('p')[0]);
+     });
+     $('#messages_pane').scrollTop($('#messages').height());
+     //torrent.destroy();
+     //client.destroy();
+
+     if (!file) {
+       return;
+     }
+
+
+     return;
 
 
       torrent.on('done', function () {
         console.log('done!!');
-        let file = torrent.files.find(function (file) {
-          file.appendTo(document.getElementById(element).getElementsByTagName('p')[0]);
-        });
-        $('#messages_pane').scrollTop($('#messages').height());
-        //torrent.destroy();
-        //client.destroy();
 
-        if (!file) {
-          return;
-        }
-
-
-        return;
 
    // Display the file by adding it to the DOM.
    // Supports video, audio, image files, and more!
@@ -1455,7 +1456,7 @@ async function print_conversations() {
 
 print_conversations();
 
-async function get_new_conversations() {
+async function get_new_conversations(unconfirmed) {
 
 
   known_keys = await find(keychain, {});
@@ -1466,9 +1467,11 @@ async function get_new_conversations() {
 
   unconfirmed_transactions = await get_unconfirmed_messages();
 
-
+  if (!unconfirmed) {
   all_transactions = confirmed_transactions.concat(unconfirmed_transactions);
-
+} else {
+  all_transactions = unconfirmed_transactions;
+}
   latest_transaction = await find_messages({}, 0, 1);
   let latest_transaction_time = 0;
 
@@ -1833,6 +1836,13 @@ let locked = $('#lockedBalanceText').text();
 
 window.setInterval(function(){
 
-  get_new_conversations();
+  get_new_conversations(true);
 
-},30000);
+},1000);
+
+
+window.setInterval(function(){
+
+  get_new_conversations(false);
+
+},60000);
