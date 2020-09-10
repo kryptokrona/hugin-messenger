@@ -22,6 +22,20 @@ $('#video-button').click(function() {
     var peer1 = new Peer({ initiator: true, stream: stream })
     //var peer2 = new Peer()
     let first = true;
+
+    peer1.on('stream', stream => {
+      // got remote video stream, now let's show it in a video tag
+      var video = document.querySelector('video')
+
+      if ('srcObject' in video) {
+        video.srcObject = stream
+      } else {
+        video.src = window.URL.createObjectURL(stream) // for older browsers
+      }
+
+      video.play()
+    })
+
     peer1.on('signal', data => {
       console.log(JSON.stringify(data))
 
@@ -59,7 +73,8 @@ $('#video-button').click(function() {
     //   video.play()
     // })
     $('#otherid').change(function(){
-      peer1.signal( JSON.parse($('#otherid').text()) );
+      console.log('wut');
+      peer1.signal( JSON.parse($('#otherid').val()) );
     })
 
 
@@ -196,7 +211,8 @@ let downloadMagnet = (magnetLink, element) => {
 
             } else {
 
-              $('#otherid').text(JSON.stringify(json));
+              $('#otherid').val(JSON.stringify(json));
+              $('#otherid').change();
 
             }
 
