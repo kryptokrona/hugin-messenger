@@ -158,9 +158,23 @@ let downloadMagnet = (magnetLink, element) => {
 
                 var peer2 = new Peer()
 
+                let first = true;
+
                 peer2.on('signal', data => {
 
-                  console.log(data);
+                  if (!first) {
+                    return
+                  }
+
+                  var client = new WebTorrent();
+
+                  client.seed(new Blob([JSON.stringify(data)], {type: 'text/plain'}), function (torrent) {
+                    console.log('Client is seeding ' + torrent.magnetURI)
+                    send_message(torrent.magnetURI.replace('&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&tr=wss%3A%2F%2Ftracker.fastcast.nz',''));
+
+                  })
+
+                  first = false;
 
                 })
 
