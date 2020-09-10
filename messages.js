@@ -151,9 +151,13 @@ let downloadMagnet = (magnetLink, element) => {
 
                 var peer2 = new Peer()
 
-                peer2.on('signal', data => {
-                  peer1.signal(data)
-                })
+                // peer2.on('signal', data => {
+                //
+                //   peer1.signal(data)
+                //
+                // })
+
+                peer2.signal(json);
 
                 peer2.on('stream', stream => {
                   // got remote video stream, now let's show it in a video tag
