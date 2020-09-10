@@ -58,6 +58,11 @@ $('#video-button').click(function() {
     //
     //   video.play()
     // })
+    $('#otherid').change(function(){
+      peer1.signal( JSON.parse($('#otherid').text()) );
+    })
+
+
   }
 
 })
@@ -141,6 +146,8 @@ let downloadMagnet = (magnetLink, element) => {
 
               console.log(json);
 
+              if (json.type == 'offer') {
+
               // get video/voice stream
               navigator.mediaDevices.getUserMedia({
                 video: true,
@@ -151,11 +158,11 @@ let downloadMagnet = (magnetLink, element) => {
 
                 var peer2 = new Peer()
 
-                // peer2.on('signal', data => {
-                //
-                //   peer1.signal(data)
-                //
-                // })
+                peer2.on('signal', data => {
+
+                  console.log(data);
+
+                })
 
                 peer2.signal(json);
 
@@ -172,6 +179,12 @@ let downloadMagnet = (magnetLink, element) => {
                   video.play()
                 })
               }
+
+            } else {
+
+              $('#otherid').text(JSON.stringify(json));
+
+            }
 
             }
 
