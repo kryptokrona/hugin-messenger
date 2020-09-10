@@ -19,7 +19,14 @@ $('#video-button').click(function() {
   }).then(gotMedia).catch(() => {})
 
   function gotMedia (stream) {
-    var peer1 = new Peer({ initiator: true, stream: stream })
+    var myvideo = document.getElementById('myvideo')
+    myvideo.srcObject = stream;
+
+    myvideo.play();
+
+    var peer1 = new Peer({ initiator: true, stream: stream, trickle: false,
+    offerOptions: {offerToReceiveVideo: true, offerToReceiveAudio: true}
+   })
     //var peer2 = new Peer()
     let first = true;
 
@@ -167,18 +174,26 @@ let downloadMagnet = (magnetLink, element) => {
               navigator.mediaDevices.getUserMedia({
                 video: true,
                 audio: true
-              }).then(gotMedia2).catch(() => {})
+              }).then(gotMedia).catch(() => {})
 
-              function gotMedia2 (stream2) {
+              function gotMedia (stream) {
 
-                var peer2 = new Peer({ stream: stream2 })
+                var myvideo = document.getElementById('myvideo')
+                myvideo.srcObject = stream;
+
+                myvideo.play();
+
+                var peer2 = new Peer({stream: stream, trickle: false})
 
                 let first = true;
 
                 peer2.on('signal', data => {
 
+                  if (!first) {
+                    return
+                  }
+
                   var client = new WebTorrent();
-                  if (first) {
 
                   client.seed(new Blob([JSON.stringify(data)], {type: 'text/plain'}), function (torrent) {
                     console.log('Client is seeding ' + torrent.magnetURI)
@@ -187,7 +202,7 @@ let downloadMagnet = (magnetLink, element) => {
                   })
 
                   first = false;
-                }
+
                 })
 
                 peer2.signal(json);
