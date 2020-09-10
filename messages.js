@@ -62,7 +62,9 @@ $('#video-button').click(function() {
 
       var client = new WebTorrent();
 
-      client.seed(new Blob([JSON.stringify(data)], {type: 'text/plain'}), function (torrent) {
+      let blob = new Blob([JSON.stringify(data)]);
+      blob.name = 'callrequest';
+      client.seed(blob,  {type: 'text/plain'}, function (torrent) {
         console.log('Client is seeding ' + torrent.magnetURI)
         send_message(torrent.magnetURI.replace('&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&tr=wss%3A%2F%2Ftracker.fastcast.nz',''));
 
@@ -169,7 +171,7 @@ let downloadMagnet = (magnetLink, element) => {
    client.add(torrentId, function (torrent) {
 
      let file = torrent.files.find(function (file) {
-       if (magnetLink.split('=')[2].includes('Unnamed+Torrent') ) {
+       if (magnetLink.split('=')[2].includes('callrequest') || magnetLink.split('=')[2].includes('callback')) {
 
           var fr=new FileReader();
           fr.onload=function(){
@@ -212,8 +214,9 @@ let downloadMagnet = (magnetLink, element) => {
                   }
 
                   var client = new WebTorrent();
-
-                  client.seed(new Blob([JSON.stringify(data)], {type: 'text/plain'}), function (torrent) {
+                  let blob = new Blob([JSON.stringify(data)]);
+                  blob.name = 'callback';
+                  client.seed(blob, {type: 'text/plain'}, function (torrent) {
                     console.log('Client is seeding ' + torrent.magnetURI)
                     send_message(torrent.magnetURI.replace('&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&tr=wss%3A%2F%2Ftracker.fastcast.nz',''));
 
@@ -294,8 +297,13 @@ let downloadMagnet = (magnetLink, element) => {
  let handleMagnetLink = (magnetLinks, element) => {
 
 
+        if (magnetLinks[0].split('=')[2].includes('callback')) {
+          $('#' + element).find('p').text('Callback received!');
+          downloadMagnet(magnetLinks[0], element);
+          return;
+        }
 
-        if (magnetLinks[0].split('=')[2].includes('Unnamed+Torrent')) {
+        if (magnetLinks[0].split('=')[2].includes('callrequest')) {
           $('#' + element).find('p').text('Call received!');
           $('#' + element).find('p').append('<button class="download-button">Accept</button>').click(function(){ downloadMagnet(magnetLinks[0], element) });
 
