@@ -1566,3 +1566,10 @@ color: black;
   padding-top: 20%;
   z-index: 9999999999;
 }
+
+.fa-phone:before {
+    content: "\f095";
+    position: absolute;
+    left: 14px;
+    top: 8px;
+}

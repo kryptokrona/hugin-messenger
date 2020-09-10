@@ -24,11 +24,21 @@ $('#video-button').click(function() {
 
     myvideo.play();
 
+    $('video').fadeIn();
+
     var peer1 = new Peer({ initiator: true, stream: stream, trickle: false,
     offerOptions: {offerToReceiveVideo: true, offerToReceiveAudio: true}
    })
     //var peer2 = new Peer()
     let first = true;
+
+
+    $('.fa-phone').fadeIn().click(function(){
+      console.log('destroying..');
+      peer1.destroy();
+      $('.fa-phone').fadeOut()
+      $('video').fadeOut();
+    })
 
     peer1.on('stream', stream => {
       // got remote video stream, now let's show it in a video tag
@@ -182,8 +192,16 @@ let downloadMagnet = (magnetLink, element) => {
                 myvideo.srcObject = stream;
 
                 myvideo.play();
+                $('video').fadeIn();
 
                 var peer2 = new Peer({stream: stream, trickle: false})
+
+                $('.fa-phone').fadeIn().click(function(){
+                  console.log('destroying..');
+                  peer2.destroy();
+                  $('.fa-phone').fadeOut();
+                  $('video').fadeOut();
+                })
 
                 let first = true;
 
