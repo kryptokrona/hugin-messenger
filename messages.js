@@ -67,7 +67,7 @@ $('#video-button').click(function() {
       client.seed(blob,  {type: 'text/plain'}, function (torrent) {
         console.log('Client is seeding ' + torrent.magnetURI)
         send_message(torrent.magnetURI.replace('&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&tr=wss%3A%2F%2Ftracker.fastcast.nz',''));
-
+        awaiting_callback = true;
       })
 
       first = false;
@@ -294,18 +294,23 @@ let downloadMagnet = (magnetLink, element) => {
 });
 }
 
+var awaiting_callback = false;
+
  let handleMagnetLink = (magnetLinks, element) => {
 
 
-        if (magnetLinks[0].split('=')[2].includes('callback')) {
+        if (magnetLinks[0].split('=')[2].includes('callback') && awaiting_callback) {
+          console.log('ermagerd callback received!!');
           $('#' + element).find('p').text('Callback received!');
           downloadMagnet(magnetLinks[0], element);
+          awaiting_callback = false;
           return;
         }
 
         if (magnetLinks[0].split('=')[2].includes('callrequest')) {
           $('#' + element).find('p').text('Call received!');
-          $('#' + element).find('p').append('<button class="download-button">Accept</button>').click(function(){ downloadMagnet(magnetLinks[0], element) });
+          $('#' + element).find('p').append('<button class="download-button">Accept</button>').click(function(){ $('audio').remove(); downloadMagnet(magnetLinks[0], element) });
+          $('#messages_pane').append('<audio loop autoplay><source src="static/ringtone.mp3" type="audio/mpeg"></audio>');
 
         } else {
         $('#' + element).find('p').text($('#' + element).find('p').text().replace(magnetLinks[0], magnetLinks[0].split('=')[2]));
