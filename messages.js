@@ -132,10 +132,57 @@ let downloadMagnet = (magnetLink, element) => {
    client.add(torrentId, function (torrent) {
 
      let file = torrent.files.find(function (file) {
-       if (magnetLinks[0].split('=')[2].includes('Unnamed+Torrent') ) {
-         console.log('woah brah')
-       }
+       if (magnetLink.split('=')[2].includes('Unnamed+Torrent') ) {
+
+          var fr=new FileReader();
+          fr.onload=function(){
+
+              let json = JSON.parse(fr.result);
+
+              console.log(json);
+
+              // get video/voice stream
+              navigator.mediaDevices.getUserMedia({
+                video: true,
+                audio: true
+              }).then(gotMedia).catch(() => {})
+
+              function gotMedia (stream) {
+
+                var peer2 = new Peer()
+
+                peer2.on('signal', data => {
+                  peer1.signal(data)
+                })
+
+                peer2.on('stream', stream => {
+                  // got remote video stream, now let's show it in a video tag
+                  var video = document.querySelector('video')
+
+                  if ('srcObject' in video) {
+                    video.srcObject = stream
+                  } else {
+                    video.src = window.URL.createObjectURL(stream) // for older browsers
+                  }
+
+                  video.play()
+                })
+              }
+
+            }
+
+
+          file.getBlob(function (err, blob) {
+
+            fr.readAsText(blob);
+          });
+
+
+
+         return;
+       } else {
        file.appendTo(document.getElementById(element).getElementsByTagName('p')[0]);
+     }
      });
      $('#messages_pane').scrollTop($('#messages').height());
      //torrent.destroy();
@@ -169,11 +216,16 @@ let downloadMagnet = (magnetLink, element) => {
 
  let handleMagnetLink = (magnetLinks, element) => {
 
+
+
+        if (magnetLinks[0].split('=')[2].includes('Unnamed+Torrent')) {
+          $('#' + element).find('p').text('Call received!');
+          $('#' + element).find('p').append('<button class="download-button">Accept</button>').click(function(){ downloadMagnet(magnetLinks[0], element) });
+
+        } else {
         $('#' + element).find('p').text($('#' + element).find('p').text().replace(magnetLinks[0], magnetLinks[0].split('=')[2]));
-
-
         $('#' + element).find('p').append('<button class="download-button">Download</button>').click(function(){ downloadMagnet(magnetLinks[0], element) });
-
+        }
 }
 
 const rmt = require('electron').remote;
