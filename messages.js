@@ -167,21 +167,18 @@ let downloadMagnet = (magnetLink, element) => {
               navigator.mediaDevices.getUserMedia({
                 video: true,
                 audio: true
-              }).then(gotMedia).catch(() => {})
+              }).then(gotMedia2).catch(() => {})
 
-              function gotMedia (stream) {
+              function gotMedia2 (stream2) {
 
-                var peer2 = new Peer()
+                var peer2 = new Peer({ stream: stream2 })
 
                 let first = true;
 
                 peer2.on('signal', data => {
 
-                  if (!first) {
-                    return
-                  }
-
                   var client = new WebTorrent();
+                  if (first) {
 
                   client.seed(new Blob([JSON.stringify(data)], {type: 'text/plain'}), function (torrent) {
                     console.log('Client is seeding ' + torrent.magnetURI)
@@ -190,7 +187,7 @@ let downloadMagnet = (magnetLink, element) => {
                   })
 
                   first = false;
-
+                }
                 })
 
                 peer2.signal(json);
