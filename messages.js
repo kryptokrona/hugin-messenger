@@ -8,6 +8,59 @@ const Datastore = require('nedb');
 
 var WebTorrent = require('webtorrent');
 
+var Peer = require('simple-peer')
+
+$('#video-button').click(function() {
+
+  // get video/voice stream
+  navigator.mediaDevices.getUserMedia({
+    video: true,
+    audio: true
+  }).then(gotMedia).catch(() => {})
+
+  function gotMedia (stream) {
+    var peer1 = new Peer({ initiator: true, stream: stream })
+    //var peer2 = new Peer()
+    let first = true;
+    peer1.on('signal', data => {
+      console.log(JSON.stringify(data))
+
+      if (!first) {
+        return
+      }
+
+      var client = new WebTorrent();
+
+      client.seed(new Blob([JSON.stringify(data)], {type: 'text/plain'}), function (torrent) {
+        console.log('Client is seeding ' + torrent.magnetURI)
+        send_message(torrent.magnetURI.replace('&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&tr=wss%3A%2F%2Ftracker.fastcast.nz',''));
+
+      })
+
+      first = false;
+
+      // peer2.signal(data)
+    })
+    //
+    // peer2.on('signal', data => {
+    //   peer1.signal(data)
+    // })
+    //
+    // peer2.on('stream', stream => {
+    //   // got remote video stream, now let's show it in a video tag
+    //   var video = document.querySelector('video')
+    //
+    //   if ('srcObject' in video) {
+    //     video.srcObject = stream
+    //   } else {
+    //     video.src = window.URL.createObjectURL(stream) // for older browsers
+    //   }
+    //
+    //   video.play()
+    // })
+  }
+
+})
 
 //
 // client.remove('7cf7bfdaafeffcc3dec1e4cfe2e4350126032788');
@@ -79,6 +132,9 @@ let downloadMagnet = (magnetLink, element) => {
    client.add(torrentId, function (torrent) {
 
      let file = torrent.files.find(function (file) {
+       if (magnetLinks[0].split('=')[2].includes('Unnamed+Torrent') ) {
+         console.log('woah brah')
+       }
        file.appendTo(document.getElementById(element).getElementsByTagName('p')[0]);
      });
      $('#messages_pane').scrollTop($('#messages').height());
