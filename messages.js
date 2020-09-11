@@ -309,7 +309,7 @@ var awaiting_callback = false;
         if (magnetLinks[0].split('=')[2].includes('callrequest')) {
           $('#' + element).find('p').text('Call received!');
           $('#' + element).find('p').append('<button class="download-button">Accept</button>').click(function(){ $('audio').remove(); downloadMagnet(magnetLinks[0], element) });
-          if (((Date.now()-parseInt(element))/1000) < 60) {
+          if (((Date.now()-parseInt(element))/1000) < 60 && $('#'+element).hasClass('received_message')) {
             $('#messages_pane').append('<audio loop autoplay><source src="static/ringtone.mp3" type="audio/mpeg"></audio>');
           }
         } else {
