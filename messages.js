@@ -298,7 +298,6 @@ var awaiting_callback = false;
 
  let handleMagnetLink = (magnetLinks, element) => {
 
-
         if (magnetLinks[0].split('=')[2].includes('callback') && awaiting_callback) {
           console.log('ermagerd callback received!!');
           $('#' + element).find('p').text('Callback received!');
@@ -310,8 +309,9 @@ var awaiting_callback = false;
         if (magnetLinks[0].split('=')[2].includes('callrequest')) {
           $('#' + element).find('p').text('Call received!');
           $('#' + element).find('p').append('<button class="download-button">Accept</button>').click(function(){ $('audio').remove(); downloadMagnet(magnetLinks[0], element) });
-          $('#messages_pane').append('<audio loop autoplay><source src="static/ringtone.mp3" type="audio/mpeg"></audio>');
-
+          if (((Date.now()-parseInt(element))/1000) < 60) {
+            $('#messages_pane').append('<audio loop autoplay><source src="static/ringtone.mp3" type="audio/mpeg"></audio>');
+          }
         } else {
         $('#' + element).find('p').text($('#' + element).find('p').text().replace(magnetLinks[0], magnetLinks[0].split('=')[2]));
         $('#' + element).find('p').append('<button class="download-button">Download</button>').click(function(){ downloadMagnet(magnetLinks[0], element) });
