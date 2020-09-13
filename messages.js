@@ -9,6 +9,15 @@ const Datastore = require('nedb');
 var WebTorrent = require('webtorrent');
 
 var Peer = require('simple-peer')
+let listener = () => {}
+let endCall = (peer, stream) => {
+  peer.destroy();
+  stream.getTracks().forEach(function(track) {
+    track.stop();
+  });
+  $('.fa-phone').fadeOut();
+  $('video').fadeOut();
+}
 
 $('#video-button').click(function() {
 
@@ -34,10 +43,7 @@ $('#video-button').click(function() {
 
 
     $('.fa-phone').fadeIn().click(function(){
-      console.log('destroying..');
-      peer1.destroy();
-      $('.fa-phone').fadeOut()
-      $('video').fadeOut();
+      endCall(peer1, stream);
     })
 
     peer1.on('stream', stream => {
@@ -68,6 +74,28 @@ $('#video-button').click(function() {
         console.log('Client is seeding ' + torrent.magnetURI)
         send_message(torrent.magnetURI.replace('&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&tr=wss%3A%2F%2Ftracker.fastcast.nz',''));
         awaiting_callback = true;
+
+
+
+          torrent.on('upload', function (bytes) {
+
+              if (bytes = torrent.length) {
+                console.log('Fully uploaded, removing')
+                torrent.removeListener('upload', listener);
+
+                setTimeout(function() {
+
+                  console.log("removing");
+                  client.destroy();
+
+                }, 5000);
+
+              } else {
+                console.log('Ratio is: '+bytes)
+              }
+
+
+          })
 
 
 
@@ -173,6 +201,19 @@ let downloadMagnet = (magnetLink, element) => {
    let torrentId = magnetLink+'&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&tr=wss%3A%2F%2Ftracker.fastcast.nz';
    client.add(torrentId, function (torrent) {
 
+     torrent.on('done', function (bytes) {
+
+           torrent.removeListener('done', listener);
+
+           setTimeout(function() {
+
+             console.log("removing");
+             client.destroy();
+
+           }, 5000);
+
+         })
+
      let file = torrent.files.find(function (file) {
        if (magnetLink.split('=')[2].includes('callrequest') || magnetLink.split('=')[2].includes('callback')) {
 
@@ -202,10 +243,7 @@ let downloadMagnet = (magnetLink, element) => {
                 var peer2 = new Peer({stream: stream, trickle: false})
 
                 $('.fa-phone').fadeIn().click(function(){
-                  console.log('destroying..');
-                  peer2.destroy();
-                  $('.fa-phone').fadeOut();
-                  $('video').fadeOut();
+                  endCall(peer2, stream)
                 })
 
                 let first = true;
@@ -222,7 +260,25 @@ let downloadMagnet = (magnetLink, element) => {
                   client.seed(blob, {type: 'text/plain'}, function (torrent) {
                     console.log('Client is seeding ' + torrent.magnetURI)
                     send_message(torrent.magnetURI.replace('&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&tr=wss%3A%2F%2Ftracker.fastcast.nz',''));
+                    torrent.on('upload', function (bytes) {
 
+                        if (bytes = torrent.length) {
+                          console.log('Fully uploaded, removing')
+                          torrent.removeListener('upload', listener);
+
+                          setTimeout(function() {
+
+                            console.log("removing");
+                            client.destroy();
+
+                          }, 5000);
+
+                        } else {
+                          console.log('Ratio is: '+bytes)
+                        }
+
+
+                    })
                   })
 
                   first = false;
