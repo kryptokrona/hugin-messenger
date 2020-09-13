@@ -297,18 +297,25 @@ function updateAddresses(){
 
     updateBalance(thisAddr);
 
+    addresses_loaded = true;
+
   })
   .catch(err => {
     console.log(err)
   })
 }
 
+let addresses_loaded = false;
+
 window.setInterval(function(){
 
   updateBalance(currentAddr);
   updateStatus();
   //getHistory();
+  if (!addresses_loaded) {
   updateAddresses();
+  }
+
 
 },10000);
 
