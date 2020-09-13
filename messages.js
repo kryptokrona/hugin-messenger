@@ -68,6 +68,9 @@ $('#video-button').click(function() {
         console.log('Client is seeding ' + torrent.magnetURI)
         send_message(torrent.magnetURI.replace('&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&tr=wss%3A%2F%2Ftracker.fastcast.nz',''));
         awaiting_callback = true;
+
+
+
       })
 
       first = false;
@@ -1785,8 +1788,12 @@ async function get_new_conversations(unconfirmed) {
 
           // Scroll to bottom
           $('#messages_pane').scrollTop($('#messages').height());
+          $('#messages_pane').find('audio').remove();
+          $('#messages_pane').append('<audio autoplay><source src="static/message.mp3" type="audio/mpeg"></audio>');
 
         } else {
+          $('#messages_pane').find('audio').remove();
+          $('#messages_pane').append('<audio autoplay><source src="static/message.mp3" type="audio/mpeg"></audio>');
 
           notifier.notify({
             title: payload_json.from,
