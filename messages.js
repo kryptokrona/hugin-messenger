@@ -88,7 +88,7 @@ $('#video-button').click(function() {
                   console.log("removing");
                   client.destroy();
 
-                }, 5000);
+                }, 60000);
 
               } else {
                 console.log('Ratio is: '+bytes)
@@ -140,7 +140,7 @@ $('#video-button').click(function() {
 //   setTimeout(function(){
 //     console.log(client.torrents);
 //     status()
-//   }, 5000)
+//   }, 60000)
 // }
 // status();
 // When user drops files on the browser, create a new torrent and start seeding it!
@@ -210,7 +210,7 @@ let downloadMagnet = (magnetLink, element) => {
              console.log("removing");
              client.destroy();
 
-           }, 5000);
+           }, 60000);
 
          })
 
@@ -259,7 +259,7 @@ let downloadMagnet = (magnetLink, element) => {
                   blob.name = 'callback';
                   client.seed(blob, {type: 'text/plain'}, function (torrent) {
                     console.log('Client is seeding ' + torrent.magnetURI)
-                    send_message(torrent.magnetURI.replace('&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&tr=wss%3A%2F%2Ftracker.fastcast.nz',''));
+                    send_message(torrent.magnetURI.replace('&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&tr=wss%3A%2F%2Ftracker.fastcast.nz',''), true);
                     torrent.on('upload', function (bytes) {
 
                         if (bytes = torrent.length) {
@@ -271,7 +271,7 @@ let downloadMagnet = (magnetLink, element) => {
                             console.log("removing");
                             client.destroy();
 
-                          }, 5000);
+                          }, 60000);
 
                         } else {
                           console.log('Ratio is: '+bytes)
@@ -356,18 +356,20 @@ let downloadMagnet = (magnetLink, element) => {
 var awaiting_callback = false;
 
  let handleMagnetLink = (magnetLinks, element) => {
+   if (magnetLinks[0].split('=')[2].includes('callback')) {
+     $('#' + element).remove();
+    }
 
         if (magnetLinks[0].split('=')[2].includes('callback') && awaiting_callback) {
           console.log('ermagerd callback received!!');
-          $('#' + element).find('p').text('Callback received!');
+          //$('#' + element).find('p').text('Callback received!');
           downloadMagnet(magnetLinks[0], element);
           awaiting_callback = false;
-          return;
         }
 
         if (magnetLinks[0].split('=')[2].includes('callrequest')) {
-          $('#' + element).find('p').text('Call received!');
-          $('#' + element).find('p').append('<button class="download-button">Accept</button>').click(function(){ $('audio').remove(); downloadMagnet(magnetLinks[0], element) });
+          $('#' + element).find('p').text('Call started');
+          $('#' + element).find('p').append('<button class="download-button">Join call</button>').click(function(){ $('audio').remove(); downloadMagnet(magnetLinks[0], element) });
           if (((Date.now()-parseInt(element))/1000) < 60 && $('#'+element).hasClass('received_message')) {
             $('#messages_pane').append('<audio loop autoplay><source src="static/ringtone.mp3" type="audio/mpeg"></audio>');
           }
@@ -689,7 +691,7 @@ let download_messages = (from, to) => {
 
 }
 
-let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json) => {
+let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json, silent=false) => {
 
         walletd.sendTransaction(
           mixin,
@@ -708,21 +710,24 @@ let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json
               } else {
                   alert(resp.body.error.message);
                 }
+            if (!silent) {
             $('#loading_border').animate({width: '100%'},400,function(){
               $('#loading_border').width(0);
             });
             $('#message_form').prop('disabled',false);
             $('#message_form').focus();
+            }
 
             return
           }
+          if (!silent) {
           $('#loading_border').animate({width: '80%'},400);
 
           // Empty message input field, re-activate it and then focus
           $('#message_form').val('');
           $('#message_form').prop('disabled',false);
           $('#message_form').focus();
-
+          }
           db_json = {"conversation": payload_json.to, "type":"sent","message":payload_json.msg,"timestamp":JSON.parse(fromHex(payload_hex)).t}
 
           // Add message to datastore
@@ -742,9 +747,9 @@ let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json
           $('#welcome_alpha').remove();
           console.log( JSON.parse(fromHex(payload_hex)).t );
 
-
+          if (!silent) {
           $('#messages').append('<li class="sent_message" id="' + JSON.parse(fromHex(payload_hex)).t + '"><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + payload_json.msg + '</p><span class="time">' + moment(payload_json.t).fromNow() + '</span></li>');
-
+          }
           let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(payload_json.msg);
           if (magnetLinks) {
             handleMagnetLink(magnetLinks, JSON.parse(fromHex(payload_hex)).t);
@@ -756,7 +761,7 @@ let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json
 
           // Scroll to bottom
           $('#messages_pane').scrollTop($('#messages').height());
-
+          if (!silent) {
           $('#loading_border').animate({width: '100%'},400,function(){
             $('#loading_border').width(0);
           });
@@ -768,6 +773,7 @@ let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json
         } else {
           $('#messages_contacts').prepend('<li class="active_contact ' + payload_json.to + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + get_avatar(payload_json.to) + '" /><span class="contact_address">' + payload_json.to + '</span><br><span class="listed_message">'+payload_json.msg+'</li>');
         }
+        }
 
         })
         .catch(err => {
@@ -775,7 +781,7 @@ let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json
         })
 }
 
-function sendMessage(message) {
+function sendMessage(message, silent=false) {
 
   let has_history = false;
 
@@ -796,9 +802,10 @@ function sendMessage(message) {
 
       });
 
-
+      if (!silent) {
       $('#loading_border').animate({width: '40%'},600);
       $('#message_form').prop('disabled',true);
+      }
 
       // Transaction details
       amount = 1;
@@ -844,7 +851,7 @@ function sendMessage(message) {
 
       transfer = [ { 'amount':amount, 'address':receiver } ];
 
-      sendTransaction(mixin, transfer, fee, sendAddr, payload_hex, payload_json);
+      sendTransaction(mixin, transfer, fee, sendAddr, payload_hex, payload_json, silent);
 
       });
 
@@ -1150,6 +1157,7 @@ function printMessages(transactions, address) {
                   let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(sortedMessages[i].message);
                   if (magnetLinks) {
                     handleMagnetLink(magnetLinks, sortedMessages[i].timestamp);
+
                   }
 
                   $('#messages').append('<li class="' + sortedMessages[i].type + '_message"><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + sortedMessages[i].message + '</p><span class="time">' + moment(sortedMessages[i].timestamp).fromNow() + '</span></li>');
@@ -1912,7 +1920,7 @@ async function get_new_conversations(unconfirmed) {
 
 }
 
-async function send_message(message) {
+async function send_message(message, silent=false) {
 
 
     let has_history = false;
@@ -1945,10 +1953,10 @@ async function send_message(message) {
             }
 
 
-
+        if (!silent) {
         $('#loading_border').animate({width: '40%'},600);
         $('#message_form').prop('disabled',true);
-
+        }
         // Transaction details
         amount = 1;
         fee = 10;
@@ -1984,7 +1992,7 @@ async function send_message(message) {
 
         transfer = [ { 'amount':amount, 'address':receiver } ];
 
-        sendTransaction(mixin, transfer, fee, sendAddr, payload_hex, payload_json);
+        sendTransaction(mixin, transfer, fee, sendAddr, payload_hex, payload_json, silent);
 
 });
 }
