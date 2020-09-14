@@ -19,21 +19,24 @@ let endCall = (peer, stream) => {
   $('video').fadeOut();
 }
 
-$('#video-button').click(function() {
+
+let startCall = (audio, video) => {
 
   // get video/voice stream
   navigator.mediaDevices.getUserMedia({
-    video: true,
-    audio: true
+    video: video,
+    audio: audio
   }).then(gotMedia).catch(() => {})
 
   function gotMedia (stream) {
+    if ( video ) {
     var myvideo = document.getElementById('myvideo')
     myvideo.srcObject = stream;
 
     myvideo.play();
 
     $('video').fadeIn();
+    }
 
     var peer1 = new Peer({ initiator: true, stream: stream, trickle: false,
     offerOptions: {offerToReceiveVideo: true, offerToReceiveAudio: true}
@@ -48,15 +51,16 @@ $('#video-button').click(function() {
 
     peer1.on('stream', stream => {
       // got remote video stream, now let's show it in a video tag
-      var video = document.querySelector('video')
+      var video_elem = document.querySelector('video')
 
-      if ('srcObject' in video) {
-        video.srcObject = stream
+      if ('srcObject' in video_elem) {
+        video_elem.srcObject = stream
       } else {
-        video.src = window.URL.createObjectURL(stream) // for older browsers
+        video_elem.src = window.URL.createObjectURL(stream) // for older browsers
       }
 
-      video.play()
+      video_elem.play()
+
     })
 
     peer1.on('signal', data => {
@@ -69,7 +73,12 @@ $('#video-button').click(function() {
       var client = new WebTorrent();
 
       let blob = new Blob([JSON.stringify(data)]);
-      blob.name = 'callrequest';
+      if (video) {
+        blob.name = 'videocallrequest';
+      } else {
+        blob.name = 'audiocallrequest';
+      }
+
       client.seed(blob,  {type: 'text/plain'}, function (torrent) {
         console.log('Client is seeding ' + torrent.magnetURI)
         send_message(torrent.magnetURI.replace('&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&tr=wss%3A%2F%2Ftracker.fastcast.nz',''));
@@ -130,7 +139,11 @@ $('#video-button').click(function() {
 
   }
 
-})
+}
+
+$('#video-button').click(function() { startCall(true, true) });
+
+$('#call-button').click(function() { startCall(true, false) });
 
 //
 // client.remove('7cf7bfdaafeffcc3dec1e4cfe2e4350126032788');
@@ -228,7 +241,7 @@ let downloadMagnet = (magnetLink, element) => {
 
               // get video/voice stream
               navigator.mediaDevices.getUserMedia({
-                video: true,
+                video: magnetLink.split('=')[2].includes('video'),
                 audio: true
               }).then(gotMedia).catch(() => {})
 

@@ -1567,7 +1567,7 @@ color: black;
   z-index: 9999999999;
 }
 
-.fa-phone:before {
+.fa-phone:before:not(#call-button) {
     content: "\f095";
     position: absolute;
     left: 14px;
