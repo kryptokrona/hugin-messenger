@@ -6,6 +6,26 @@
  */
 
  @font-face {
+   font-family: 'Major Mono Display';
+   font-style: normal;
+   font-weight: 400;
+   src: url('../fonts/major-mono-display-v4-latin-regular.eot');
+   /* IE9 Compat Modes */
+   src: local('Major Mono Display Regular'), local('MajorMonoDisplay-Regular'),
+     url('../fonts/major-mono-display-v4-latin-regular.eot?#iefix') format('embedded-opentype'),
+     /* IE6-IE8 */
+     url('../fonts/major-mono-display-v4-latin-regular.woff2') format('woff2'),
+     /* Super Modern Browsers */
+     url('../fonts/major-mono-display-v4-latin-regular.woff') format('woff'),
+     /* Modern Browsers */
+     url('../fonts/major-mono-display-v4-latin-regular.ttf') format('truetype'),
+     /* Safari, Android, iOS */
+     url('../fonts/major-mono-display-v4-latin-regular.svg#MajorMonoDisplay') format('svg');
+   /* Legacy iOS */
+ }
+
+
+ @font-face {
   font-family: 'XKR';
   font-style: normal;
   font-weight: 400;
@@ -768,6 +788,7 @@ display: inline-block;
 }
 
 #currentchat_header_wrapper {
+  background: rgb(22,22,22);
   border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
@@ -881,8 +902,8 @@ overlay p {
 }
 
 #balance-box {
-  font-family: monospace;
-  font-size: 32pt;
+  font-family: 'Major Mono Display';
+  font-size: 29pt;
   letter-spacing: -3px;
   background: rgba(0,0,0,0.4);
   border-radius: 5px;
