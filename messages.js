@@ -368,7 +368,7 @@ let downloadMagnet = (magnetLink, element) => {
 
 var awaiting_callback = false;
 
- let handleMagnetLink = (magnetLinks, element) => {
+ let handleMagnetLink = (magnetLinks, element, calls=false, sender=false) => {
    if (magnetLinks[0].split('=')[2].includes('callback')) {
      $('#' + element).remove();
     }
@@ -382,9 +382,22 @@ var awaiting_callback = false;
 
         if (magnetLinks[0].split('=')[2].includes('callrequest')) {
           $('#' + element).find('p').text('Call started');
-          $('#' + element).find('p').append('<button class="download-button">Join call</button>').click(function(){ $('audio').remove(); downloadMagnet(magnetLinks[0], element) });
-          if (((Date.now()-parseInt(element))/1000) < 60 && $('#'+element).hasClass('received_message')) {
-            $('#messages_pane').append('<audio loop autoplay><source src="static/ringtone.mp3" type="audio/mpeg"></audio>');
+          if (calls) {
+            $('#incomingCall').append('<audio autoplay><source src="static/ringtone.mp3" type="audio/mpeg"></audio>');
+            $('#incomingCall').show();
+            avatar_base64 = get_avatar(sender);
+            $('#incomingCall img').attr('src',"data:image/svg+xml;base64," + avatar_base64);
+            $('#incomingCall span').text(sender);
+            $('#answerCall').click(function() {
+              print_conversation(sender);
+              downloadMagnet(magnetLinks[0], element);
+              $('#incomingCall').hide();
+              $('#incomingCall audio').remove();
+            })
+            $('#declineCall').click(function() {
+              $('#incomingCall').hide();
+              $('#incomingCall audio').remove();
+            })
           }
         } else {
         $('#' + element).find('p').text($('#' + element).find('p').text().replace(magnetLinks[0], magnetLinks[0].split('=')[2]));
@@ -1840,6 +1853,12 @@ async function get_new_conversations(unconfirmed) {
 
       if (payload_json.t > latest_transaction_time) {
 
+        let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(payload_json.msg);
+
+        if (magnetLinks) {
+          handleMagnetLink(magnetLinks, payload_json.t, true, payload_json.from);
+        }
+
         if ($('#recipient_form').val() == payload_json.from){
 
           // If a new message is received, and it's from the active contacts
@@ -1854,12 +1873,6 @@ async function get_new_conversations(unconfirmed) {
 
 
           $('#messages').append('<li class="received_message" id=' + payload_json.t + '><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + payload_json.msg + '</p><span class="time">' + moment(payload_json.t).fromNow() + '</span></li>');
-
-          let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(payload_json.msg);
-
-          if (magnetLinks) {
-            handleMagnetLink(magnetLinks, payload_json.t);
-          }
 
 
 

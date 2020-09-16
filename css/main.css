@@ -1608,3 +1608,67 @@ color: black;
 .trigger {
   opacity: 0.5;
 }
+
+#incomingCall {
+  height: 472px;
+width: 300px;
+z-index: 999;
+background: magenta;
+position: absolute;
+left: calc(50% - 150px);
+top: 50px;
+border-radius: 15px;
+text-align: center;
+box-shadow: 1px 1px 30px black;
+display: none;
+}
+
+
+#incomingCall span {
+  width: 80%;
+  padding: 0 20px 0 20px;
+  word-break: break-all;
+  font-size: 11px;
+  display: block;
+}
+
+#declineCall {
+
+  transform: rotate(135deg);
+  background: #FC5B57;
+
+}
+
+#answerCall {
+
+  background: #3EC54F;
+
+}
+#incomingCall h1 {
+  border: none;
+}
+
+#incomingCall i {
+  border-radius: 50%;
+  padding: 10px;
+  font-size: 41pt;
+  width: 50px;
+  height: 50px;
+  margin: 18px;
+}
+
+#incomingCall img {
+  margin-left: 101px;
+width: 200px;
+background: black;
+margin-bottom: 10px;
+
+}
+
+#incomingCall {
+  background: rgb(22,22,22);
+}
+
+.fa {
+  cursor: pointer;
+}
