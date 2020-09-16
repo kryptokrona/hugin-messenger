@@ -349,9 +349,17 @@ function load_page(prev,next) {
 
 }
 
+
+
 var currentPage = $("#send_payment");
 
 $("document").ready(function(){
+
+  $('.emoji-picker__emoji').click(function() {
+
+    $('#message_form').focus();
+
+  });
 
   $("#payment_message").click(function(){
 
