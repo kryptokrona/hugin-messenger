@@ -35,6 +35,7 @@
     "electron-builder": "^22.1.0"
   },
   "dependencies": {
+    "@joeattardi/emoji-button": "^4.1.0",
     "app-root-dir": "^1.0.2",
     "bigintjs": "^0.3.5",
     "child_process": "^1.0.2",

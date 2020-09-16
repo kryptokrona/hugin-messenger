@@ -6,6 +6,9 @@
     <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
     <title>Hugin Messenger</title>
 
+    <script type="module" src="emoji.js"></script>
+
+
   </head>
   <body>
 
@@ -14,10 +17,12 @@
     right: 0;
     height: 270px;
     z-index: 99999999999;
+    display: none;
     border-bottom-left-radius: 5px;"></video>
     <audio></audio>
     <video muted id="myvideo" style="position: absolute;
     top: 36px;
+    display: none;
     left: 6px;
     z-index: 99999999999;
     width: 90px;
@@ -181,6 +186,7 @@
         <div id="currentchat_footer">
           <div id="loading_border"></div>
           <input id="message_form" type="text" placeholder="Message"></input>
+          <i class="fa fa-smile-o trigger"></i>
           <div id="payment_message">$</div>
 
         </div>

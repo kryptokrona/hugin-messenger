@@ -720,7 +720,7 @@ border-bottom: 1px solid rgba(255,255,255,0.1);
 #message_form {
   margin: 0 !important;
   height: 100% !important;
-  width: calc(100% - 55px) !important;
+  width: calc(100% - 75px) !important;
   border-radius: 0 !important;
   padding: 0 !important;
   padding-left: 10px !important;
@@ -742,6 +742,7 @@ border-bottom: 1px solid rgba(255,255,255,0.1);
   background-repeat: no-repeat;
   opacity: 0.5;
   cursor: pointer;
+  padding-left: 16px;
 }
 
 textarea:focus, input:focus{
@@ -1572,4 +1573,17 @@ color: black;
     position: absolute;
     left: 14px;
     top: 8px;
+}
+.emoji-picker__wrapper {
+  position: absolute !important;
+  right: 50px !important;
+  bottom: 50px !important;
+  inset: auto 50px 50px auto !important;
+  transform: none !important;
+  z-index: 2;
+  }
+
+
+.trigger {
+  opacity: 0.5;
 }
