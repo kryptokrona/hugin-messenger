@@ -322,7 +322,7 @@ let downloadMagnet = (magnetLink, element) => {
                         if (bytes = torrent.length) {
                           console.log('Fully uploaded, removing')
                           torrent.removeListener('upload', listener);
-                          $('#caller_menu_type').text('Received signal..').delay(1500).text('Setting up stream..');
+                          $('#caller_menu_type').text('Connected');
                           setTimeout(function() {
 
 
@@ -344,6 +344,10 @@ let downloadMagnet = (magnetLink, element) => {
 
                 peer2.signal(json);
 
+                peer2.on('track', (track, stream) => {
+                  $('#caller_menu_type').text('Setting up stream..');
+                })
+
                 peer2.on('stream', stream => {
                   // got remote video stream, now let's show it in a video tag
                   var video = document.querySelector('video')
@@ -358,7 +362,8 @@ let downloadMagnet = (magnetLink, element) => {
 
                   video.play();
 
-                  $('#caller_menu_type').text('Connected');
+                  $('#caller_menu_type').text('Setting up stream..');
+
                 })
               }
 
@@ -1814,7 +1819,7 @@ async function get_new_conversations(unconfirmed) {
 
   block_height = await get_block_height();
 
-  confirmed_transactions = await get_confirmed_messages(1,block_height);
+  confirmed_transactions = await get_confirmed_messages(block_height-10000, block_height);
 
   unconfirmed_transactions = await get_unconfirmed_messages();
 
