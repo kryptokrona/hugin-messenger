@@ -15,8 +15,8 @@ let endCall = (peer, stream) => {
   stream.getTracks().forEach(function(track) {
     track.stop();
   });
-  $('.fa-phone').fadeOut();
   $('video').fadeOut();
+  $('#caller_menu').fadeOut();
 }
 
 
@@ -38,6 +38,7 @@ let startCall = (audio, video) => {
     $('video').fadeIn();
     }
 
+
     var peer1 = new Peer({ initiator: true, stream: stream, trickle: false,
     offerOptions: {offerToReceiveVideo: true, offerToReceiveAudio: true}
    })
@@ -45,7 +46,13 @@ let startCall = (audio, video) => {
     let first = true;
 
 
-    $('.fa-phone').fadeIn().click(function(){
+    $('#caller_menu').fadeIn();
+    $('#caller_menu_type').text('Connecting..');
+    $('#caller_menu_contact').text($('#recipient_form').val());
+    let avatar_base64 = get_avatar($('#recipient_form').val());
+    $('#incomingCall img').attr('src',"data:image/svg+xml;base64," + avatar_base64);
+
+    $('#incomingCall .fa-phone').click(function(){
       endCall(peer1, stream);
     })
 
@@ -58,7 +65,7 @@ let startCall = (audio, video) => {
       } else {
         video_elem.src = window.URL.createObjectURL(stream) // for older browsers
       }
-
+      $('#caller_menu_type').text('Connected');
       video_elem.play()
 
     })
@@ -255,8 +262,8 @@ let downloadMagnet = (magnetLink, element) => {
 
                 var peer2 = new Peer({stream: stream, trickle: false})
 
-                $('.fa-phone').fadeIn().click(function(){
-                  endCall(peer2, stream)
+                $('#incomingCall .fa-phone').click(function(){
+                  endCall(peer2, stream);
                 })
 
                 let first = true;
@@ -303,6 +310,8 @@ let downloadMagnet = (magnetLink, element) => {
                 peer2.on('stream', stream => {
                   // got remote video stream, now let's show it in a video tag
                   var video = document.querySelector('video')
+
+                  $('#caller_menu_type').text('Connected');
 
                   if ('srcObject' in video) {
                     video.srcObject = stream
@@ -385,12 +394,24 @@ var awaiting_callback = false;
           if (calls) {
             $('#incomingCall').append('<audio autoplay><source src="static/ringtone.mp3" type="audio/mpeg"></audio>');
             $('#incomingCall').show();
+            if (magnetLinks[0].split('=')[2].includes('video')) {
+              $('#incomingCall h1').text("Incoming video call!");
+            } else {
+              $('#incomingCall h1').text("Incoming voice call!");
+            }
             avatar_base64 = get_avatar(sender);
             $('#incomingCall img').attr('src',"data:image/svg+xml;base64," + avatar_base64);
             $('#incomingCall span').text(sender);
             $('#answerCall').click(function() {
               print_conversation(sender);
               downloadMagnet(magnetLinks[0], element);
+
+                  $('#caller_menu').fadeIn();
+                  $('#caller_menu_type').text('Connecting..');
+                  $('#caller_menu_contact').text($('#recipient_form').val());
+                  let avatar_base64 = get_avatar($('#recipient_form').val());
+                  $('#incomingCall img').attr('src',"data:image/svg+xml;base64," + avatar_base64);
+
               $('#incomingCall').hide();
               $('#incomingCall audio').remove();
             })

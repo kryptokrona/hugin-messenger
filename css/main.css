@@ -1672,3 +1672,76 @@ margin-bottom: 10px;
 .fa {
   cursor: pointer;
 }
+
+#caller_menu {
+  display: none;
+  position: absolute;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  color: white;
+    width: 92%;
+    font-weight: bold;
+    padding: 10px;
+    z-index: 999;
+    top: 51px;
+    left: 0;
+    background: linear-gradient(270deg, #000000, #1b1836);
+  background-size: 400% 400%;
+
+   background: linear-gradient(270deg, #ff0000, #ffd800, #58c51b, #0eb6d2, #dd06f3);
+      background-size: 1000% 1000%;
+
+      -webkit-animation: AnimationName 60s ease infinite;
+      -moz-animation: AnimationName 60s ease infinite;
+      animation: AnimationName 60s ease infinite;
+  }
+
+  @-webkit-keyframes AnimationName {
+      0%{background-position:0% 50%}
+      50%{background-position:100% 50%}
+      100%{background-position:0% 50%}
+  }
+  @-moz-keyframes AnimationName {
+      0%{background-position:0% 50%}
+      50%{background-position:100% 50%}
+      100%{background-position:0% 50%}
+  }
+  @keyframes AnimationName {
+      0%{background-position:0% 50%}
+      50%{background-position:100% 50%}
+      100%{background-position:0% 50%}
+  }
+
+#caller_menu img {
+  display: inline-block;
+  margin-left: -4px;
+
+}
+
+#caller_menu .wrapper {
+  width: 127px;
+    display: inline-block;
+}
+
+#caller_menu_type {
+
+}
+
+#caller_menu_contact {
+  white-space: nowrap;
+    width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    font-size: 11px;
+}
+
+#caller_menu .fa {
+    font-size: 16pt;
+    vertical-align: 9px;
+    margin-left: 12px;
+}
+
+#caller_menu .fa-phone {
+  transform: rotate(135deg);
+}
