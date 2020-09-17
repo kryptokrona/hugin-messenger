@@ -1308,10 +1308,6 @@ header  {
 
  }
 
-#incomingCall img {
-
-  background: white !important;
-}
 
  #balancelogo::before {
    font-family: 'XKR';
@@ -1698,6 +1694,15 @@ display: none;
 width: 200px;
 background: black;
 margin-bottom: 10px;
+background: linear-gradient(270deg, #000000, #1b1836);
+background-size: 400% 400%;
+
+background: linear-gradient(270deg, #ff0000, #ffd800, #58c51b, #0eb6d2, #dd06f3);
+  background-size: 1000% 1000%;
+
+  -webkit-animation: AnimationName 60s ease infinite;
+  -moz-animation: AnimationName 60s ease infinite;
+  animation: AnimationName 60s ease infinite;
 
 }
 

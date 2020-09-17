@@ -1841,7 +1841,7 @@ async function print_conversations() {
 }
 
 print_conversations();
-
+let last_block_checked = 0;
 async function get_new_conversations(unconfirmed) {
 
 
@@ -1849,15 +1849,20 @@ async function get_new_conversations(unconfirmed) {
 
   block_height = await get_block_height();
 
-  confirmed_transactions = await get_confirmed_messages(block_height-10000, block_height);
-
-  unconfirmed_transactions = await get_unconfirmed_messages();
-
   if (!unconfirmed) {
+
+      confirmed_transactions = await get_confirmed_messages(last_block_checked, block_height);
+
+      unconfirmed_transactions = await get_unconfirmed_messages();
+
   all_transactions = confirmed_transactions.concat(unconfirmed_transactions);
 } else {
+  
+    unconfirmed_transactions = await get_unconfirmed_messages();
+
   all_transactions = unconfirmed_transactions;
 }
+  last_block_checked = block_height;
   latest_transaction = await find_messages({}, 0, 1);
   let latest_transaction_time = 0;
 
