@@ -16,7 +16,9 @@ let endCall = (peer, stream) => {
     track.stop();
   });
   $('video').fadeOut();
+  $('otherid').empty();
   $('#caller_menu').fadeOut();
+  $('#otherid').unbind('change');
 }
 
 
@@ -50,10 +52,26 @@ let startCall = (audio, video) => {
     $('#caller_menu_type').text('Connecting..');
     $('#caller_menu_contact').text($('#recipient_form').val());
     let avatar_base64 = get_avatar($('#recipient_form').val());
-    $('#incomingCall img').attr('src',"data:image/svg+xml;base64," + avatar_base64);
+    $('#caller_menu img').attr('src',"data:image/svg+xml;base64," + avatar_base64);
 
-    $('#incomingCall .fa-phone').click(function(){
+    $('#caller_menu .fa-phone').click(function(){
       endCall(peer1, stream);
+    })
+
+    peer1.on('close', () => {
+
+      console.log('Connection lost..')
+
+      endCall(peer1, stream);
+
+    })
+
+    peer1.on('error', () => {
+
+      console.log('Connection lost..')
+
+      endCall(peer1, stream);
+
     })
 
     peer1.on('stream', stream => {
@@ -65,8 +83,12 @@ let startCall = (audio, video) => {
       } else {
         video_elem.src = window.URL.createObjectURL(stream) // for older browsers
       }
-      $('#caller_menu_type').text('Connected');
       video_elem.play()
+      if (audio) {
+        $('#caller_menu_type').text('Voice connected');
+      } else if (video) {
+        $('#caller_menu_type').text('Video connected');
+      }
 
     })
 
@@ -98,10 +120,10 @@ let startCall = (audio, video) => {
               if (bytes = torrent.length) {
                 console.log('Fully uploaded, removing')
                 torrent.removeListener('upload', listener);
-
+                $('#caller_menu_type').text('Call accepted..').delay(1500).text('Setting up stream..');
                 setTimeout(function() {
 
-                  console.log("removing");
+
                   client.destroy();
 
                 }, 60000);
@@ -262,8 +284,23 @@ let downloadMagnet = (magnetLink, element) => {
 
                 var peer2 = new Peer({stream: stream, trickle: false})
 
-                $('#incomingCall .fa-phone').click(function(){
+                $('#caller_menu .fa-phone').click(function(){
                   endCall(peer2, stream);
+                })
+
+                peer2.on('close', () => {
+
+                  console.log('Connection lost..')
+                  endCall(peer2, stream);
+
+                })
+
+                peer2.on('error', () => {
+
+                  console.log('Connection lost..')
+
+                  endCall(peer2, stream);
+
                 })
 
                 let first = true;
@@ -285,10 +322,10 @@ let downloadMagnet = (magnetLink, element) => {
                         if (bytes = torrent.length) {
                           console.log('Fully uploaded, removing')
                           torrent.removeListener('upload', listener);
-
+                          $('#caller_menu_type').text('Received signal..').delay(1500).text('Setting up stream..');
                           setTimeout(function() {
 
-                            console.log("removing");
+
                             client.destroy();
 
                           }, 60000);
@@ -311,7 +348,7 @@ let downloadMagnet = (magnetLink, element) => {
                   // got remote video stream, now let's show it in a video tag
                   var video = document.querySelector('video')
 
-                  $('#caller_menu_type').text('Connected');
+
 
                   if ('srcObject' in video) {
                     video.srcObject = stream
@@ -319,7 +356,9 @@ let downloadMagnet = (magnetLink, element) => {
                     video.src = window.URL.createObjectURL(stream) // for older browsers
                   }
 
-                  video.play()
+                  video.play();
+
+                  $('#caller_menu_type').text('Connected');
                 })
               }
 

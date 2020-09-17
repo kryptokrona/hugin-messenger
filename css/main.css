@@ -394,11 +394,17 @@ a {
 }
 
 #loading_border {
-  border-top: 3px solid #00843D;
   position: absolute;
   left: 0;
   top: 0;
-  width: 0%;
+  background: linear-gradient(270deg, #000000, #1b1836);
+  background-size: 400% 400%;
+  background: linear-gradient(270deg, #ff0000, #ffd800, #58c51b, #0eb6d2, #dd06f3);
+  background-size: 1000% 1000%;
+  -webkit-animation: AnimationName 60s ease infinite;
+  -moz-animation: AnimationName 60s ease infinite;
+  animation: AnimationName 60s ease infinite;
+  height: 3px;
 }
 
 #payment_form input, #currentchat_footer input {
@@ -1610,7 +1616,7 @@ color: black;
 }
 
 #incomingCall {
-  height: 472px;
+  height: 512px;
 width: 300px;
 z-index: 999;
 background: magenta;
