@@ -1709,6 +1709,36 @@ margin-bottom: 10px;
   cursor: pointer;
 }
 
+#hugin-background {
+  background: linear-gradient(270deg, #000000, #1b1836);
+background-size: 400% 400%;
+
+ background: linear-gradient(270deg, #ff0000, #ffd800, #58c51b, #0eb6d2, #dd06f3);
+    background-size: 1000% 1000%;
+
+    -webkit-animation: AnimationName 60s ease infinite;
+    -moz-animation: AnimationName 60s ease infinite;
+    animation: AnimationName 60s ease infinite;
+    width: 251px;
+    height: 251px;
+    display: inline-block;
+    border-radius: 50%;
+
+}
+
+#hugin-background img {
+  position: absolute;
+  width: 320px;
+  top: 63px;
+  left: 6px;
+}
+
+#welcome-text {
+  display: inline-block;
+    width: 60%;
+    margin-left: 29px;
+}
+
 #caller_menu {
   display: none;
   transition: all 0.5s;
