@@ -1934,7 +1934,6 @@ async function get_new_conversations(unconfirmed) {
 
           $('#messages').append('<li class="received_message" id=' + payload_json.t + '><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + payload_json.msg + '</p><span class="time">' + moment(payload_json.t).fromNow() + '</span></li>');
 
-
           let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(payload_json.msg);
 
           if (magnetLinks) {
@@ -1949,6 +1948,13 @@ async function get_new_conversations(unconfirmed) {
         } else {
           $('#messages_pane').find('audio').remove();
           $('#messages_pane').append('<audio autoplay><source src="static/message.mp3" type="audio/mpeg"></audio>');
+
+
+          let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(payload_json.msg);
+
+          if (magnetLinks) {
+            handleMagnetLink(magnetLinks, payload_json.t, true, payload_json.from);
+          }
 
           notifier.notify({
             title: payload_json.from,
