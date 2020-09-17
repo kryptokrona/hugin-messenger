@@ -1070,6 +1070,9 @@ overlay p {
   width:100%;
   height: 50px;
   border-bottom: 1px solid rgba(255,255,255,0.1);
+  position: absolute;
+  background: rgb(22,22,22);
+  z-index: 2;
 }
 
 #search_messages {
@@ -1114,6 +1117,7 @@ overlay p {
 
 #messages_contacts {
   padding: 5px;
+  padding-top: 53px;
   margin: 0;
   overflow-y: auto;
   overflow-x: hidden;
@@ -1681,6 +1685,7 @@ margin-bottom: 10px;
 
 #caller_menu {
   display: none;
+  transition: all 0.5s;
   position: absolute;
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
@@ -1688,8 +1693,8 @@ margin-bottom: 10px;
     width: 92%;
     font-weight: bold;
     padding: 10px;
-    z-index: 999;
-    top: 51px;
+    z-index: 1;
+    top: -16px;
     left: 0;
     background: linear-gradient(270deg, #000000, #1b1836);
   background-size: 400% 400%;

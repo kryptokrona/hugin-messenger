@@ -17,7 +17,7 @@ let endCall = (peer, stream) => {
   });
   $('video').fadeOut();
   $('otherid').empty();
-  $('#caller_menu').fadeOut();
+  $('#caller_menu').css('top','-20px');
   $('#otherid').unbind('change');
 }
 
@@ -48,7 +48,7 @@ let startCall = (audio, video) => {
     let first = true;
 
 
-    $('#caller_menu').fadeIn();
+    $('#caller_menu').fadeIn().css('top','51px');
     $('#caller_menu_type').text('Connecting..');
     $('#caller_menu_contact').text($('#recipient_form').val());
     let avatar_base64 = get_avatar($('#recipient_form').val());
@@ -450,7 +450,7 @@ var awaiting_callback = false;
               print_conversation(sender);
               downloadMagnet(magnetLinks[0], element);
 
-                  $('#caller_menu').fadeIn();
+                  $('#caller_menu').fadeIn().css('top','51px');
                   $('#caller_menu_type').text('Connecting..');
                   $('#caller_menu_contact').text($('#recipient_form').val());
                   let avatar_base64 = get_avatar($('#recipient_form').val());
