@@ -1243,15 +1243,15 @@ function printMessages(transactions, address) {
                   }
                   avatar_base64 = get_avatar(hash);
 
-                  console('this is dood?');
 
+                  $('#messages').append('<li class="' + sortedMessages[i].type + '_message"><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + sortedMessages[i].message + '</p><span class="time">' + moment(sortedMessages[i].timestamp).fromNow() + '</span></li>');
                   let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(sortedMessages[i].message);
                   if (magnetLinks) {
                     handleMagnetLink(magnetLinks, sortedMessages[i].timestamp);
 
                   }
 
-                  $('#messages').append('<li class="' + sortedMessages[i].type + '_message"><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + sortedMessages[i].message + '</p><span class="time">' + moment(sortedMessages[i].timestamp).fromNow() + '</span></li>');
+
 
               }
 
@@ -1918,11 +1918,6 @@ async function get_new_conversations(unconfirmed) {
 
       if (payload_json.t > latest_transaction_time) {
 
-        let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(payload_json.msg);
-
-        if (magnetLinks) {
-          handleMagnetLink(magnetLinks, payload_json.t, true, payload_json.from);
-        }
 
         if ($('#recipient_form').val() == payload_json.from){
 
@@ -1940,6 +1935,11 @@ async function get_new_conversations(unconfirmed) {
           $('#messages').append('<li class="received_message" id=' + payload_json.t + '><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + payload_json.msg + '</p><span class="time">' + moment(payload_json.t).fromNow() + '</span></li>');
 
 
+          let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(payload_json.msg);
+
+          if (magnetLinks) {
+            handleMagnetLink(magnetLinks, payload_json.t, true, payload_json.from);
+          }
 
           // Scroll to bottom
           $('#messages_pane').scrollTop($('#messages').height());
