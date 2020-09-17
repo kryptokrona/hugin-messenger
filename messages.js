@@ -419,6 +419,30 @@ let downloadMagnet = (magnetLink, element) => {
 });
 }
 
+
+let handleMagnetListed = (message) => {
+
+  let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(message);
+  if (magnetLinks) {
+
+    if ( magnetLinks[0].split('=')[2].includes('callback') ) {
+      return ""
+    } else if (magnetLinks[0].split('=')[2].includes('callrequest')) {
+      return "Call started"
+    } else {
+      return magnetLinks[0].split('=')[2];
+    }
+
+
+
+
+
+  } else {
+    return message
+  }
+
+}
+
 var awaiting_callback = false;
 
  let handleMagnetLink = (magnetLinks, element, calls=false, sender=false) => {
@@ -859,10 +883,12 @@ let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json
 
           // Add message to contacts list and add class to tell updateMessages
           if ( $('.' + payload_json.to).width() > 0 ){
+          let listed_msg = handleMagnetListed(payload_json.msg);
+          console.log(listed_msg);
 
-          $('.'+payload_json.to).find('.listed_message').text(payload_json.msg).parent().detach().prependTo('#messages_contacts');
+          $('.' + payload_json.to).find('.listed_message').text(listed_msg).parent().detach().prependTo('#messages_contacts');
         } else {
-          $('#messages_contacts').prepend('<li class="active_contact ' + payload_json.to + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + get_avatar(payload_json.to) + '" /><span class="contact_address">' + payload_json.to + '</span><br><span class="listed_message">'+payload_json.msg+'</li>');
+          $('#messages_contacts').prepend('<li class="active_contact ' + payload_json.to + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + get_avatar(payload_json.to) + '" /><span class="contact_address">' + payload_json.to + '</span><br><span class="listed_message">'+handleMagnetListed(payload_json.msg)+'</li>');
         }
         }
 
@@ -1506,13 +1532,15 @@ function updateMessages() {
               // If conversation doesn't exist
 
                   avatar_base64 = get_avatar(senderAddr);
-
-                  $('#messages_contacts').prepend('<li class="active_contact ' + senderAddr + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '" /><span class="contact_address">' + senderAddr + '</span><br><span class="listed_message">'+message+'</li>');
+                  let listed_msg = handleMagnetListed(message);
+                  console.log(listed_msg);
+                  $('#messages_contacts').prepend('<li class="active_contact ' + senderAddr + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '" /><span class="contact_address">' + senderAddr + '</span><br><span class="listed_message">'+listed_msg+'</li>');
                   messages.push(senderAddr);
                 }
 
                 // Add message to conversations list
-                $('.'+senderAddr).find('.listed_message').text(message);
+                let listed_msg = handleMagnetListed(message);
+                $('.'+senderAddr).find('.listed_message').text(listed_msg);
 
                 last_messages[senderAddr] = timestamp;
 
@@ -1538,8 +1566,8 @@ function updateMessages() {
               // If conversation doesn't exist
 
                 avatar_base64 = get_avatar(thisAddr);
-
-                $('#messages_contacts').prepend('<li class="active_contact ' + thisAddr + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '" /><span class="contact_address">' + thisAddr + '</span><br><span class="listed_message">'+message+'</li>');
+                let listed_msg = handleMagnetListed(message);
+                $('#messages_contacts').prepend('<li class="active_contact ' + thisAddr + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '" /><span class="contact_address">' + thisAddr + '</span><br><span class="listed_message">'+listed_msg+'</li>');
                 messages.push(thisAddr);
 
 
@@ -1548,7 +1576,9 @@ function updateMessages() {
               if (timestamp > last_messages[thisAddr]) {
               last_messages[senderAddr] = timestamp;
               // Add message to conversations list
-              $('.'+thisAddr).find('.listed_message').text(message);
+              let listed_msg = handleMagnetListed(message);
+              console.log(listed_msg);
+              $('.'+thisAddr).find('.listed_message').text(listed_message);
             }
 
 
@@ -1798,7 +1828,7 @@ async function print_conversations() {
 
       if (!conversations.includes(conversation)) {
         conversations.push(conversation);
-        $('#messages_contacts').append('<li class="active_contact ' + conversation + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + get_avatar(conversation) + '" /><span class="contact_address">' + conversation + '</span><br><span class="listed_message">'+messages[m].message+'</li>');
+        $('#messages_contacts').append('<li class="active_contact ' + conversation + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + get_avatar(conversation) + '" /><span class="contact_address">' + conversation + '</span><br><span class="listed_message">'+handleMagnetListed(messages[m].message)+'</li>');
       }
 
   }
@@ -1998,12 +2028,14 @@ async function get_new_conversations(unconfirmed) {
           // If there is a contact in the sidebar,
           // then we update it, and move it to the top.
 
-        $('.' + conversation_address).find('.listed_message').text(payload_json.msg).parent().detach().prependTo("#messages_contacts").addClass('unread_message');
+          let listed_msg = handleMagnetListed(payload_json.msg);
+console.log(listed_msg);
+        $('.' + conversation_address).find('.listed_message').text(listed_msg).parent().detach().prependTo("#messages_contacts").addClass('unread_message');
 
       } else {
         // If there isn't one, create one
 
-        $('#messages_contacts').prepend('<li class="active_contact unread_message ' + conversation_address + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + get_avatar(conversation_address) + '" /><span class="contact_address">' + conversation_address + '</span><br><span class="listed_message">'+payload_json.msg+'</li>');
+        $('#messages_contacts').prepend('<li class="active_contact unread_message ' + conversation_address + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + get_avatar(conversation_address) + '" /><span class="contact_address">' + conversation_address + '</span><br><span class="listed_message">'+handleMagnetListed(payload_json.msg)+'</li>');
       }
 
       }
