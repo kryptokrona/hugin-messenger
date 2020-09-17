@@ -1287,6 +1287,32 @@ header  {
 
  }
 
+ #incomingCall {
+
+   background-color: #f5f6f7 !important;
+   box-shadow: 10px 10px 10px rgba(0,0,0,0.05) !important;
+   color: black;
+
+ }
+
+
+ #answerCall {
+
+   color:white;
+
+ }
+
+ #declineCall {
+
+   color:white;
+
+ }
+
+#incomingCall img {
+
+  background: white !important;
+}
+
  #balancelogo::before {
    font-family: 'XKR';
    content: "\e900";
@@ -1635,7 +1661,7 @@ display: none;
 
 
 #incomingCall span {
-  width: 80%;
+
   padding: 0 20px 0 20px;
   word-break: break-all;
   font-size: 11px;
