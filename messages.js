@@ -58,6 +58,11 @@ let startCall = (audio, video) => {
       endCall(peer1, stream);
     })
 
+    $('#caller_menu .fa-microphone').click( function() {
+      $(this).toggleClass('fa-microphone-slash').toggleClass('fa-microphone');
+      stream.getTracks().forEach(track => track.enabled = !track.enabled);
+    });
+
     peer1.on('close', () => {
 
       console.log('Connection lost..')
