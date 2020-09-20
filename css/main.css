@@ -1854,7 +1854,7 @@ background-size: 400% 400%;
     font-weight: bold;
     padding: 10px;
     z-index: 1;
-    top: 20%;
+    top: -14px;
     left: 0;
     background: linear-gradient(270deg, #000000, #1b1836);
   background-size: 400% 400%;

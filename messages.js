@@ -17,7 +17,7 @@ let endCall = (peer, stream) => {
   });
   $('video').fadeOut();
   $('otherid').empty();
-  $('#caller_menu').css('top','-20px');
+  $('#caller_menu').css('top','-14px');
   $('#otherid').unbind('change');
 }
 
@@ -213,7 +213,7 @@ var holder = document.getElementById('messages_pane');
             e.preventDefault();
             $('#drop-overlay').stop().fadeOut();
             if (!$('#recipient_form').val()) { return false; } else {
-            var client = new WebTorrent();
+            var client = new WebTorrent({tracker: false});
             for (let f of e.dataTransfer.files) {
               client.seed(f, function (torrent) {
               console.log('Client is seeding ' + torrent.magnetURI)
@@ -1857,7 +1857,7 @@ async function get_new_conversations(unconfirmed) {
 
   all_transactions = confirmed_transactions.concat(unconfirmed_transactions);
 } else {
-  
+
     unconfirmed_transactions = await get_unconfirmed_messages();
 
   all_transactions = unconfirmed_transactions;
@@ -1990,13 +1990,13 @@ async function get_new_conversations(unconfirmed) {
           if (magnetLinks) {
             handleMagnetLink(magnetLinks, payload_json.t, true, payload_json.from);
           }
-
-          notifier.notify({
-            title: payload_json.from,
-            message: payload_json.msg,
-            wait: true // Wait with callback, until user action is taken against notification
-          });
-
+          if (handleMagnetListed(payload_json.msg)) {
+            notifier.notify({
+              title: payload_json.from,
+              message: handleMagnetListed(payload_json.msg),
+              wait: true // Wait with callback, until user action is taken against notification
+            });
+          }
           notifier.on('click', function(notifierObject, options) {
             // Triggers if `wait: true` and user clicks notification
             print_conversation(payload_json.from);
@@ -2181,6 +2181,14 @@ async function print_conversation(conversation) {
 
   // Scroll to bottom
   $('#messages_pane').scrollTop($('#messages').height());
+
+  for (message in $('#messages').find('p')) {
+    let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(message.innerHTML);
+    if (magnetLinks) {
+      handleMagnetLink(magnetLinks, $(message).parent().attr('id'));
+    }
+  }
+
 
 }
 
