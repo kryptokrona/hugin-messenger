@@ -212,6 +212,55 @@ html, body {
 
 }
 
+.flip-box {
+  background-color: transparent;
+  width: 100%;
+  height: 100%;
+  perspective: 1000px; /* Remove this if you don't want the 3D effect */
+}
+
+/* This container is needed to position the front and back side */
+#flip-box-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+}
+
+
+.flip-box-front, .flip-box-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden; /* Safari */
+  backface-visibility: hidden;
+}
+
+#settings {
+  background: linear-gradient(270deg, #000000, #1b1836);
+  background-size: 400% 400%;
+
+    background: linear-gradient(270deg, #ff0000, #ffd800, #58c51b, #0eb6d2, #dd06f3);
+    background-size: 1000% 1000%;
+
+    -webkit-animation: AnimationName 60s ease infinite;
+    -moz-animation: AnimationName 60s ease infinite;
+    animation: AnimationName 60s ease infinite;
+
+  color: white;
+  transform: rotateY(180deg);
+  display: block;
+  line-height: 30px;
+  top: 50px;
+}
+
+
+.flip  {
+ transform: rotateY(180deg);
+}
+
+
 #container {
 
   position:absolute;
@@ -432,6 +481,11 @@ font-family: "Roboto";
 padding: 5px;
 }
 
+#payment_form input {
+
+  border-radius: 2px;
+}
+
 
 #payment_amount{
 
@@ -448,6 +502,17 @@ padding: 5px;
 margin-top:-15px;
 
 }
+
+#call-button:hover {
+
+  color:green;
+}
+
+#video-button:hover {
+
+  color:green;
+}
+
 
 
 #copyBoth {
@@ -1096,10 +1161,10 @@ overlay p {
 }
 
 #settings_icon {
-  width:4px;
+  width:5%;
   position: absolute;
   top: 18px;
-  right: 40px;
+  right: 22px;
   cursor: pointer;
 }
 
@@ -1107,11 +1172,6 @@ overlay p {
 #new_chat:hover {
   background-color: white;
   color: black;
-}
-
-#settings:hover {
-  color: black;
-  background: white;
 }
 
 
@@ -1122,6 +1182,7 @@ overlay p {
   overflow-y: auto;
   overflow-x: hidden;
   height: calc(100% - 94px);
+  perspective: 1000px;
 }
 
 
@@ -1257,26 +1318,63 @@ overlay p {
 
 }
 
-#messages_contacts  {
+.flip-box  {
   --scrollbarBG: f3f4f5;
   --thumbBG: black;
 
 }
-#messages_contacts::-webkit-scrollbar {
+.flip-box::-webkit-scrollbar {
   width: 11px;
 }
-#messages_contacts {
+.flip-box {
   scrollbar-width: thin;
   scrollbar-color: var(--thumbBG) var(--scrollbarBG);
 }
-#messages_contacts::-webkit-scrollbar-track {
+.flip-box::-webkit-scrollbar-track {
   background: var(--scrollbarBG);
 }
-#messages_contacts::-webkit-scrollbar-thumb {
+.flip-box::-webkit-scrollbar-thumb {
   background-color: var(--thumbBG) ;
   border-radius: 2px;
   border: 3px solid var(--scrollbarBG);
 }
+
+
+#settings {
+
+  width: 100%;
+  height: 100%;
+  color: white;
+
+}
+
+#settings div {
+  color: #f1f2f3;
+  padding: 11px 16px;
+  text-decoration: none;
+  display: block;
+  font-family: 'Roboto';
+  font-size: 17px;
+  cursor: pointer;
+
+}
+
+
+#settings div:hover {
+
+  background-color: rgba(222,222,222,0.7) !important;
+  color: white;
+
+}
+
+
+.show {
+
+  display: block;
+  position: absolute;
+
+}
+
 
 @media (prefers-color-scheme: light) {
 
@@ -1336,7 +1434,7 @@ box-shadow: none;
 
   #settings_icon:hover {
 
-
+    background: white;
     color: black;
   }
 
@@ -1448,6 +1546,7 @@ color: black;
 
    color: black;
  }
+
 
 #messages_sidebar {
 
@@ -1567,28 +1666,28 @@ color: black;
 
   }
 
-#messages_contacts  {
+.flip-box  {
   --scrollbarBG: white;
   --thumbBG: black;
 
 }
-#messages_contacts::-webkit-scrollbar {
+.flip-box::-webkit-scrollbar {
   width: 11px;
 }
-#messages_contacts {
+.flip-box {
   scrollbar-width: thin;
   scrollbar-color: var(--thumbBG) var(--scrollbarBG);
 }
-#messages_contacts::-webkit-scrollbar-track {
+.flip-box::-webkit-scrollbar-track {
   background: var(--scrollbarBG);
 }
-#messages_contacts::-webkit-scrollbar-thumb {
+.flip-box::-webkit-scrollbar-thumb {
   background-color: var(--thumbBG) ;
   border-radius: 2px;
   border: 3px solid var(--scrollbarBG);
 }
 
-  #messages_contacts > li {
+  .flip-box > li {
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     color: black;
   }

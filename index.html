@@ -126,7 +126,14 @@
           <div id="settings_icon"><i class="fa fa-cogs"></i></div>
         </div>
 
-      <ul id="messages_contacts">
+
+<div class="flip-box">
+ <div id="flip-box-inner">
+
+
+      <ul id="messages_contacts" class="flip-box-front">
+
+
 
         <div id="caller_menu">
 
@@ -138,12 +145,27 @@
             <i class="fa fa-microphone"></i><i class="fa fa-phone"></i>
 
 
-
         </div>
 
 
       </ul>
+           <div id="settings" class="flip-box-back">
 
+
+
+             <div id="#contact">Media Settings</div>
+             <div id="#home">Transactions</div>
+             <div id="#about">Node</div>
+             <div id="#contact">Contacts</div>
+             <div id="#contact">Security</div>
+             <div id="#contact">Wallet</div>
+
+         </div>
+
+
+</div>
+
+</div>
       <div id="bottombar">
         <div id="daemon_status">
           <span id="status_icon">&nbsp;</span>&nbsp;
@@ -155,7 +177,9 @@
 
       </div>
 
-
+      <div id="media_settings">
+          <h1 class="w3-center w3-animate-right">Animation is Fun!</h1>
+       </div>
       <div id="messages_currentchat">
         <div id="currentchat_header_wrapper">
           <div id="new_chat">+</div>
@@ -352,6 +376,19 @@
   </div>
 
 
+  <script>
+
+document.getElementById("settings_icon").onclick = function() {myFunction()};
+
+
+function myFunction() {
+  document.getElementById("flip-box-inner").classList.toggle("flip");
+
+
+}
+
+
+</script>
 
 
     <script>
