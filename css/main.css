@@ -213,10 +213,11 @@ html, body {
 }
 
 .flip-box {
-  background-color: transparent;
-  width: 95%;
-  height: 100%;
-  perspective: 1000px; /* Remove this if you don't want the 3D effect */
+    background-color: transparent;
+    width: 100%;
+    height: calc(100% - 98px);
+    perspective: 1000px;
+    margin-top: 50px;
 }
 
 /* This container is needed to position the front and back side */
@@ -252,7 +253,6 @@ html, body {
   transform: rotateY(180deg);
   display: block;
   line-height: 30px;
-  top: 50px;
 }
 
 
@@ -1176,12 +1176,12 @@ overlay p {
 
 
 #messages_contacts {
-  padding: 5px;
-  padding-top: 53px;
+  padding: 0;
+  padding-top: 0;
   margin: 0;
   overflow-y: auto;
   overflow-x: hidden;
-  height: calc(100% - 94px);
+  height: 100%;
   perspective: 1000px;
 }
 
@@ -1324,7 +1324,7 @@ overlay p {
 
 }
 #messages_contacts::-webkit-scrollbar {
-  width: 9px;
+  width: 7px;
 }
 #messages_contacts  {
   scrollbar-width: thin;
@@ -1671,22 +1671,6 @@ color: black;
   --thumbBG: black;
 
 }
-#messages_contacts::-webkit-scrollbar {
-  width: 9px;
-}
-#messages_contacts {
-  scrollbar-width: thin;
-  scrollbar-color: var(--thumbBG) var(--scrollbarBG);
-}
-#messages_contacts::-webkit-scrollbar-track {
-  background: var(--scrollbarBG);
-}
-#messages_contacts::-webkit-scrollbar-thumb {
-  background-color: var(--thumbBG) ;
-  border-radius: 3px;
-  border: 3px solid var(--scrollbarBG);
-}
-
   .flip-box > li {
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     color: black;

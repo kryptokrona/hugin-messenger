@@ -426,7 +426,7 @@ let handleMagnetListed = (message) => {
   if (magnetLinks) {
 
     if ( magnetLinks[0].split('=')[2].includes('callback') ) {
-      return ""
+      return "Call started"
     } else if (magnetLinks[0].split('=')[2].includes('callrequest')) {
       return "Call started"
     } else {
