@@ -214,7 +214,7 @@ html, body {
 
 .flip-box {
   background-color: transparent;
-  width: 100%;
+  width: 95%;
   height: 100%;
   perspective: 1000px; /* Remove this if you don't want the 3D effect */
 }
@@ -1318,24 +1318,24 @@ overlay p {
 
 }
 
-.flip-box  {
-  --scrollbarBG: f3f4f5;
-  --thumbBG: black;
+#messages_contacts {
+  --scrollbarBG: black;
+  --thumbBG: white;
 
 }
-.flip-box::-webkit-scrollbar {
-  width: 11px;
+#messages_contacts::-webkit-scrollbar {
+  width: 9px;
 }
-.flip-box {
+#messages_contacts  {
   scrollbar-width: thin;
   scrollbar-color: var(--thumbBG) var(--scrollbarBG);
 }
-.flip-box::-webkit-scrollbar-track {
+#messages_contacts::-webkit-scrollbar-track {
   background: var(--scrollbarBG);
 }
-.flip-box::-webkit-scrollbar-thumb {
+#messages_contacts::-webkit-scrollbar-thumb {
   background-color: var(--thumbBG) ;
-  border-radius: 2px;
+  border-radius: 3px;
   border: 3px solid var(--scrollbarBG);
 }
 
@@ -1666,24 +1666,24 @@ color: black;
 
   }
 
-.flip-box  {
+#messages_contacts {
   --scrollbarBG: white;
   --thumbBG: black;
 
 }
-.flip-box::-webkit-scrollbar {
-  width: 11px;
+#messages_contacts::-webkit-scrollbar {
+  width: 9px;
 }
-.flip-box {
+#messages_contacts {
   scrollbar-width: thin;
   scrollbar-color: var(--thumbBG) var(--scrollbarBG);
 }
-.flip-box::-webkit-scrollbar-track {
+#messages_contacts::-webkit-scrollbar-track {
   background: var(--scrollbarBG);
 }
-.flip-box::-webkit-scrollbar-thumb {
+#messages_contacts::-webkit-scrollbar-thumb {
   background-color: var(--thumbBG) ;
-  border-radius: 2px;
+  border-radius: 3px;
   border: 3px solid var(--scrollbarBG);
 }
 
@@ -1854,7 +1854,7 @@ background-size: 400% 400%;
     font-weight: bold;
     padding: 10px;
     z-index: 1;
-    top: -16px;
+    top: 20%;
     left: 0;
     background: linear-gradient(270deg, #000000, #1b1836);
   background-size: 400% 400%;
