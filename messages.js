@@ -287,11 +287,19 @@ let downloadMagnet = (magnetLink, element) => {
                 myvideo.play();
                 $('video').fadeIn();
 
+
+
                 var peer2 = new Peer({stream: stream, trickle: false})
 
                 $('#caller_menu .fa-phone').click(function(){
                   endCall(peer2, stream);
                 })
+
+
+                $('#caller_menu .fa-microphone').click( function() {
+                  $(this).toggleClass('fa-microphone-slash').toggleClass('fa-microphone');
+                  stream.getTracks().forEach(track => track.enabled = !track.enabled);
+                });
 
                 peer2.on('close', () => {
 
@@ -508,6 +516,26 @@ let db = new Datastore({ filename: userDataDir+'/messages.db', autoload: true })
 
 let keychain = new Datastore({ filename: userDataDir+'/keychain.db', autoload: true });
 
+
+$('#import').click(function(){
+console.log('Importing: ' + $('#importMnemonic').val())
+
+db.remove({}, { multi: true }, function (err, numRemoved) {
+});
+keychain.remove({}, { multi: true }, function (err, numRemoved) {
+});
+
+
+ipcRenderer.send('import_wallet',$('#importMnemonic').val());
+
+setTimeout(function(){ console.log('resetting..');walletd.reset() }, 10000);
+
+
+
+
+})
+
+
 const nacl = require('tweetnacl');
 const naclUtil = require('tweetnacl-util');
 
@@ -603,7 +631,7 @@ function fromHex(hex,str){
 var rpc_pw = remote.getGlobal('rpc_pw');
 
 
-var TurtleCoinWalletd = require('turtlecoin-walletd-rpc-js').default
+var TurtleCoinWalletd = require('kryptokrona-service-rpc-js').default
 
 let walletd = new TurtleCoinWalletd(
   'http://127.0.0.1',
@@ -611,6 +639,15 @@ let walletd = new TurtleCoinWalletd(
   rpc_pw,
   false
 )
+
+$('#getMnemonic').click(function(){
+  walletd.getMnemonicSeed($('#currentAddrSpan').text()).then(resp => {
+    $('#mnemonic').text(resp.body.result.mnemonicSeed);
+  })
+})
+
+const {ipcRenderer} = require('electron');
+
 
 
 let decrypt_message = (possibleKeys, box, timestamp) => {

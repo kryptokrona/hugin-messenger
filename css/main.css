@@ -1324,7 +1324,7 @@ overlay p {
 
 }
 #messages_contacts::-webkit-scrollbar {
-  width: 7px;
+  width: 8px;
 }
 #messages_contacts  {
   scrollbar-width: thin;
@@ -1899,4 +1899,13 @@ background-size: 400% 400%;
 
 #caller_menu .fa-phone {
   transform: rotate(135deg);
+}
+
+#settings i {
+  width: 20px;
+  text-align: center;
+}
+
+#settings_page {
+  display: none;
 }

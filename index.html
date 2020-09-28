@@ -160,13 +160,13 @@
            <div id="settings" class="flip-box-back">
 
 
-
-             <div id="#contact">Media Settings</div>
+             <!-- <div id="#about"><i class="fa fa-wifi"></i>  Node</div> -->
+             <div id="#about"><i class="fa fa-save"></i>  Import & export</div>
+             <!-- <div id="#contact">Media Settings</div>
              <div id="#home">Transactions</div>
-             <div id="#about">Node</div>
              <div id="#contact">Contacts</div>
              <div id="#contact">Security</div>
-             <div id="#contact">Wallet</div>
+             <div id="#contact">Wallet</div> -->
 
          </div>
 
@@ -211,10 +211,41 @@
     </div>
 
        <div id="messages_pane">
+
+                  <div id="settings_page" style="
+                       width: 100%;
+                       padding: 15px;
+                       padding-left:35px;
+                       height: 100%;
+                       background: #333;
+                       position: absolute;
+                       z-index: 1;
+                       /* display: none */
+                   ">
+
+                    <h1>Import / Export</h2>
+
+                      <span id="mnemonic">
+                        f8013e08bf7647f69b1a9ab4c98e418174364cab73b34015af9f1851a323a87e
+                      </span>
+                      <button id="getMnemonic">Show mnemonic seed</button>
+
+
+                      <input type="textarea" id="importMnemonic">
+                        f8013e08bf7647f69b1a9ab4c98e418174364cab73b34015af9f1851a323a87e
+                      </input>
+                      <button id="import">Import wallet</button>
+
+
+
+
+
+                  </div>
          <div style="display: none" id="drop-overlay">
            <p>DROP FILE HERE</p>
          </div>
        <ul id="messages">
+
 
          <div id="welcome_alpha" style="
           width: 100%;
@@ -337,7 +368,7 @@
       </ul>
 
     </div>
-
+<!--
     <div id="settings_page" style="display: none;">
 
       <h1>Settings</h1>
@@ -359,7 +390,7 @@
 
       </div>
 
-    </div>
+    </div> -->
 
 
 

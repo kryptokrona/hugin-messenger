@@ -55,7 +55,7 @@ $(document).on('click', 'a[href^="http"]', function(event) {
 // END OF SLIDER
 
 
-var TurtleCoinWalletd = require('turtlecoin-walletd-rpc-js').default
+var TurtleCoinWalletd = require('kryptokrona-service-rpc-js').default
 
 let walletd = new TurtleCoinWalletd(
   'http://127.0.0.1',
