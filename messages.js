@@ -21,7 +21,6 @@ let endCall = (peer, stream) => {
   $('#otherid').unbind('change');
 }
 
-
 let startCall = (audio, video) => {
 
   // get video/voice stream
@@ -514,7 +513,23 @@ let appPath = rmt.getGlobal('appPath');
 
 let db = new Datastore({ filename: userDataDir+'/messages.db', autoload: true });
 
+let misc = new Datastore({ filename: userDataDir+'/misc.db', autoload: true });
+
 let keychain = new Datastore({ filename: userDataDir+'/keychain.db', autoload: true });
+
+let last_block_checked = 1;
+
+misc.find({}, function (err,docs){
+
+    if (docs.length == 0) {
+
+    misc.insert({"height": 1});
+
+  } else {
+    last_block_checked = docs[0].height;
+  }
+
+});
 
 
 $('#import').click(function(){
@@ -639,6 +654,12 @@ let walletd = new TurtleCoinWalletd(
   rpc_pw,
   false
 )
+
+// walletd.getTransactions(10000,
+//  495000,
+// '',
+// [],
+// '').then(resp => { console.log("resp:",resp) });
 
 $('#getMnemonic').click(function(){
   walletd.getMnemonicSeed($('#currentAddrSpan').text()).then(resp => {
@@ -1758,10 +1779,12 @@ function find_messages(opt, skip, limit, sort=-
 // });
 
 
-function get_confirmed_messages(from, to) {
+async function get_confirmed_messages(from, to) {
   return new Promise(function(resolve, reject) {
 
-
+    console.log('Getting confirmed messages..');
+    console.log('From: ' + from);
+    console.log('To: ' + to);
 
     walletd.getTransactions(
       to,
@@ -1770,11 +1793,22 @@ function get_confirmed_messages(from, to) {
       [],
       '').then(resp => {
 
+        let arr = [];
+
+        if (resp.code == 'ETOOLARGE') {
+          // console.log('Too large :(');
+
+          reject('ETOOLARGE');
+
+
+        }
+
+      if (resp.body) {
       let transactions = resp.body.result.items;
 
       let txsLength = transactions.length;
 
-      let arr = [];
+
 
       for (let i = 0; i < txsLength; i++) {
 
@@ -1787,16 +1821,18 @@ function get_confirmed_messages(from, to) {
             let extra = transactions[i].transactions[j].extra.substring(66);
             arr.push(extra);
 
+
           } catch (e) {
 
           }
 
           }
         }
-
+        }
           resolve(arr);
 
         }).catch(err => {
+          console.log(err);
           reject(err)
         });
       });
@@ -1883,28 +1919,56 @@ async function print_conversations() {
 }
 
 print_conversations();
-let last_block_checked = 0;
+
+
 async function get_new_conversations(unconfirmed) {
 
 
   known_keys = await find(keychain, {});
 
   block_height = await get_block_height();
+  let check_block = last_block_checked;
 
   if (!unconfirmed) {
+      console.log('Getting new confirmed messages..');
 
-      confirmed_transactions = await get_confirmed_messages(last_block_checked, block_height);
+      if ( last_block_checked == block_height ) {
+        return;
+      }
 
+      try {
+      confirmed_transactions = await get_confirmed_messages(last_block_checked, block_height-last_block_checked);
+      check_block = block_height;
+    } catch (err) {
+
+      if (err == 'ETOOLARGE') {
+        // console.log('damn dats big');
+        confirmed_transactions = [];
+        while (check_block+10000 < block_height) {
+          new_transactions = await get_confirmed_messages(check_block, 10000);
+          // console.log(new_transactions);
+          confirmed_transactions = confirmed_transactions.concat(new_transactions);
+          // console.log(confirmed_transactions);
+          check_block = check_block + 10000;
+        }
+      }
+
+      // console.log(confirmed_transactions)
+
+    }
       unconfirmed_transactions = await get_unconfirmed_messages();
 
-  all_transactions = confirmed_transactions.concat(unconfirmed_transactions);
+      all_transactions = confirmed_transactions.concat(unconfirmed_transactions);
+      misc.update({}, {height: check_block});
+      last_block_checked = check_block;
+
+
 } else {
 
     unconfirmed_transactions = await get_unconfirmed_messages();
 
   all_transactions = unconfirmed_transactions;
 }
-  last_block_checked = block_height;
   latest_transaction = await find_messages({}, 0, 1);
   let latest_transaction_time = 0;
 
@@ -1912,8 +1976,9 @@ async function get_new_conversations(unconfirmed) {
   latest_transaction_time = latest_transaction[0].timestamp;
 } catch (e) {}
 
-
-
+all_transactions = all_transactions.filter(function (el) {
+  return el != null;
+});
 
 
   for (n in all_transactions) {
@@ -1957,7 +2022,6 @@ async function get_new_conversations(unconfirmed) {
 
           }
         });
-
         save_message(payload_json);
 
     } else {
@@ -1972,10 +2036,17 @@ async function get_new_conversations(unconfirmed) {
         let decryptBox = false;
 
         while (i < known_keys.length && !decryptBox) {
+
           let possibleKey = known_keys[i].key;
-
-           decryptBox = nacl.box.open(hexToUint(box), nonceFromTimestamp(timestamp), hexToUint(possibleKey), keyPair.secretKey);
-
+          try {
+           decryptBox = nacl.box.open(hexToUint(box),
+           nonceFromTimestamp(timestamp),
+           hexToUint(possibleKey),
+           keyPair.secretKey);
+         } catch (err) {
+           console.log(err);
+           continue;
+         }
            i = i+1;
 
           }
@@ -2269,6 +2340,12 @@ $("document").ready(function(){
 
 
   loadWallets();
+  //
+  // setTimeout(function() {
+  //
+  //   get_new_conversations(false);
+  //
+  // }, 15000);
 
 
   $('#copyBoth').click(function(){
@@ -2291,6 +2368,7 @@ window.setInterval(function(){
 
   get_new_conversations(true);
 
+
 },1000);
 
 
@@ -2298,4 +2376,4 @@ window.setInterval(function(){
 
   get_new_conversations(false);
 
-},60000);
+},10000);
