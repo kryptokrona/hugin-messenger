@@ -4,6 +4,8 @@ const copy = require( 'copy-to-clipboard' );
 const notifier = require('node-notifier');
 const { openAlias } = require('openalias');
 
+var sdp = require('./sdp');
+
 const Datastore = require('nedb');
 
 var WebTorrent = require('webtorrent');
@@ -19,6 +21,153 @@ let endCall = (peer, stream) => {
   $('otherid').empty();
   $('#caller_menu').css('top','-14px');
   $('#otherid').unbind('change');
+}
+
+
+let parse_sdp = (sdp) => {
+
+  // console.log("sdp:",sdp);
+
+  let ice_ufrag = '';
+  let ice_pwd = '';
+  let fingerprint = '';
+  let external_ip = '';
+  let internal_ip = '';
+  let ice_candidates = [];
+  let udp_ports = [];
+  let tcp_port = [];
+
+  let lines = sdp.sdp.split('\n')
+      .map(l => l.trim()); // split and remove trailing CR
+  lines.forEach(function(line) {
+
+    if (line.includes('a=fingerprint:') && fingerprint == '') {
+
+      let parts = line.substr(14).split(' ');
+      let hex = line.substr(22).split(':').map(function (h) {
+          return parseInt(h, 16);
+      });
+
+      // console.log('hex', line);
+
+      fingerprint = btoa(String.fromCharCode.apply(String, hex));
+
+
+      // console.log("fingerprint::" , fingerprint);
+      // console.log("decoded:" , decode_fingerprint(fingerprint));
+
+
+    } else if (line.includes('a=ice-ufrag:') && ice_ufrag == '') {
+
+      ice_ufrag = line.substr(12);
+      // console.log('ufrag:', ice_ufrag);
+
+
+    } else if (line.includes('a=ice-pwd:') && ice_pwd == '') {
+
+      ice_pwd = line.substr(10);
+      // console.log('pwd:', ice_pwd);
+
+
+    } else if (line.includes('a=candidate:')) {
+
+      let candidate = line.substr(12);
+      ice_candidates = ice_candidates.concat(candidate);
+      // console.log('candidate:', candidate);
+
+
+    }
+
+
+
+    })
+    // console.log("candidates:", ice_candidates.join(','));
+    for (c in ice_candidates) {
+      let candidate = ice_candidates[c].split(" ");
+      let ip = candidate[4];
+      let port = candidate[5];
+
+      if (external_ip.length == 0) {
+        external_ip = ip;
+        // console.log('external ip:', external_ip);
+      } else if (internal_ip.length == 0) {
+        internal_ip = ip;
+        // console.log('internal ip:', internal_ip);
+      }
+      if (udp_ports.length == 2 && tcp_port.length == 0) {
+
+      tcp_port = port;
+      // console.log('tcp port:', tcp_port);
+
+    } else if (port != tcp_port) {
+      udp_ports = udp_ports.concat(port);
+      // console.log('udp port:', udp_ports);
+    }
+
+    }
+
+  return ice_ufrag + "," + ice_pwd + "," + fingerprint + "," + external_ip + "," + internal_ip + "," +tcp_port + "," + udp_ports.join(",");
+
+}
+
+let parse_answer = (sdp) => {
+
+  // console.log("sdp:",sdp);
+
+  let ice_ufrag = '';
+  let ice_pwd = '';
+  let fingerprint = '';
+  let ip = '';
+  let port = '';
+
+  let lines = sdp.sdp.split('\n')
+      .map(l => l.trim()); // split and remove trailing CR
+  lines.forEach(function(line) {
+
+    if (line.includes('a=fingerprint:') && fingerprint == '') {
+
+      let parts = line.substr(14).split(' ');
+      let hex = line.substr(22).split(':').map(function (h) {
+          return parseInt(h, 16);
+      });
+
+      // console.log('hex', line);
+
+      fingerprint = btoa(String.fromCharCode.apply(String, hex));
+
+
+      // console.log("fingerprint::" , fingerprint);
+      // console.log("decoded:" , decode_fingerprint(fingerprint));
+
+
+    } else if (line.includes('a=ice-ufrag:') && ice_ufrag == '') {
+
+      ice_ufrag = line.substr(12);
+      // console.log('ufrag:', ice_ufrag);
+
+
+    } else if (line.includes('a=ice-pwd:') && ice_pwd == '') {
+
+      ice_pwd = line.substr(10);
+      // console.log('pwd:', ice_pwd);
+
+
+    } else if (line.includes('a=candidate:')) {
+
+      let candidate = line.substr(12).split(" ");
+
+      ip = candidate[4]
+      port = candidate[5]
+
+
+    }
+
+
+
+    })
+
+  return ice_ufrag + "," + ice_pwd + "," + fingerprint + "," + ip + "," + port;
+
 }
 
 let startCall = (audio, video) => {
@@ -97,7 +246,13 @@ let startCall = (audio, video) => {
     })
 
     peer1.on('signal', data => {
-      console.log(JSON.stringify(data))
+      console.log('real data:', data);
+      let parsed_data = parse_sdp(data);
+      console.log('parsed data:', parsed_data);
+      let recovered_data = sdp.expand_sdp_offer(parsed_data);
+      console.log('recovered data:', recovered_data);
+
+      data = recovered_data;
 
       if (!first) {
         return
@@ -318,6 +473,12 @@ let downloadMagnet = (magnetLink, element) => {
                 let first = true;
 
                 peer2.on('signal', data => {
+                  console.log('initial data:', data);
+                  let parsed_data = parse_answer(data);
+                  console.log('parsed data:', parsed_data);
+                  let recovered_data = sdp.expand_sdp_answer(parsed_data);
+                  data = recovered_data;
+                  console.log('recovered data:', recovered_data);
 
                   if (!first) {
                     return
@@ -1923,13 +2084,13 @@ print_conversations();
 
 async function get_new_conversations(unconfirmed) {
 
-
   known_keys = await find(keychain, {});
 
   block_height = await get_block_height();
   let check_block = last_block_checked;
 
   if (!unconfirmed) {
+      getting_new_conversations = true;
       console.log('Getting new confirmed messages..');
 
       if ( last_block_checked == block_height ) {
@@ -2158,13 +2319,8 @@ console.log(listed_msg);
 
       }
 
-
-
-
-
   }
-
-
+  getting_new_conversations = false;
 }
 
 async function send_message(message, silent=false) {
@@ -2331,8 +2487,11 @@ function loadWallets() {
 
   })
   .catch(err => {
-    console.log(err)
+
+    console.log(err);
     loadWallets();
+
+
   })
 }
 
@@ -2371,9 +2530,13 @@ window.setInterval(function(){
 
 },1000);
 
+let getting_new_conversations = false;
+
 
 window.setInterval(function(){
 
-  get_new_conversations(false);
+  if (!getting_new_conversations) {
+    get_new_conversations(false);
+  }
 
 },10000);
