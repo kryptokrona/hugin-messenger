@@ -1908,4 +1908,87 @@ background-size: 400% 400%;
 
 #settings_page {
   display: none;
+  background: rgba(0,0,0,22,1) !important;
+}
+
+
+#mnemonicbox {
+
+  height: 10%;
+  width: 88%;
+  display: block;
+  color: #8ba2b9;
+  border-radius: 2px;
+  margin-left: 5px;
+  font-family: monospace;
+
+}
+
+
+
+#privatekeybox {
+
+  height: 5%;
+  width: 88%;
+  display: block;
+  color: #8ba2b9;
+  border-radius: 2px;
+  margin-left: 5px;
+  font-family: monospace;
+
+}
+
+
+#getPrivatekey, #getMnemonic, #import {
+
+   background-color: white;
+   border: none;
+   color: black;
+   padding: 11px 22px;
+   text-align: center;
+   text-decoration: none;
+   display: inline-block;
+   font-size: 15px;
+   padding: 10px;
+   margin: 5px;
+
+ }
+
+ #getPrivatekey:hover, #getMnemonic:hover, #import:hover {
+
+   background: #292929;
+   color: white;
+ }
+
+#settings_icon {
+  width: 35px;
+      text-align: center;
+      line-height: 5px;
+      padding-top: 10px;
+      font-size: 14pt;
+      vertical-align: middle;
+      cursor: pointer;
+      display: inline-block;
+      top: 8px;
+      color: white;
+      padding-bottom: 10px;
+}
+
+
+#settings_icon:hover {
+
+  color: black;
+  background: white;
+}
+
+#importMnemonic {
+
+  height: 25px;
+  width: 75%;
+  margin-left: 5px;
+  color: black;
+  margin-top: 5px;
+  font-family: monospace;
+
+
 }

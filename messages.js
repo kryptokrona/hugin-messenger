@@ -828,6 +828,13 @@ $('#getMnemonic').click(function(){
   })
 })
 
+$('#getPrivatekey').click(function(){
+  walletd.getSpendKeys($('#currentAddrSpan').text()).then(resp => {
+    $('#privatekey').text(resp.body.result.spendSecretKey);
+  })
+})
+
+
 const {ipcRenderer} = require('electron');
 
 
