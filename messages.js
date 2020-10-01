@@ -24,7 +24,7 @@ let endCall = (peer, stream) => {
 }
 
 
-let parse_sdp = (sdp) => {
+let parse_sdp_old = (sdp) => {
 
   // console.log("sdp:",sdp);
 
@@ -110,15 +110,15 @@ let parse_sdp = (sdp) => {
 
 }
 
-let parse_answer = (sdp) => {
+let parse_sdp = (sdp) => {
 
   // console.log("sdp:",sdp);
 
   let ice_ufrag = '';
   let ice_pwd = '';
   let fingerprint = '';
-  let ip = '';
-  let port = '';
+  let ips = [];
+  let ports = [];
 
   let lines = sdp.sdp.split('\n')
       .map(l => l.trim()); // split and remove trailing CR
@@ -158,6 +158,19 @@ let parse_answer = (sdp) => {
 
       ip = candidate[4]
       port = candidate[5]
+      type = candidate[7]
+
+      if (type == "srflx") {
+        ip = "e" + ip
+      }
+
+      if (!ips.includes(ip)) {
+
+        ips = ips.concat(ip)
+
+      }
+
+      ports = ports.concat(ips.indexOf(ip) + port)
 
 
     }
@@ -166,7 +179,7 @@ let parse_answer = (sdp) => {
 
     })
 
-  return ice_ufrag + "," + ice_pwd + "," + fingerprint + "," + ip + "," + port;
+  return ice_ufrag + "," + ice_pwd + "," + fingerprint + "," + ips.join('&') + "," + ports.join('&');
 
 }
 
@@ -474,7 +487,7 @@ let downloadMagnet = (magnetLink, element) => {
 
                 peer2.on('signal', data => {
                   console.log('initial data:', data);
-                  let parsed_data = parse_answer(data);
+                  let parsed_data = parse_sdp(data);
                   console.log('parsed data:', parsed_data);
                   let recovered_data = sdp.expand_sdp_answer(parsed_data);
                   data = recovered_data;

@@ -9,23 +9,53 @@ expand_sdp_offer: function(compressed_string) {
 
   let fingerprint = decode_fingerprint(split[2]);
 
-  let internal_ip = split[3];
+  let ips = split[3];
 
-  let external_ip =  split[4];
+  let ports =  split[4];
 
-  let tcp_port = split[5];
+  let external_ip = '';
 
-  let udp_port_internal = split[6];
+  let external_ports = [];
 
-  let udp_port_external = split[7];
+  let candidates = ['','','',''];
 
-  let udp_port_internal2 = split[8];
+  ips = ips.split('&');
 
-  let udp_port_external2 = split[9];
+  ports = ports.split('&');
 
-  let udp_port_internal3 = split[10];
 
-  let udp_port_external3 = split[11];
+    let prio = 2122260223;
+
+    let i = 1;
+    let j = 1;
+
+    for (port in ports) {
+      let ip_index = ports[port].substring(0,1);
+      if (ips[ip_index].substring(0,1) == 'e') {
+        external_ip = ips[ip_index].substring(1);
+        external_ports = external_ports.concat(ports[port].substring(1));
+        candidates[j] += "a=candidate:3098175849 1 udp 1686052607 " + ips[ip_index].replace('e','') + " " + ports[port].substring(1) + " typ srflx raddr " + ips[0] + " rport " + ports[0].substring(1) + " generation 0 network-id 1 network-cost 50\r\n"
+      } else {
+
+        candidates[j] += "a=candidate:1410536466 1 udp " + prio + " " + ips[ip_index] + " " + ports[port].substring(1) + " typ host generation 0 network-id 1 network-cost 10\r\n"
+        prio = parseInt(prio*0.8);
+      }
+
+
+    if ( i == (ports.length / 3) ) {
+      i = 0;
+      j += 1;
+    }
+
+    i += 1;
+
+  }
+
+  if (external_ip.length == 0) {
+    external_id = ips[0].substring(1);
+  }
+
+  console.log(candidates);
 
 
 let sdp = `v=0
@@ -34,13 +64,11 @@ s=-
 t=0 0
 a=group:BUNDLE 0 1 2
 a=msid-semantic: WMS T2NZ0tiTHNmrzITrWOoD3fBw1scH9RjxACOa
-m=audio ` + udp_port_external + ` UDP/TLS/RTP/SAVPF 111 103 104 9 0 8 106 105 13 110 112 113 126
+m=audio ` + external_ports[0] + ` UDP/TLS/RTP/SAVPF 111 103 104 9 0 8 106 105 13 110 112 113 126
 c=IN IP4 ` + external_ip + `
 a=rtcp:9 IN IP4 0.0.0.0
-a=candidate:3304467501 1 udp 2122260223 ` + internal_ip + " " + udp_port_internal +  ` typ host generation 0 network-id 1 network-cost 10
-a=candidate:853956089 1 udp 1686052607 ` + external_ip + " " + udp_port_external + ` typ srflx raddr ` + internal_ip + ` rport ` + udp_port_internal + ` generation 0 network-id 1 network-cost 10
-a=candidate:2322976989 1 tcp 1518280447 ` + internal_ip + " " + tcp_port + ` typ host tcptype active generation 0 network-id 1 network-cost 10
-a=ice-ufrag:` + ice_ufrag + `
+` + candidates[1] +
+`a=ice-ufrag:` + ice_ufrag + `
 a=ice-pwd:` + ice_pwd + `
 a=fingerprint:sha-256 ` + fingerprint +  `
 a=setup:actpass
@@ -73,13 +101,11 @@ a=ssrc:3491426447 cname:c2J8K3mNIXGEi9qt
 a=ssrc:3491426447 msid:T2NZ0tiTHNmrzITrWOoD3fBw1scH9RjxACOa 333cfa17-df46-4ffc-bd9a-bc1c47c90485
 a=ssrc:3491426447 mslabel:T2NZ0tiTHNmrzITrWOoD3fBw1scH9RjxACOa
 a=ssrc:3491426447 label:333cfa17-df46-4ffc-bd9a-bc1c47c90485
-m=video ` + udp_port_external2 +  ` UDP/TLS/RTP/SAVPF 96 97 98 99 100 101 102 122 127 121 125 107 108 109 124 120 123 119 114 115 116
+m=video ` + external_ports[1] +  ` UDP/TLS/RTP/SAVPF 96 97 98 99 100 101 102 122 127 121 125 107 108 109 124 120 123 119 114 115 116
 c=IN IP4 ` + external_ip + `
 a=rtcp:9 IN IP4 0.0.0.0
-a=candidate:3304467501 1 udp 2122260223 ` + internal_ip + " " + udp_port_internal2 + ` typ host generation 0 network-id 1 network-cost 10
-a=candidate:853956089 1 udp 1686052607 ` + external_ip + " " + udp_port_external2 +  ` typ srflx raddr ` + internal_ip + ` rport ` + udp_port_internal2 + ` generation 0 network-id 1 network-cost 10
-a=candidate:2322976989 1 tcp 1518280447 ` + internal_ip + " " + tcp_port + ` typ host tcptype active generation 0 network-id 1 network-cost 10
-a=ice-ufrag:` + ice_ufrag + `
+` + candidates[2] +
+`a=ice-ufrag:` + ice_ufrag + `
 a=ice-pwd:` + ice_pwd + `
 a=fingerprint:sha-256 ` + fingerprint +  `
 a=setup:actpass
@@ -183,12 +209,10 @@ a=rtpmap:114 red/90000
 a=rtpmap:115 rtx/90000
 a=fmtp:115 apt=114
 a=rtpmap:116 ulpfec/90000
-m=application ` + udp_port_external3 + ` UDP/DTLS/SCTP webrtc-datachannel
+m=application ` + external_ports[2] + ` UDP/DTLS/SCTP webrtc-datachannel
 c=IN IP4 ` + external_ip +  `
-a=candidate:3304467501 1 udp 2122260223 ` + internal_ip + " " + udp_port_internal3 +  ` typ host generation 0 network-id 1 network-cost 10
-a=candidate:853956089 1 udp 1686052607 ` + external_ip + " " + udp_port_external3 +  ` typ srflx raddr ` + internal_ip + ` rport ` + udp_port_internal3 + ` generation 0 network-id 1 network-cost 10
-a=candidate:2322976989 1 tcp 1518280447 ` + internal_ip + " " + tcp_port +  ` typ host tcptype active generation 0 network-id 1 network-cost 10
-a=ice-ufrag:` + ice_ufrag + `
+` + candidates[3] +
+`a=ice-ufrag:` + ice_ufrag + `
 a=ice-pwd:` + ice_pwd + `
 a=fingerprint:sha-256 ` + fingerprint +  `
 a=setup:actpass
@@ -204,15 +228,51 @@ expand_sdp_answer: function(compressed_string) {
 
   let split = compressed_string.split(",");
 
+  console.log("split:", split);
+
   let ice_ufrag = split[0];
 
   let ice_pwd = split[1];
 
   let fingerprint = decode_fingerprint(split[2]);
 
-  let ip = split[3];
+  let ips = split[3];
 
-  let port =  split[4];
+  let ports =  split[4];
+
+  let candidates = '';
+
+  let external_ip = '';
+
+  ips = ips.split('&');
+
+  ports = ports.split('&');
+
+  console.log("ips:", ips);
+
+  let prio = 2122260223;
+
+  if (ports.length > 1) {
+
+      for (port in ports) {
+        let ip_index = ports[port].substring(0,1);
+        if (ips[ip_index].substring(0,1) == 'e') {
+          external_ip = ips[ip_index].substring(1);
+          candidates += "a=candidate:3098175849 1 udp 1686052607 " + ips[ip_index].replace('e','') + " " + ports[port].substring(1) + " typ srflx raddr " + ips[0] + " rport " + ports[0].substring(1) + " generation 0 network-id 1 network-cost 50\r\n"
+        } else {
+
+          candidates += "a=candidate:1410536466 1 udp " + prio + " " + ips[ip_index] + " " + ports[port].substring(1) + " typ host generation 0 network-id 1 network-cost 10\r\n"
+          prio = parseInt(prio*0.8);
+        }
+
+
+      }
+
+  } else {
+    let external_ip = ips[0].replace('e','');
+    candidates = "a=candidate:1410536466 1 udp 2122260223 " + ips[0] + " " + ports[0].substring(1) + " typ host generation 0 network-id 1 network-cost 10\r\n"
+  }
+
 
   let sdp = `v=0
 o=- 8377786102162672707 2 IN IP4 127.0.0.1
@@ -221,10 +281,10 @@ t=0 0
 a=group:BUNDLE 0 1 2
 a=msid-semantic: WMS PHt0a6UrqMPaYszJtG9Di9aI5hVQUnZV9hoB
 m=audio 50047 UDP/TLS/RTP/SAVPF 111 103 104 9 0 8 106 105 13 110 112 113 126
-c=IN IP4 ` + ip + `
+c=IN IP4 ` + external_ip + `
 a=rtcp:9 IN IP4 0.0.0.0
-a=candidate:1410536466 1 udp 2122260223 ` + ip + " " + port + ` typ host generation 0 network-id 1 network-cost 10
-a=ice-ufrag:` + ice_ufrag + `
+` + candidates +
+`a=ice-ufrag:` + ice_ufrag + `
 a=ice-pwd:` + ice_pwd + `
 a=fingerprint:sha-256 ` + fingerprint +  `
 a=setup:active
