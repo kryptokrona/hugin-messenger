@@ -140,6 +140,7 @@ a=extmap:4 urn:ietf:params:rtp-hdrext:sdes:mid
 a=extmap:5 urn:ietf:params:rtp-hdrext:sdes:rtp-stream-id
 a=extmap:6 urn:ietf:params:rtp-hdrext:sdes:repaired-rtp-stream-id
 a=sendrecv
+a=msid:kCYSOO1BVbeCPi2mHq5OmYdLcKUMrhZ3wDCv 0278bd6c-5efa-4fb7-838a-d9ba6a1d8baa
 a=rtcp-mux
 a=rtcp-rsize
 a=rtpmap:96 VP8/90000
@@ -226,7 +227,7 @@ a=rtpmap:114 red/90000
 a=rtpmap:115 rtx/90000
 a=fmtp:115 apt=114
 a=rtpmap:116 ulpfec/90000
-a=ssrc-group:FID 42796661 1104631307
+a=ssrc-group:FID ` + ssrc[1] + ` ` + ssrc[2] + `
 a=ssrc:` + ssrc[1] + ` cname:qwjy1Thr/obQUvqd
 a=ssrc:` + ssrc[1] + ` msid:3rUqj56L2Jj2k1k3YTR7kT0w6q1pRjUNIfuJ 6a080e8b-c845-4716-8c42-8ca0ab567ebe
 a=ssrc:` + ssrc[1] + ` mslabel:3rUqj56L2Jj2k1k3YTR7kT0w6q1pRjUNIfuJ
