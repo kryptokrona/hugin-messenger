@@ -216,6 +216,15 @@ a=rtpmap:114 red/90000
 a=rtpmap:115 rtx/90000
 a=fmtp:115 apt=114
 a=rtpmap:116 ulpfec/90000
+a=ssrc-group:FID 42796661 1104631307
+a=ssrc:42796661 cname:qwjy1Thr/obQUvqd
+a=ssrc:42796661 msid:3rUqj56L2Jj2k1k3YTR7kT0w6q1pRjUNIfuJ 6a080e8b-c845-4716-8c42-8ca0ab567ebe
+a=ssrc:42796661 mslabel:3rUqj56L2Jj2k1k3YTR7kT0w6q1pRjUNIfuJ
+a=ssrc:42796661 label:6a080e8b-c845-4716-8c42-8ca0ab567ebe
+a=ssrc:1104631307 cname:qwjy1Thr/obQUvqd
+a=ssrc:1104631307 msid:3rUqj56L2Jj2k1k3YTR7kT0w6q1pRjUNIfuJ 6a080e8b-c845-4716-8c42-8ca0ab567ebe
+a=ssrc:1104631307 mslabel:3rUqj56L2Jj2k1k3YTR7kT0w6q1pRjUNIfuJ
+a=ssrc:1104631307 label:6a080e8b-c845-4716-8c42-8ca0ab567ebe
 m=application ` + external_ports[2] + ` UDP/DTLS/SCTP webrtc-datachannel
 c=IN IP4 ` + external_ip +  `
 ` + candidates[3] +

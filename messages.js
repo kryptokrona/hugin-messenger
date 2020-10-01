@@ -185,6 +185,7 @@ let parse_sdp = (sdp) => {
 
 let startCall = (audio, video) => {
 
+
   // get video/voice stream
   navigator.mediaDevices.getUserMedia({
     video: video,
