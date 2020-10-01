@@ -26,17 +26,24 @@ expand_sdp_offer: function(compressed_string) {
 
     let prio = 2122260223;
 
+    let tcp_prio = 1518280447;
+
     let i = 1;
     let j = 1;
 
     for (port in ports) {
+      console.log(ports[port].substring(1));
       let ip_index = ports[port].substring(0,1);
       if (ips[ip_index].substring(0,1) == 'e') {
         external_ip = ips[ip_index].substring(1);
         external_ports = external_ports.concat(ports[port].substring(1));
         candidates[j] += "a=candidate:3098175849 1 udp 1686052607 " + ips[ip_index].replace('e','') + " " + ports[port].substring(1) + " typ srflx raddr " + ips[0] + " rport " + ports[0].substring(1) + " generation 0 network-id 1 network-cost 50\r\n"
-      } else {
+      } else if (ports[port].substring(1) == "9") {
 
+        candidates[j] += "a=candidate:3377426864 1 tcp "  + tcp_prio + " " + ips[ip_index] + " " + ports[port].substring(1) +  " typ host tcptype active generation 0 network-id 1 network-cost 50\r\n"
+        tcp_prio = tcp_prio - 500;
+
+      } else {
         candidates[j] += "a=candidate:1410536466 1 udp " + prio + " " + ips[ip_index] + " " + ports[port].substring(1) + " typ host generation 0 network-id 1 network-cost 10\r\n"
         prio = parseInt(prio*0.8);
       }
