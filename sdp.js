@@ -13,6 +13,8 @@ expand_sdp_offer: function(compressed_string) {
 
   let ports =  split[4];
 
+  let ssrc = split[5].split('&');
+
   let external_ip = '';
 
   let external_ports = [];
@@ -68,6 +70,10 @@ expand_sdp_offer: function(compressed_string) {
   console.log(candidates);
   console.log("ports:",external_ports);
 
+  console.log((external_ports.length / 3));
+  console.log(((external_ports.length / 3)*2));
+
+
 
 let sdp = `v=0
 o=- 5726742634414877819 2 IN IP4 127.0.0.1
@@ -108,11 +114,11 @@ a=rtpmap:110 telephone-event/48000
 a=rtpmap:112 telephone-event/32000
 a=rtpmap:113 telephone-event/16000
 a=rtpmap:126 telephone-event/8000
-a=ssrc:3491426447 cname:c2J8K3mNIXGEi9qt
-a=ssrc:3491426447 msid:T2NZ0tiTHNmrzITrWOoD3fBw1scH9RjxACOa 333cfa17-df46-4ffc-bd9a-bc1c47c90485
-a=ssrc:3491426447 mslabel:T2NZ0tiTHNmrzITrWOoD3fBw1scH9RjxACOa
-a=ssrc:3491426447 label:333cfa17-df46-4ffc-bd9a-bc1c47c90485
-m=video ` + external_ports[1] +  ` UDP/TLS/RTP/SAVPF 96 97 98 99 100 101 102 122 127 121 125 107 108 109 124 120 123 119 114 115 116
+a=ssrc:` + ssrc[0] + ` cname:c2J8K3mNIXGEi9qt
+a=ssrc:` + ssrc[0] + ` msid:T2NZ0tiTHNmrzITrWOoD3fBw1scH9RjxACOa 333cfa17-df46-4ffc-bd9a-bc1c47c90485
+a=ssrc:` + ssrc[0] + ` mslabel:T2NZ0tiTHNmrzITrWOoD3fBw1scH9RjxACOa
+a=ssrc:` + ssrc[0] + ` label:333cfa17-df46-4ffc-bd9a-bc1c47c90485
+m=video ` + external_ports[(external_ports.length / 3)] +  ` UDP/TLS/RTP/SAVPF 96 97 98 99 100 101 102 122 127 121 125 107 108 109 124 120 123 119 114 115 116
 c=IN IP4 ` + external_ip + `
 a=rtcp:9 IN IP4 0.0.0.0
 ` + candidates[2] +
@@ -221,15 +227,15 @@ a=rtpmap:115 rtx/90000
 a=fmtp:115 apt=114
 a=rtpmap:116 ulpfec/90000
 a=ssrc-group:FID 42796661 1104631307
-a=ssrc:42796661 cname:qwjy1Thr/obQUvqd
-a=ssrc:42796661 msid:3rUqj56L2Jj2k1k3YTR7kT0w6q1pRjUNIfuJ 6a080e8b-c845-4716-8c42-8ca0ab567ebe
-a=ssrc:42796661 mslabel:3rUqj56L2Jj2k1k3YTR7kT0w6q1pRjUNIfuJ
-a=ssrc:42796661 label:6a080e8b-c845-4716-8c42-8ca0ab567ebe
-a=ssrc:1104631307 cname:qwjy1Thr/obQUvqd
-a=ssrc:1104631307 msid:3rUqj56L2Jj2k1k3YTR7kT0w6q1pRjUNIfuJ 6a080e8b-c845-4716-8c42-8ca0ab567ebe
-a=ssrc:1104631307 mslabel:3rUqj56L2Jj2k1k3YTR7kT0w6q1pRjUNIfuJ
-a=ssrc:1104631307 label:6a080e8b-c845-4716-8c42-8ca0ab567ebe
-m=application ` + external_ports[2] + ` UDP/DTLS/SCTP webrtc-datachannel
+a=ssrc:` + ssrc[1] + ` cname:qwjy1Thr/obQUvqd
+a=ssrc:` + ssrc[1] + ` msid:3rUqj56L2Jj2k1k3YTR7kT0w6q1pRjUNIfuJ 6a080e8b-c845-4716-8c42-8ca0ab567ebe
+a=ssrc:` + ssrc[1] + ` mslabel:3rUqj56L2Jj2k1k3YTR7kT0w6q1pRjUNIfuJ
+a=ssrc:` + ssrc[1] + ` label:6a080e8b-c845-4716-8c42-8ca0ab567ebe
+a=ssrc:` + ssrc[2] + ` cname:qwjy1Thr/obQUvqd
+a=ssrc:` + ssrc[2] + ` msid:3rUqj56L2Jj2k1k3YTR7kT0w6q1pRjUNIfuJ 6a080e8b-c845-4716-8c42-8ca0ab567ebe
+a=ssrc:` + ssrc[2] + ` mslabel:3rUqj56L2Jj2k1k3YTR7kT0w6q1pRjUNIfuJ
+a=ssrc:` + ssrc[2] + ` label:6a080e8b-c845-4716-8c42-8ca0ab567ebe
+m=application ` + external_ports[((external_ports.length / 3)*2)] + ` UDP/DTLS/SCTP webrtc-datachannel
 c=IN IP4 ` + external_ip +  `
 ` + candidates[3] +
 `a=ice-ufrag:` + ice_ufrag + `
@@ -259,6 +265,8 @@ expand_sdp_answer: function(compressed_string) {
   let ips = split[3];
 
   let ports =  split[4];
+
+  let ssrc = split[5].split('&');
 
   let candidates = '';
 
@@ -344,7 +352,7 @@ a=rtpmap:110 telephone-event/48000
 a=rtpmap:112 telephone-event/32000
 a=rtpmap:113 telephone-event/16000
 a=rtpmap:126 telephone-event/8000
-a=ssrc:639637504 cname:vhWDFlNcJ4vSUvs5
+a=ssrc:` + ssrc[0] +  ` cname:vhWDFlNcJ4vSUvs5
 m=video 9 UDP/TLS/RTP/SAVPF 96 97 98 99 100 101 102 122 127 121 125 107 108 109 124 120 123 119 114 115 116
 c=IN IP4 0.0.0.0
 a=rtcp:9 IN IP4 0.0.0.0
@@ -453,9 +461,9 @@ a=rtpmap:114 red/90000
 a=rtpmap:115 rtx/90000
 a=fmtp:115 apt=114
 a=rtpmap:116 ulpfec/90000
-a=ssrc-group:FID 3169534217 3369024862
-a=ssrc:3169534217 cname:IEW+mXSsrC9cc4mr
-a=ssrc:3369024862 cname:IEW+mXSsrC9cc4mr
+a=ssrc-group:FID ` + ssrc[1] +  ` ` + ssrc[2] +  `
+a=ssrc:` + ssrc[1] +  ` cname:IEW+mXSsrC9cc4mr
+a=ssrc:` + ssrc[2] +  ` cname:IEW+mXSsrC9cc4mr
 m=application 9 UDP/DTLS/SCTP webrtc-datachannel
 c=IN IP4 0.0.0.0
 b=AS:30

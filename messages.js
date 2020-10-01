@@ -36,6 +36,7 @@ let parse_sdp_old = (sdp) => {
   let ice_candidates = [];
   let udp_ports = [];
   let tcp_port = [];
+  let ssrc = [];
 
   let lines = sdp.sdp.split('\n')
       .map(l => l.trim()); // split and remove trailing CR
@@ -70,6 +71,13 @@ let parse_sdp_old = (sdp) => {
 
 
     } else if (line.includes('a=candidate:')) {
+
+      let candidate = line.substr(12);
+      ice_candidates = ice_candidates.concat(candidate);
+      // console.log('candidate:', candidate);
+
+
+    } else if (line.includes('a=ssrc:')) {
 
       let candidate = line.substr(12);
       ice_candidates = ice_candidates.concat(candidate);
@@ -119,6 +127,7 @@ let parse_sdp = (sdp) => {
   let fingerprint = '';
   let ips = [];
   let ports = [];
+  let ssrcs = [];
 
   let lines = sdp.sdp.split('\n')
       .map(l => l.trim()); // split and remove trailing CR
@@ -173,13 +182,24 @@ let parse_sdp = (sdp) => {
       ports = ports.concat(ips.indexOf(ip) + port)
 
 
+    } else if (line.includes('a=ssrc:')) {
+
+      let ssrc = line.substr(7).split(" ")[0];
+
+      if (!ssrcs.includes(ssrc)) {
+
+        ssrcs = ssrcs.concat(ssrc)
+
+      }
+
+
     }
 
 
 
     })
 
-  return ice_ufrag + "," + ice_pwd + "," + fingerprint + "," + ips.join('&') + "," + ports.join('&');
+  return ice_ufrag + "," + ice_pwd + "," + fingerprint + "," + ips.join('&') + "," + ports.join('&') + "," + ssrcs.join('&');
 
 }
 
