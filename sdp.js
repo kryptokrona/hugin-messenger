@@ -30,6 +30,7 @@ expand_sdp_offer: function(compressed_string) {
 
     let i = 1;
     let j = 1;
+    let external_port_found = false;
 
     for (port in ports) {
       console.log(ports[port].substring(1));
@@ -37,6 +38,7 @@ expand_sdp_offer: function(compressed_string) {
       if (ips[ip_index].substring(0,1) == 'e') {
         external_ip = ips[ip_index].substring(1);
         external_ports = external_ports.concat(ports[port].substring(1));
+        external_port_found = true;
         candidates[j] += "a=candidate:3098175849 1 udp 1686052607 " + ips[ip_index].replace('e','') + " " + ports[port].substring(1) + " typ srflx raddr " + ips[0] + " rport " + ports[0].substring(1) + " generation 0 network-id 1 network-cost 50\r\n"
       } else if (ports[port].substring(1) == "9") {
 
@@ -52,6 +54,7 @@ expand_sdp_offer: function(compressed_string) {
     if ( i == (ports.length / 3) ) {
       i = 0;
       j += 1;
+      external_port_found = false;
     }
 
     i += 1;
@@ -63,6 +66,7 @@ expand_sdp_offer: function(compressed_string) {
   }
 
   console.log(candidates);
+  console.log("ports:",external_ports);
 
 
 let sdp = `v=0
@@ -264,15 +268,23 @@ expand_sdp_answer: function(compressed_string) {
 
   ports = ports.split('&');
 
+  let external_port = '';
+
   console.log("ips:", ips);
+  console.log("ports:", ports);
 
   let prio = 2122260223;
 
   if (ports.length > 1) {
 
+    console.log('More than 1 port!');
+
       for (port in ports) {
         let ip_index = ports[port].substring(0,1);
         if (ips[ip_index].substring(0,1) == 'e') {
+          if (external_port.length == 0) {
+            external_port = ports[port].substring(1);
+          }
           external_ip = ips[ip_index].substring(1);
           candidates += "a=candidate:3098175849 1 udp 1686052607 " + ips[ip_index].replace('e','') + " " + ports[port].substring(1) + " typ srflx raddr " + ips[0] + " rport " + ports[0].substring(1) + " generation 0 network-id 1 network-cost 50\r\n"
         } else {
@@ -285,7 +297,10 @@ expand_sdp_answer: function(compressed_string) {
       }
 
   } else {
-    let external_ip = ips[0].replace('e','');
+
+    external_ip = ips[0].replace('e','');
+
+    external_port = ports[0].substring(1);
     candidates = "a=candidate:1410536466 1 udp 2122260223 " + ips[0] + " " + ports[0].substring(1) + " typ host generation 0 network-id 1 network-cost 10\r\n"
   }
 
@@ -296,7 +311,7 @@ s=-
 t=0 0
 a=group:BUNDLE 0 1 2
 a=msid-semantic: WMS PHt0a6UrqMPaYszJtG9Di9aI5hVQUnZV9hoB
-m=audio 50047 UDP/TLS/RTP/SAVPF 111 103 104 9 0 8 106 105 13 110 112 113 126
+m=audio ` + external_port + ` UDP/TLS/RTP/SAVPF 111 103 104 9 0 8 106 105 13 110 112 113 126
 c=IN IP4 ` + external_ip + `
 a=rtcp:9 IN IP4 0.0.0.0
 ` + candidates +
@@ -350,7 +365,7 @@ a=extmap:9 http://www.webrtc.org/experiments/rtp-hdrext/color-space
 a=extmap:4 urn:ietf:params:rtp-hdrext:sdes:mid
 a=extmap:5 urn:ietf:params:rtp-hdrext:sdes:rtp-stream-id
 a=extmap:6 urn:ietf:params:rtp-hdrext:sdes:repaired-rtp-stream-id
-a=sendonly
+a=sendrecv
 a=msid:E3mlsMb1J4YeMfIgnFjsE5yXEN6sZfLDUr8b 06691570-5673-40ba-a027-72001bbc6f70
 a=rtcp-mux
 a=rtcp-rsize
@@ -440,7 +455,7 @@ a=fmtp:115 apt=114
 a=rtpmap:116 ulpfec/90000
 a=ssrc-group:FID 3169534217 3369024862
 a=ssrc:3169534217 cname:IEW+mXSsrC9cc4mr
--a=ssrc:3369024862 cname:IEW+mXSsrC9cc4mr
+a=ssrc:3369024862 cname:IEW+mXSsrC9cc4mr
 m=application 9 UDP/DTLS/SCTP webrtc-datachannel
 c=IN IP4 0.0.0.0
 b=AS:30

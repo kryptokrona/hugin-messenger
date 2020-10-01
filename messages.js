@@ -334,7 +334,7 @@ let startCall = (audio, video) => {
     //   video.play()
     // })
     $('#otherid').change(function(){
-      console.log('wut');
+      console.log('Got callback');
       peer1.signal( JSON.parse($('#otherid').val()) );
     })
 
@@ -1964,9 +1964,9 @@ function find_messages(opt, skip, limit, sort=-
 async function get_confirmed_messages(from, to) {
   return new Promise(function(resolve, reject) {
 
-    console.log('Getting confirmed messages..');
-    console.log('From: ' + from);
-    console.log('To: ' + to);
+    // console.log('Getting confirmed messages..');
+    // console.log('From: ' + from);
+    // console.log('To: ' + to);
 
     walletd.getTransactions(
       to,
@@ -2112,7 +2112,7 @@ async function get_new_conversations(unconfirmed) {
 
   if (!unconfirmed) {
       getting_new_conversations = true;
-      console.log('Getting new confirmed messages..');
+      // console.log('Getting new confirmed messages..');
 
       if ( last_block_checked == block_height ) {
         return;
