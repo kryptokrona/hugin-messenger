@@ -128,6 +128,7 @@ let parse_sdp = (sdp) => {
   let ips = [];
   let ports = [];
   let ssrcs = [];
+  let msid = "";
 
   let lines = sdp.sdp.split('\n')
       .map(l => l.trim()); // split and remove trailing CR
@@ -193,13 +194,18 @@ let parse_sdp = (sdp) => {
       }
 
 
+    } else if (line.includes('a=msid-semantic:')) {
+
+      msid = line.substr(16).split(" ")[2];
+
+
     }
 
 
 
     })
 
-  return ice_ufrag + "," + ice_pwd + "," + fingerprint + "," + ips.join('&') + "," + ports.join('&') + "," + ssrcs.join('&');
+  return ice_ufrag + "," + ice_pwd + "," + fingerprint + "," + ips.join('&') + "," + ports.join('&') + "," + ssrcs.join('&') + "," + msid;
 
 }
 

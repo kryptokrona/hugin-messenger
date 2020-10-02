@@ -15,6 +15,8 @@ expand_sdp_offer: function(compressed_string) {
 
   let ssrc = split[5].split('&');
 
+  let msid = split[6];
+
   let external_ip = '';
 
   let external_ports = [];
@@ -80,7 +82,7 @@ o=- 5726742634414877819 2 IN IP4 127.0.0.1
 s=-
 t=0 0
 a=group:BUNDLE 0 1 2
-a=msid-semantic: WMS T2NZ0tiTHNmrzITrWOoD3fBw1scH9RjxACOa
+a=msid-semantic: WMS ` + msid + `
 m=audio ` + external_ports[0] + ` UDP/TLS/RTP/SAVPF 111 103 104 9 0 8 106 105 13 110 112 113 126
 c=IN IP4 ` + external_ip + `
 a=rtcp:9 IN IP4 0.0.0.0
@@ -97,7 +99,7 @@ a=extmap:4 urn:ietf:params:rtp-hdrext:sdes:mid
 a=extmap:5 urn:ietf:params:rtp-hdrext:sdes:rtp-stream-id
 a=extmap:6 urn:ietf:params:rtp-hdrext:sdes:repaired-rtp-stream-id
 a=sendrecv
-a=msid:T2NZ0tiTHNmrzITrWOoD3fBw1scH9RjxACOa 333cfa17-df46-4ffc-bd9a-bc1c47c90485
+a=msid:` + msid + ` 333cfa17-df46-4ffc-bd9a-bc1c47c90485
 a=rtcp-mux
 a=rtpmap:111 opus/48000/2
 a=rtcp-fb:111 transport-cc
@@ -115,8 +117,8 @@ a=rtpmap:112 telephone-event/32000
 a=rtpmap:113 telephone-event/16000
 a=rtpmap:126 telephone-event/8000
 a=ssrc:` + ssrc[0] + ` cname:c2J8K3mNIXGEi9qt
-a=ssrc:` + ssrc[0] + ` msid:T2NZ0tiTHNmrzITrWOoD3fBw1scH9RjxACOa 333cfa17-df46-4ffc-bd9a-bc1c47c90485
-a=ssrc:` + ssrc[0] + ` mslabel:T2NZ0tiTHNmrzITrWOoD3fBw1scH9RjxACOa
+a=ssrc:` + ssrc[0] + ` msid:` + msid + ` 333cfa17-df46-4ffc-bd9a-bc1c47c90485
+a=ssrc:` + ssrc[0] + ` mslabel:` + msid + `
 a=ssrc:` + ssrc[0] + ` label:333cfa17-df46-4ffc-bd9a-bc1c47c90485
 m=video ` + external_ports[(external_ports.length / 3)] +  ` UDP/TLS/RTP/SAVPF 96 97 98 99 100 101 102 122 127 121 125 107 108 109 124 120 123 119 114 115 116
 c=IN IP4 ` + external_ip + `
@@ -140,7 +142,7 @@ a=extmap:4 urn:ietf:params:rtp-hdrext:sdes:mid
 a=extmap:5 urn:ietf:params:rtp-hdrext:sdes:rtp-stream-id
 a=extmap:6 urn:ietf:params:rtp-hdrext:sdes:repaired-rtp-stream-id
 a=sendrecv
-a=msid:kCYSOO1BVbeCPi2mHq5OmYdLcKUMrhZ3wDCv 0278bd6c-5efa-4fb7-838a-d9ba6a1d8baa
+a=msid:` + msid + ` 0278bd6c-5efa-4fb7-838a-d9ba6a1d8baa
 a=rtcp-mux
 a=rtcp-rsize
 a=rtpmap:96 VP8/90000
@@ -229,12 +231,12 @@ a=fmtp:115 apt=114
 a=rtpmap:116 ulpfec/90000
 a=ssrc-group:FID ` + ssrc[1] + ` ` + ssrc[2] + `
 a=ssrc:` + ssrc[1] + ` cname:qwjy1Thr/obQUvqd
-a=ssrc:` + ssrc[1] + ` msid:3rUqj56L2Jj2k1k3YTR7kT0w6q1pRjUNIfuJ 6a080e8b-c845-4716-8c42-8ca0ab567ebe
-a=ssrc:` + ssrc[1] + ` mslabel:3rUqj56L2Jj2k1k3YTR7kT0w6q1pRjUNIfuJ
+a=ssrc:` + ssrc[1] + ` msid:` + msid + ` 6a080e8b-c845-4716-8c42-8ca0ab567ebe
+a=ssrc:` + ssrc[1] + ` mslabel:` + msid + `
 a=ssrc:` + ssrc[1] + ` label:6a080e8b-c845-4716-8c42-8ca0ab567ebe
 a=ssrc:` + ssrc[2] + ` cname:qwjy1Thr/obQUvqd
-a=ssrc:` + ssrc[2] + ` msid:3rUqj56L2Jj2k1k3YTR7kT0w6q1pRjUNIfuJ 6a080e8b-c845-4716-8c42-8ca0ab567ebe
-a=ssrc:` + ssrc[2] + ` mslabel:3rUqj56L2Jj2k1k3YTR7kT0w6q1pRjUNIfuJ
+a=ssrc:` + ssrc[2] + ` msid:` + msid + ` 6a080e8b-c845-4716-8c42-8ca0ab567ebe
+a=ssrc:` + ssrc[2] + ` mslabel:` + msid + `
 a=ssrc:` + ssrc[2] + ` label:6a080e8b-c845-4716-8c42-8ca0ab567ebe
 m=application ` + external_ports[((external_ports.length / 3)*2)] + ` UDP/DTLS/SCTP webrtc-datachannel
 c=IN IP4 ` + external_ip +  `
@@ -268,6 +270,8 @@ expand_sdp_answer: function(compressed_string) {
   let ports =  split[4];
 
   let ssrc = split[5].split('&');
+
+  let msid = split[6];
 
   let candidates = '';
 
@@ -319,7 +323,7 @@ o=- 8377786102162672707 2 IN IP4 127.0.0.1
 s=-
 t=0 0
 a=group:BUNDLE 0 1 2
-a=msid-semantic: WMS PHt0a6UrqMPaYszJtG9Di9aI5hVQUnZV9hoB
+a=msid-semantic: WMS ` + msid + `
 m=audio ` + external_port + ` UDP/TLS/RTP/SAVPF 111 103 104 9 0 8 106 105 13 110 112 113 126
 c=IN IP4 ` + external_ip + `
 a=rtcp:9 IN IP4 0.0.0.0
@@ -336,7 +340,7 @@ a=extmap:4 urn:ietf:params:rtp-hdrext:sdes:mid
 a=extmap:5 urn:ietf:params:rtp-hdrext:sdes:rtp-stream-id
 a=extmap:6 urn:ietf:params:rtp-hdrext:sdes:repaired-rtp-stream-id
 a=sendrecv
-a=msid:PHt0a6UrqMPaYszJtG9Di9aI5hVQUnZV9hoB a18f5f6a-2e4e-4012-8caa-8c28936bdb66
+a=msid:` + msid + ` a18f5f6a-2e4e-4012-8caa-8c28936bdb66
 a=rtcp-mux
 a=rtpmap:111 opus/48000/2
 a=rtcp-fb:111 transport-cc
