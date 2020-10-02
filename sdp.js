@@ -36,14 +36,21 @@ expand_sdp_offer: function(compressed_string) {
     let j = 1;
     let external_port_found = false;
 
+    let current_internal = '';
+
     for (port in ports) {
       console.log(ports[port].substring(1));
       let ip_index = ports[port].substring(0,1);
+      if (i == 1 ) {
+
+        current_internal = ports[port].substring(1);
+
+      }
       if (ips[ip_index].substring(0,1) == 'e') {
         external_ip = ips[ip_index].substring(1);
         external_ports = external_ports.concat(ports[port].substring(1));
         external_port_found = true;
-        candidates[j] += "a=candidate:3098175849 1 udp 1686052607 " + ips[ip_index].replace('e','') + " " + ports[port].substring(1) + " typ srflx raddr " + ips[0] + " rport " + ports[0].substring(1) + " generation 0 network-id 1 network-cost 50\r\n"
+        candidates[j] += "a=candidate:3098175849 1 udp 1686052607 " + ips[ip_index].replace('e','') + " " + ports[port].substring(1) + " typ srflx raddr " + ips[0] + " rport " + current_internal + " generation 0 network-id 1 network-cost 50\r\n"
       } else if (ports[port].substring(1) == "9") {
 
         candidates[j] += "a=candidate:3377426864 1 tcp "  + tcp_prio + " " + ips[ip_index] + " " + ports[port].substring(1) +  " typ host tcptype active generation 0 network-id 1 network-cost 50\r\n"
@@ -379,7 +386,7 @@ a=extmap:4 urn:ietf:params:rtp-hdrext:sdes:mid
 a=extmap:5 urn:ietf:params:rtp-hdrext:sdes:rtp-stream-id
 a=extmap:6 urn:ietf:params:rtp-hdrext:sdes:repaired-rtp-stream-id
 a=sendrecv
-a=msid:E3mlsMb1J4YeMfIgnFjsE5yXEN6sZfLDUr8b 06691570-5673-40ba-a027-72001bbc6f70
+a=msid:` + msid + ` 06691570-5673-40ba-a027-72001bbc6f70
 a=rtcp-mux
 a=rtcp-rsize
 a=rtpmap:96 VP8/90000
