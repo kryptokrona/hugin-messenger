@@ -1,9 +1,11 @@
 module.exports = {
 expand_sdp_offer: function(compressed_string) {
 
+  let type = compressed_string.substring(0,1);
+
   let split = compressed_string.split(",");
 
-  let ice_ufrag = split[0];
+  let ice_ufrag = split[0].substring(1);
 
   let ice_pwd = split[1];
 
@@ -148,8 +150,7 @@ a=extmap:9 http://www.webrtc.org/experiments/rtp-hdrext/color-space
 a=extmap:4 urn:ietf:params:rtp-hdrext:sdes:mid
 a=extmap:5 urn:ietf:params:rtp-hdrext:sdes:rtp-stream-id
 a=extmap:6 urn:ietf:params:rtp-hdrext:sdes:repaired-rtp-stream-id
-a=sendrecv
-a=msid:` + msid + ` 0278bd6c-5efa-4fb7-838a-d9ba6a1d8baa
+${type == 'v' ? "a=sendrecv\r\na=msid:" + msid + "0278bd6c-5efa-4fb7-838a-d9ba6a1d8baa" : "a=recvonly" }
 a=rtcp-mux
 a=rtcp-rsize
 a=rtpmap:96 VP8/90000
@@ -236,15 +237,15 @@ a=rtpmap:114 red/90000
 a=rtpmap:115 rtx/90000
 a=fmtp:115 apt=114
 a=rtpmap:116 ulpfec/90000
-a=ssrc-group:FID ` + ssrc[1] + ` ` + ssrc[2] + `
-a=ssrc:` + ssrc[1] + ` cname:qwjy1Thr/obQUvqd
-a=ssrc:` + ssrc[1] + ` msid:` + msid + ` 6a080e8b-c845-4716-8c42-8ca0ab567ebe
-a=ssrc:` + ssrc[1] + ` mslabel:` + msid + `
-a=ssrc:` + ssrc[1] + ` label:6a080e8b-c845-4716-8c42-8ca0ab567ebe
-a=ssrc:` + ssrc[2] + ` cname:qwjy1Thr/obQUvqd
-a=ssrc:` + ssrc[2] + ` msid:` + msid + ` 6a080e8b-c845-4716-8c42-8ca0ab567ebe
-a=ssrc:` + ssrc[2] + ` mslabel:` + msid + `
-a=ssrc:` + ssrc[2] + ` label:6a080e8b-c845-4716-8c42-8ca0ab567ebe
+${type == "v" ? "a=ssrc-group:FID " + ssrc[1] + " " + ssrc[2] + "\r\n" +
+"a=ssrc:" + ssrc[1] + " cname:qwjy1Thr/obQUvqd\r\n" +
+"a=ssrc:" + ssrc[1] + " msid:" + msid + " 6a080e8b-c845-4716-8c42-8ca0ab567ebe\r\n" +
+"a=ssrc:" + ssrc[1] + " mslabel:" + msid + "\r\n" +
+"a=ssrc:" + ssrc[1] + " label:6a080e8b-c845-4716-8c42-8ca0ab567ebe\r\n" +
+"a=ssrc:" + ssrc[2] + " cname:qwjy1Thr/obQUvqd\r\n"+
+"a=ssrc:" + ssrc[2] + " msid:" + msid + " 6a080e8b-c845-4716-8c42-8ca0ab567ebe\r\n" +
+"a=ssrc:" + ssrc[2] + " mslabel:" + msid + "\r\n" +
+"a=ssrc:" + ssrc[2] + " label:6a080e8b-c845-4716-8c42-8ca0ab567ebe" : "" }
 m=application ` + external_ports[((external_ports.length / 3)*2)] + ` UDP/DTLS/SCTP webrtc-datachannel
 c=IN IP4 ` + external_ip +  `
 ` + candidates[3] +
@@ -266,7 +267,9 @@ expand_sdp_answer: function(compressed_string) {
 
   console.log("split:", split);
 
-  let ice_ufrag = split[0];
+  let type = compressed_string.substring(0,1);
+
+  let ice_ufrag = split[0].substring(1);
 
   let ice_pwd = split[1];
 

@@ -287,7 +287,7 @@ let startCall = (audio, video) => {
 
     peer1.on('signal', data => {
       console.log('real data:', data);
-      let parsed_data = parse_sdp(data);
+      let parsed_data = `${video ? "v" : "a"}` + parse_sdp(data);
       console.log('parsed data:', parsed_data);
       let recovered_data = sdp.expand_sdp_offer(parsed_data);
       console.log('recovered data:', recovered_data);
@@ -514,7 +514,7 @@ let downloadMagnet = (magnetLink, element) => {
 
                 peer2.on('signal', data => {
                   console.log('initial data:', data);
-                  let parsed_data = parse_sdp(data);
+                  let parsed_data = `${video ? "v" : "a"}` + parse_sdp(data);
                   console.log('parsed data:', parsed_data);
                   let recovered_data = sdp.expand_sdp_answer(parsed_data);
                   data = recovered_data;
