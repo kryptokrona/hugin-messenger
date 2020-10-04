@@ -474,7 +474,7 @@ a=rtpmap:114 red/90000
 a=rtpmap:115 rtx/90000
 a=fmtp:115 apt=114
 a=rtpmap:116 ulpfec/90000
-${type == "v" ? "a=ssrc-group:FID "+ ssrc[1] +  " " + ssrc[2] +  "a=ssrc:" + ssrc[1] +  " cname:IEW+mXSsrC9cc4mr\r\na=ssrc:" + ssrc[2] +  " cname:IEW+mXSsrC9cc4mr" : "" }m=application 9 UDP/DTLS/SCTP webrtc-datachannel
+${type == "v" ? "a=ssrc-group:FID "+ ssrc[1] +  " " + ssrc[2] +  "\r\na=ssrc:" + ssrc[1] +  " cname:IEW+mXSsrC9cc4mr\r\na=ssrc:" + ssrc[2] +  " cname:IEW+mXSsrC9cc4mr\r\n" : "" }m=application 9 UDP/DTLS/SCTP webrtc-datachannel
 c=IN IP4 0.0.0.0
 b=AS:30
 a=ice-ufrag:` + ice_ufrag + `
