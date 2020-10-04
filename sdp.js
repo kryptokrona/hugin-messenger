@@ -150,7 +150,7 @@ a=extmap:9 http://www.webrtc.org/experiments/rtp-hdrext/color-space
 a=extmap:4 urn:ietf:params:rtp-hdrext:sdes:mid
 a=extmap:5 urn:ietf:params:rtp-hdrext:sdes:rtp-stream-id
 a=extmap:6 urn:ietf:params:rtp-hdrext:sdes:repaired-rtp-stream-id
-${type == 'v' ? "a=sendrecv\r\na=msid:" + msid + "0278bd6c-5efa-4fb7-838a-d9ba6a1d8baa" : "a=recvonly" }
+${type == 'v' ? "a=sendrecv\r\na=msid:" + msid + " 0278bd6c-5efa-4fb7-838a-d9ba6a1d8baa" : "a=recvonly" }
 a=rtcp-mux
 a=rtcp-rsize
 a=rtpmap:96 VP8/90000
