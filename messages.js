@@ -514,7 +514,7 @@ let downloadMagnet = (magnetLink, element) => {
 
                 peer2.on('signal', data => {
                   console.log('initial data:', data);
-                  let parsed_data = `${video ? "v" : "a"}` + parse_sdp(data);
+                  let parsed_data = `${magnetLink.split('=')[2].includes('video') ? "v" : "a"}` + parse_sdp(data);
                   console.log('parsed data:', parsed_data);
                   let recovered_data = sdp.expand_sdp_answer(parsed_data);
                   data = recovered_data;
