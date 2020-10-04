@@ -245,7 +245,7 @@ ${type == "v" ? "a=ssrc-group:FID " + ssrc[1] + " " + ssrc[2] + "\r\n" +
 "a=ssrc:" + ssrc[2] + " cname:qwjy1Thr/obQUvqd\r\n"+
 "a=ssrc:" + ssrc[2] + " msid:" + msid + " 6a080e8b-c845-4716-8c42-8ca0ab567ebe\r\n" +
 "a=ssrc:" + ssrc[2] + " mslabel:" + msid + "\r\n" +
-"a=ssrc:" + ssrc[2] + " label:6a080e8b-c845-4716-8c42-8ca0ab567ebe" : "" }m=application ` + external_ports[((external_ports.length / 3)*2)] + ` UDP/DTLS/SCTP webrtc-datachannel
+"a=ssrc:" + ssrc[2] + " label:6a080e8b-c845-4716-8c42-8ca0ab567ebe\r\n" : "" }m=application ` + external_ports[((external_ports.length / 3)*2)] + ` UDP/DTLS/SCTP webrtc-datachannel
 c=IN IP4 ` + external_ip +  `
 ` + candidates[3] +
 `a=ice-ufrag:` + ice_ufrag + `
