@@ -387,8 +387,7 @@ a=extmap:9 http://www.webrtc.org/experiments/rtp-hdrext/color-space
 a=extmap:4 urn:ietf:params:rtp-hdrext:sdes:mid
 a=extmap:5 urn:ietf:params:rtp-hdrext:sdes:rtp-stream-id
 a=extmap:6 urn:ietf:params:rtp-hdrext:sdes:repaired-rtp-stream-id
-a=sendrecv
-a=msid:` + msid + ` 06691570-5673-40ba-a027-72001bbc6f70
+${type == 'v' ? "a=sendrecv\r\na=msid:" + msid + " 06691570-5673-40ba-a027-72001bbc6f70" : "a=inactive"}
 a=rtcp-mux
 a=rtcp-rsize
 a=rtpmap:96 VP8/90000
@@ -475,10 +474,7 @@ a=rtpmap:114 red/90000
 a=rtpmap:115 rtx/90000
 a=fmtp:115 apt=114
 a=rtpmap:116 ulpfec/90000
-a=ssrc-group:FID ` + ssrc[1] +  ` ` + ssrc[2] +  `
-a=ssrc:` + ssrc[1] +  ` cname:IEW+mXSsrC9cc4mr
-a=ssrc:` + ssrc[2] +  ` cname:IEW+mXSsrC9cc4mr
-m=application 9 UDP/DTLS/SCTP webrtc-datachannel
+${type == "v" ? "a=ssrc-group:FID "+ ssrc[1] +  " " + ssrc[2] +  "a=ssrc:" + ssrc[1] +  " cname:IEW+mXSsrC9cc4mr\r\na=ssrc:" + ssrc[2] +  " cname:IEW+mXSsrC9cc4mr" : "" }m=application 9 UDP/DTLS/SCTP webrtc-datachannel
 c=IN IP4 0.0.0.0
 b=AS:30
 a=ice-ufrag:` + ice_ufrag + `
