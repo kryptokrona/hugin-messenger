@@ -458,7 +458,7 @@ let answerCall = (msg) => {
 
     peer2.on('signal', data => {
       console.log('initial data:', data);
-      let parsed_data = `${video ? 'δ', 'λ'}` + parse_sdp(data);
+      let parsed_data = `${video ? 'δ' : 'λ'}` + parse_sdp(data);
       console.log('parsed data really cool sheet:', parsed_data);
       let recovered_data = sdp.expand_sdp_answer(parsed_data);
       data = recovered_data;
