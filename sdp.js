@@ -324,7 +324,7 @@ expand_sdp_answer: function(compressed_string) {
 
   } else {
 
-    external_ip = ips[0].replace('!','');
+    external_ip = ips[0].replace('!','').replace('?','');
 
     external_port = ports[0].substring(1);
     candidates = "a=candidate:1410536466 1 udp 2122260223 " + ips[0].replace('!','').replace('?','') + " " + ports[0].substring(1) + " typ host generation 0 network-id 1 network-cost 10\r\n"
@@ -391,7 +391,7 @@ a=extmap:9 http://www.webrtc.org/experiments/rtp-hdrext/color-space
 a=extmap:4 urn:ietf:params:rtp-hdrext:sdes:mid
 a=extmap:5 urn:ietf:params:rtp-hdrext:sdes:rtp-stream-id
 a=extmap:6 urn:ietf:params:rtp-hdrext:sdes:repaired-rtp-stream-id
-${type == 'Δ' ? "a=sendrecv\r\na=msid:" + msid + " 06691570-5673-40ba-a027-72001bbc6f70" : "a=inactive"}
+${type == 'δ' ? "a=sendrecv\r\na=msid:" + msid + " 06691570-5673-40ba-a027-72001bbc6f70" : "a=inactive"}
 a=rtcp-mux
 a=rtcp-rsize
 a=rtpmap:96 VP8/90000
@@ -478,7 +478,7 @@ a=rtpmap:114 red/90000
 a=rtpmap:115 rtx/90000
 a=fmtp:115 apt=114
 a=rtpmap:116 ulpfec/90000
-${type == "Δ" ? "a=ssrc-group:FID "+ ssrc[1] +  " " + ssrc[2] +  "\r\na=ssrc:" + ssrc[1] +  " cname:IEW+mXSsrC9cc4mr\r\na=ssrc:" + ssrc[2] +  " cname:IEW+mXSsrC9cc4mr\r\n" : "" }m=application 9 UDP/DTLS/SCTP webrtc-datachannel
+${type == "δ" ? "a=ssrc-group:FID "+ ssrc[1] +  " " + ssrc[2] +  "\r\na=ssrc:" + ssrc[1] +  " cname:IEW+mXSsrC9cc4mr\r\na=ssrc:" + ssrc[2] +  " cname:IEW+mXSsrC9cc4mr\r\n" : "" }m=application 9 UDP/DTLS/SCTP webrtc-datachannel
 c=IN IP4 0.0.0.0
 b=AS:30
 a=ice-ufrag:` + ice_ufrag + `

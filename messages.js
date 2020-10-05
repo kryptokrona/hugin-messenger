@@ -458,7 +458,7 @@ let answerCall = (msg) => {
 
     peer2.on('signal', data => {
       console.log('initial data:', data);
-      let parsed_data = 'λ' + parse_sdp(data);
+      let parsed_data = `${video ? 'δ', 'λ'}` + parse_sdp(data);
       console.log('parsed data really cool sheet:', parsed_data);
       let recovered_data = sdp.expand_sdp_answer(parsed_data);
       data = recovered_data;
@@ -566,9 +566,11 @@ let parseCall = (msg, sender=false) => {
       }
       return `${msg.substring(0,1) == "Δ" ? "Video" : "Audio"} call started`;
       break;
+    case "δ":
+      // Fall through
     case "λ":
       // Answer
-      $('#otherid').val(sdp.expand_sdp_answer(msg));
+      $('#otherid').val(JSON.stringify(sdp.expand_sdp_answer(msg)));
       $('#otherid').change();
       return "";
 
@@ -644,6 +646,7 @@ function escapeHtml(unsafe) {
          .replace(/"/g, "&quot;")
          .replace(/'/g, "&#039;")
          .replace(/Δ/g, "&Delta;")
+         .replace(/δ/g, "&delta;")
          .replace(/Λ/g, "&Lambda;")
          .replace(/λ/g, "&lambda;");
  }
