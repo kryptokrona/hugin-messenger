@@ -408,9 +408,7 @@ let startCall = (audio, video) => {
 
 let answerCall = (msg) => {
 
-  if (msg.substring(1) == '>' || msg.substring(1) == '<') {
-
-    let video = msg.substring(1) == '>';
+    let video = msg.substring(0,1) == 'Δ';
 
   // get video/voice stream
   navigator.mediaDevices.getUserMedia({
@@ -460,8 +458,8 @@ let answerCall = (msg) => {
 
     peer2.on('signal', data => {
       console.log('initial data:', data);
-      let parsed_data = `video ? ">" : "<"}` + parse_sdp(data);
-      console.log('parsed data:', parsed_data);
+      let parsed_data = 'λ' + parse_sdp(data);
+      console.log('parsed data really cool sheet:', parsed_data);
       let recovered_data = sdp.expand_sdp_answer(parsed_data);
       data = recovered_data;
       console.log('recovered data:', recovered_data);
@@ -469,7 +467,7 @@ let answerCall = (msg) => {
       if (!first) {
         return
       }
-
+      console.log('Sending answer ', parsed_data);
       send_message(parsed_data, true);
       //
       // var client = new WebTorrent();
@@ -528,35 +526,33 @@ let answerCall = (msg) => {
     })
   }
 
-} else {
-
-  $('#otherid').val(sdp.expand_sdp_answer(msg));
-  $('#otherid').change();
-
-}
-
 }
 
 let parseCall = (msg, sender=false) => {
 
   switch (msg.substring(0,1)) {
     case "Δ":
+      // Fall through
     case "Λ":
       // Call offer
 
-      return `${msg.substring(0,1) == "Δ" ? "Video" : "Audio"} call started`;
+
       if (!awaiting_callback) {
 
+        // Start ringing sequence
          $('#incomingCall').append('<audio autoplay><source src="static/ringtone.mp3" type="audio/mpeg"></audio>');
          $('#incomingCall').show();
+         let avatar_base64 = get_avatar(sender);
+         $('#incomingCall img').attr('src',"data:image/svg+xml;base64," + avatar_base64);
          $('#incomingCall span').text(sender);
+
+         // Handle answer/decline
          $('#answerCall').click(function() {
            print_conversation(sender);
            answerCall(msg);
            $('#caller_menu').fadeIn().css('top','51px');
            $('#caller_menu_type').text('Connecting..');
-           $('#caller_menu_contact').text($('#recipient_form').val());
-           let avatar_base64 = get_avatar($('#recipient_form').val());
+           $('#caller_menu_contact').text(sender);
            $('#incomingCall img').attr('src',"data:image/svg+xml;base64," + avatar_base64);
 
            $('#incomingCall').hide();
@@ -568,9 +564,12 @@ let parseCall = (msg, sender=false) => {
          })
 
       }
+      return `${msg.substring(0,1) == "Δ" ? "Video" : "Audio"} call started`;
       break;
     case "λ":
       // Answer
+      $('#otherid').val(sdp.expand_sdp_answer(msg));
+      $('#otherid').change();
       return "";
 
     break;
