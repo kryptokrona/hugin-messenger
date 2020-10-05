@@ -23,100 +23,6 @@ let endCall = (peer, stream) => {
   $('#otherid').unbind('change');
 }
 
-let parse_sdp_old = (sdp) => {
-
-  // console.log("sdp:",sdp);
-
-  let ice_ufrag = '';
-  let ice_pwd = '';
-  let fingerprint = '';
-  let external_ip = '';
-  let internal_ip = '';
-  let ice_candidates = [];
-  let udp_ports = [];
-  let tcp_port = [];
-  let ssrc = [];
-
-  let lines = sdp.sdp.split('\n')
-      .map(l => l.trim()); // split and remove trailing CR
-  lines.forEach(function(line) {
-
-    if (line.includes('a=fingerprint:') && fingerprint == '') {
-
-      let parts = line.substr(14).split(' ');
-      let hex = line.substr(22).split(':').map(function (h) {
-          return parseInt(h, 16);
-      });
-
-      // console.log('hex', line);
-
-      fingerprint = btoa(String.fromCharCode.apply(String, hex));
-
-
-      // console.log("fingerprint::" , fingerprint);
-      // console.log("decoded:" , decode_fingerprint(fingerprint));
-
-
-    } else if (line.includes('a=ice-ufrag:') && ice_ufrag == '') {
-
-      ice_ufrag = line.substr(12);
-      // console.log('ufrag:', ice_ufrag);
-
-
-    } else if (line.includes('a=ice-pwd:') && ice_pwd == '') {
-
-      ice_pwd = line.substr(10);
-      // console.log('pwd:', ice_pwd);
-
-
-    } else if (line.includes('a=candidate:')) {
-
-      let candidate = line.substr(12);
-      ice_candidates = ice_candidates.concat(candidate);
-      // console.log('candidate:', candidate);
-
-
-    } else if (line.includes('a=ssrc:')) {
-
-      let candidate = line.substr(12);
-      ice_candidates = ice_candidates.concat(candidate);
-      // console.log('candidate:', candidate);
-
-
-    }
-
-
-
-    })
-    // console.log("candidates:", ice_candidates.join(','));
-    for (c in ice_candidates) {
-      let candidate = ice_candidates[c].split(" ");
-      let ip = candidate[4];
-      let port = candidate[5];
-
-      if (external_ip.length == 0) {
-        external_ip = ip;
-        // console.log('external ip:', external_ip);
-      } else if (internal_ip.length == 0) {
-        internal_ip = ip;
-        // console.log('internal ip:', internal_ip);
-      }
-      if (udp_ports.length == 2 && tcp_port.length == 0) {
-
-      tcp_port = port;
-      // console.log('tcp port:', tcp_port);
-
-    } else if (port != tcp_port) {
-      udp_ports = udp_ports.concat(port);
-      // console.log('udp port:', udp_ports);
-    }
-
-    }
-
-  return ice_ufrag + "," + ice_pwd + "," + fingerprint + "," + external_ip + "," + internal_ip + "," +tcp_port + "," + udp_ports.join(",");
-
-}
-
 let parse_sdp = (sdp) => {
 
   // console.log("sdp:",sdp);
@@ -330,72 +236,15 @@ let startCall = (audio, video) => {
       if (!first) {
         return
       }
-
-      // var client = new WebTorrent();
-      //
-      // let blob = new Blob([JSON.stringify(data)]);
-      // if (video) {
-      //   blob.name = 'videocallrequest';
-      // } else {
-      //   blob.name = 'audiocallrequest';
-      // }
-
       send_message(parsed_data);
 
       awaiting_callback = true;
 
-      // client.seed(blob,  {type: 'text/plain'}, function (torrent) {
-      //   console.log('Client is seeding ' + torrent.magnetURI)
-      //   send_message(torrent.magnetURI.replace('&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&tr=wss%3A%2F%2Ftracker.fastcast.nz',''));
-      //   awaiting_callback = true;
-      //
-      //
-      //
-      //     torrent.on('upload', function (bytes) {
-      //
-      //         if (bytes = torrent.length) {
-      //           console.log('Fully uploaded, removing')
-      //           torrent.removeListener('upload', listener);
-      //           $('#caller_menu_type').text('Call accepted..').delay(1500).text('Setting up stream..');
-      //           setTimeout(function() {
-      //
-      //
-      //             client.destroy();
-      //
-      //           }, 60000);
-      //
-      //         } else {
-      //           console.log('Ratio is: '+bytes)
-      //         }
-      //
-      //
-      //     })
-      //
-      //
-      //
-      // })
-
       first = false;
 
-      // peer2.signal(data)
     })
-    //
-    // peer2.on('signal', data => {
-    //   peer1.signal(data)
-    // })
-    //
-    // peer2.on('stream', stream => {
-    //   // got remote video stream, now let's show it in a video tag
-    //   var video = document.querySelector('video')
-    //
-    //   if ('srcObject' in video) {
-    //     video.srcObject = stream
-    //   } else {
-    //     video.src = window.URL.createObjectURL(stream) // for older browsers
-    //   }
-    //
-    //   video.play()
-    // })
+
+
     $('#otherid').change(function(){
       console.log('Got callback');
       peer1.signal( JSON.parse($('#otherid').val()) );
@@ -586,24 +435,6 @@ $('#video-button').click(function() { startCall(true, true) });
 
 $('#call-button').click(function() { startCall(true, false) });
 
-//
-// client.remove('7cf7bfdaafeffcc3dec1e4cfe2e4350126032788');
-// client.remove('7e607d31899e7839e36b70496519bcc5ca4aadac');
-//
-// let status = () => {
-//   setTimeout(function(){
-//     console.log(client.torrents);
-//     status()
-//   }, 60000)
-// }
-// status();
-// When user drops files on the browser, create a new torrent and start seeding it!
-// dragDrop('#messages_pane', function (files) {
-//   client.seed(files, function (torrent) {
-//     console.log('Client is seeding ' + torrent.magnetURI)
-//   })
-// })
-
 var holder = document.getElementById('messages_pane');
 
         holder.ondragover = () => {
@@ -673,151 +504,7 @@ let downloadMagnet = (magnetLink, element) => {
          })
 
      let file = torrent.files.find(function (file) {
-       if (magnetLink.split('=')[2].includes('callrequest') || magnetLink.split('=')[2].includes('callback')) {
-
-          var fr=new FileReader();
-          fr.onload=function(){
-
-              let json = JSON.parse(fr.result);
-
-              console.log(json);
-
-              if (json.type == 'offer') {
-
-              // get video/voice stream
-              navigator.mediaDevices.getUserMedia({
-                video: magnetLink.split('=')[2].includes('video'),
-                audio: true
-              }).then(gotMedia).catch(() => {})
-
-              function gotMedia (stream) {
-
-                var myvideo = document.getElementById('myvideo')
-                myvideo.srcObject = stream;
-
-                myvideo.play();
-                $('video').fadeIn();
-
-
-
-                var peer2 = new Peer({stream: stream, trickle: false})
-
-                $('#caller_menu .fa-phone').click(function(){
-                  endCall(peer2, stream);
-                })
-
-
-                $('#caller_menu .fa-microphone').click( function() {
-                  $(this).toggleClass('fa-microphone-slash').toggleClass('fa-microphone');
-                  stream.getTracks().forEach(track => track.enabled = !track.enabled);
-                });
-
-                peer2.on('close', () => {
-
-                  console.log('Connection lost..')
-                  endCall(peer2, stream);
-
-                })
-
-                peer2.on('error', () => {
-
-                  console.log('Connection lost..')
-
-                  endCall(peer2, stream);
-
-                })
-
-                let first = true;
-
-                peer2.on('signal', data => {
-                  console.log('initial data:', data);
-                  let parsed_data = 'λ' + parse_sdp(data);
-                  console.log('parsed data:', parsed_data);
-                  let recovered_data = sdp.expand_sdp_answer(parsed_data);
-                  data = recovered_data;
-                  console.log('recovered data:', recovered_data);
-
-                  if (!first) {
-                    return
-                  }
-
-                  var client = new WebTorrent();
-                  let blob = new Blob([JSON.stringify(data)]);
-                  blob.name = 'callback';
-                  client.seed(blob, {type: 'text/plain'}, function (torrent) {
-                    console.log('Client is seeding ' + torrent.magnetURI)
-                    send_message(torrent.magnetURI.replace('&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&tr=wss%3A%2F%2Ftracker.fastcast.nz',''), true);
-                    torrent.on('upload', function (bytes) {
-
-                        if (bytes = torrent.length) {
-                          console.log('Fully uploaded, removing')
-                          torrent.removeListener('upload', listener);
-                          $('#caller_menu_type').text('Connected');
-                          setTimeout(function() {
-
-
-                            client.destroy();
-
-                          }, 60000);
-
-                        } else {
-                          console.log('Ratio is: '+bytes)
-                        }
-
-
-                    })
-                  })
-
-                  first = false;
-
-                })
-
-                peer2.signal(json);
-
-                peer2.on('track', (track, stream) => {
-                  $('#caller_menu_type').text('Setting up stream..');
-                })
-
-                peer2.on('stream', stream => {
-                  // got remote video stream, now let's show it in a video tag
-                  var video = document.querySelector('video')
-
-
-
-                  if ('srcObject' in video) {
-                    video.srcObject = stream
-                  } else {
-                    video.src = window.URL.createObjectURL(stream) // for older browsers
-                  }
-
-                  video.play();
-
-                  $('#caller_menu_type').text('Setting up stream..');
-
-                })
-              }
-
-            } else {
-
-              $('#otherid').val(JSON.stringify(json));
-              $('#otherid').change();
-
-            }
-
-            }
-
-
-          file.getBlob(function (err, blob) {
-
-            fr.readAsText(blob);
-          });
-
-
-
-         return;
-       } else {
        file.appendTo(document.getElementById(element).getElementsByTagName('p')[0]);
-     }
      });
      $('#messages_pane').scrollTop($('#messages').height());
      //torrent.destroy();
@@ -876,52 +563,8 @@ let handleMagnetListed = (message) => {
 var awaiting_callback = false;
 
  let handleMagnetLink = (magnetLinks, element, calls=false, sender=false) => {
-   if (magnetLinks[0].split('=')[2].includes('callback')) {
-     $('#' + element).remove();
-    }
-
-        if (magnetLinks[0].split('=')[2].includes('callback') && awaiting_callback) {
-          console.log('ermagerd callback received!!');
-          //$('#' + element).find('p').text('Callback received!');
-          downloadMagnet(magnetLinks[0], element);
-          awaiting_callback = false;
-        }
-
-        if (magnetLinks[0].split('=')[2].includes('callrequest')) {
-          $('#' + element).find('p').text('Call started');
-          if (calls) {
-            $('#incomingCall').append('<audio autoplay><source src="static/ringtone.mp3" type="audio/mpeg"></audio>');
-            $('#incomingCall').show();
-            if (magnetLinks[0].split('=')[2].includes('video')) {
-              $('#incomingCall h1').text("Incoming video call!");
-            } else {
-              $('#incomingCall h1').text("Incoming voice call!");
-            }
-            avatar_base64 = get_avatar(sender);
-            $('#incomingCall img').attr('src',"data:image/svg+xml;base64," + avatar_base64);
-            $('#incomingCall span').text(sender);
-            $('#answerCall').click(function() {
-              print_conversation(sender);
-              downloadMagnet(magnetLinks[0], element);
-
-                  $('#caller_menu').fadeIn().css('top','51px');
-                  $('#caller_menu_type').text('Connecting..');
-                  $('#caller_menu_contact').text($('#recipient_form').val());
-                  let avatar_base64 = get_avatar($('#recipient_form').val());
-                  $('#incomingCall img').attr('src',"data:image/svg+xml;base64," + avatar_base64);
-
-              $('#incomingCall').hide();
-              $('#incomingCall audio').remove();
-            })
-            $('#declineCall').click(function() {
-              $('#incomingCall').hide();
-              $('#incomingCall audio').remove();
-            })
-          }
-        } else {
         $('#' + element).find('p').text($('#' + element).find('p').text().replace(magnetLinks[0], magnetLinks[0].split('=')[2]));
         $('#' + element).find('p').append('<button class="download-button">Download</button>').click(function(){ downloadMagnet(magnetLinks[0], element) });
-        }
 }
 
 const rmt = require('electron').remote;
@@ -2649,10 +2292,8 @@ async function send_message(message, silent=false) {
           payload_box = {"box":Buffer.from(box).toString('hex'), "t":timestamp, "key":$('#currentPubKey').text()};
           console.log("First message to sender, appending key.");
         }
-
         // Convert json to hex
         let payload_hex = toHex(JSON.stringify(payload_box));
-
 
         transfer = [ { 'amount':amount, 'address':receiver } ];
 
