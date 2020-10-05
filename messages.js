@@ -23,7 +23,6 @@ let endCall = (peer, stream) => {
   $('#otherid').unbind('change');
 }
 
-
 let parse_sdp_old = (sdp) => {
 
   // console.log("sdp:",sdp);
@@ -141,7 +140,7 @@ let parse_sdp = (sdp) => {
           return parseInt(h, 16);
       });
 
-      // console.log('hex', line);
+      console.log('intradasting: ', hex);
 
       fingerprint = btoa(String.fromCharCode.apply(String, hex));
 
@@ -170,17 +169,51 @@ let parse_sdp = (sdp) => {
       port = candidate[5]
       type = candidate[7]
 
+
+
+      let hexa = ip.split('.').map(function (h) {
+          return h.toString(16);
+      });
+      console.log('line: ', ip);
+      console.log('intradasting: ', hexa);
+
+      let ip_hex = btoa(String.fromCharCode.apply(String, hexa));
+
+      console.log('cool ip: ', ip)
+
+
       if (type == "srflx") {
-        ip = "e" + ip
+        ip_hex = "!" + ip_hex
+      } else {
+        ip_hex = "?" + ip_hex
       }
 
-      if (!ips.includes(ip)) {
-
-        ips = ips.concat(ip)
+      if (!ips.includes(ip_hex)) {
+        ips = ips.concat(ip_hex)
 
       }
 
-      ports = ports.concat(ips.indexOf(ip) + port)
+      console.log(candidate);
+      console.log(port);
+      //
+      // let indexedport = ips.indexOf(ip) + port;
+      //
+      // indexedport = indexedport.match(/.{1,2}/g);
+      //
+      // console.log('Arrayed: ', indexedport);
+      //
+      // let hex = indexedport.map(function (h) {
+      //     return parseInt(h, 16);
+      // });
+      //
+      // console.log('intradasting: ', hex);
+      //
+      // let payload = btoa(String.fromCharCode.apply(String, hex));
+      //
+      // console.log("Payload: ", payload);
+
+
+      ports = ports.concat(ips.indexOf(ip_hex) + port)
 
 
     } else if (line.includes('a=ssrc:')) {
@@ -287,7 +320,7 @@ let startCall = (audio, video) => {
 
     peer1.on('signal', data => {
       console.log('real data:', data);
-      let parsed_data = `${video ? "v" : "a"}` + parse_sdp(data);
+      let parsed_data = `${video ? "Δ" : "Λ"}` + parse_sdp(data);
       console.log('parsed data:', parsed_data);
       let recovered_data = sdp.expand_sdp_offer(parsed_data);
       console.log('recovered data:', recovered_data);
@@ -298,45 +331,49 @@ let startCall = (audio, video) => {
         return
       }
 
-      var client = new WebTorrent();
+      // var client = new WebTorrent();
+      //
+      // let blob = new Blob([JSON.stringify(data)]);
+      // if (video) {
+      //   blob.name = 'videocallrequest';
+      // } else {
+      //   blob.name = 'audiocallrequest';
+      // }
 
-      let blob = new Blob([JSON.stringify(data)]);
-      if (video) {
-        blob.name = 'videocallrequest';
-      } else {
-        blob.name = 'audiocallrequest';
-      }
+      send_message(parsed_data);
 
-      client.seed(blob,  {type: 'text/plain'}, function (torrent) {
-        console.log('Client is seeding ' + torrent.magnetURI)
-        send_message(torrent.magnetURI.replace('&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&tr=wss%3A%2F%2Ftracker.fastcast.nz',''));
-        awaiting_callback = true;
+      awaiting_callback = true;
 
-
-
-          torrent.on('upload', function (bytes) {
-
-              if (bytes = torrent.length) {
-                console.log('Fully uploaded, removing')
-                torrent.removeListener('upload', listener);
-                $('#caller_menu_type').text('Call accepted..').delay(1500).text('Setting up stream..');
-                setTimeout(function() {
-
-
-                  client.destroy();
-
-                }, 60000);
-
-              } else {
-                console.log('Ratio is: '+bytes)
-              }
-
-
-          })
-
-
-
-      })
+      // client.seed(blob,  {type: 'text/plain'}, function (torrent) {
+      //   console.log('Client is seeding ' + torrent.magnetURI)
+      //   send_message(torrent.magnetURI.replace('&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&tr=wss%3A%2F%2Ftracker.fastcast.nz',''));
+      //   awaiting_callback = true;
+      //
+      //
+      //
+      //     torrent.on('upload', function (bytes) {
+      //
+      //         if (bytes = torrent.length) {
+      //           console.log('Fully uploaded, removing')
+      //           torrent.removeListener('upload', listener);
+      //           $('#caller_menu_type').text('Call accepted..').delay(1500).text('Setting up stream..');
+      //           setTimeout(function() {
+      //
+      //
+      //             client.destroy();
+      //
+      //           }, 60000);
+      //
+      //         } else {
+      //           console.log('Ratio is: '+bytes)
+      //         }
+      //
+      //
+      //     })
+      //
+      //
+      //
+      // })
 
       first = false;
 
@@ -364,6 +401,181 @@ let startCall = (audio, video) => {
       peer1.signal( JSON.parse($('#otherid').val()) );
     })
 
+
+  }
+
+}
+
+let answerCall = (msg) => {
+
+  if (msg.substring(1) == '>' || msg.substring(1) == '<') {
+
+    let video = msg.substring(1) == '>';
+
+  // get video/voice stream
+  navigator.mediaDevices.getUserMedia({
+    video: video,
+    audio: true
+  }).then(gotMedia).catch(() => {})
+
+  function gotMedia (stream) {
+
+    if (video) {
+      var myvideo = document.getElementById('myvideo')
+      myvideo.srcObject = stream;
+
+      myvideo.play();
+      $('video').fadeIn();
+
+    }
+
+    var peer2 = new Peer({stream: stream, trickle: false})
+
+    $('#caller_menu .fa-phone').click(function(){
+      endCall(peer2, stream);
+    })
+
+
+    $('#caller_menu .fa-microphone').click( function() {
+      $(this).toggleClass('fa-microphone-slash').toggleClass('fa-microphone');
+      stream.getTracks().forEach(track => track.enabled = !track.enabled);
+    });
+
+    peer2.on('close', () => {
+
+      console.log('Connection lost..')
+      endCall(peer2, stream);
+
+    })
+
+    peer2.on('error', () => {
+
+      console.log('Connection lost..')
+
+      endCall(peer2, stream);
+
+    })
+
+    let first = true;
+
+    peer2.on('signal', data => {
+      console.log('initial data:', data);
+      let parsed_data = `video ? ">" : "<"}` + parse_sdp(data);
+      console.log('parsed data:', parsed_data);
+      let recovered_data = sdp.expand_sdp_answer(parsed_data);
+      data = recovered_data;
+      console.log('recovered data:', recovered_data);
+
+      if (!first) {
+        return
+      }
+
+      send_message(parsed_data, true);
+      //
+      // var client = new WebTorrent();
+      // let blob = new Blob([JSON.stringify(data)]);
+      // blob.name = 'callback';
+      // client.seed(blob, {type: 'text/plain'}, function (torrent) {
+      //   console.log('Client is seeding ' + torrent.magnetURI)
+      //   send_message(torrent.magnetURI.replace('&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&tr=wss%3A%2F%2Ftracker.fastcast.nz',''), true);
+      //   torrent.on('upload', function (bytes) {
+      //
+      //       if (bytes = torrent.length) {
+      //         console.log('Fully uploaded, removing')
+      //         torrent.removeListener('upload', listener);
+      //         $('#caller_menu_type').text('Connected');
+      //         setTimeout(function() {
+      //
+      //
+      //           client.destroy();
+      //
+      //         }, 60000);
+      //
+      //       } else {
+      //         console.log('Ratio is: '+bytes)
+      //       }
+      //
+      //
+      //   })
+      // })
+
+      first = false;
+
+    })
+
+    peer2.signal(sdp.expand_sdp_offer(msg));
+
+    peer2.on('track', (track, stream) => {
+      $('#caller_menu_type').text('Setting up stream..');
+    })
+
+    peer2.on('stream', stream => {
+      // got remote video stream, now let's show it in a video tag
+      var video = document.querySelector('video')
+
+
+
+      if ('srcObject' in video) {
+        video.srcObject = stream
+      } else {
+        video.src = window.URL.createObjectURL(stream) // for older browsers
+      }
+
+      video.play();
+
+      $('#caller_menu_type').text('Setting up stream..');
+
+    })
+  }
+
+} else {
+
+  $('#otherid').val(sdp.expand_sdp_answer(msg));
+  $('#otherid').change();
+
+}
+
+}
+
+let parseCall = (msg, sender=false) => {
+
+  switch (msg.substring(0,1)) {
+    case "Δ":
+    case "Λ":
+      // Call offer
+
+      return `${msg.substring(0,1) == "Δ" ? "Video" : "Audio"} call started`;
+      if (!awaiting_callback) {
+
+         $('#incomingCall').append('<audio autoplay><source src="static/ringtone.mp3" type="audio/mpeg"></audio>');
+         $('#incomingCall').show();
+         $('#incomingCall span').text(sender);
+         $('#answerCall').click(function() {
+           print_conversation(sender);
+           answerCall(msg);
+           $('#caller_menu').fadeIn().css('top','51px');
+           $('#caller_menu_type').text('Connecting..');
+           $('#caller_menu_contact').text($('#recipient_form').val());
+           let avatar_base64 = get_avatar($('#recipient_form').val());
+           $('#incomingCall img').attr('src',"data:image/svg+xml;base64," + avatar_base64);
+
+           $('#incomingCall').hide();
+           $('#incomingCall audio').remove();
+         })
+         $('#declineCall').click(function() {
+           $('#incomingCall').hide();
+           $('#incomingCall audio').remove();
+         })
+
+      }
+      break;
+    case "λ":
+      // Answer
+      return "";
+
+    break;
+    default:
+      return msg;
 
   }
 
@@ -431,7 +643,10 @@ function escapeHtml(unsafe) {
          .replace(/</g, "&lt;")
          .replace(/>/g, "&gt;")
          .replace(/"/g, "&quot;")
-         .replace(/'/g, "&#039;");
+         .replace(/'/g, "&#039;")
+         .replace(/Δ/g, "&Delta;")
+         .replace(/Λ/g, "&Lambda;")
+         .replace(/λ/g, "&lambda;");
  }
 
 let downloadMagnet = (magnetLink, element) => {
@@ -514,7 +729,7 @@ let downloadMagnet = (magnetLink, element) => {
 
                 peer2.on('signal', data => {
                   console.log('initial data:', data);
-                  let parsed_data = `${magnetLink.split('=')[2].includes('video') ? "v" : "a"}` + parse_sdp(data);
+                  let parsed_data = 'λ' + parse_sdp(data);
                   console.log('parsed data:', parsed_data);
                   let recovered_data = sdp.expand_sdp_answer(parsed_data);
                   data = recovered_data;
@@ -1132,7 +1347,7 @@ let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json
 
           $('#welcome_alpha').remove();
           console.log( JSON.parse(fromHex(payload_hex)).t );
-
+          payload_json.msg = parseCall(payload_json.msg);
           if (!silent) {
           $('#messages').append('<li class="sent_message" id="' + JSON.parse(fromHex(payload_hex)).t + '"><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + payload_json.msg + '</p><span class="time">' + moment(payload_json.t).fromNow() + '</span></li>');
           }
@@ -1140,9 +1355,6 @@ let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json
           if (magnetLinks) {
             handleMagnetLink(magnetLinks, JSON.parse(fromHex(payload_hex)).t);
           }
-
-
-
 
 
           // Scroll to bottom
@@ -2285,7 +2497,7 @@ all_transactions = all_transactions.filter(function (el) {
 
           avatar_base64 = get_avatar(payload_json.from);
 
-
+          payload_json.msg = parseCall(payload_json.msg, payload_json.from);
 
 
           $('#messages').append('<li class="received_message" id=' + payload_json.t + '><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + payload_json.msg + '</p><span class="time">' + moment(payload_json.t).fromNow() + '</span></li>');

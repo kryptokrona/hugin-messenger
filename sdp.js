@@ -25,7 +25,9 @@ expand_sdp_offer: function(compressed_string) {
 
   let candidates = ['','','',''];
 
-  ips = ips.split('&');
+  ips = ips.split('&').map(function (h) {
+    return decode_ip(h.substring(1),h.substring(0,1));
+  })
 
   ports = ports.split('&');
 
@@ -48,18 +50,18 @@ expand_sdp_offer: function(compressed_string) {
         current_internal = ports[port].substring(1);
 
       }
-      if (ips[ip_index].substring(0,1) == 'e') {
+      if (ips[ip_index].substring(0,1) == '!') {
         external_ip = ips[ip_index].substring(1);
         external_ports = external_ports.concat(ports[port].substring(1));
         external_port_found = true;
-        candidates[j] += "a=candidate:3098175849 1 udp 1686052607 " + ips[ip_index].replace('e','') + " " + ports[port].substring(1) + " typ srflx raddr " + ips[0] + " rport " + current_internal + " generation 0 network-id 1 network-cost 50\r\n"
+        candidates[j] += "a=candidate:3098175849 1 udp 1686052607 " + ips[ip_index].replace('!','') + " " + ports[port].substring(1) + " typ srflx raddr " + ips[0] + " rport " + current_internal + " generation 0 network-id 1 network-cost 50\r\n"
       } else if (ports[port].substring(1) == "9") {
 
-        candidates[j] += "a=candidate:3377426864 1 tcp "  + tcp_prio + " " + ips[ip_index] + " " + ports[port].substring(1) +  " typ host tcptype active generation 0 network-id 1 network-cost 50\r\n"
+        candidates[j] += "a=candidate:3377426864 1 tcp "  + tcp_prio + " " + ips[ip_index].replace('?','') + " " + ports[port].substring(1) +  " typ host tcptype active generation 0 network-id 1 network-cost 50\r\n"
         tcp_prio = tcp_prio - 500;
 
       } else {
-        candidates[j] += "a=candidate:1410536466 1 udp " + prio + " " + ips[ip_index] + " " + ports[port].substring(1) + " typ host generation 0 network-id 1 network-cost 10\r\n"
+        candidates[j] += "a=candidate:1410536466 1 udp " + prio + " " + ips[ip_index].replace('?','') + " " + ports[port].substring(1) + " typ host generation 0 network-id 1 network-cost 10\r\n"
         prio = parseInt(prio*0.8);
       }
 
@@ -150,7 +152,7 @@ a=extmap:9 http://www.webrtc.org/experiments/rtp-hdrext/color-space
 a=extmap:4 urn:ietf:params:rtp-hdrext:sdes:mid
 a=extmap:5 urn:ietf:params:rtp-hdrext:sdes:rtp-stream-id
 a=extmap:6 urn:ietf:params:rtp-hdrext:sdes:repaired-rtp-stream-id
-${type == 'v' ? "a=sendrecv\r\na=msid:" + msid + " 0278bd6c-5efa-4fb7-838a-d9ba6a1d8baa" : "a=recvonly" }
+${type == 'Δ' ? "a=sendrecv\r\na=msid:" + msid + " 0278bd6c-5efa-4fb7-838a-d9ba6a1d8baa" : "a=recvonly" }
 a=rtcp-mux
 a=rtcp-rsize
 a=rtpmap:96 VP8/90000
@@ -237,7 +239,7 @@ a=rtpmap:114 red/90000
 a=rtpmap:115 rtx/90000
 a=fmtp:115 apt=114
 a=rtpmap:116 ulpfec/90000
-${type == "v" ? "a=ssrc-group:FID " + ssrc[1] + " " + ssrc[2] + "\r\n" +
+${type == "Δ" ? "a=ssrc-group:FID " + ssrc[1] + " " + ssrc[2] + "\r\n" +
 "a=ssrc:" + ssrc[1] + " cname:qwjy1Thr/obQUvqd\r\n" +
 "a=ssrc:" + ssrc[1] + " msid:" + msid + " 6a080e8b-c845-4716-8c42-8ca0ab567ebe\r\n" +
 "a=ssrc:" + ssrc[1] + " mslabel:" + msid + "\r\n" +
@@ -286,7 +288,9 @@ expand_sdp_answer: function(compressed_string) {
 
   let external_ip = '';
 
-  ips = ips.split('&');
+  ips = ips.split('&').map(function (h) {
+    return decode_ip(h.substring(1),h.substring(0,1));
+  })
 
   ports = ports.split('&');
 
@@ -303,15 +307,15 @@ expand_sdp_answer: function(compressed_string) {
 
       for (port in ports) {
         let ip_index = ports[port].substring(0,1);
-        if (ips[ip_index].substring(0,1) == 'e') {
+        if (ips[ip_index].substring(0,1) == '?') {
           if (external_port.length == 0) {
             external_port = ports[port].substring(1);
           }
           external_ip = ips[ip_index].substring(1);
-          candidates += "a=candidate:3098175849 1 udp 1686052607 " + ips[ip_index].replace('e','') + " " + ports[port].substring(1) + " typ srflx raddr " + ips[0] + " rport " + ports[0].substring(1) + " generation 0 network-id 1 network-cost 50\r\n"
+          candidates += "a=candidate:3098175849 1 udp 1686052607 " + ips[ip_index].replace('!','') + " " + ports[port].substring(1) + " typ srflx raddr " + ips[0] + " rport " + ports[0].substring(1) + " generation 0 network-id 1 network-cost 50\r\n"
         } else {
 
-          candidates += "a=candidate:1410536466 1 udp " + prio + " " + ips[ip_index] + " " + ports[port].substring(1) + " typ host generation 0 network-id 1 network-cost 10\r\n"
+          candidates += "a=candidate:1410536466 1 udp " + prio + " " + ips[ip_index].replace('?','') + " " + ports[port].substring(1) + " typ host generation 0 network-id 1 network-cost 10\r\n"
           prio = parseInt(prio*0.8);
         }
 
@@ -320,10 +324,10 @@ expand_sdp_answer: function(compressed_string) {
 
   } else {
 
-    external_ip = ips[0].replace('e','');
+    external_ip = ips[0].replace('!','');
 
     external_port = ports[0].substring(1);
-    candidates = "a=candidate:1410536466 1 udp 2122260223 " + ips[0] + " " + ports[0].substring(1) + " typ host generation 0 network-id 1 network-cost 10\r\n"
+    candidates = "a=candidate:1410536466 1 udp 2122260223 " + ips[0].replace('!','').replace('?','') + " " + ports[0].substring(1) + " typ host generation 0 network-id 1 network-cost 10\r\n"
   }
 
 
@@ -387,7 +391,7 @@ a=extmap:9 http://www.webrtc.org/experiments/rtp-hdrext/color-space
 a=extmap:4 urn:ietf:params:rtp-hdrext:sdes:mid
 a=extmap:5 urn:ietf:params:rtp-hdrext:sdes:rtp-stream-id
 a=extmap:6 urn:ietf:params:rtp-hdrext:sdes:repaired-rtp-stream-id
-${type == 'v' ? "a=sendrecv\r\na=msid:" + msid + " 06691570-5673-40ba-a027-72001bbc6f70" : "a=inactive"}
+${type == 'Δ' ? "a=sendrecv\r\na=msid:" + msid + " 06691570-5673-40ba-a027-72001bbc6f70" : "a=inactive"}
 a=rtcp-mux
 a=rtcp-rsize
 a=rtpmap:96 VP8/90000
@@ -474,7 +478,7 @@ a=rtpmap:114 red/90000
 a=rtpmap:115 rtx/90000
 a=fmtp:115 apt=114
 a=rtpmap:116 ulpfec/90000
-${type == "v" ? "a=ssrc-group:FID "+ ssrc[1] +  " " + ssrc[2] +  "\r\na=ssrc:" + ssrc[1] +  " cname:IEW+mXSsrC9cc4mr\r\na=ssrc:" + ssrc[2] +  " cname:IEW+mXSsrC9cc4mr\r\n" : "" }m=application 9 UDP/DTLS/SCTP webrtc-datachannel
+${type == "Δ" ? "a=ssrc-group:FID "+ ssrc[1] +  " " + ssrc[2] +  "\r\na=ssrc:" + ssrc[1] +  " cname:IEW+mXSsrC9cc4mr\r\na=ssrc:" + ssrc[2] +  " cname:IEW+mXSsrC9cc4mr\r\n" : "" }m=application 9 UDP/DTLS/SCTP webrtc-datachannel
 c=IN IP4 0.0.0.0
 b=AS:30
 a=ice-ufrag:` + ice_ufrag + `
@@ -511,4 +515,24 @@ let decode_fingerprint = (fingerprint) => {
 
 
   return decoded_fingerprint;
+}
+
+let decode_ip = (ip, type) => {
+  let decoded_ip = "";
+
+  for (letter in atob(ip).split('')) {
+
+    let piece = atob(ip).split('')[letter].charCodeAt(0).toString(16);
+    if (piece.length == 1) {
+      piece = "0" + piece;
+    }
+    decoded_ip += parseInt(piece, 16) + ".";
+
+
+  }
+
+  // decoded_fingerprint = decoded_fingerprint.toUpperCase().replace(/(.{2})/g,"$1:").slice(0,-1);
+
+
+  return type+decoded_ip.slice(0,-1);
 }
