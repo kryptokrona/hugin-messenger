@@ -21,6 +21,7 @@ let endCall = (peer, stream) => {
   $('otherid').empty();
   $('#caller_menu').css('top','-14px');
   $('#otherid').unbind('change');
+  awaiting_callback = false;
 }
 
 let parse_sdp = (sdp) => {
@@ -1769,20 +1770,6 @@ function save_message(message_json) {
 });
 
 }
-
-//
-// bugtest_json = {msg: 'Use this chat to send feedback and bug reports', from: 'SEKReXvQXDxUqfCZXiiYBk6CvBNajxchSKgHP4KwN3AphesPvmahuTTXozwcQ19uSHjbTGThRMrPbRe48jKhod4jVyRsJS7BKA7', to: $('#currentAddrSpan').text(), t:1562773076786};
-//
-// save_message(bugtest_json);
-
-keychain.find({ "key": "3fc9c579e66ec2cec023566be3e59a96926130b94498d4b2707a9405baa03807" }, function (err, docs) {
-
-  if (docs.length == 0) {
-    let payload_keychain = {"key": "3fc9c579e66ec2cec023566be3e59a96926130b94498d4b2707a9405baa03807", "address": "SEKReXvQXDxUqfCZXiiYBk6CvBNajxchSKgHP4KwN3AphesPvmahuTTXozwcQ19uSHjbTGThRMrPbRe48jKhod4jVyRsJS7BKA7"};
-    keychain.insert(payload_keychain);
-
-  }
-});
 
 function find(db, opt) {
   return new Promise(function(resolve, reject) {
