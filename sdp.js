@@ -52,7 +52,7 @@ expand_sdp_offer: function(compressed_string) {
       let ip_index = ports[port].slice(-1);
       if (i == 1 ) {
 
-        current_internal = ports[port].substring(0, ports[port] - 1);
+        current_internal = ports[port].substring(0, ports[port].length - 1);
 
       }
       if (ips[ip_index].substring(0,1) == '!') {
