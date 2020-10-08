@@ -105,7 +105,9 @@ let parse_sdp = (sdp) => {
       console.log(candidate);
       console.log(port);
 
-      let indexedport = port+ips.indexOf(ip);
+      let indexedport = port+ips.indexOf(ip_hex).toString();
+
+      console.log('Adding pört:', indexedport);
 
       ports = ports.concat(en.encode(parseInt(indexedport)));
 
