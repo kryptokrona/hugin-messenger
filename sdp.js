@@ -57,7 +57,7 @@ expand_sdp_offer: function(compressed_string) {
       }
       if (ips[ip_index].substring(0,1) == '!') {
         external_ip = ips[ip_index].substring(1);
-        external_ports = external_ports.concat(ports[port].substring(0, ports[port] - 1));
+        external_ports = external_ports.concat(ports[port].substring(0, ports[port].length - 1));
         external_port_found = true;
         candidates[j] += "a=candidate:3098175849 1 udp 1686052607 " + ips[ip_index].replace('!','') + " " + ports[port].substring(0, ports[port].length - 1) + " typ srflx raddr " + ips[0].replace('!','').replace('?','') + " rport " + current_internal + " generation 0 network-id 1 network-cost 50\r\n"
       } else if (ports[port].substring(0, ports[port].length - 1) == "9") {
@@ -285,7 +285,9 @@ expand_sdp_answer: function(compressed_string) {
 
   let ports =  split[4];
 
-  let ssrc = split[5].split('&');
+  let ssrc = split[5].split('&').map(function (h) {
+    return en.decode(h);
+  });;
 
   let msid = split[6];
 
@@ -297,7 +299,9 @@ expand_sdp_answer: function(compressed_string) {
     return decode_ip(h.substring(1),h.substring(0,1));
   })
 
-  ports = ports.split('&');
+  ports = ports.split('&').map(function (h) {
+    return en.decode(h);
+  });;
 
   let external_port = '';
 
@@ -312,21 +316,21 @@ expand_sdp_answer: function(compressed_string) {
     console.log('More than 1 port!');
 
       for (port in ports) {
-        let ip_index = ports[port].substring(0,1);
+        let ip_index = ports[port].slice(-1);
         if (ips[ip_index].substring(0,1) == '!') {
           if (external_port.length == 0) {
-            external_port = ports[port].substring(1);
+            external_port = ports[port].substring(0, ports[port].length - 1);
           }
           external_ip = ips[ip_index].substring(1);
-          candidates += "a=candidate:3098175849 1 udp 1686052607 " + ips[ip_index].replace('!','') + " " + ports[port].substring(1) + " typ srflx raddr " + ips[0].replace('?','') + " rport " + ports[0].substring(1) + " generation 0 network-id 1 network-cost 50\r\n"
-        } else if (ports[port].substring(1) == "9") {
+          candidates += "a=candidate:3098175849 1 udp 1686052607 " + ips[ip_index].replace('!','') + " " + ports[port].substring(0, ports[port].length - 1)  + " typ srflx raddr " + ips[0].replace('?','') + " rport " + ports[0].substring(0, ports[port].length - 1)  + " generation 0 network-id 1 network-cost 50\r\n"
+        } else if (ports[port].substring(0, ports[port].length - 1)  == "9") {
 
-          candidates += "a=candidate:3377426864 1 tcp "  + tcp_prio + " " + ips[ip_index].replace('?','').replace('!','') + " " + ports[port].substring(1) +  " typ host tcptype active generation 0 network-id 1 network-cost 50\r\n"
+          candidates += "a=candidate:3377426864 1 tcp "  + tcp_prio + " " + ips[ip_index].replace('?','').replace('!','') + " " + ports[port].substring(0, ports[port].length - 1)  +  " typ host tcptype active generation 0 network-id 1 network-cost 50\r\n"
           tcp_prio = tcp_prio - 500;
 
         } else {
 
-          candidates += "a=candidate:1410536466 1 udp " + prio + " " + ips[ip_index].replace('?','') + " " + ports[port].substring(1) + " typ host generation 0 network-id 1 network-cost 10\r\n"
+          candidates += "a=candidate:1410536466 1 udp " + prio + " " + ips[ip_index].replace('?','') + " " + ports[port].substring(0, ports[port].length - 1)  + " typ host generation 0 network-id 1 network-cost 10\r\n"
           prio = parseInt(prio*0.8);
         }
 
@@ -337,8 +341,8 @@ expand_sdp_answer: function(compressed_string) {
 
     external_ip = ips[0].replace('!','').replace('?','');
 
-    external_port = ports[0].substring(1);
-    candidates = "a=candidate:1410536466 1 udp 2122260223 " + ips[0].replace('!','').replace('?','') + " " + ports[0].substring(1) + " typ host generation 0 network-id 1 network-cost 10\r\n"
+    external_port = ports[0].substring(0, ports[port].length - 1) ;
+    candidates = "a=candidate:1410536466 1 udp 2122260223 " + ips[0].replace('!','').replace('?','') + " " + ports[0].substring(0, ports[port].length - 1)  + " typ host generation 0 network-id 1 network-cost 10\r\n"
   }
 
 
