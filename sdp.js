@@ -19,7 +19,7 @@ expand_sdp_offer: function(compressed_string) {
     return en.decode(h);
   });
 
-  let msid = en.decode(split[6]);
+  let msid = split[6];
 
   let external_ip = '';
 
