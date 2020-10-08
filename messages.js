@@ -8,6 +8,8 @@ var sdp = require('./sdp');
 
 const Datastore = require('nedb');
 
+var en = require('int-encoder');
+
 var WebTorrent = require('webtorrent');
 
 var Peer = require('simple-peer')
@@ -124,8 +126,10 @@ let parse_sdp = (sdp) => {
 
       let i = 0;
       while (ips.length >= i && !found_port) {
-        if (ports.includes(i + port)) {
-         ports = ports.concat( ips.indexOf(ip_hex).toString() + ports.indexOf(i + port) );
+        if (ports.includes(en.encode(port + i))) {
+
+         ports = ports.concat( en.encode(ports.indexOf(port + i).toString() + ips.indexOf(ip_hex).toString()) );
+
          found_port = true;
 
        } else {
@@ -135,16 +139,19 @@ let parse_sdp = (sdp) => {
 
       if (!found_port) {
 
-      ports = ports.concat(ips.indexOf(ip_hex) + port);
+      ports = ports.concat(en.encode(port + ips.indexOf(ip_hex)));
+
+      // console.log(btoa(String.fromCharCode.apply(String, hexy)));
 
       }
 
 
 
 
+
     } else if (line.includes('a=ssrc:')) {
 
-      let ssrc = line.substr(7).split(" ")[0];
+      let ssrc = en.encode(line.substr(7).split(" ")[0]);
 
       if (!ssrcs.includes(ssrc)) {
 
