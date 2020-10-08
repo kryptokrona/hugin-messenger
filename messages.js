@@ -120,7 +120,26 @@ let parse_sdp = (sdp) => {
       // console.log("Payload: ", payload);
 
 
-      ports = ports.concat(ips.indexOf(ip_hex) + port)
+      let found_port = false;
+
+      let i = 0;
+      while (ips.length >= i && !found_port) {
+        if (ports.includes(i + port)) {
+         ports = ports.concat( ips.indexOf(ip_hex).toString() + ports.indexOf(i + port) );
+         found_port = true;
+
+       } else {
+         i += 1;
+       }
+      }
+
+      if (!found_port) {
+
+      ports = ports.concat(ips.indexOf(ip_hex) + port);
+
+      }
+
+
 
 
     } else if (line.includes('a=ssrc:')) {
