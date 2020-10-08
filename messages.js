@@ -104,47 +104,41 @@ let parse_sdp = (sdp) => {
 
       console.log(candidate);
       console.log(port);
+
+      let indexedport = port+ips.indexOf(ip);
+
+      ports = ports.concat(en.encode(parseInt(indexedport)));
+
       //
-      // let indexedport = ips.indexOf(ip) + port;
       //
-      // indexedport = indexedport.match(/.{1,2}/g);
+      // let found_port = false;
       //
-      // console.log('Arrayed: ', indexedport);
+      // let i = 0;
+      // while (ips.length >= i && !found_port) {
+      //   if (ports.includes(en.encode(port + i))) {
       //
-      // let hex = indexedport.map(function (h) {
-      //     return parseInt(h, 16);
-      // });
+      //    ports = ports.concat( en.encode(ports.indexOf(port + i).toString() + ips.indexOf(ip_hex).toString()) );
       //
-      // console.log('intradasting: ', hex);
+      //    console.log("Adding duplicate:", en.encode(ports.indexOf(port + i).toString() + ips.indexOf(ip_hex).toString()));
       //
-      // let payload = btoa(String.fromCharCode.apply(String, hex));
+      //    found_port = true;
       //
-      // console.log("Payload: ", payload);
-
-
-      let found_port = false;
-
-      let i = 0;
-      while (ips.length >= i && !found_port) {
-        if (ports.includes(en.encode(port + i))) {
-
-         ports = ports.concat( en.encode(ports.indexOf(port + i).toString() + ips.indexOf(ip_hex).toString()) );
-
-         found_port = true;
-
-       } else {
-         i += 1;
-       }
-      }
-
-      if (!found_port) {
-
-      ports = ports.concat(en.encode(port + ips.indexOf(ip_hex)));
-
-      // console.log(btoa(String.fromCharCode.apply(String, hexy)));
-
-      }
-
+      //  } else {
+      //    i += 1;
+      //  }
+      // }
+      //
+      // if (!found_port) {
+      //
+      // ports = ports.concat(en.encode(port + ips.indexOf(ip_hex)));
+      //
+      // console.log("Adding:", en.encode(port + ips.indexOf(ip_hex)));
+      //
+      // }
+      //
+      // if (port == "9") {
+      //
+      // }
 
 
 
