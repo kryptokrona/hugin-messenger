@@ -341,8 +341,8 @@ expand_sdp_answer: function(compressed_string) {
 
     external_ip = ips[0].replace('!','').replace('?','');
 
-    external_port = ports[0].substring(0, ports[port].length - 1) ;
-    candidates = "a=candidate:1410536466 1 udp 2122260223 " + ips[0].replace('!','').replace('?','') + " " + ports[0].substring(0, ports[port].length - 1)  + " typ host generation 0 network-id 1 network-cost 10\r\n"
+    external_port = ports[0].substring(0, ports[0].length - 1) ;
+    candidates = "a=candidate:1410536466 1 udp 2122260223 " + ips[0].replace('!','').replace('?','') + " " + ports[0].substring(0, ports[0].length - 1)  + " typ host generation 0 network-id 1 network-cost 10\r\n"
   }
 
 

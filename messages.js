@@ -372,12 +372,20 @@ let answerCall = (msg) => {
       first = false;
 
     })
-
+    let signal = sdp.expand_sdp_offer(msg);
+    console.log(signal);
     peer2.signal(sdp.expand_sdp_offer(msg));
 
     peer2.on('track', (track, stream) => {
-      $('#caller_menu_type').text('Setting up stream..');
+      $('#caller_menu_type').text('Setting up link..');
     })
+
+    peer2.on('connect', () => {
+
+      $('#caller_menu_type').text(`${video ? 'Video' : 'Voice'}` + ' connected');
+      console.log('Connection established;')
+
+    });
 
     peer2.on('stream', stream => {
       // got remote video stream, now let's show it in a video tag
@@ -393,7 +401,7 @@ let answerCall = (msg) => {
 
       video.play();
 
-      $('#caller_menu_type').text('Setting up stream..');
+      $('#caller_menu_type').text('Setting up link..');
 
     })
   }
