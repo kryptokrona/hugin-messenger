@@ -1183,6 +1183,7 @@ overlay p {
   overflow-x: hidden;
   height: 100%;
   perspective: 1000px;
+  transition: 1s padding-top;
 }
 
 
@@ -1991,4 +1992,8 @@ background-size: 400% 400%;
   font-family: monospace;
 
 
+}
+
+.in-call {
+  padding-top: 70px !important;
 }

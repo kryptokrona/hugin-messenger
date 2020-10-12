@@ -22,6 +22,7 @@ let endCall = (peer, stream) => {
   $('video').fadeOut();
   $('otherid').empty();
   $('#caller_menu').css('top','-14px');
+  $('#messages_contacts').removeClass('in-call');
   $('#otherid').unbind('change');
   awaiting_callback = false;
 }
@@ -197,9 +198,9 @@ let startCall = (audio, video) => {
     //var peer2 = new Peer()
     let first = true;
 
-
+    $('#messages_contacts').addClass('in-call');
     $('#caller_menu').fadeIn().css('top','51px');
-    $('#caller_menu_type').text('Connecting..');
+    $('#caller_menu_type').text('Calling..');
     $('#caller_menu_contact').text($('#recipient_form').val());
     let avatar_base64 = get_avatar($('#recipient_form').val());
     $('#caller_menu img').attr('src',"data:image/svg+xml;base64," + avatar_base64);
@@ -239,13 +240,20 @@ let startCall = (audio, video) => {
         video_elem.src = window.URL.createObjectURL(stream) // for older browsers
       }
       video_elem.play()
-      if (audio) {
-        $('#caller_menu_type').text('Voice connected');
-      } else if (video) {
-        $('#caller_menu_type').text('Video connected');
-      }
+      // if (audio) {
+      //   $('#caller_menu_type').text('Voice connected');
+      // } else if (video) {
+      //   $('#caller_menu_type').text('Video connected');
+      // }
 
     })
+
+    peer1.on('connect', () => {
+
+      $('#caller_menu_type').text(`${video ? 'Video' : 'Voice'}` + ' connected');
+      console.log('Connection established;')
+
+    });
 
     peer1.on('signal', data => {
       console.log('real data:', data);
@@ -281,6 +289,7 @@ let startCall = (audio, video) => {
 let answerCall = (msg) => {
 
     let video = msg.substring(0,1) == 'Δ';
+    $('#messages_contacts').addClass('in-call');
 
   // get video/voice stream
   navigator.mediaDevices.getUserMedia({
@@ -408,7 +417,7 @@ let answerCall = (msg) => {
 
 }
 
-let parseCall = (msg, sender=false) => {
+let parseCall = (msg, sender=false, emitCall=true) => {
 
   switch (msg.substring(0,1)) {
     case "Δ":
@@ -417,10 +426,11 @@ let parseCall = (msg, sender=false) => {
       // Call offer
 
 
-      if (!awaiting_callback) {
+      if (!awaiting_callback && emitCall) {
 
         // Start ringing sequence
          $('#incomingCall').append('<audio autoplay><source src="static/ringtone.mp3" type="audio/mpeg"></audio>');
+         $('#incomingCall').find('h1').text(`Incoming ${msg.substring(0,1) == "Δ" ? "video" : "audio"} call!`);
          $('#incomingCall').show();
          let avatar_base64 = get_avatar(sender);
          $('#incomingCall img').attr('src',"data:image/svg+xml;base64," + avatar_base64);
@@ -428,8 +438,14 @@ let parseCall = (msg, sender=false) => {
 
          // Handle answer/decline
          $('#answerCall').click(function() {
-           print_conversation(sender);
+           if ($('#recipient_form').text() != sender) {
+              print_conversation(sender);
+           }
+
            answerCall(msg);
+
+           $('#messages_contacts').addClass('in-call');
+
            $('#caller_menu').fadeIn().css('top','51px');
            $('#caller_menu_type').text('Connecting..');
            $('#caller_menu_contact').text(sender);
@@ -450,8 +466,10 @@ let parseCall = (msg, sender=false) => {
       // Fall through
     case "λ":
       // Answer
+      if (emitCall) {
       $('#otherid').val(JSON.stringify(sdp.expand_sdp_answer(msg)));
       $('#otherid').change();
+      }
       return "";
 
     break;
@@ -569,6 +587,13 @@ let downloadMagnet = (magnetLink, element) => {
 
 
 let handleMagnetListed = (message) => {
+
+  if (message.substring(0,1) == "Δ" || message.substring(0,1) == "Λ" || message.substring(0,1) == "δ" || message.substring(0,1) == "λ"  ) {
+    console.log('Call detected!');
+    return "Call started";
+  } else {
+    console.log('No call stuffs');
+  }
 
   let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(message);
   if (magnetLinks) {
@@ -870,7 +895,7 @@ function save_messages(transactions) {
 
           }
 
-          message = escapeHtml(payload_json.msg);
+          message = payload_json.msg;
 
           console.log(message);
 
@@ -1791,7 +1816,7 @@ function save_message(message_json) {
 
       if (docs.length == 0) {
 
-      message_db = {"conversation": conversation, "type":type, "message":escapeHtml(message_json.msg), "timestamp": message_json.t};-
+      message_db = {"conversation": conversation, "type":type, "message":message_json.msg, "timestamp": message_json.t};-
 
       db.insert(message_db);
 
@@ -2161,9 +2186,9 @@ all_transactions = all_transactions.filter(function (el) {
 
           payload_json.msg = parseCall(payload_json.msg, payload_json.from);
 
-
-          $('#messages').append('<li class="received_message" id=' + payload_json.t + '><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + payload_json.msg + '</p><span class="time">' + moment(payload_json.t).fromNow() + '</span></li>');
-
+          if (payload_json.msg.length) {
+            $('#messages').append('<li class="received_message" id=' + payload_json.t + '><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + payload_json.msg + '</p><span class="time">' + moment(payload_json.t).fromNow() + '</span></li>');
+          }
           let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(payload_json.msg);
 
           if (magnetLinks) {
@@ -2188,7 +2213,7 @@ all_transactions = all_transactions.filter(function (el) {
           if (handleMagnetListed(payload_json.msg)) {
             notifier.notify({
               title: payload_json.from,
-              message: handleMagnetListed(payload_json.msg),
+              message: handleMagnetListed(parseCall(payload_json.msg, payload_json.from)),
               wait: true // Wait with callback, until user action is taken against notification
             });
           }
@@ -2354,8 +2379,11 @@ async function print_conversation(conversation) {
     }
     avatar_base64 = get_avatar(hash);
 
-
-    $('#messages').append('<li id="' + messages[n].timestamp + '" timestamp="' + messages[n].timestamp + '" class="' + messages[n].type + '_message"><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + messages[n].message + '</p><span class="time">' + moment(messages[n].timestamp).fromNow() + '</span></li>');
+    if (parseCall(messages[n].message, false, false).length == 0) {
+      continue;
+    }
+    console.log( parseCall(messages[n].message, false, false) );
+    $('#messages').append('<li id="' + messages[n].timestamp + '" timestamp="' + messages[n].timestamp + '" class="' + messages[n].type + '_message"><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + parseCall(messages[n].message, false, false) + '</p><span class="time">' + moment(messages[n].timestamp).fromNow() + '</span></li>');
 
 
       let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(messages[n].message);
