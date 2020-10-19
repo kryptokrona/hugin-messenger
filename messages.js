@@ -25,6 +25,8 @@ let endCall = (peer, stream) => {
   myvideo.pause();
   var video_elem = document.querySelector('video');
   video_elem.pause();
+  video_elem.srcObject = null;
+  myvideo.srcObject = null;
   $('otherid').empty();
   $('#caller_menu').css('top','-14px');
   $('#messages_contacts').removeClass('in-call');
