@@ -769,6 +769,8 @@ function fromHex(hex,str){
 
 var rpc_pw = remote.getGlobal('rpc_pw');
 
+let downloadDir = remote.getGlobal('downloadDir');
+
 
 var TurtleCoinWalletd = require('kryptokrona-service-rpc-js').default
 

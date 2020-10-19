@@ -16,9 +16,12 @@ autoUpdater.logger.transports.file.level = "info"
 
 var Menu = electron.Menu;
 const {ipcMain} = require('electron');
+
 ipcMain.on('close-me', (evt, arg) => {
   app.quit()
 })
+
+
 
 
 
@@ -208,6 +211,8 @@ global.userDataDir = userDataDir;
 
 global.appPath = appRootDir;
 
+global.downloadDir = app.getPath('downloads');
+
 
 var db = new Datastore({ filename: userDataDir+'/settings.db', autoload: true });
 
@@ -221,7 +226,7 @@ function startWallet() {
   wallet_pw = docs[0].walletPassword;
   global.rpc_pw = docs[0].rpcPassword;
 
-   wallet = spawn(appPath+'kryptokrona-service', ['-l', userDataDir+"/walletd.log",'-w', userDataDir+'/'+wallet_file, '-p', wallet_pw, '--rpc-password', global.rpc_pw, '--daemon-address', '192.168.1.114']); //, '--daemon-address', 'localhost'
+   wallet = spawn(appPath+'kryptokrona-service', ['-l', userDataDir+"/walletd.log",'-w', userDataDir+'/'+wallet_file, '-p', wallet_pw, '--rpc-password', global.rpc_pw, '--daemon-address', 'pool.kryptokrona.se']); //, '--daemon-address', 'localhost'
 
    wallet.stdout.on('data', (data) => {
 
