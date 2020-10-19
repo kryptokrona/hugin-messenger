@@ -20,6 +20,11 @@ let endCall = (peer, stream) => {
     track.stop();
   });
   $('video').fadeOut();
+  var myvideo = document.getElementById('myvideo');
+  myvideo.srcObject = stream;
+  myvideo.pause();
+  var video_elem = document.querySelector('video');
+  video_elem.pause();
   $('otherid').empty();
   $('#caller_menu').css('top','-14px');
   $('#messages_contacts').removeClass('in-call');
