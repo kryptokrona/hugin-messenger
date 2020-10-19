@@ -512,7 +512,7 @@ var holder = document.getElementById('messages_pane');
             e.preventDefault();
             $('#drop-overlay').stop().fadeOut();
             if (!$('#recipient_form').val()) { return false; } else {
-            var client = new WebTorrent({tracker: false});
+            var client = new WebTorrent();
             for (let f of e.dataTransfer.files) {
               client.seed(f, function (torrent) {
               console.log('Client is seeding ' + torrent.magnetURI)
