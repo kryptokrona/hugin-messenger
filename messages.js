@@ -850,7 +850,7 @@ function save_messages(transactions) {
 
         let thisAddr = transactions[i].transactions[j].transfers[0].address;
         let d = new Date(transactions[i].transactions[j].timestamp * 1000);
-        let thisAmount = Math.abs(parseFloat(transactions[i].transactions[j].transfers[0].amount) / 100);
+        let thisAmount = Math.abs(parseFloat(transactions[i].transactions[j].transfers[0].amount) / 100000);
 
         lasttx = transactions[i];
         try {
@@ -1360,7 +1360,7 @@ function printMessages(transactions, address) {
 
                   var thisAddr = transactions[i].transactions[j].transfers[0].address;
                   var d = new Date(transactions[i].transactions[j].timestamp * 1000);
-                  var thisAmount = Math.abs(parseFloat(transactions[i].transactions[j].transfers[0].amount) / 100);
+                  var thisAmount = Math.abs(parseFloat(transactions[i].transactions[j].transfers[0].amount) / 100000);
 
                   lasttx = transactions[i];
                   try {
@@ -1632,7 +1632,7 @@ function updateMessages() {
 
           var thisAddr = transactions[i].transactions[0].transfers[0].address;
           var d = new Date(transactions[i].transactions[0].timestamp * 1000);
-          var thisAmount = Math.abs(parseFloat(transactions[i].transactions[0].transfers[0].amount) / 100);
+          var thisAmount = Math.abs(parseFloat(transactions[i].transactions[0].transfers[0].amount) / 100000);
 
           // Try to read messages from transaction, txs without messages are ignored
 

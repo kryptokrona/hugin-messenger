@@ -228,8 +228,8 @@ function updateBalance(address) {
 
   walletd.getBalance(address)
   .then(resp => {
-    thisBalance = parseFloat(resp.body.result.availableBalance).toFixed(2)/100;
-    thisLockedAmount = parseFloat(resp.body.result.lockedAmount).toFixed(2)/100;
+    thisBalance = parseFloat(resp.body.result.availableBalance).toFixed(2)/100000;
+    thisLockedAmount = parseFloat(resp.body.result.lockedAmount).toFixed(2)/100000;
 
 
     $("#balancetext").text(thisBalance);
