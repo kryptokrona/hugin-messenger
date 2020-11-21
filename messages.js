@@ -515,6 +515,25 @@ var holder = document.getElementById('messages_pane');
             var client = new WebTorrent();
             for (let f of e.dataTransfer.files) {
               client.seed(f, function (torrent) {
+
+                torrent.on('wire', function (wire) {
+
+                  console.log(wire);
+
+                })
+
+                torrent.on('upload', function (bytes) {
+
+                  if ( bytes == torrent.length ) {
+                    console.log('Done!');
+                  } else {
+                    console.log(bytes + "/" + torrent.length);
+                  }
+
+                })
+
+
+
               console.log('Client is seeding ' + torrent.magnetURI)
               send_message(torrent.magnetURI.replace('&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&tr=wss%3A%2F%2Ftracker.fastcast.nz',''));
 
@@ -542,13 +561,36 @@ let downloadMagnet = (magnetLink, element) => {
   // MOVE CODE BELOW
 
   var client = new WebTorrent();
+
+   // $('#'+element).find('.download-button').remove();
+
    console.log('Starting torrent!');
    let torrentId = magnetLink+'&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&tr=wss%3A%2F%2Ftracker.fastcast.nz';
+
+   $('#'+element).find('.download-button').html('  <div class="progress"></div>');
+
+
    client.add(torrentId, {path: downloadDir}, function (torrent) {
+
+     torrent.on('download', function (bytes) {
+        console.log('just downloaded: ' + bytes)
+        console.log('total downloaded: ' + torrent.downloaded)
+        console.log('download speed: ' + torrent.downloadSpeed)
+        console.log('progress: ' + torrent.progress)
+        $('#'+element).find('.progress').css('width',parseInt(torrent.progress * 88) + "px");
+        // $('.progress').text(parseInt(torrent.progress * 88) + "%");
+
+
+
+      })
 
      torrent.on('done', function (bytes) {
 
            torrent.removeListener('done', listener);
+
+           $('.progress').parent().fadeOut();
+
+           $('#messages_pane').scrollTop($('#messages').height());
 
            setTimeout(function() {
 
@@ -626,8 +668,8 @@ let handleMagnetListed = (message) => {
 var awaiting_callback = false;
 
  let handleMagnetLink = (magnetLinks, element, calls=false, sender=false) => {
-        $('#' + element).find('p').text($('#' + element).find('p').text().replace(magnetLinks[0], magnetLinks[0].split('=')[2]));
-        $('#' + element).find('p').append('<button class="download-button">Download</button>').click(function(){ downloadMagnet(magnetLinks[0], element) });
+        $('#' + element).find('p').addClass('gradient').text($('#' + element).find('p').text().replace(magnetLinks[0], magnetLinks[0].split('=')[2]));
+        $('#' + element).find('p').append('<button class="download-button">Download</button>').click(function(){ downloadMagnet(magnetLinks[0], element); $(this).unbind('click');  $(':focus').blur(); });
 }
 
 const rmt = require('electron').remote;
