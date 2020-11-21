@@ -28,8 +28,9 @@ let endCall = (peer, stream) => {
   video_elem.srcObject = null;
   myvideo.srcObject = null;
   $('otherid').empty();
-  $('#caller_menu').css('top','-14px');
+  $('#caller_menu').css('top','-70px');
   $('#messages_contacts').removeClass('in-call');
+  $('#caller_menu').removeClass('in-call');
   $('#otherid').unbind('change');
   awaiting_callback = false;
 }
@@ -206,7 +207,7 @@ let startCall = (audio, video) => {
     let first = true;
 
     $('#messages_contacts').addClass('in-call');
-    $('#caller_menu').fadeIn().css('top','51px');
+    $('#caller_menu').fadeIn().css('top','0px');
     $('#caller_menu_type').text('Calling..');
     $('#caller_menu_contact').text($('#recipient_form').val());
     let avatar_base64 = get_avatar($('#recipient_form').val());
