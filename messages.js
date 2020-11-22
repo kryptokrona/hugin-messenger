@@ -30,6 +30,7 @@ let endCall = (peer, stream) => {
   $('otherid').empty();
   $('#caller_menu').css('top','-14px');
   $('#messages_contacts').removeClass('in-call');
+  $('#settings').removeClass('in-call');
   $('#otherid').unbind('change');
   awaiting_callback = false;
 }
@@ -206,6 +207,7 @@ let startCall = (audio, video) => {
     let first = true;
 
     $('#messages_contacts').addClass('in-call');
+    $('#settings').addClass('in-call');
     $('#caller_menu').fadeIn().css('top','51px');
     $('#caller_menu_type').text('Calling..');
     $('#caller_menu_contact').text($('#recipient_form').val());
@@ -297,6 +299,7 @@ let answerCall = (msg) => {
 
     let video = msg.substring(0,1) == 'Δ';
     $('#messages_contacts').addClass('in-call');
+    $('#settings').addClass('in-call');
 
   // get video/voice stream
   navigator.mediaDevices.getUserMedia({
@@ -452,6 +455,7 @@ let parseCall = (msg, sender=false, emitCall=true) => {
            answerCall(msg);
 
            $('#messages_contacts').addClass('in-call');
+           $('#settings').addClass('in-call');
 
            $('#caller_menu').fadeIn().css('top','51px');
            $('#caller_menu_type').text('Connecting..');
