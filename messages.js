@@ -58,26 +58,17 @@ let parse_sdp = (sdp) => {
           return parseInt(h, 16);
       });
 
-      console.log('intradasting: ', hex);
-
       fingerprint = btoa(String.fromCharCode.apply(String, hex));
-
-
-      // console.log("fingerprint::" , fingerprint);
-      // console.log("decoded:" , decode_fingerprint(fingerprint));
 
 
     } else if (line.includes('a=ice-ufrag:') && ice_ufrag == '') {
 
       ice_ufrag = line.substr(12);
-      // console.log('ufrag:', ice_ufrag);
 
 
     } else if (line.includes('a=ice-pwd:') && ice_pwd == '') {
 
       ice_pwd = line.substr(10);
-      // console.log('pwd:', ice_pwd);
-
 
     } else if (line.includes('a=candidate:')) {
 
@@ -92,12 +83,8 @@ let parse_sdp = (sdp) => {
       let hexa = ip.split('.').map(function (h) {
           return h.toString(16);
       });
-      console.log('line: ', ip);
-      console.log('intradasting: ', hexa);
 
       let ip_hex = btoa(String.fromCharCode.apply(String, hexa));
-
-      console.log('cool ip: ', ip)
 
 
       if (type == "srflx") {
@@ -111,47 +98,9 @@ let parse_sdp = (sdp) => {
 
       }
 
-      console.log(candidate);
-      console.log(port);
-
       let indexedport = port+ips.indexOf(ip_hex).toString();
 
-      console.log('Adding pört:', indexedport);
-
       ports = ports.concat(en.encode(parseInt(indexedport)));
-
-      //
-      //
-      // let found_port = false;
-      //
-      // let i = 0;
-      // while (ips.length >= i && !found_port) {
-      //   if (ports.includes(en.encode(port + i))) {
-      //
-      //    ports = ports.concat( en.encode(ports.indexOf(port + i).toString() + ips.indexOf(ip_hex).toString()) );
-      //
-      //    console.log("Adding duplicate:", en.encode(ports.indexOf(port + i).toString() + ips.indexOf(ip_hex).toString()));
-      //
-      //    found_port = true;
-      //
-      //  } else {
-      //    i += 1;
-      //  }
-      // }
-      //
-      // if (!found_port) {
-      //
-      // ports = ports.concat(en.encode(port + ips.indexOf(ip_hex)));
-      //
-      // console.log("Adding:", en.encode(port + ips.indexOf(ip_hex)));
-      //
-      // }
-      //
-      // if (port == "9") {
-      //
-      // }
-
-
 
 
     } else if (line.includes('a=ssrc:')) {
@@ -360,39 +309,10 @@ let answerCall = (msg) => {
       }
       console.log('Sending answer ', parsed_data);
       send_message(parsed_data, true);
-      //
-      // var client = new WebTorrent();
-      // let blob = new Blob([JSON.stringify(data)]);
-      // blob.name = 'callback';
-      // client.seed(blob, {type: 'text/plain'}, function (torrent) {
-      //   console.log('Client is seeding ' + torrent.magnetURI)
-      //   send_message(torrent.magnetURI.replace('&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&tr=wss%3A%2F%2Ftracker.fastcast.nz',''), true);
-      //   torrent.on('upload', function (bytes) {
-      //
-      //       if (bytes = torrent.length) {
-      //         console.log('Fully uploaded, removing')
-      //         torrent.removeListener('upload', listener);
-      //         $('#caller_menu_type').text('Connected');
-      //         setTimeout(function() {
-      //
-      //
-      //           client.destroy();
-      //
-      //         }, 60000);
-      //
-      //       } else {
-      //         console.log('Ratio is: '+bytes)
-      //       }
-      //
-      //
-      //   })
-      // })
-
       first = false;
 
     })
     let signal = sdp.expand_sdp_offer(msg);
-    console.log(signal);
     peer2.signal(sdp.expand_sdp_offer(msg));
 
     peer2.on('track', (track, stream) => {
@@ -521,8 +441,6 @@ var holder = document.getElementById('messages_pane');
               client.seed(f, function (torrent) {
 
                 torrent.on('wire', function (wire) {
-
-                  console.log(wire);
                   $('.' + torrent.magnetURI.split('&')[0].split(":")[3]).find('p').append('&nbsp;<i class="fa fa-circle-o-notch"></i>');
 
                 })
@@ -530,23 +448,17 @@ var holder = document.getElementById('messages_pane');
                 torrent.on('upload', function (uploaded) {
 
                   if ( torrent.uploaded == torrent.length ) {
-                    console.log('Done!');
                     $('.fa-circle-o-notch').removeClass('fa-circle-o-notch').addClass('fa-check-circle-o');
                     setTimeout(function() {
 
-                      console.log("Removing");
                       client.destroy();
 
                     }, 60000);
                   } else {
-                    console.log(torrent.uploaded + "/" + torrent.length);
+
                   }
 
                 })
-
-
-
-              console.log('Client is seeding ' + torrent.magnetURI)
               send_message(torrent.magnetURI.replace('&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&tr=wss%3A%2F%2Ftracker.fastcast.nz',''));
 
               })
@@ -585,10 +497,6 @@ let downloadMagnet = (magnetLink, element) => {
    client.add(torrentId, {path: downloadDir}, function (torrent) {
 
      torrent.on('download', function (bytes) {
-        console.log('just downloaded: ' + bytes)
-        console.log('total downloaded: ' + torrent.downloaded)
-        console.log('download speed: ' + torrent.downloadSpeed)
-        console.log('progress: ' + torrent.progress)
         $('#'+element).find('.progress').css('width',parseInt(torrent.progress * 88) + "px");
         // $('.progress').text(parseInt(torrent.progress * 88) + "%");
 
@@ -606,7 +514,6 @@ let downloadMagnet = (magnetLink, element) => {
 
            setTimeout(function() {
 
-             console.log("removing");
              client.destroy();
 
            }, 60000);
@@ -617,8 +524,6 @@ let downloadMagnet = (magnetLink, element) => {
        file.appendTo(document.getElementById(element).getElementsByTagName('p')[0]);
      });
      $('#messages_pane').scrollTop($('#messages').height());
-     //torrent.destroy();
-     //client.destroy();
 
      if (!file) {
        return;
@@ -629,17 +534,6 @@ let downloadMagnet = (magnetLink, element) => {
 
 
       torrent.on('done', function () {
-        console.log('done!!');
-
-
-   // Display the file by adding it to the DOM.
-   // Supports video, audio, image files, and more!
-
-   //let post_element = document.getElementById(tx_id);
-
-   //$('#'+tx_id).append(file.name);
-   //delete magnetLinks;
-   //alert(file.name);
 
  });
 
@@ -650,10 +544,10 @@ let downloadMagnet = (magnetLink, element) => {
 let handleMagnetListed = (message) => {
 
   if (message.substring(0,1) == "Δ" || message.substring(0,1) == "Λ" || message.substring(0,1) == "δ" || message.substring(0,1) == "λ"  ) {
-    console.log('Call detected!');
+
     return "Call started";
   } else {
-    console.log('No call stuffs');
+
   }
 
   let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(message);
@@ -838,12 +732,6 @@ let walletd = new TurtleCoinWalletd(
   false
 )
 
-// walletd.getTransactions(10000,
-//  495000,
-// '',
-// [],
-// '').then(resp => { console.log("resp:",resp) });
-
 $('#getMnemonic').click(function(){
   walletd.getMnemonicSeed($('#currentAddrSpan').text()).then(resp => {
     $('#mnemonic').text(resp.body.result.mnemonicSeed);
@@ -878,7 +766,7 @@ let decrypt_message = (possibleKeys, box, timestamp) => {
        return decryptBox;
      }
    } catch(e) {
-     console.log();
+
    }
 
      i = i-1;
@@ -953,7 +841,7 @@ function save_messages(transactions) {
             }
 
           } catch (e) {
-            console.log();
+
           }
 
             let message_dec = naclUtil.encodeUTF8(decryptBox);
@@ -963,7 +851,7 @@ function save_messages(transactions) {
 
           message = payload_json.msg;
 
-          console.log(message);
+
 
           if (message.substring(0, 22) == "data:image/jpeg;base64") {
             message = "<img src='" + message + "' />";
@@ -1000,7 +888,7 @@ function save_messages(transactions) {
     }
 
     sortedMessages = sortMessages(newMessages);
-    console.log(sortedMessages);
+
 
 }
 
@@ -1071,7 +959,7 @@ let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json
           '',
           sendAddr)
         .then(resp => {
-          // console.log(resp.body)
+
           if (resp.body.error) {
               if (resp.body.error.message == "Wrong amount") {
                 alert("Sorry, you don't have enough XKR to send this message.");
@@ -1113,7 +1001,7 @@ let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json
           avatar_base64 = get_avatar(sendAddr);
 
           $('#welcome_alpha').remove();
-          console.log( JSON.parse(fromHex(payload_hex)).t );
+
           payload_json.msg = parseCall(payload_json.msg);
           if (!silent) {
           $('#messages').append('<li class="sent_message" id="' + JSON.parse(fromHex(payload_hex)).t + '"><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + payload_json.msg + '</p><span class="time">' + moment(payload_json.t).fromNow() + '</span></li>');
@@ -1134,7 +1022,7 @@ let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json
           // Add message to contacts list and add class to tell updateMessages
           if ( $('.' + payload_json.to).width() > 0 ){
           let listed_msg = handleMagnetListed(payload_json.msg);
-          console.log(listed_msg);
+
 
           $('.' + payload_json.to).find('.listed_message').text(listed_msg).parent().detach().prependTo('#messages_contacts');
         } else {
@@ -1228,11 +1116,11 @@ function sendMessage(message, silent=false) {
 // Detect valid address input into recipient forms
 
 $('#recipient_form').on('input', function() {
-console.log('wopwop');
+
   text = $('#recipient_form').val();
 
   if(text.substr(text.length - 7) == '.xkr.se') {
-    console.log('wop');
+
     let oaname = '';
       try {
       openAlias(text).then(wallets => {
@@ -1461,14 +1349,6 @@ function printMessages(transactions, address) {
                       message = "<img src='" + message + "' />";
                     }
 
-                    console.log('habbening');
-                    //
-                    // let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(payload_json.msg);
-                    // if (magnetLinks) {
-                    //   handleMagnetLink(magnetLinks, JSON.parse(fromHex(payload_hex)).t);
-                    // }
-
-
 
                     senderAddr = payload_json.from;
                     receiverAddr = payload_json.to;
@@ -1492,19 +1372,11 @@ function printMessages(transactions, address) {
                     }
                 }
                   catch(err){
-                    // alert(thisAmount);
-
-                    //console.log(err);
                   }
 
                 }
 
               }
-              //alert(JSON.stringify(local_messages));
-              //newMessages = newMessages.concat(local_messages);
-              //alert(JSON.stringify(newMessages));
-              //newMessages.push(...local_messages);
-
 
               sortedMessages = sortMessages(newMessages);
 
@@ -1955,10 +1827,6 @@ function find_messages(opt, skip, limit, sort=-
 async function get_confirmed_messages(from, to) {
   return new Promise(function(resolve, reject) {
 
-    // console.log('Getting confirmed messages..');
-    // console.log('From: ' + from);
-    // console.log('To: ' + to);
-
     walletd.getTransactions(
       to,
       from,
@@ -1969,7 +1837,6 @@ async function get_confirmed_messages(from, to) {
         let arr = [];
 
         if (resp.code == 'ETOOLARGE') {
-          // console.log('Too large :(');
 
           reject('ETOOLARGE');
 
@@ -2103,7 +1970,7 @@ async function get_new_conversations(unconfirmed) {
 
   if (!unconfirmed) {
       getting_new_conversations = true;
-      // console.log('Getting new confirmed messages..');
+
 
       if ( last_block_checked == block_height ) {
         return;
@@ -2115,18 +1982,18 @@ async function get_new_conversations(unconfirmed) {
     } catch (err) {
 
       if (err == 'ETOOLARGE') {
-        // console.log('damn dats big');
+
         confirmed_transactions = [];
         while (check_block+10000 < block_height) {
           new_transactions = await get_confirmed_messages(check_block, 10000);
-          // console.log(new_transactions);
+
           confirmed_transactions = confirmed_transactions.concat(new_transactions);
-          // console.log(confirmed_transactions);
+
           check_block = check_block + 10000;
         }
       }
 
-      // console.log(confirmed_transactions)
+
 
     }
       unconfirmed_transactions = await get_unconfirmed_messages();
@@ -2155,11 +2022,11 @@ all_transactions = all_transactions.filter(function (el) {
 
 
   for (n in all_transactions) {
-    // console.log(fromHex(all_transactions[n]));
+
     try {
       tx = JSON.parse(fromHex(all_transactions[n]));
     } catch (err) {
-      //console.log(err);
+
       continue;
     }
 
@@ -2320,7 +2187,7 @@ all_transactions = all_transactions.filter(function (el) {
           // then we update it, and move it to the top.
 
           let listed_msg = handleMagnetListed(payload_json.msg);
-console.log(listed_msg);
+
         $('.' + conversation_address).find('.listed_message').text(listed_msg).parent().detach().prependTo("#messages_contacts").addClass('unread_message');
 
       } else {
