@@ -6,6 +6,26 @@
  */
 
  @font-face {
+   font-family: 'Major Mono Display';
+   font-style: normal;
+   font-weight: 400;
+   src: url('../fonts/major-mono-display-v4-latin-regular.eot');
+   /* IE9 Compat Modes */
+   src: local('Major Mono Display Regular'), local('MajorMonoDisplay-Regular'),
+     url('../fonts/major-mono-display-v4-latin-regular.eot?#iefix') format('embedded-opentype'),
+     /* IE6-IE8 */
+     url('../fonts/major-mono-display-v4-latin-regular.woff2') format('woff2'),
+     /* Super Modern Browsers */
+     url('../fonts/major-mono-display-v4-latin-regular.woff') format('woff'),
+     /* Modern Browsers */
+     url('../fonts/major-mono-display-v4-latin-regular.ttf') format('truetype'),
+     /* Safari, Android, iOS */
+     url('../fonts/major-mono-display-v4-latin-regular.svg#MajorMonoDisplay') format('svg');
+   /* Legacy iOS */
+ }
+
+
+ @font-face {
   font-family: 'XKR';
   font-style: normal;
   font-weight: 400;
@@ -192,6 +212,55 @@ html, body {
 
 }
 
+.flip-box {
+    background-color: transparent;
+    width: 100%;
+    height: calc(100% - 98px);
+    perspective: 1000px;
+    margin-top: 50px;
+}
+
+/* This container is needed to position the front and back side */
+#flip-box-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+}
+
+
+.flip-box-front, .flip-box-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden; /* Safari */
+  backface-visibility: hidden;
+}
+
+#settings {
+  /* background: linear-gradient(270deg, #000000, #1b1836);
+  background-size: 400% 400%;
+
+  background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, #abf25f, #5ff281, #5ff2f0) !important;
+    background-size: 1000% 1000% !important;
+
+    -webkit-animation: AnimationName 60s ease infinite;
+    -moz-animation: AnimationName 60s ease infinite;
+    animation: AnimationName 60s ease infinite; */
+    background: #181818;
+  color: white;
+  transform: rotateY(180deg);
+  display: block;
+  line-height: 30px;
+}
+
+
+.flip  {
+ transform: rotateY(180deg);
+}
+
+
 #container {
 
   position:absolute;
@@ -374,11 +443,17 @@ a {
 }
 
 #loading_border {
-  border-top: 3px solid #00843D;
   position: absolute;
   left: 0;
   top: 0;
-  width: 0%;
+  background: linear-gradient(270deg, #000000, #1b1836);
+  background-size: 400% 400%;
+  background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, #abf25f, #5ff281, #5ff2f0) !important;
+  background-size: 1000% 1000% !important;
+  -webkit-animation: AnimationName 60s ease infinite;
+  -moz-animation: AnimationName 60s ease infinite;
+  animation: AnimationName 60s ease infinite;
+  height: 3px;
 }
 
 #payment_form input, #currentchat_footer input {
@@ -406,6 +481,11 @@ font-family: "Roboto";
 padding: 5px;
 }
 
+#payment_form input {
+
+  border-radius: 2px;
+}
+
 
 #payment_amount{
 
@@ -422,6 +502,17 @@ padding: 5px;
 margin-top:-15px;
 
 }
+
+#call-button:hover {
+
+  color:green;
+}
+
+#video-button:hover {
+
+  color:green;
+}
+
 
 
 #copyBoth {
@@ -720,7 +811,7 @@ border-bottom: 1px solid rgba(255,255,255,0.1);
 #message_form {
   margin: 0 !important;
   height: 100% !important;
-  width: calc(100% - 55px) !important;
+  width: calc(100% - 75px) !important;
   border-radius: 0 !important;
   padding: 0 !important;
   padding-left: 10px !important;
@@ -742,6 +833,7 @@ border-bottom: 1px solid rgba(255,255,255,0.1);
   background-repeat: no-repeat;
   opacity: 0.5;
   cursor: pointer;
+  padding-left: 16px;
 }
 
 textarea:focus, input:focus{
@@ -767,6 +859,7 @@ display: inline-block;
 }
 
 #currentchat_header_wrapper {
+  background: rgb(22,22,22);
   border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
@@ -880,8 +973,8 @@ overlay p {
 }
 
 #balance-box {
-  font-family: monospace;
-  font-size: 32pt;
+  font-family: 'Major Mono Display';
+  font-size: 29pt;
   letter-spacing: -3px;
   background: rgba(0,0,0,0.4);
   border-radius: 5px;
@@ -1042,6 +1135,9 @@ overlay p {
   width:100%;
   height: 50px;
   border-bottom: 1px solid rgba(255,255,255,0.1);
+  position: absolute;
+  background: rgb(22,22,22);
+  z-index: 2;
 }
 
 #search_messages {
@@ -1065,10 +1161,10 @@ overlay p {
 }
 
 #settings_icon {
-  width:4px;
+  width:5%;
   position: absolute;
   top: 18px;
-  right: 40px;
+  right: 22px;
   cursor: pointer;
 }
 
@@ -1078,18 +1174,16 @@ overlay p {
   color: black;
 }
 
-#settings:hover {
-  color: black;
-  background: white;
-}
-
 
 #messages_contacts {
-  padding: 5px;
+  padding: 0;
+  padding-top: 0;
   margin: 0;
   overflow-y: auto;
   overflow-x: hidden;
-  height: calc(100% - 94px);
+  height: 100%;
+  perspective: 1000px;
+  transition: 1s padding-top;
 }
 
 
@@ -1225,15 +1319,15 @@ overlay p {
 
 }
 
-#messages_contacts  {
-  --scrollbarBG: f3f4f5;
-  --thumbBG: black;
+#messages_contacts {
+  --scrollbarBG: black;
+  --thumbBG: white;
 
 }
 #messages_contacts::-webkit-scrollbar {
-  width: 11px;
+  width: 8px;
 }
-#messages_contacts {
+#messages_contacts  {
   scrollbar-width: thin;
   scrollbar-color: var(--thumbBG) var(--scrollbarBG);
 }
@@ -1242,9 +1336,43 @@ overlay p {
 }
 #messages_contacts::-webkit-scrollbar-thumb {
   background-color: var(--thumbBG) ;
-  border-radius: 2px;
+  border-radius: 3px;
   border: 3px solid var(--scrollbarBG);
 }
+
+
+#settings {
+
+  width: 100%;
+  height: 100%;
+
+}
+
+#settings div {
+  padding: 11px 16px;
+  text-decoration: none;
+  display: block;
+  font-family: 'Roboto';
+  font-size: 17px;
+  cursor: pointer;
+
+}
+
+
+#settings div:hover {
+
+  background-color: rgba(222,222,222,0.2) !important;
+
+}
+
+
+.show {
+
+  display: block;
+  position: absolute;
+
+}
+
 
 @media (prefers-color-scheme: light) {
 
@@ -1254,6 +1382,28 @@ header  {
     color: #53565c;
 
  }
+
+ #incomingCall {
+
+   background-color: #f5f6f7 !important;
+   box-shadow: 10px 10px 10px rgba(0,0,0,0.05) !important;
+   color: black;
+
+ }
+
+
+ #answerCall {
+
+   color:white;
+
+ }
+
+ #declineCall {
+
+   color:white;
+
+ }
+
 
  #balancelogo::before {
    font-family: 'XKR';
@@ -1280,10 +1430,23 @@ box-shadow: none;
 
   }
 
+  #settings_icon {
+    color: #53565c !important;
+  }
+
+  #settings_page {
+    background: #fff;
+  }
+
   #settings_icon:hover {
 
-
+    background: white;
     color: black;
+  }
+
+  #settings {
+    background: #F5F6F7;
+    color: #53565c;
   }
 
  #payment_message {
@@ -1394,6 +1557,7 @@ color: black;
 
    color: black;
  }
+
 
 #messages_sidebar {
 
@@ -1513,28 +1677,12 @@ color: black;
 
   }
 
-#messages_contacts  {
+#messages_contacts {
   --scrollbarBG: white;
   --thumbBG: black;
 
 }
-#messages_contacts::-webkit-scrollbar {
-  width: 11px;
-}
-#messages_contacts {
-  scrollbar-width: thin;
-  scrollbar-color: var(--thumbBG) var(--scrollbarBG);
-}
-#messages_contacts::-webkit-scrollbar-track {
-  background: var(--scrollbarBG);
-}
-#messages_contacts::-webkit-scrollbar-thumb {
-  background-color: var(--thumbBG) ;
-  border-radius: 2px;
-  border: 3px solid var(--scrollbarBG);
-}
-
-  #messages_contacts > li {
+  .flip-box > li {
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     color: black;
   }
@@ -1548,3 +1696,373 @@ color: black;
 
 
   }
+
+
+  .sent_message button {
+      display: none;
+  }
+#drop-overlay {
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  backdrop-filter: blur(5px);
+  text-align: center;
+  vertical-align: middle;
+  font-size:25pt;
+  padding-top: 20%;
+  z-index: 9999999999;
+}
+
+.fa-phone:before:not(#call-button) {
+    content: "\f095";
+    position: absolute;
+    left: 14px;
+    top: 8px;
+}
+.emoji-picker__wrapper {
+  position: absolute !important;
+  right: 50px !important;
+  bottom: 50px !important;
+  inset: auto 50px 50px auto !important;
+  transform: none !important;
+  z-index: 2;
+  }
+
+
+.trigger {
+  opacity: 0.5;
+}
+
+#incomingCall {
+  height: 512px;
+width: 300px;
+z-index: 999;
+background: magenta;
+position: absolute;
+left: calc(50% - 150px);
+top: 50px;
+border-radius: 15px;
+text-align: center;
+box-shadow: 1px 1px 30px black;
+display: none;
+}
+
+
+#incomingCall span {
+
+  padding: 0 20px 0 20px;
+  word-break: break-all;
+  font-size: 11px;
+  display: block;
+}
+
+#declineCall {
+
+  transform: rotate(135deg);
+  background: #FC5B57;
+
+}
+
+#answerCall {
+
+  background: #3EC54F;
+
+}
+#incomingCall h1 {
+  border: none;
+}
+
+#incomingCall i {
+  border-radius: 50%;
+  padding: 10px;
+  font-size: 41pt;
+  width: 50px;
+  height: 50px;
+  margin: 18px;
+}
+
+#incomingCall img {
+  margin-left: 101px;
+width: 200px;
+background: black;
+margin-bottom: 10px;
+background: linear-gradient(270deg, #000000, #1b1836);
+background-size: 400% 400%;
+
+background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, #abf25f, #5ff281, #5ff2f0) !important;
+  background-size: 1000% 1000% !important;
+
+  -webkit-animation: AnimationName 60s ease infinite;
+  -moz-animation: AnimationName 60s ease infinite;
+  animation: AnimationName 60s ease infinite;
+
+}
+
+#incomingCall {
+  background: rgb(22,22,22);
+}
+
+.fa {
+  cursor: pointer;
+}
+
+#hugin-background {
+  background: linear-gradient(270deg, #000000, #1b1836);
+background-size: 400% 400%;
+
+background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, #abf25f, #5ff281, #5ff2f0) !important;
+
+    background-size: 1000% 1000% !important;
+
+    -webkit-animation: AnimationName 60s ease infinite;
+    -moz-animation: AnimationName 60s ease infinite;
+    animation: AnimationName 60s ease infinite;
+    width: 251px;
+    height: 251px;
+    display: inline-block;
+    border-radius: 50%;
+
+}
+
+#hugin-background img {
+  position: absolute;
+  width: 320px;
+  top: 63px;
+  left: 6px;
+}
+
+#welcome-text {
+  display: inline-block;
+    width: 60%;
+    margin-left: 29px;
+}
+
+#caller_menu {
+  display: none;
+  transition: all 0.5s;
+  position: absolute;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  color: black;
+    width: 92%;
+    font-weight: bold;
+    padding: 10px;
+    z-index: 1;
+    top: -14px;
+    left: 0;
+    background: linear-gradient(270deg, #000000, #1b1836);
+  background-size: 400% 400%;
+
+  background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, #abf25f, #5ff281, #5ff2f0) !important;
+
+      background-size: 1000% 1000% !important;
+
+      -webkit-animation: AnimationName 60s ease infinite;
+      -moz-animation: AnimationName 60s ease infinite;
+      animation: AnimationName 60s ease infinite;
+  }
+
+  @-webkit-keyframes AnimationName {
+      0%{background-position:0% 50%}
+      50%{background-position:100% 50%}
+      100%{background-position:0% 50%}
+  }
+  @-moz-keyframes AnimationName {
+      0%{background-position:0% 50%}
+      50%{background-position:100% 50%}
+      100%{background-position:0% 50%}
+  }
+  @keyframes AnimationName {
+      0%{background-position:0% 50%}
+      50%{background-position:100% 50%}
+      100%{background-position:0% 50%}
+  }
+
+#caller_menu img {
+  display: inline-block;
+  margin-left: -4px;
+
+}
+
+#caller_menu .wrapper {
+  width: 127px;
+    display: inline-block;
+}
+
+#caller_menu_type {
+
+}
+
+#caller_menu_contact {
+  white-space: nowrap;
+    width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    font-size: 11px;
+}
+
+#caller_menu .fa {
+    font-size: 16pt;
+    vertical-align: 9px;
+    margin-left: 12px;
+}
+
+#caller_menu .fa-phone {
+  transform: rotate(135deg);
+}
+
+#settings i {
+  width: 20px;
+  text-align: center;
+}
+
+#settings_page {
+  display: none;
+  background: rgba(0,0,0,22,1);
+
+                width: 100%;
+                padding: 15px;
+                padding-left:35px;
+                height: 100%;
+                position: absolute;
+                z-index: 1;
+}
+
+
+#mnemonicbox {
+
+  height: 10%;
+  width: 88%;
+  display: block;
+  color: #8ba2b9;
+  border-radius: 2px;
+  margin-left: 5px;
+  font-family: monospace;
+
+}
+
+
+
+#privatekeybox {
+
+  height: 5%;
+  width: 88%;
+  display: block;
+  color: #8ba2b9;
+  border-radius: 2px;
+  margin-left: 5px;
+  font-family: monospace;
+
+}
+
+
+#getPrivatekey, #getMnemonic, #import {
+
+   background-color: white;
+   border: none;
+   color: black;
+   padding: 11px 22px;
+   text-align: center;
+   text-decoration: none;
+   display: inline-block;
+   font-size: 15px;
+   padding: 10px;
+   margin: 5px;
+
+ }
+
+ #getPrivatekey:hover, #getMnemonic:hover, #import:hover {
+
+   background: #292929;
+   color: white;
+ }
+
+#settings_icon {
+  width: 35px;
+      text-align: center;
+      line-height: 5px;
+      padding-top: 10px;
+      font-size: 14pt;
+      vertical-align: middle;
+      cursor: pointer;
+      display: inline-block;
+      top: 8px;
+      color: white;
+      padding-bottom: 10px;
+}
+
+
+#settings_icon:hover {
+
+  color: black;
+  background: white;
+}
+
+#importMnemonic {
+
+  height: 25px;
+  width: 75%;
+  margin-left: 5px;
+  color: black;
+  margin-top: 5px;
+  font-family: monospace;
+
+
+}
+
+.in-call {
+  padding-top: 70px !important;
+}
+
+.gradient {
+  background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, #abf25f, #5ff281, #5ff2f0) !important;
+  background-size: 1000% 1000% !important;
+  -webkit-animation: AnimationName 60s ease infinite;
+  -moz-animation: AnimationName 60s ease infinite;
+  animation: AnimationName 60s ease infinite alternate;
+}
+
+button {
+  border-radius: 3px;
+  background: none;
+  border: 3px solid black;
+
+}
+
+li .gradient {
+  color: black !important;
+  font-weight: bold;
+}
+
+.download-button {
+  margin-left: 7px !important;
+  width: 88px;
+  text-transform: uppercase;
+  font-weight: bold;
+  height: 25px;
+  font-size: 11px;
+}
+
+.progress {
+  height: 120%;
+    width: 0px;
+    background: black;
+    margin-top: -1px;
+    margin-left: -10px;
+}
+
+.fa-circle-o-notch {
+
+      -webkit-animation: rotate 3s ease infinite;
+      -moz-animation: rotate 3s ease infinite;
+      animation: rotate 3s ease infinite;
+}
+
+
+@keyframes rotate {
+    from {rotate: 0deg;}
+    to {rotate:360deg;}
+}

@@ -6,10 +6,30 @@
     <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
     <title>Hugin Messenger</title>
 
+
+
+
   </head>
   <body>
 
-
+    <video style="position: absolute;
+    top: 189px;
+    right: 0;
+    height: 270px;
+    z-index: 99999999999;
+    display: none;
+    border-bottom-left-radius: 5px;"></video>
+    <audio></audio>
+    <video muted id="myvideo" style="position: absolute;
+    top: 36px;
+    display: none;
+    left: 6px;
+    z-index: 99999999999;
+    width: 90px;
+    /* height: 90px; */
+    border-radius: 5px;
+}"></video>
+    <input style="display: none" id="otherid"></input>
 
     <overlay>
 
@@ -54,6 +74,24 @@
         <button class="inline" id="copyBoth">COPY</button>
       </div>
 
+      <i class="fa fa-phone"
+      style="
+      background-color: #FC5B57;
+      border-radius: 50%;
+      color: black;
+      width: 64px;
+      height: 64px;
+      font-size: 48px;
+      text-align: center;
+      /* vertical-align: text-bottom; */
+      position: absolute;
+      top: 39px;
+      left: 480px;
+      display: none;
+      cursor: pointer;
+      "
+      ></i>
+
       <div id="balance" class="inline">
         <span class="description" style="padding-left: 25px;">Balance</span><br>
         <div id="balance-box">
@@ -88,10 +126,56 @@
           <div id="settings_icon"><i class="fa fa-cogs"></i></div>
         </div>
 
-      <ul id="messages_contacts">
+
+
+                <div id="caller_menu">
+
+                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc0MCcgaGVpZ2h0PSc0MCcgc3R5bGU9J2JhY2tncm91bmQtY29sb3I6cmdiYSgxLDksMTgsMCk7Jz48ZyBzdHlsZT0nZmlsbDpyZ2JhKDE3LDk3LDE4MSwxKTsgc3Ryb2tlOnJnYmEoMTcsOTcsMTgxLDEpOyBzdHJva2Utd2lkdGg6MC4yOyc+PHJlY3QgIHg9JzE4JyB5PScxMCcgd2lkdGg9JzQnIGhlaWdodD0nNCcvPjxyZWN0ICB4PScxOCcgeT0nMTQnIHdpZHRoPSc0JyBoZWlnaHQ9JzQnLz48cmVjdCAgeD0nMTgnIHk9JzE4JyB3aWR0aD0nNCcgaGVpZ2h0PSc0Jy8+PHJlY3QgIHg9JzE4JyB5PScyMicgd2lkdGg9JzQnIGhlaWdodD0nNCcvPjxyZWN0ICB4PScxOCcgeT0nMjYnIHdpZHRoPSc0JyBoZWlnaHQ9JzQnLz48cmVjdCAgeD0nMTQnIHk9JzEwJyB3aWR0aD0nNCcgaGVpZ2h0PSc0Jy8+PHJlY3QgIHg9JzIyJyB5PScxMCcgd2lkdGg9JzQnIGhlaWdodD0nNCcvPjxyZWN0ICB4PScxNCcgeT0nMTQnIHdpZHRoPSc0JyBoZWlnaHQ9JzQnLz48cmVjdCAgeD0nMjInIHk9JzE0JyB3aWR0aD0nNCcgaGVpZ2h0PSc0Jy8+PHJlY3QgIHg9JzE0JyB5PScxOCcgd2lkdGg9JzQnIGhlaWdodD0nNCcvPjxyZWN0ICB4PScyMicgeT0nMTgnIHdpZHRoPSc0JyBoZWlnaHQ9JzQnLz48cmVjdCAgeD0nMTQnIHk9JzIyJyB3aWR0aD0nNCcgaGVpZ2h0PSc0Jy8+PHJlY3QgIHg9JzIyJyB5PScyMicgd2lkdGg9JzQnIGhlaWdodD0nNCcvPjxyZWN0ICB4PScxNCcgeT0nMjYnIHdpZHRoPSc0JyBoZWlnaHQ9JzQnLz48cmVjdCAgeD0nMjInIHk9JzI2JyB3aWR0aD0nNCcgaGVpZ2h0PSc0Jy8+PHJlY3QgIHg9JzEwJyB5PScxMCcgd2lkdGg9JzQnIGhlaWdodD0nNCcvPjxyZWN0ICB4PScyNicgeT0nMTAnIHdpZHRoPSc0JyBoZWlnaHQ9JzQnLz48cmVjdCAgeD0nMTAnIHk9JzE0JyB3aWR0aD0nNCcgaGVpZ2h0PSc0Jy8+PHJlY3QgIHg9JzI2JyB5PScxNCcgd2lkdGg9JzQnIGhlaWdodD0nNCcvPjxyZWN0ICB4PScxMCcgeT0nMTgnIHdpZHRoPSc0JyBoZWlnaHQ9JzQnLz48cmVjdCAgeD0nMjYnIHk9JzE4JyB3aWR0aD0nNCcgaGVpZ2h0PSc0Jy8+PHJlY3QgIHg9JzEwJyB5PScyNicgd2lkdGg9JzQnIGhlaWdodD0nNCcvPjxyZWN0ICB4PScyNicgeT0nMjYnIHdpZHRoPSc0JyBoZWlnaHQ9JzQnLz48L2c+PC9zdmc+"></img>
+                    <span class="wrapper">
+                    <span id="caller_menu_type">Voice connected</span><br>
+                    <span id="caller_menu_contact">SEKReXcwhgX9LVUgnist5JNqSTqwkC7KejZfCULR3sGkcqBSY7bV5PR3QMppFWFSAs5HUdENPKSXXdbkEo6pThSVUub41Nc1CMS</span>
+                    </span>
+                    <i class="fa fa-phone"></i>
+                    <i class="fa fa-microphone" style="
+                    position: absolute;
+                    bottom: 21px;
+                    text-align: center;
+                    width: 20px;
+                    "></i>
+
+
+                </div>
+
+<div class="flip-box">
+ <div id="flip-box-inner">
+
+
+      <ul id="messages_contacts" class="flip-box-front">
+
+
+
+
+
+
 
       </ul>
+           <div id="settings" class="flip-box-back">
 
+
+             <!-- <div id="#about"><i class="fa fa-wifi"></i>  Node</div> -->
+             <div id="walletSettings"><i class="fa fa-save"></i>My  Wallet</div>
+             <!-- <div id="#contact">Media Settings</div>
+             <div id="#home">Transactions</div>
+             <div id="#contact">Contacts</div>
+             <div id="#contact">Security</div>
+             <div id="#contact">Wallet</div> -->
+
+         </div>
+
+
+</div>
+
+</div>
       <div id="bottombar">
         <div id="daemon_status">
           <span id="status_icon">&nbsp;</span>&nbsp;
@@ -103,7 +187,9 @@
 
       </div>
 
-
+      <div id="media_settings">
+          <h1 class="w3-center w3-animate-right">Animation is Fun!</h1>
+       </div>
       <div id="messages_currentchat">
         <div id="currentchat_header_wrapper">
           <div id="new_chat">+</div>
@@ -122,18 +208,63 @@
            <span class="checkmark">✓</span>
          </span>
       </div>
+      <i id="video-button" class="fa fa-video-camera"></i>
+      <i id="call-button" class="fa fa-phone" style="margin-left:10px"></i>
     </div>
 
        <div id="messages_pane">
+
+         <div id="settings_page" style="">
+                   <i class="fa fa-plus" style="rotate: 45deg; position: absolute; right: 60px; top: 10px" onClick='$("#settings_page").fadeOut(); myFunction();'></i>
+                   <h1>Wallet</h2>
+
+                    <button id="getMnemonic">Show mnemonic seed</button>
+                    <div id="mnemonicbox">
+
+                      <span id="mnemonic">
+                        Save this phrase somewhere _SAFE_
+                      </span>
+
+                      </div>
+                      <button id="getPrivatekey">Show Private Key</button>
+                      <div id="privatekeybox">
+
+                        <span id="privatekey">
+                          Never show this key to anyone!
+                        </span>
+
+                        </div>
+
+                        <br>
+
+                      <button id="import">Import wallet</button>
+                      <br>
+                       <input type="textarea" id="importMnemonic">
+                      </input>
+
+                  </div>
+         <div style="display: none" id="drop-overlay">
+           <p>DROP FILE HERE</p>
+         </div>
        <ul id="messages">
 
-         <div id="welcome_alpha" style="width:90%;padding: 15px; padding-left: ; margin-top:-30px; margin-left: -40px; background: url('static/hugin-neon.png'); background-repeat: no-repeat;; background-size: 42%; background-position: 26px 40px">
-           <div style="width:70%; margin-left:45%;">
+
+         <div id="welcome_alpha" style="
+          width: 100%;
+          padding: 15px;
+          padding-left: 0;
+          margin-top: -30px;
+          margin-left: -20px;
+          ">
+           <div>
+            <span id="hugin-background"><img src='static/hugin-neon.png' /></span>
+            <span id="welcome-text">
            <h2>Welcome to Hugin Messenger!</h2>
            <p>Please note that this is an alpha release, the encryption of this system is yet to be peer reviewed, so act accordingly!</p>
            <p>If you notice any bugs, please send a description of the bug to this address: <span style="display: inline-block; width: 200px; height: 15px; overflow: hidden; text-overflow: ellipsis; font-family:monospace">SEKReYvAsPsAWHN9Yu6zMeEQgA5J7EeGf74EHs7KYhLxZAv12BJbuZA5Nj9HYTA2meZDkxggKXvGcdtdJBAUct1VU9wZhaB2bafb40e3e1b118e74c734b251df4802fda6bd0d3f55a34608470e5d635f05253872</span></p>
            <p>Make sure you include an exhaustive description of the bug, and steps to reproduce. All reported bugs will be compensated with XKR. The reward is depending on the severity of the bug.</p>
            <h3>Happy chatting!</h3>
+         </span>
          </div>
          </div>
 
@@ -142,6 +273,7 @@
         <div id="currentchat_footer">
           <div id="loading_border"></div>
           <input id="message_form" type="text" placeholder="Message"></input>
+          <i class="fa fa-smile-o trigger"></i>
           <div id="payment_message">$</div>
 
         </div>
@@ -239,30 +371,6 @@
 
     </div>
 
-    <div id="settings_page" style="display: none;">
-
-      <h1>Settings</h1>
-
-      <div id="settings_list">
-
-        <h2>Connection</h2>
-
-        <p style="display: inline-block;">Public node:</p>
-        <div style="display: inline-block;" class="flipswitch">
-            <input type="checkbox" name="flipswitch" class="flipswitch-cb" id="fs" checked>
-            <label class="flipswitch-label" for="fs">
-                <div class="flipswitch-inner"></div>
-                <div class="flipswitch-switch"></div>
-            </label>
-        </div>
-
-
-
-      </div>
-
-    </div>
-
-
 
     <div id="container_next">
 
@@ -270,7 +378,34 @@
 
   </div>
 
+  <div id="incomingCall">
 
+    <h1>Incoming call!</h1>
+
+    <img class="contact_avatar" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc0MCcgaGVpZ2h0PSc0MCcgc3R5bGU9J2JhY2tncm91bmQtY29sb3I6cmdiYSgxLDIzLDIzLDApOyc+PGcgc3R5bGU9J2ZpbGw6cmdiYSgxMiwyMzksMjMyLDEpOyBzdHJva2U6cmdiYSgxMiwyMzksMjMyLDEpOyBzdHJva2Utd2lkdGg6MC4yOyc+PHJlY3QgIHg9JzE4JyB5PScxMCcgd2lkdGg9JzQnIGhlaWdodD0nNCcvPjxyZWN0ICB4PScxOCcgeT0nMTQnIHdpZHRoPSc0JyBoZWlnaHQ9JzQnLz48cmVjdCAgeD0nMTgnIHk9JzE4JyB3aWR0aD0nNCcgaGVpZ2h0PSc0Jy8+PHJlY3QgIHg9JzE4JyB5PScyMicgd2lkdGg9JzQnIGhlaWdodD0nNCcvPjxyZWN0ICB4PScxOCcgeT0nMjYnIHdpZHRoPSc0JyBoZWlnaHQ9JzQnLz48cmVjdCAgeD0nMTQnIHk9JzEwJyB3aWR0aD0nNCcgaGVpZ2h0PSc0Jy8+PHJlY3QgIHg9JzIyJyB5PScxMCcgd2lkdGg9JzQnIGhlaWdodD0nNCcvPjxyZWN0ICB4PScxNCcgeT0nMTgnIHdpZHRoPSc0JyBoZWlnaHQ9JzQnLz48cmVjdCAgeD0nMjInIHk9JzE4JyB3aWR0aD0nNCcgaGVpZ2h0PSc0Jy8+PHJlY3QgIHg9JzEwJyB5PScxMCcgd2lkdGg9JzQnIGhlaWdodD0nNCcvPjxyZWN0ICB4PScyNicgeT0nMTAnIHdpZHRoPSc0JyBoZWlnaHQ9JzQnLz48cmVjdCAgeD0nMTAnIHk9JzE0JyB3aWR0aD0nNCcgaGVpZ2h0PSc0Jy8+PHJlY3QgIHg9JzI2JyB5PScxNCcgd2lkdGg9JzQnIGhlaWdodD0nNCcvPjxyZWN0ICB4PScxMCcgeT0nMTgnIHdpZHRoPSc0JyBoZWlnaHQ9JzQnLz48cmVjdCAgeD0nMjYnIHk9JzE4JyB3aWR0aD0nNCcgaGVpZ2h0PSc0Jy8+PHJlY3QgIHg9JzEwJyB5PScyMicgd2lkdGg9JzQnIGhlaWdodD0nNCcvPjxyZWN0ICB4PScyNicgeT0nMjInIHdpZHRoPSc0JyBoZWlnaHQ9JzQnLz48cmVjdCAgeD0nMTAnIHk9JzI2JyB3aWR0aD0nNCcgaGVpZ2h0PSc0Jy8+PHJlY3QgIHg9JzI2JyB5PScyNicgd2lkdGg9JzQnIGhlaWdodD0nNCcvPjwvZz48L3N2Zz4=">
+    <br>
+    <span>SEKReXcwhgX9LVUgnist5JNqSTqwkC7KejZfCULR3sGkcqBSY7bV5PR3QMppFWFSAs5HUdENPKSXXdbkEo6pThSVUub41Nc1CMS</span>
+    <br>
+
+    <i class="fa fa-phone" id="answerCall"></i>
+    <i class="fa fa-phone" id="declineCall"></i>
+
+  </div>
+
+
+  <script>
+
+document.getElementById("settings_icon").onclick = function() {myFunction(); $('#settings_page').fadeOut()};
+
+
+function myFunction() {
+  document.getElementById("flip-box-inner").classList.toggle("flip");
+
+
+}
+
+
+</script>
 
 
     <script>
@@ -279,5 +414,6 @@
       require('./messages.js')
 
     </script>
+    <script type="module" src="emoji.js"></script>
   </body>
 </html>

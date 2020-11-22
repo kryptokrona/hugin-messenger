@@ -4,7 +4,553 @@ const copy = require( 'copy-to-clipboard' );
 const notifier = require('node-notifier');
 const { openAlias } = require('openalias');
 
+var sdp = require('./sdp');
+
 const Datastore = require('nedb');
+
+var en = require('int-encoder');
+
+var WebTorrent = require('webtorrent');
+
+var Peer = require('simple-peer')
+let listener = () => {}
+let endCall = (peer, stream) => {
+  peer.destroy();
+  stream.getTracks().forEach(function(track) {
+    track.stop();
+  });
+  $('video').fadeOut();
+  var myvideo = document.getElementById('myvideo');
+  myvideo.srcObject = stream;
+  myvideo.pause();
+  var video_elem = document.querySelector('video');
+  video_elem.pause();
+  video_elem.srcObject = null;
+  myvideo.srcObject = null;
+  $('otherid').empty();
+  $('#caller_menu').css('top','-14px');
+  $('#messages_contacts').removeClass('in-call');
+  $('#otherid').unbind('change');
+  awaiting_callback = false;
+}
+
+let parse_sdp = (sdp) => {
+
+  // console.log("sdp:",sdp);
+
+  let ice_ufrag = '';
+  let ice_pwd = '';
+  let fingerprint = '';
+  let ips = [];
+  let ports = [];
+  let ssrcs = [];
+  let msid = "";
+
+  let lines = sdp.sdp.split('\n')
+      .map(l => l.trim()); // split and remove trailing CR
+  lines.forEach(function(line) {
+
+    if (line.includes('a=fingerprint:') && fingerprint == '') {
+
+      let parts = line.substr(14).split(' ');
+      let hex = line.substr(22).split(':').map(function (h) {
+          return parseInt(h, 16);
+      });
+
+      console.log('intradasting: ', hex);
+
+      fingerprint = btoa(String.fromCharCode.apply(String, hex));
+
+
+      // console.log("fingerprint::" , fingerprint);
+      // console.log("decoded:" , decode_fingerprint(fingerprint));
+
+
+    } else if (line.includes('a=ice-ufrag:') && ice_ufrag == '') {
+
+      ice_ufrag = line.substr(12);
+      // console.log('ufrag:', ice_ufrag);
+
+
+    } else if (line.includes('a=ice-pwd:') && ice_pwd == '') {
+
+      ice_pwd = line.substr(10);
+      // console.log('pwd:', ice_pwd);
+
+
+    } else if (line.includes('a=candidate:')) {
+
+      let candidate = line.substr(12).split(" ");
+
+      ip = candidate[4]
+      port = candidate[5]
+      type = candidate[7]
+
+
+
+      let hexa = ip.split('.').map(function (h) {
+          return h.toString(16);
+      });
+      console.log('line: ', ip);
+      console.log('intradasting: ', hexa);
+
+      let ip_hex = btoa(String.fromCharCode.apply(String, hexa));
+
+      console.log('cool ip: ', ip)
+
+
+      if (type == "srflx") {
+        ip_hex = "!" + ip_hex
+      } else {
+        ip_hex = "?" + ip_hex
+      }
+
+      if (!ips.includes(ip_hex)) {
+        ips = ips.concat(ip_hex)
+
+      }
+
+      console.log(candidate);
+      console.log(port);
+
+      let indexedport = port+ips.indexOf(ip_hex).toString();
+
+      console.log('Adding pört:', indexedport);
+
+      ports = ports.concat(en.encode(parseInt(indexedport)));
+
+      //
+      //
+      // let found_port = false;
+      //
+      // let i = 0;
+      // while (ips.length >= i && !found_port) {
+      //   if (ports.includes(en.encode(port + i))) {
+      //
+      //    ports = ports.concat( en.encode(ports.indexOf(port + i).toString() + ips.indexOf(ip_hex).toString()) );
+      //
+      //    console.log("Adding duplicate:", en.encode(ports.indexOf(port + i).toString() + ips.indexOf(ip_hex).toString()));
+      //
+      //    found_port = true;
+      //
+      //  } else {
+      //    i += 1;
+      //  }
+      // }
+      //
+      // if (!found_port) {
+      //
+      // ports = ports.concat(en.encode(port + ips.indexOf(ip_hex)));
+      //
+      // console.log("Adding:", en.encode(port + ips.indexOf(ip_hex)));
+      //
+      // }
+      //
+      // if (port == "9") {
+      //
+      // }
+
+
+
+
+    } else if (line.includes('a=ssrc:')) {
+
+      let ssrc = en.encode(line.substr(7).split(" ")[0]);
+
+      if (!ssrcs.includes(ssrc)) {
+
+        ssrcs = ssrcs.concat(ssrc)
+
+      }
+
+
+    } else if (line.includes('a=msid-semantic:')) {
+
+      msid = line.substr(16).split(" ")[2];
+
+
+    }
+
+
+
+    })
+
+  return ice_ufrag + "," + ice_pwd + "," + fingerprint + "," + ips.join('&') + "," + ports.join('&') + "," + ssrcs.join('&') + "," + msid;
+
+}
+
+let startCall = (audio, video) => {
+
+
+  // get video/voice stream
+  navigator.mediaDevices.getUserMedia({
+    video: video,
+    audio: audio
+  }).then(gotMedia).catch(() => {})
+
+  function gotMedia (stream) {
+    if ( video ) {
+    var myvideo = document.getElementById('myvideo')
+    myvideo.srcObject = stream;
+
+    myvideo.play();
+
+    $('video').fadeIn();
+    }
+
+
+    var peer1 = new Peer({ initiator: true, stream: stream, trickle: false,
+    offerOptions: {offerToReceiveVideo: true, offerToReceiveAudio: true}
+   })
+    //var peer2 = new Peer()
+    let first = true;
+
+    $('#messages_contacts').addClass('in-call');
+    $('#caller_menu').fadeIn().css('top','51px');
+    $('#caller_menu_type').text('Calling..');
+    $('#caller_menu_contact').text($('#recipient_form').val());
+    let avatar_base64 = get_avatar($('#recipient_form').val());
+    $('#caller_menu img').attr('src',"data:image/svg+xml;base64," + avatar_base64);
+
+    $('#caller_menu .fa-phone').click(function(){
+      endCall(peer1, stream);
+    })
+
+    $('#caller_menu .fa-microphone').click( function() {
+      $(this).toggleClass('fa-microphone-slash').toggleClass('fa-microphone');
+      stream.getTracks().forEach(track => track.enabled = !track.enabled);
+    });
+
+    peer1.on('close', () => {
+
+      console.log('Connection lost..')
+
+      endCall(peer1, stream);
+
+    })
+
+    peer1.on('error', () => {
+
+      console.log('Connection lost..')
+
+      endCall(peer1, stream);
+
+    })
+
+    peer1.on('stream', stream => {
+      // got remote video stream, now let's show it in a video tag
+      var video_elem = document.querySelector('video')
+
+      if ('srcObject' in video_elem) {
+        video_elem.srcObject = stream
+      } else {
+        video_elem.src = window.URL.createObjectURL(stream) // for older browsers
+      }
+      video_elem.play()
+      // if (audio) {
+      //   $('#caller_menu_type').text('Voice connected');
+      // } else if (video) {
+      //   $('#caller_menu_type').text('Video connected');
+      // }
+
+    })
+
+    peer1.on('connect', () => {
+
+      $('#caller_menu_type').text(`${video ? 'Video' : 'Voice'}` + ' connected');
+      console.log('Connection established;')
+
+    });
+
+    peer1.on('signal', data => {
+      console.log('real data:', data);
+      let parsed_data = `${video ? "Δ" : "Λ"}` + parse_sdp(data);
+      console.log('parsed data:', parsed_data);
+      let recovered_data = sdp.expand_sdp_offer(parsed_data);
+      console.log('recovered data:', recovered_data);
+
+      data = recovered_data;
+
+      if (!first) {
+        return
+      }
+      send_message(parsed_data);
+
+      awaiting_callback = true;
+
+      first = false;
+
+    })
+
+
+    $('#otherid').change(function(){
+      console.log('Got callback');
+      peer1.signal( JSON.parse($('#otherid').val()) );
+    })
+
+
+  }
+
+}
+
+let answerCall = (msg) => {
+
+    let video = msg.substring(0,1) == 'Δ';
+    $('#messages_contacts').addClass('in-call');
+
+  // get video/voice stream
+  navigator.mediaDevices.getUserMedia({
+    video: video,
+    audio: true
+  }).then(gotMedia).catch(() => {})
+
+  function gotMedia (stream) {
+
+    if (video) {
+      var myvideo = document.getElementById('myvideo')
+      myvideo.srcObject = stream;
+
+      myvideo.play();
+      $('video').fadeIn();
+
+    }
+
+    var peer2 = new Peer({stream: stream, trickle: false})
+
+    $('#caller_menu .fa-phone').click(function(){
+      endCall(peer2, stream);
+    })
+
+
+    $('#caller_menu .fa-microphone').click( function() {
+      $(this).toggleClass('fa-microphone-slash').toggleClass('fa-microphone');
+      stream.getTracks().forEach(track => track.enabled = !track.enabled);
+    });
+
+    peer2.on('close', () => {
+
+      console.log('Connection lost..')
+      endCall(peer2, stream);
+
+    })
+
+    peer2.on('error', () => {
+
+      console.log('Connection lost..')
+
+      endCall(peer2, stream);
+
+    })
+
+    let first = true;
+
+    peer2.on('signal', data => {
+      console.log('initial data:', data);
+      let parsed_data = `${video ? 'δ' : 'λ'}` + parse_sdp(data);
+      console.log('parsed data really cool sheet:', parsed_data);
+      let recovered_data = sdp.expand_sdp_answer(parsed_data);
+      data = recovered_data;
+      console.log('recovered data:', recovered_data);
+
+      if (!first) {
+        return
+      }
+      console.log('Sending answer ', parsed_data);
+      send_message(parsed_data, true);
+      //
+      // var client = new WebTorrent();
+      // let blob = new Blob([JSON.stringify(data)]);
+      // blob.name = 'callback';
+      // client.seed(blob, {type: 'text/plain'}, function (torrent) {
+      //   console.log('Client is seeding ' + torrent.magnetURI)
+      //   send_message(torrent.magnetURI.replace('&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&tr=wss%3A%2F%2Ftracker.fastcast.nz',''), true);
+      //   torrent.on('upload', function (bytes) {
+      //
+      //       if (bytes = torrent.length) {
+      //         console.log('Fully uploaded, removing')
+      //         torrent.removeListener('upload', listener);
+      //         $('#caller_menu_type').text('Connected');
+      //         setTimeout(function() {
+      //
+      //
+      //           client.destroy();
+      //
+      //         }, 60000);
+      //
+      //       } else {
+      //         console.log('Ratio is: '+bytes)
+      //       }
+      //
+      //
+      //   })
+      // })
+
+      first = false;
+
+    })
+    let signal = sdp.expand_sdp_offer(msg);
+    console.log(signal);
+    peer2.signal(sdp.expand_sdp_offer(msg));
+
+    peer2.on('track', (track, stream) => {
+      $('#caller_menu_type').text('Setting up link..');
+    })
+
+    peer2.on('connect', () => {
+
+      $('#caller_menu_type').text(`${video ? 'Video' : 'Voice'}` + ' connected');
+      console.log('Connection established;')
+
+    });
+
+    peer2.on('stream', stream => {
+      // got remote video stream, now let's show it in a video tag
+      var video = document.querySelector('video')
+
+
+
+      if ('srcObject' in video) {
+        video.srcObject = stream
+      } else {
+        video.src = window.URL.createObjectURL(stream) // for older browsers
+      }
+
+      video.play();
+
+      $('#caller_menu_type').text('Setting up link..');
+
+    })
+  }
+
+}
+
+let parseCall = (msg, sender=false, emitCall=true) => {
+
+  switch (msg.substring(0,1)) {
+    case "Δ":
+      // Fall through
+    case "Λ":
+      // Call offer
+
+
+      if (!awaiting_callback && emitCall) {
+
+        // Start ringing sequence
+         $('#incomingCall').append('<audio autoplay><source src="static/ringtone.mp3" type="audio/mpeg"></audio>');
+         $('#incomingCall').find('h1').text(`Incoming ${msg.substring(0,1) == "Δ" ? "video" : "audio"} call!`);
+         $('#incomingCall').show();
+         let avatar_base64 = get_avatar(sender);
+         $('#incomingCall img').attr('src',"data:image/svg+xml;base64," + avatar_base64);
+         $('#incomingCall span').text(sender);
+
+         // Handle answer/decline
+         $('#answerCall').click(function() {
+           if ($('#recipient_form').text() != sender) {
+              print_conversation(sender);
+           }
+
+           answerCall(msg);
+
+           $('#messages_contacts').addClass('in-call');
+
+           $('#caller_menu').fadeIn().css('top','51px');
+           $('#caller_menu_type').text('Connecting..');
+           $('#caller_menu_contact').text(sender);
+           $('#incomingCall img').attr('src',"data:image/svg+xml;base64," + avatar_base64);
+
+           $('#incomingCall').hide();
+           $('#incomingCall audio').remove();
+         })
+         $('#declineCall').click(function() {
+           $('#incomingCall').hide();
+           $('#incomingCall audio').remove();
+         })
+
+      }
+      return `${msg.substring(0,1) == "Δ" ? "Video" : "Audio"} call started`;
+      break;
+    case "δ":
+      // Fall through
+    case "λ":
+      // Answer
+      if (emitCall) {
+      $('#otherid').val(JSON.stringify(sdp.expand_sdp_answer(msg)));
+      $('#otherid').change();
+      }
+      return "";
+
+    break;
+    default:
+      return msg;
+
+  }
+
+}
+
+$('#video-button').click(function() { startCall(true, true) });
+
+$('#call-button').click(function() { startCall(true, false) });
+
+var holder = document.getElementById('messages_pane');
+
+        holder.ondragover = () => {
+          $('#drop-overlay').stop().fadeIn(1);
+            return false;
+        };
+
+        holder.ondragleave = () => {
+            $('#drop-overlay').stop().fadeOut();
+            return false;
+        };
+
+        holder.ondragend = () => {
+          //$('#drop-overlay').hide();
+            return false;
+        };
+
+        holder.ondrop = (e) => {
+            e.preventDefault();
+            $('#drop-overlay').stop().fadeOut();
+            if (!$('#recipient_form').val()) { return false; } else {
+            var client = new WebTorrent();
+            for (let f of e.dataTransfer.files) {
+              client.seed(f, function (torrent) {
+
+                torrent.on('wire', function (wire) {
+
+                  console.log(wire);
+                  $('.' + torrent.magnetURI.split('&')[0].split(":")[3]).find('p').append('&nbsp;<i class="fa fa-circle-o-notch"></i>');
+
+                })
+
+                torrent.on('upload', function (uploaded) {
+
+                  if ( torrent.uploaded == torrent.length ) {
+                    console.log('Done!');
+                    $('.fa-circle-o-notch').removeClass('fa-circle-o-notch').addClass('fa-check-circle-o');
+                    setTimeout(function() {
+
+                      console.log("Removing");
+                      client.destroy();
+
+                    }, 60000);
+                  } else {
+                    console.log(torrent.uploaded + "/" + torrent.length);
+                  }
+
+                })
+
+
+
+              console.log('Client is seeding ' + torrent.magnetURI)
+              send_message(torrent.magnetURI.replace('&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&tr=wss%3A%2F%2Ftracker.fastcast.nz',''));
+
+              })
+            }
+
+            return false;
+        };
+        }
 
 function escapeHtml(unsafe) {
     return unsafe
@@ -12,10 +558,130 @@ function escapeHtml(unsafe) {
          .replace(/</g, "&lt;")
          .replace(/>/g, "&gt;")
          .replace(/"/g, "&quot;")
-         .replace(/'/g, "&#039;");
+         .replace(/'/g, "&#039;")
+         .replace(/Δ/g, "&Delta;")
+         .replace(/δ/g, "&delta;")
+         .replace(/Λ/g, "&Lambda;")
+         .replace(/λ/g, "&lambda;");
  }
 
+let downloadMagnet = (magnetLink, element) => {
+  // MOVE CODE BELOW
 
+  var client = new WebTorrent();
+
+   // $('#'+element).find('.download-button').remove();
+
+   console.log('Starting torrent!');
+   let torrentId = magnetLink+'&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&tr=wss%3A%2F%2Ftracker.fastcast.nz';
+
+   $('#'+element).find('.download-button').html('  <div class="progress"></div>');
+
+
+   client.add(torrentId, {path: downloadDir}, function (torrent) {
+
+     torrent.on('download', function (bytes) {
+        console.log('just downloaded: ' + bytes)
+        console.log('total downloaded: ' + torrent.downloaded)
+        console.log('download speed: ' + torrent.downloadSpeed)
+        console.log('progress: ' + torrent.progress)
+        $('#'+element).find('.progress').css('width',parseInt(torrent.progress * 88) + "px");
+        // $('.progress').text(parseInt(torrent.progress * 88) + "%");
+
+
+
+      })
+
+     torrent.on('done', function (bytes) {
+
+           torrent.removeListener('done', listener);
+
+           $('.progress').parent().fadeOut();
+
+           $('#messages_pane').scrollTop($('#messages').height());
+
+           setTimeout(function() {
+
+             console.log("removing");
+             client.destroy();
+
+           }, 60000);
+
+         })
+
+     let file = torrent.files.find(function (file) {
+       file.appendTo(document.getElementById(element).getElementsByTagName('p')[0]);
+     });
+     $('#messages_pane').scrollTop($('#messages').height());
+     //torrent.destroy();
+     //client.destroy();
+
+     if (!file) {
+       return;
+     }
+
+
+     return;
+
+
+      torrent.on('done', function () {
+        console.log('done!!');
+
+
+   // Display the file by adding it to the DOM.
+   // Supports video, audio, image files, and more!
+
+   //let post_element = document.getElementById(tx_id);
+
+   //$('#'+tx_id).append(file.name);
+   //delete magnetLinks;
+   //alert(file.name);
+
+ });
+
+});
+}
+
+
+let handleMagnetListed = (message) => {
+
+  if (message.substring(0,1) == "Δ" || message.substring(0,1) == "Λ" || message.substring(0,1) == "δ" || message.substring(0,1) == "λ"  ) {
+    console.log('Call detected!');
+    return "Call started";
+  } else {
+    console.log('No call stuffs');
+  }
+
+  let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(message);
+  if (magnetLinks) {
+
+    if ( magnetLinks[0].split('=')[2].includes('callback') ) {
+      return "Call started"
+    } else if (magnetLinks[0].split('=')[2].includes('callrequest')) {
+      return "Call started"
+    } else {
+      return magnetLinks[0].split('=')[2];
+    }
+
+
+
+
+
+  } else {
+    return message
+  }
+
+}
+
+var awaiting_callback = false;
+
+ let handleMagnetLink = (magnetLinks, element, calls=false, sender=false) => {
+
+        $('#' + element).find('p').addClass('gradient').text($('#' + element).find('p').text().replace(magnetLinks[0], magnetLinks[0].split('=')[2]));
+        let magnet_class = magnetLinks[0].split("&")[0].split(":")[3];
+        $('#' + element).addClass(magnet_class);
+        $('#' + element).find('p').append('<button class="download-button">Download</button>').click(function(){ downloadMagnet(magnetLinks[0], element); $(this).unbind('click');  $(':focus').blur(); });
+}
 
 const rmt = require('electron').remote;
 
@@ -24,7 +690,43 @@ let appPath = rmt.getGlobal('appPath');
 
 let db = new Datastore({ filename: userDataDir+'/messages.db', autoload: true });
 
+let misc = new Datastore({ filename: userDataDir+'/misc.db', autoload: true });
+
 let keychain = new Datastore({ filename: userDataDir+'/keychain.db', autoload: true });
+
+let last_block_checked = 1;
+
+misc.find({}, function (err,docs){
+
+    if (docs.length == 0) {
+
+    misc.insert({"height": 1});
+
+  } else {
+    last_block_checked = docs[0].height;
+  }
+
+});
+
+
+$('#import').click(function(){
+console.log('Importing: ' + $('#importMnemonic').val())
+
+db.remove({}, { multi: true }, function (err, numRemoved) {
+});
+keychain.remove({}, { multi: true }, function (err, numRemoved) {
+});
+
+
+ipcRenderer.send('import_wallet',$('#importMnemonic').val());
+
+setTimeout(function(){ console.log('resetting..');walletd.reset() }, 10000);
+
+
+
+
+})
+
 
 const nacl = require('tweetnacl');
 const naclUtil = require('tweetnacl-util');
@@ -120,8 +822,10 @@ function fromHex(hex,str){
 
 var rpc_pw = remote.getGlobal('rpc_pw');
 
+let downloadDir = remote.getGlobal('downloadDir');
 
-var TurtleCoinWalletd = require('turtlecoin-walletd-rpc-js').default
+
+var TurtleCoinWalletd = require('kryptokrona-service-rpc-js').default
 
 let walletd = new TurtleCoinWalletd(
   'http://127.0.0.1',
@@ -129,6 +833,28 @@ let walletd = new TurtleCoinWalletd(
   rpc_pw,
   false
 )
+
+// walletd.getTransactions(10000,
+//  495000,
+// '',
+// [],
+// '').then(resp => { console.log("resp:",resp) });
+
+$('#getMnemonic').click(function(){
+  walletd.getMnemonicSeed($('#currentAddrSpan').text()).then(resp => {
+    $('#mnemonic').text(resp.body.result.mnemonicSeed);
+  })
+})
+
+$('#getPrivatekey').click(function(){
+  walletd.getSpendKeys($('#currentAddrSpan').text()).then(resp => {
+    $('#privatekey').text(resp.body.result.spendSecretKey);
+  })
+})
+
+
+const {ipcRenderer} = require('electron');
+
 
 
 let decrypt_message = (possibleKeys, box, timestamp) => {
@@ -177,7 +903,7 @@ function save_messages(transactions) {
 
         let thisAddr = transactions[i].transactions[j].transfers[0].address;
         let d = new Date(transactions[i].transactions[j].timestamp * 1000);
-        let thisAmount = Math.abs(parseFloat(transactions[i].transactions[j].transfers[0].amount) / 100);
+        let thisAmount = Math.abs(parseFloat(transactions[i].transactions[j].transfers[0].amount) / 100000);
 
         lasttx = transactions[i];
         try {
@@ -231,7 +957,7 @@ function save_messages(transactions) {
 
           }
 
-          message = escapeHtml(payload_json.msg);
+          message = payload_json.msg;
 
           console.log(message);
 
@@ -329,7 +1055,7 @@ let download_messages = (from, to) => {
 
 }
 
-let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json) => {
+let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json, silent=false) => {
 
         walletd.sendTransaction(
           mixin,
@@ -348,61 +1074,77 @@ let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json
               } else {
                   alert(resp.body.error.message);
                 }
+            if (!silent) {
             $('#loading_border').animate({width: '100%'},400,function(){
               $('#loading_border').width(0);
             });
             $('#message_form').prop('disabled',false);
             $('#message_form').focus();
+            }
 
             return
           }
+          if (!silent) {
           $('#loading_border').animate({width: '80%'},400);
 
           // Empty message input field, re-activate it and then focus
           $('#message_form').val('');
           $('#message_form').prop('disabled',false);
           $('#message_form').focus();
-
+          }
           db_json = {"conversation": payload_json.to, "type":"sent","message":payload_json.msg,"timestamp":JSON.parse(fromHex(payload_hex)).t}
 
           // Add message to datastore
           db.insert(db_json);
 
           // Add new message to conversation
-          if (message.substring(0, 22) == "data:image/jpeg;base64") {
-            message = "<img src='" + message + "' />";
+          if (payload_json.msg.substring(0, 22) == "data:image/jpeg;base64") {
+            payload_json.msg = "<img src='" + payload_json.msg + "' />";
           }
+
+
 
 
           // create a base64 encoded SVG
           avatar_base64 = get_avatar(sendAddr);
 
           $('#welcome_alpha').remove();
+          console.log( JSON.parse(fromHex(payload_hex)).t );
+          payload_json.msg = parseCall(payload_json.msg);
+          if (!silent) {
+          $('#messages').append('<li class="sent_message" id="' + JSON.parse(fromHex(payload_hex)).t + '"><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + payload_json.msg + '</p><span class="time">' + moment(payload_json.t).fromNow() + '</span></li>');
+          }
+          let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(payload_json.msg);
+          if (magnetLinks) {
+            handleMagnetLink(magnetLinks, JSON.parse(fromHex(payload_hex)).t);
+          }
 
-          $('#messages').append('<li class="sent_message"><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + payload_json.msg + '</p><span class="time">' + moment(payload_json.t).fromNow() + '</span></li>');
 
           // Scroll to bottom
           $('#messages_pane').scrollTop($('#messages').height());
-
+          if (!silent) {
           $('#loading_border').animate({width: '100%'},400,function(){
             $('#loading_border').width(0);
           });
 
           // Add message to contacts list and add class to tell updateMessages
           if ( $('.' + payload_json.to).width() > 0 ){
+          let listed_msg = handleMagnetListed(payload_json.msg);
+          console.log(listed_msg);
 
-          $('.'+payload_json.to).find('.listed_message').text(payload_json.msg).parent().detach().prependTo('#messages_contacts');
+          $('.' + payload_json.to).find('.listed_message').text(listed_msg).parent().detach().prependTo('#messages_contacts');
         } else {
-          $('#messages_contacts').prepend('<li class="active_contact ' + payload_json.to + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + get_avatar(payload_json.to) + '" /><span class="contact_address">' + payload_json.to + '</span><br><span class="listed_message">'+payload_json.msg+'</li>');
+          $('#messages_contacts').prepend('<li class="active_contact ' + payload_json.to + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + get_avatar(payload_json.to) + '" /><span class="contact_address">' + payload_json.to + '</span><br><span class="listed_message">'+handleMagnetListed(payload_json.msg)+'</li>');
         }
-
+        }
+        return JSON.parse(fromHex(payload_hex)).t;
         })
         .catch(err => {
           console.log(err)
         })
 }
 
-function sendMessage(message) {
+function sendMessage(message, silent=false) {
 
   let has_history = false;
 
@@ -423,9 +1165,10 @@ function sendMessage(message) {
 
       });
 
-
+      if (!silent) {
       $('#loading_border').animate({width: '40%'},600);
       $('#message_form').prop('disabled',true);
+      }
 
       // Transaction details
       amount = 1;
@@ -471,7 +1214,7 @@ function sendMessage(message) {
 
       transfer = [ { 'amount':amount, 'address':receiver } ];
 
-      sendTransaction(mixin, transfer, fee, sendAddr, payload_hex, payload_json);
+      return sendTransaction(mixin, transfer, fee, sendAddr, payload_hex, payload_json, silent);
 
       });
 
@@ -670,7 +1413,7 @@ function printMessages(transactions, address) {
 
                   var thisAddr = transactions[i].transactions[j].transfers[0].address;
                   var d = new Date(transactions[i].transactions[j].timestamp * 1000);
-                  var thisAmount = Math.abs(parseFloat(transactions[i].transactions[j].transfers[0].amount) / 100);
+                  var thisAmount = Math.abs(parseFloat(transactions[i].transactions[j].transfers[0].amount) / 100000);
 
                   lasttx = transactions[i];
                   try {
@@ -713,6 +1456,15 @@ function printMessages(transactions, address) {
                     if (message.substring(0, 22) == "data:image/jpeg;base64") {
                       message = "<img src='" + message + "' />";
                     }
+
+                    console.log('habbening');
+                    //
+                    // let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(payload_json.msg);
+                    // if (magnetLinks) {
+                    //   handleMagnetLink(magnetLinks, JSON.parse(fromHex(payload_hex)).t);
+                    // }
+
+
 
                     senderAddr = payload_json.from;
                     receiverAddr = payload_json.to;
@@ -763,7 +1515,15 @@ function printMessages(transactions, address) {
                   }
                   avatar_base64 = get_avatar(hash);
 
+
                   $('#messages').append('<li class="' + sortedMessages[i].type + '_message"><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + sortedMessages[i].message + '</p><span class="time">' + moment(sortedMessages[i].timestamp).fromNow() + '</span></li>');
+                  let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(sortedMessages[i].message);
+                  if (magnetLinks) {
+                    handleMagnetLink(magnetLinks, sortedMessages[i].timestamp);
+
+                  }
+
+
 
               }
 
@@ -925,7 +1685,7 @@ function updateMessages() {
 
           var thisAddr = transactions[i].transactions[0].transfers[0].address;
           var d = new Date(transactions[i].transactions[0].timestamp * 1000);
-          var thisAmount = Math.abs(parseFloat(transactions[i].transactions[0].transfers[0].amount) / 100);
+          var thisAmount = Math.abs(parseFloat(transactions[i].transactions[0].transfers[0].amount) / 100000);
 
           // Try to read messages from transaction, txs without messages are ignored
 
@@ -1018,13 +1778,15 @@ function updateMessages() {
               // If conversation doesn't exist
 
                   avatar_base64 = get_avatar(senderAddr);
-
-                  $('#messages_contacts').prepend('<li class="active_contact ' + senderAddr + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '" /><span class="contact_address">' + senderAddr + '</span><br><span class="listed_message">'+message+'</li>');
+                  let listed_msg = handleMagnetListed(message);
+                  console.log(listed_msg);
+                  $('#messages_contacts').prepend('<li class="active_contact ' + senderAddr + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '" /><span class="contact_address">' + senderAddr + '</span><br><span class="listed_message">'+listed_msg+'</li>');
                   messages.push(senderAddr);
                 }
 
                 // Add message to conversations list
-                $('.'+senderAddr).find('.listed_message').text(message);
+                let listed_msg = handleMagnetListed(message);
+                $('.'+senderAddr).find('.listed_message').text(listed_msg);
 
                 last_messages[senderAddr] = timestamp;
 
@@ -1050,8 +1812,8 @@ function updateMessages() {
               // If conversation doesn't exist
 
                 avatar_base64 = get_avatar(thisAddr);
-
-                $('#messages_contacts').prepend('<li class="active_contact ' + thisAddr + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '" /><span class="contact_address">' + thisAddr + '</span><br><span class="listed_message">'+message+'</li>');
+                let listed_msg = handleMagnetListed(message);
+                $('#messages_contacts').prepend('<li class="active_contact ' + thisAddr + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '" /><span class="contact_address">' + thisAddr + '</span><br><span class="listed_message">'+listed_msg+'</li>');
                 messages.push(thisAddr);
 
 
@@ -1060,7 +1822,9 @@ function updateMessages() {
               if (timestamp > last_messages[thisAddr]) {
               last_messages[senderAddr] = timestamp;
               // Add message to conversations list
-              $('.'+thisAddr).find('.listed_message').text(message);
+              let listed_msg = handleMagnetListed(message);
+              console.log(listed_msg);
+              $('.'+thisAddr).find('.listed_message').text(listed_message);
             }
 
 
@@ -1114,7 +1878,7 @@ function save_message(message_json) {
 
       if (docs.length == 0) {
 
-      message_db = {"conversation": conversation, "type":type, "message":escapeHtml(message_json.msg), "timestamp": message_json.t};-
+      message_db = {"conversation": conversation, "type":type, "message":message_json.msg, "timestamp": message_json.t};-
 
       db.insert(message_db);
 
@@ -1123,20 +1887,6 @@ function save_message(message_json) {
 });
 
 }
-
-//
-// bugtest_json = {msg: 'Use this chat to send feedback and bug reports', from: 'SEKReXvQXDxUqfCZXiiYBk6CvBNajxchSKgHP4KwN3AphesPvmahuTTXozwcQ19uSHjbTGThRMrPbRe48jKhod4jVyRsJS7BKA7', to: $('#currentAddrSpan').text(), t:1562773076786};
-//
-// save_message(bugtest_json);
-
-keychain.find({ "key": "3fc9c579e66ec2cec023566be3e59a96926130b94498d4b2707a9405baa03807" }, function (err, docs) {
-
-  if (docs.length == 0) {
-    let payload_keychain = {"key": "3fc9c579e66ec2cec023566be3e59a96926130b94498d4b2707a9405baa03807", "address": "SEKReXvQXDxUqfCZXiiYBk6CvBNajxchSKgHP4KwN3AphesPvmahuTTXozwcQ19uSHjbTGThRMrPbRe48jKhod4jVyRsJS7BKA7"};
-    keychain.insert(payload_keychain);
-
-  }
-});
 
 function find(db, opt) {
   return new Promise(function(resolve, reject) {
@@ -1198,10 +1948,12 @@ function find_messages(opt, skip, limit, sort=-
 // });
 
 
-function get_confirmed_messages(from, to) {
+async function get_confirmed_messages(from, to) {
   return new Promise(function(resolve, reject) {
 
-
+    // console.log('Getting confirmed messages..');
+    // console.log('From: ' + from);
+    // console.log('To: ' + to);
 
     walletd.getTransactions(
       to,
@@ -1210,11 +1962,22 @@ function get_confirmed_messages(from, to) {
       [],
       '').then(resp => {
 
+        let arr = [];
+
+        if (resp.code == 'ETOOLARGE') {
+          // console.log('Too large :(');
+
+          reject('ETOOLARGE');
+
+
+        }
+
+      if (resp.body) {
       let transactions = resp.body.result.items;
 
       let txsLength = transactions.length;
 
-      let arr = [];
+
 
       for (let i = 0; i < txsLength; i++) {
 
@@ -1227,16 +1990,18 @@ function get_confirmed_messages(from, to) {
             let extra = transactions[i].transactions[j].extra.substring(66);
             arr.push(extra);
 
+
           } catch (e) {
 
           }
 
           }
         }
-
+        }
           resolve(arr);
 
         }).catch(err => {
+          console.log(err);
           reject(err)
         });
       });
@@ -1310,7 +2075,7 @@ async function print_conversations() {
 
       if (!conversations.includes(conversation)) {
         conversations.push(conversation);
-        $('#messages_contacts').append('<li class="active_contact ' + conversation + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + get_avatar(conversation) + '" /><span class="contact_address">' + conversation + '</span><br><span class="listed_message">'+messages[m].message+'</li>');
+        $('#messages_contacts').append('<li class="active_contact ' + conversation + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + get_avatar(conversation) + '" /><span class="contact_address">' + conversation + '</span><br><span class="listed_message">'+handleMagnetListed(messages[m].message)+'</li>');
       }
 
   }
@@ -1324,20 +2089,55 @@ async function print_conversations() {
 
 print_conversations();
 
-async function get_new_conversations() {
 
+async function get_new_conversations(unconfirmed) {
 
   known_keys = await find(keychain, {});
 
   block_height = await get_block_height();
+  let check_block = last_block_checked;
 
-  confirmed_transactions = await get_confirmed_messages(1,block_height);
+  if (!unconfirmed) {
+      getting_new_conversations = true;
+      // console.log('Getting new confirmed messages..');
 
-  unconfirmed_transactions = await get_unconfirmed_messages();
+      if ( last_block_checked == block_height ) {
+        return;
+      }
+
+      try {
+      confirmed_transactions = await get_confirmed_messages(last_block_checked, block_height-last_block_checked);
+      check_block = block_height;
+    } catch (err) {
+
+      if (err == 'ETOOLARGE') {
+        // console.log('damn dats big');
+        confirmed_transactions = [];
+        while (check_block+10000 < block_height) {
+          new_transactions = await get_confirmed_messages(check_block, 10000);
+          // console.log(new_transactions);
+          confirmed_transactions = confirmed_transactions.concat(new_transactions);
+          // console.log(confirmed_transactions);
+          check_block = check_block + 10000;
+        }
+      }
+
+      // console.log(confirmed_transactions)
+
+    }
+      unconfirmed_transactions = await get_unconfirmed_messages();
+
+      all_transactions = confirmed_transactions.concat(unconfirmed_transactions);
+      misc.update({}, {height: check_block});
+      last_block_checked = check_block;
 
 
-  all_transactions = confirmed_transactions.concat(unconfirmed_transactions);
+} else {
 
+    unconfirmed_transactions = await get_unconfirmed_messages();
+
+  all_transactions = unconfirmed_transactions;
+}
   latest_transaction = await find_messages({}, 0, 1);
   let latest_transaction_time = 0;
 
@@ -1345,8 +2145,9 @@ async function get_new_conversations() {
   latest_transaction_time = latest_transaction[0].timestamp;
 } catch (e) {}
 
-
-
+all_transactions = all_transactions.filter(function (el) {
+  return el != null;
+});
 
 
   for (n in all_transactions) {
@@ -1390,7 +2191,6 @@ async function get_new_conversations() {
 
           }
         });
-
         save_message(payload_json);
 
     } else {
@@ -1405,10 +2205,17 @@ async function get_new_conversations() {
         let decryptBox = false;
 
         while (i < known_keys.length && !decryptBox) {
+
           let possibleKey = known_keys[i].key;
-
-           decryptBox = nacl.box.open(hexToUint(box), nonceFromTimestamp(timestamp), hexToUint(possibleKey), keyPair.secretKey);
-
+          try {
+           decryptBox = nacl.box.open(hexToUint(box),
+           nonceFromTimestamp(timestamp),
+           hexToUint(possibleKey),
+           keyPair.secretKey);
+         } catch (err) {
+           console.log(err);
+           continue;
+         }
            i = i+1;
 
           }
@@ -1428,6 +2235,7 @@ async function get_new_conversations() {
 
       if (payload_json.t > latest_transaction_time) {
 
+
         if ($('#recipient_form').val() == payload_json.from){
 
           // If a new message is received, and it's from the active contacts
@@ -1437,19 +2245,40 @@ async function get_new_conversations() {
           // message function, not this one.
 
           avatar_base64 = get_avatar(payload_json.from);
-          $('#messages').append('<li class="received_message"><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + payload_json.msg + '</p><span class="time">' + moment(payload_json.t).fromNow() + '</span></li>');
+
+          payload_json.msg = parseCall(payload_json.msg, payload_json.from);
+
+          if (payload_json.msg.length) {
+            $('#messages').append('<li class="received_message" id=' + payload_json.t + '><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + payload_json.msg + '</p><span class="time">' + moment(payload_json.t).fromNow() + '</span></li>');
+          }
+          let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(payload_json.msg);
+
+          if (magnetLinks) {
+            handleMagnetLink(magnetLinks, payload_json.t, true, payload_json.from);
+          }
 
           // Scroll to bottom
           $('#messages_pane').scrollTop($('#messages').height());
+          $('#messages_pane').find('audio').remove();
+          $('#messages_pane').append('<audio autoplay><source src="static/message.mp3" type="audio/mpeg"></audio>');
 
         } else {
+          $('#messages_pane').find('audio').remove();
+          $('#messages_pane').append('<audio autoplay><source src="static/message.mp3" type="audio/mpeg"></audio>');
 
-          notifier.notify({
-            title: payload_json.from,
-            message: payload_json.msg,
-            wait: true // Wait with callback, until user action is taken against notification
-          });
 
+          let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(payload_json.msg);
+
+          if (magnetLinks) {
+            handleMagnetLink(magnetLinks, payload_json.t, true, payload_json.from);
+          }
+          if (handleMagnetListed(payload_json.msg)) {
+            notifier.notify({
+              title: payload_json.from,
+              message: handleMagnetListed(parseCall(payload_json.msg, payload_json.from)),
+              wait: true // Wait with callback, until user action is taken against notification
+            });
+          }
           notifier.on('click', function(notifierObject, options) {
             // Triggers if `wait: true` and user clicks notification
             print_conversation(payload_json.from);
@@ -1486,26 +2315,23 @@ async function get_new_conversations() {
           // If there is a contact in the sidebar,
           // then we update it, and move it to the top.
 
-        $('.' + conversation_address).find('.listed_message').text(payload_json.msg).parent().detach().prependTo("#messages_contacts").addClass('unread_message');
+          let listed_msg = handleMagnetListed(payload_json.msg);
+console.log(listed_msg);
+        $('.' + conversation_address).find('.listed_message').text(listed_msg).parent().detach().prependTo("#messages_contacts").addClass('unread_message');
 
       } else {
         // If there isn't one, create one
 
-        $('#messages_contacts').prepend('<li class="active_contact unread_message ' + conversation_address + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + get_avatar(conversation_address) + '" /><span class="contact_address">' + conversation_address + '</span><br><span class="listed_message">'+payload_json.msg+'</li>');
+        $('#messages_contacts').prepend('<li class="active_contact unread_message ' + conversation_address + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + get_avatar(conversation_address) + '" /><span class="contact_address">' + conversation_address + '</span><br><span class="listed_message">'+handleMagnetListed(payload_json.msg)+'</li>');
       }
 
       }
-
-
-
-
 
   }
-
-
+  getting_new_conversations = false;
 }
 
-async function send_message(message) {
+async function send_message(message, silent=false) {
 
 
     let has_history = false;
@@ -1538,10 +2364,10 @@ async function send_message(message) {
             }
 
 
-
+        if (!silent) {
         $('#loading_border').animate({width: '40%'},600);
         $('#message_form').prop('disabled',true);
-
+        }
         // Transaction details
         amount = 1;
         fee = 10;
@@ -1570,14 +2396,12 @@ async function send_message(message) {
           payload_box = {"box":Buffer.from(box).toString('hex'), "t":timestamp, "key":$('#currentPubKey').text()};
           console.log("First message to sender, appending key.");
         }
-
         // Convert json to hex
         let payload_hex = toHex(JSON.stringify(payload_box));
 
-
         transfer = [ { 'amount':amount, 'address':receiver } ];
 
-        sendTransaction(mixin, transfer, fee, sendAddr, payload_hex, payload_json);
+        sendTransaction(mixin, transfer, fee, sendAddr, payload_hex, payload_json, silent);
 
 });
 }
@@ -1617,7 +2441,17 @@ async function print_conversation(conversation) {
     }
     avatar_base64 = get_avatar(hash);
 
-    $('#messages').append('<li timestamp="' + messages[n].timestamp + '" class="' + messages[n].type + '_message"><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + messages[n].message + '</p><span class="time">' + moment(messages[n].timestamp).fromNow() + '</span></li>');
+    if (parseCall(messages[n].message, false, false).length == 0) {
+      continue;
+    }
+    console.log( parseCall(messages[n].message, false, false) );
+    $('#messages').append('<li id="' + messages[n].timestamp + '" timestamp="' + messages[n].timestamp + '" class="' + messages[n].type + '_message"><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + parseCall(messages[n].message, false, false) + '</p><span class="time">' + moment(messages[n].timestamp).fromNow() + '</span></li>');
+
+
+      let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(messages[n].message);
+      if (magnetLinks) {
+        handleMagnetLink(magnetLinks, messages[n].timestamp);
+      }
 
 
   }
@@ -1625,6 +2459,14 @@ async function print_conversation(conversation) {
 
   // Scroll to bottom
   $('#messages_pane').scrollTop($('#messages').height());
+
+  for (message in $('#messages').find('p')) {
+    let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(message.innerHTML);
+    if (magnetLinks) {
+      handleMagnetLink(magnetLinks, $(message).parent().attr('id'));
+    }
+  }
+
 
 }
 
@@ -1654,8 +2496,11 @@ function loadWallets() {
 
   })
   .catch(err => {
-    console.log(err)
+
+    console.log(err);
     loadWallets();
+
+
   })
 }
 
@@ -1663,6 +2508,12 @@ $("document").ready(function(){
 
 
   loadWallets();
+  //
+  // setTimeout(function() {
+  //
+  //   get_new_conversations(false);
+  //
+  // }, 15000);
 
 
   $('#copyBoth').click(function(){
@@ -1683,6 +2534,18 @@ let locked = $('#lockedBalanceText').text();
 
 window.setInterval(function(){
 
-  get_new_conversations();
+  get_new_conversations(true);
 
-},30000);
+
+},1000);
+
+let getting_new_conversations = false;
+
+
+window.setInterval(function(){
+
+  if (!getting_new_conversations) {
+    get_new_conversations(false);
+  }
+
+},10000);

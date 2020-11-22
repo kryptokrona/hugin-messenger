@@ -55,7 +55,7 @@ $(document).on('click', 'a[href^="http"]', function(event) {
 // END OF SLIDER
 
 
-var TurtleCoinWalletd = require('turtlecoin-walletd-rpc-js').default
+var TurtleCoinWalletd = require('kryptokrona-service-rpc-js').default
 
 let walletd = new TurtleCoinWalletd(
   'http://127.0.0.1',
@@ -104,9 +104,10 @@ function sendTransaction() {
   $("#payment_message").unbind('click');
 
   receiver = $('#payment_rec_addr').val();
-  amount = parseInt( parseFloat( $('#payment_amount').val() ) * 100 );
+  amount = parseInt( parseFloat( $('#payment_amount').val() ) * 100000 );
   pay_id = $('#payment_id').val();
-  fee = parseInt( parseFloat( $('#myRange2').val() ) * 100 );
+  fee = parseInt( parseFloat( $('#myRange2').val() ) * 100000 );
+  fee = 10;
   mixin = parseInt( $('#myRange').val() );
   sendAddr = $("#currentAddrSpan").text();
 
@@ -228,8 +229,8 @@ function updateBalance(address) {
 
   walletd.getBalance(address)
   .then(resp => {
-    thisBalance = parseFloat(resp.body.result.availableBalance).toFixed(2)/100;
-    thisLockedAmount = parseFloat(resp.body.result.lockedAmount).toFixed(2)/100;
+    thisBalance = parseFloat(resp.body.result.availableBalance).toFixed(2)/100000;
+    thisLockedAmount = parseFloat(resp.body.result.lockedAmount).toFixed(2)/100000;
 
 
     $("#balancetext").text(thisBalance);
@@ -297,18 +298,25 @@ function updateAddresses(){
 
     updateBalance(thisAddr);
 
+    addresses_loaded = true;
+
   })
   .catch(err => {
     console.log(err)
   })
 }
 
+let addresses_loaded = false;
+
 window.setInterval(function(){
 
   updateBalance(currentAddr);
   updateStatus();
-  getHistory();
+  //getHistory();
+  if (!addresses_loaded) {
   updateAddresses();
+  }
+
 
 },10000);
 
@@ -342,9 +350,17 @@ function load_page(prev,next) {
 
 }
 
+
+
 var currentPage = $("#send_payment");
 
 $("document").ready(function(){
+
+  $('.emoji-picker__emoji').click(function() {
+
+    $('#message_form').focus();
+
+  });
 
   $("#payment_message").click(function(){
 
@@ -381,6 +397,10 @@ $("document").ready(function(){
   $("#sendbutton").click(function(){
     load_page(currentPage,$("#send_payment"));
     currentPage = $("#send_payment");
+  });
+
+  $("#walletSettings").click(function(){
+    $('#settings_page').fadeIn();
   });
 
 });
