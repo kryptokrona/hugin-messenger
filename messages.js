@@ -525,13 +525,17 @@ var holder = document.getElementById('messages_pane');
 
                 torrent.on('upload', function (uploaded) {
 
-                  console.log("bytes:", uploaded)
-
-                  if ( uploaded == torrent.length ) {
+                  if ( torrent.uploaded == torrent.length ) {
                     console.log('Done!');
                     $('.fa-circle-o-notch').removeClass('fa-circle-o-notch').addClass('fa-check-circle-o');
+                    setTimeout(function() {
+
+                      console.log("Removing");
+                      client.destroy();
+
+                    }, 60000);
                   } else {
-                    console.log(uploaded + "/" + torrent.length);
+                    console.log(torrent.uploaded + "/" + torrent.length);
                   }
 
                 })

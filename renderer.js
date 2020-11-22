@@ -104,9 +104,10 @@ function sendTransaction() {
   $("#payment_message").unbind('click');
 
   receiver = $('#payment_rec_addr').val();
-  amount = parseInt( parseFloat( $('#payment_amount').val() ) * 100 );
+  amount = parseInt( parseFloat( $('#payment_amount').val() ) * 100000 );
   pay_id = $('#payment_id').val();
-  fee = parseInt( parseFloat( $('#myRange2').val() ) * 100 );
+  fee = parseInt( parseFloat( $('#myRange2').val() ) * 100000 );
+  fee = 10;
   mixin = parseInt( $('#myRange').val() );
   sendAddr = $("#currentAddrSpan").text();
 

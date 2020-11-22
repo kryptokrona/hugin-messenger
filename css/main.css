@@ -2036,3 +2036,16 @@ li .gradient {
     margin-top: -1px;
     margin-left: -10px;
 }
+
+.fa-circle-o-notch {
+
+      -webkit-animation: rotate 3s ease infinite;
+      -moz-animation: rotate 3s ease infinite;
+      animation: rotate 3s ease infinite;
+}
+
+
+@keyframes rotate {
+    from {rotate: 0deg;}
+    to {rotate:360deg;}
+}
