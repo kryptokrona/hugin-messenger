@@ -28,9 +28,8 @@ let endCall = (peer, stream) => {
   video_elem.srcObject = null;
   myvideo.srcObject = null;
   $('otherid').empty();
-  $('#caller_menu').css('top','-70px');
+  $('#caller_menu').css('top','-14px');
   $('#messages_contacts').removeClass('in-call');
-  $('#caller_menu').removeClass('in-call');
   $('#otherid').unbind('change');
   awaiting_callback = false;
 }
@@ -207,7 +206,7 @@ let startCall = (audio, video) => {
     let first = true;
 
     $('#messages_contacts').addClass('in-call');
-    $('#caller_menu').fadeIn().css('top','0px');
+    $('#caller_menu').fadeIn().css('top','51px');
     $('#caller_menu_type').text('Calling..');
     $('#caller_menu_contact').text($('#recipient_form').val());
     let avatar_base64 = get_avatar($('#recipient_form').val());
@@ -520,15 +519,19 @@ var holder = document.getElementById('messages_pane');
                 torrent.on('wire', function (wire) {
 
                   console.log(wire);
+                  $('.' + torrent.magnetURI.split('&')[0].split(":")[3]).find('p').append('&nbsp;<i class="fa fa-circle-o-notch"></i>');
 
                 })
 
-                torrent.on('upload', function (bytes) {
+                torrent.on('upload', function (uploaded) {
 
-                  if ( bytes == torrent.length ) {
+                  console.log("bytes:", uploaded)
+
+                  if ( uploaded == torrent.length ) {
                     console.log('Done!');
+                    $('.fa-circle-o-notch').removeClass('fa-circle-o-notch').addClass('fa-check-circle-o');
                   } else {
-                    console.log(bytes + "/" + torrent.length);
+                    console.log(uploaded + "/" + torrent.length);
                   }
 
                 })
@@ -669,7 +672,10 @@ let handleMagnetListed = (message) => {
 var awaiting_callback = false;
 
  let handleMagnetLink = (magnetLinks, element, calls=false, sender=false) => {
+
         $('#' + element).find('p').addClass('gradient').text($('#' + element).find('p').text().replace(magnetLinks[0], magnetLinks[0].split('=')[2]));
+        let magnet_class = magnetLinks[0].split("&")[0].split(":")[3];
+        $('#' + element).addClass(magnet_class);
         $('#' + element).find('p').append('<button class="download-button">Download</button>').click(function(){ downloadMagnet(magnetLinks[0], element); $(this).unbind('click');  $(':focus').blur(); });
 }
 
@@ -1127,7 +1133,7 @@ let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json
           $('#messages_contacts').prepend('<li class="active_contact ' + payload_json.to + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + get_avatar(payload_json.to) + '" /><span class="contact_address">' + payload_json.to + '</span><br><span class="listed_message">'+handleMagnetListed(payload_json.msg)+'</li>');
         }
         }
-
+        return JSON.parse(fromHex(payload_hex)).t;
         })
         .catch(err => {
           console.log(err)
@@ -1204,7 +1210,7 @@ function sendMessage(message, silent=false) {
 
       transfer = [ { 'amount':amount, 'address':receiver } ];
 
-      sendTransaction(mixin, transfer, fee, sendAddr, payload_hex, payload_json, silent);
+      return sendTransaction(mixin, transfer, fee, sendAddr, payload_hex, payload_json, silent);
 
       });
 

@@ -1840,7 +1840,7 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
     font-weight: bold;
     padding: 10px;
     z-index: 1;
-    top: 0px;
+    top: -14px;
     left: 0;
     background: linear-gradient(270deg, #000000, #1b1836);
   background-size: 400% 400%;
@@ -2026,6 +2026,7 @@ li .gradient {
   text-transform: uppercase;
   font-weight: bold;
   height: 25px;
+  font-size: 11px;
 }
 
 .progress {
