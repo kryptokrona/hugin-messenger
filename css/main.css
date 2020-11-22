@@ -1373,6 +1373,13 @@ overlay p {
 
 }
 
+@media (prefers-color-scheme: dark) {
+
+  #settings_page {
+    background: #171717;
+  }
+}
+
 
 @media (prefers-color-scheme: light) {
 
@@ -1919,17 +1926,6 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
   text-align: center;
 }
 
-#settings_page {
-  display: none;
-  background: rgba(0,0,0,22,1);
-
-                width: 100%;
-                padding: 15px;
-                padding-left:35px;
-                height: 100%;
-                position: absolute;
-                z-index: 1;
-}
 
 
 #mnemonicbox {
@@ -2065,4 +2061,18 @@ li .gradient {
 @keyframes rotate {
     from {rotate: 0deg;}
     to {rotate:360deg;}
+}
+
+
+
+#settings_page {
+  display: none;
+
+
+                width: 100%;
+                padding: 15px;
+                padding-left:35px;
+                height: 100%;
+                position: absolute;
+                z-index: 1;
 }
