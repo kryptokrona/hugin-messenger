@@ -399,4 +399,8 @@ $("document").ready(function(){
     currentPage = $("#send_payment");
   });
 
+  $("#walletSettings").click(function(){
+    $('#settings_page').fadeIn();
+  });
+
 });

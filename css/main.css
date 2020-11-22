@@ -239,7 +239,7 @@ html, body {
 }
 
 #settings {
-  background: linear-gradient(270deg, #000000, #1b1836);
+  /* background: linear-gradient(270deg, #000000, #1b1836);
   background-size: 400% 400%;
 
   background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, #abf25f, #5ff281, #5ff2f0) !important;
@@ -247,8 +247,8 @@ html, body {
 
     -webkit-animation: AnimationName 60s ease infinite;
     -moz-animation: AnimationName 60s ease infinite;
-    animation: AnimationName 60s ease infinite;
-
+    animation: AnimationName 60s ease infinite; */
+    background: #181818;
   color: white;
   transform: rotateY(180deg);
   display: block;
@@ -1345,12 +1345,10 @@ overlay p {
 
   width: 100%;
   height: 100%;
-  color: white;
 
 }
 
 #settings div {
-  color: #f1f2f3;
   padding: 11px 16px;
   text-decoration: none;
   display: block;
@@ -1363,8 +1361,7 @@ overlay p {
 
 #settings div:hover {
 
-  background-color: rgba(222,222,222,0.7) !important;
-  color: white;
+  background-color: rgba(222,222,222,0.2) !important;
 
 }
 
@@ -1433,10 +1430,23 @@ box-shadow: none;
 
   }
 
+  #settings_icon {
+    color: #53565c !important;
+  }
+
+  #settings_page {
+    background: #fff;
+  }
+
   #settings_icon:hover {
 
     background: white;
     color: black;
+  }
+
+  #settings {
+    background: #F5F6F7;
+    color: #53565c;
   }
 
  #payment_message {
@@ -1911,7 +1921,14 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
 
 #settings_page {
   display: none;
-  background: rgba(0,0,0,22,1) !important;
+  background: rgba(0,0,0,22,1);
+
+                width: 100%;
+                padding: 15px;
+                padding-left:35px;
+                height: 100%;
+                position: absolute;
+                z-index: 1;
 }
 
 
