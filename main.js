@@ -108,7 +108,7 @@ app.on('activate', function () {
 app.on('before-quit', function() {
 
 
-  wallet.kill('SIGHUP');
+  wallet.kill('SIGINT');
 
 
 
@@ -116,7 +116,7 @@ app.on('before-quit', function() {
 
 ipcMain.on('import_wallet', (evt, arg) => {
 
-  wallet.kill('SIGHUP');
+  wallet.kill('SIGINT');
 
   console.log(arg);
 
