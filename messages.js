@@ -225,7 +225,7 @@ let startCall = (audio, video) => {
       if (!first) {
         return
       }
-      send_message(parsed_data);
+      sendMessage(parsed_data, true);
 
       awaiting_callback = true;
 
@@ -308,7 +308,7 @@ let answerCall = (msg) => {
         return
       }
       console.log('Sending answer ', parsed_data);
-      send_message(parsed_data, true);
+      sendMessage(parsed_data, true);
       first = false;
 
     })
@@ -439,7 +439,7 @@ var holder = document.getElementById('messages_pane');
             var client = new WebTorrent();
             for (let f of e.dataTransfer.files) {
               client.seed(f, function (torrent) {
-
+                sendMessage(torrent.magnetURI.replace('&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&tr=wss%3A%2F%2Ftracker.fastcast.nz',''));
                 torrent.on('wire', function (wire) {
                   $('.' + torrent.magnetURI.split('&')[0].split(":")[3]).find('p').append('&nbsp;<i class="fa fa-circle-o-notch"></i>');
 
@@ -459,7 +459,7 @@ var holder = document.getElementById('messages_pane');
                   }
 
                 })
-              send_message(torrent.magnetURI.replace('&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&tr=wss%3A%2F%2Ftracker.fastcast.nz',''));
+
 
               })
             }
@@ -969,22 +969,22 @@ let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json
                   alert(resp.body.error.message);
                 }
             if (!silent) {
-            $('#loading_border').animate({width: '100%'},400,function(){
-              $('#loading_border').width(0);
-            });
-            $('#message_form').prop('disabled',false);
+            // $('#loading_border').animate({width: '100%'},400,function(){
+            //   $('#loading_border').width(0);
+            // });
+            // $('#message_form').prop('disabled',false);
             $('#message_form').focus();
             }
 
             return
           }
           if (!silent) {
-          $('#loading_border').animate({width: '80%'},400);
+          // $('#loading_border').animate({width: '80%'},400);
 
           // Empty message input field, re-activate it and then focus
-          $('#message_form').val('');
-          $('#message_form').prop('disabled',false);
-          $('#message_form').focus();
+
+          // $('#message_form').prop('disabled',false);
+
           }
           db_json = {"conversation": payload_json.to, "type":"sent","message":payload_json.msg,"timestamp":JSON.parse(fromHex(payload_hex)).t}
 
@@ -1005,21 +1005,18 @@ let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json
           $('#welcome_alpha').remove();
 
           payload_json.msg = parseCall(payload_json.msg);
-          if (!silent) {
-          $('#messages').append('<li class="sent_message" id="' + JSON.parse(fromHex(payload_hex)).t + '"><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + payload_json.msg + '</p><span class="time">' + moment(payload_json.t).fromNow() + '</span></li>');
-          }
+          // if (!silent) {
+          // $('#messages').append('<li class="sent_message" id="' + JSON.parse(fromHex(payload_hex)).t + '"><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + payload_json.msg + '</p><span class="time">' + moment(payload_json.t).fromNow() + '</span></li>');
+          // }
           let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(payload_json.msg);
           if (magnetLinks) {
             handleMagnetLink(magnetLinks, JSON.parse(fromHex(payload_hex)).t);
           }
 
-
-          // Scroll to bottom
-          $('#messages_pane').scrollTop($('#messages').height());
           if (!silent) {
-          $('#loading_border').animate({width: '100%'},400,function(){
-            $('#loading_border').width(0);
-          });
+          // $('#loading_border').animate({width: '100%'},400,function(){
+          //   $('#loading_border').width(0);
+          // });
 
           // Add message to contacts list and add class to tell updateMessages
           if ( $('.' + payload_json.to).width() > 0 ){
@@ -1046,6 +1043,22 @@ function sendMessage(message, silent=false) {
       return
     }
 
+    avatar_base64 = get_avatar(currentAddr);
+    let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(message);
+    if (!silent) {
+      let id_elem = Date.now();
+    $('#messages').append('<li class="sent_message" id="' + id_elem +  '"><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + message + '</p><span class="time">right now</span></li>');
+    if (magnetLinks) {
+      handleMagnetLink(magnetLinks, id_elem);
+    }
+    }
+
+    // Scroll to bottom
+    $('#messages_pane').scrollTop($('#messages').height());
+
+    $('#message_form').val('');
+    $('#message_form').focus();
+
     receiver = $('#recipient_form').val();
 
 
@@ -1060,8 +1073,8 @@ function sendMessage(message, silent=false) {
       });
 
       if (!silent) {
-      $('#loading_border').animate({width: '40%'},600);
-      $('#message_form').prop('disabled',true);
+      // $('#loading_border').animate({width: '40%'},600);
+      // $('#message_form').prop('disabled',true);
       }
 
       // Transaction details
@@ -1142,7 +1155,7 @@ $('#recipient_form').on('input', function() {
             $('#recipient_pubkey_form').val(pubkey);
             $('#recipient_pubkey_span').find('.checkmark').fadeIn();
             $('#recipient_span').find('.checkmark').fadeIn();
-            $('#message_form').attr('disabled',false);
+            // $('#message_form').attr('disabled',false);
           } else {
             $('#recipient_form').val(open_alias_address);
           }
@@ -1167,7 +1180,7 @@ $('#recipient_form').on('input', function() {
       $('#recipient_pubkey_form').val(pubkey);
       $('#recipient_pubkey_span').find('.checkmark').fadeIn();
       $('#recipient_span').find('.checkmark').fadeIn();
-      $('#message_form').attr('disabled',false);
+      // $('#message_form').attr('disabled',false);
     }
     if (text.length == 99) {
       // If only addr is put in
@@ -2238,8 +2251,8 @@ async function send_message(message, silent=false) {
 
 
         if (!silent) {
-        $('#loading_border').animate({width: '40%'},600);
-        $('#message_form').prop('disabled',true);
+        // $('#loading_border').animate({width: '40%'},600);
+        // $('#message_form').prop('disabled',true);
         }
         // Transaction details
         amount = 1;
