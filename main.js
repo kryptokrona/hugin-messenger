@@ -32,8 +32,8 @@ let mainWindow
 function createWindow () {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 1000,
-    height: 600,
+    width: 1250,
+    height: 800,
     icon: path.join(__dirname, 'icons/png/64x64.png'),
     titleBarStyle: "hidden",
     frame: false,
@@ -41,7 +41,7 @@ function createWindow () {
     webPreferences: {nodeIntegration: true, experimentalFeatures: true, experimentalCanvasFeatures: true}
   })
 
-  // mainWindow.openDevTools();
+  mainWindow.openDevTools();
 
   // and load the index.html of the app.
   mainWindow.loadURL(url.format({
@@ -108,7 +108,7 @@ app.on('activate', function () {
 app.on('before-quit', function() {
 
 
-  wallet.kill('SIGINT');
+  wallet.kill('SIGHUP');
 
 
 
@@ -116,7 +116,7 @@ app.on('before-quit', function() {
 
 ipcMain.on('import_wallet', (evt, arg) => {
 
-  wallet.kill('SIGINT');
+  wallet.kill('SIGHUP');
 
   console.log(arg);
 

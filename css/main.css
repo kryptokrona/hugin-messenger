@@ -126,8 +126,8 @@ header {
     left: 0;
     width: 100%;
     z-index: 2;
-    height: 20%;
-    padding-top:2%;
+    height: 12.5%;
+    padding-top:0.5%;
     /* -ms-overflow-style: scrollbar; */
     -webkit-app-region:drag;
     border-bottom: 1px solid rgba(0,0,0,0.1);
@@ -166,11 +166,11 @@ margin: 0;
 }
 #balance {
   padding: 0;
-  margin: 0;
-  margin-top: -15px;
-  position: absolute;
-  top: 32px;
-  right: 15px;
+    margin: 0;
+    margin-top: -29px;
+    position: absolute;
+    top: 32px;
+    right: 21px;
 }
 #xkr-logo {
   height: 48px;
@@ -263,15 +263,15 @@ html, body {
 
 #container {
 
-  position:absolute;
+  position: absolute;
   overflow-y: hidden;
   overflow-x: hidden;
   bottom: 0;
   right: 0;
-  top: 23%;
-  height: 96.5%;
+  top: 13%;
+  height: 109%;
   z-index: -1;
-  width:100%;
+  width: 100%;
 
 
 }
@@ -1373,13 +1373,6 @@ overlay p {
 
 }
 
-@media (prefers-color-scheme: dark) {
-
-  #settings_page {
-    background: #171717;
-  }
-}
-
 
 @media (prefers-color-scheme: light) {
 
@@ -1926,6 +1919,17 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
   text-align: center;
 }
 
+#settings_page {
+  display: none;
+  background: rgba(0,0,0,22,1);
+
+                width: 100%;
+                padding: 15px;
+                padding-left:35px;
+                height: 100%;
+                position: absolute;
+                z-index: 1;
+}
 
 
 #mnemonicbox {
@@ -2061,18 +2065,4 @@ li .gradient {
 @keyframes rotate {
     from {rotate: 0deg;}
     to {rotate:360deg;}
-}
-
-
-
-#settings_page {
-  display: none;
-
-
-                width: 100%;
-                padding: 15px;
-                padding-left:35px;
-                height: 100%;
-                position: absolute;
-                z-index: 1;
 }
