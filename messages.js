@@ -28,7 +28,7 @@ let endCall = (peer, stream) => {
   video_elem.srcObject = null;
   myvideo.srcObject = null;
   $('otherid').empty();
-  $('#caller_menu').css('top','-14px');
+  $('#caller_menu').css('top','-65px');
   $('#messages_contacts').removeClass('in-call');
   $('#settings').removeClass('in-call');
   $('#otherid').unbind('change');
@@ -157,7 +157,7 @@ let startCall = (audio, video) => {
 
     $('#messages_contacts').addClass('in-call');
     $('#settings').addClass('in-call');
-    $('#caller_menu').fadeIn().css('top','51px');
+    $('#caller_menu').fadeIn().css('top','0px');
     $('#caller_menu_type').text('Calling..');
     $('#caller_menu_contact').text($('#recipient_form').val());
     let avatar_base64 = get_avatar($('#recipient_form').val());
@@ -377,7 +377,7 @@ let parseCall = (msg, sender=false, emitCall=true) => {
            $('#messages_contacts').addClass('in-call');
            $('#settings').addClass('in-call');
 
-           $('#caller_menu').fadeIn().css('top','51px');
+           $('#caller_menu').fadeIn().css('top','0px');
            $('#caller_menu_type').text('Connecting..');
            $('#caller_menu_contact').text(sender);
            $('#incomingCall img').attr('src',"data:image/svg+xml;base64," + avatar_base64);
@@ -2293,6 +2293,9 @@ async function send_message(message, silent=false) {
 }
 
 async function print_conversation(conversation) {
+avatar_base64 = get_avatar(conversation);
+  $('#avatar_contact').attr('src','data:image/svg+xml;base64,' + avatar_base64).fadeIn();
+  $('#context_menu').fadeIn();
 
 
     keychain.find({ "address": conversation }, function (err, docs) {

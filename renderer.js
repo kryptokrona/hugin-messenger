@@ -403,4 +403,10 @@ $("document").ready(function(){
     $('#settings_page').fadeIn();
   });
 
+  $('#avatar').click(function(){
+
+  $('header').toggleClass('toggled');
+
+});
+
 });

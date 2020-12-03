@@ -56,7 +56,6 @@
     </overlay>
 
     <header>
-      <img id="avatar" src="static/logo.svg" />
 
       <div id="headerText" class="inline">
         <div id="currentAddr" class="inline">
@@ -107,6 +106,17 @@
 
   <button id="close-app"></button>
 
+  <img id="avatar" src="static/logo.svg" />
+
+  <div id="settings_icon"><i class="fa fa-cogs"></i></div>
+
+  <div id="daemon_status">
+    <span id="status_icon">&nbsp;</span>&nbsp;
+    <span id="network_status">Not connected</span>&nbsp;
+    <span id="blockcount"></span>
+
+  </div>
+
 </div>
 
 
@@ -126,7 +136,6 @@
         <div id="top_messages_sidebar">
           <div id="search_icon"><i class="fa fa-search"></i></div>
           <input disabled="true" class="text-field" id="search_messages" type="text" placeholder="Search.."></input>
-          <div id="settings_icon"><i class="fa fa-cogs"></i></div>
         </div>
 
 
@@ -179,14 +188,6 @@
 </div>
 
 </div>
-      <div id="bottombar">
-        <div id="daemon_status">
-          <span id="status_icon">&nbsp;</span>&nbsp;
-          <span id="network_status">Not connected</span>&nbsp;
-          <span id="blockcount"></span>
-
-        </div>
-      </div>
 
       </div>
 
@@ -211,8 +212,6 @@
            <span class="checkmark">✓</span>
          </span>
       </div>
-      <i id="video-button" class="fa fa-video-camera"></i>
-      <i id="call-button" class="fa fa-phone" style="margin-left:10px"></i>
     </div>
 
        <div id="messages_pane">
@@ -382,6 +381,16 @@
   </div>
 
   <div id="right_panel">
+
+    <img id="avatar_contact" src="" />
+
+    <div id="context_menu">
+      <span id="call_context_menu">
+      <i id="video-button" class="fa fa-video-camera"></i><br>
+      <i id="call-button" class="fa fa-phone"></i>
+    </span>
+
+    </div>
 
   </div>
 
