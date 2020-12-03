@@ -150,12 +150,14 @@ header > * {
   display: inline-block;
   /* border: 3px solid white; */
   cursor: pointer;
+  -webkit-app-region:drag;
 
 
 }
 
 #avatar {
   margin-top: 16px;
+
 }
 
 #headerText {
@@ -847,6 +849,7 @@ border-bottom: 1px solid rgba(255,255,255,0.1);
 #context_menu {
   text-align: center;
   display: none;
+  -webkit-app-region:drag;
 }
 
 #context_menu .fa {
@@ -1229,6 +1232,7 @@ overlay p {
   top: 18px;
   right: 22px;
   cursor: pointer;
+  -webkit-app-region:drag;
 }
 
 
