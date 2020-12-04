@@ -1520,7 +1520,7 @@ box-shadow: none;
   }
 
   #settings_page {
-    background: #fff;
+    background: #fff !important;
   }
 
   #settings_icon:hover {
@@ -2004,7 +2004,7 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
 
 #settings_page {
   display: none;
-  background: rgba(0,0,0,22,1);
+  background: #292929;
 
                 width: 100%;
                 padding: 15px;

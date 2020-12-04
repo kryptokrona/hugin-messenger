@@ -41,7 +41,7 @@ function createWindow () {
     webPreferences: {nodeIntegration: true, experimentalFeatures: true, experimentalCanvasFeatures: true}
   })
 
-  // mainWindow.openDevTools();
+  mainWindow.openDevTools();
 
   // and load the index.html of the app.
   mainWindow.loadURL(url.format({
