@@ -1452,6 +1452,15 @@ overlay p {
 
 @media (prefers-color-scheme: light) {
 
+  #status_icon {
+    background: url(../static/xkr-logo-mask-light.svg);
+    box-shadow: inset 0px 0px 0px 1px #f5f6f7;
+  }
+
+  #left_panel, #right_panel {
+    background: #F5F6F7;
+  }
+
 header  {
 
     background: #f5f6f7 !important;
@@ -1506,7 +1515,7 @@ box-shadow: none;
 
   }
 
-  #settings_icon {
+  #settings_icon, #new_chat, #call_context_menu {
     color: #53565c !important;
   }
 
@@ -1600,7 +1609,7 @@ color: black;
 
 #payment_form input, #currentchat_footer input {
 
-  background: white;
+  background: #f5f6f7 !important;
   color: black !important;
 
 
@@ -1741,8 +1750,6 @@ background: #f5f6f7 !important;
 }
 
 #currentchat_footer {
-
-background-color: #fbfbfb!important;
 color: black;
 }
 
@@ -1895,8 +1902,8 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
     -webkit-animation: AnimationName 60s ease infinite;
     -moz-animation: AnimationName 60s ease infinite;
     animation: AnimationName 60s ease infinite;
-    width: 251px;
-    height: 251px;
+    width: 350px;
+    height: 350px;
     display: inline-block;
     border-radius: 50%;
 
@@ -1904,8 +1911,8 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
 
 #hugin-background img {
   position: absolute;
-  width: 320px;
-  top: 63px;
+  width: 440px;
+  top: -29px;
   left: 6px;
 }
 
