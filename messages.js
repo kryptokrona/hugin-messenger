@@ -2296,6 +2296,7 @@ async function print_conversation(conversation) {
 avatar_base64 = get_avatar(conversation);
   $('#avatar_contact').attr('src','data:image/svg+xml;base64,' + avatar_base64).fadeIn();
   $('#context_menu').fadeIn();
+  $('#currentchat_header_wrapper').removeClass('toggled_addr');
 
 
     keychain.find({ "address": conversation }, function (err, docs) {
@@ -2412,6 +2413,7 @@ $("document").ready(function(){
   lastMessage =  Date.now();
 
   $('#new_chat').click(function(){
+    $('#currentchat_header_wrapper').addClass('toggled_addr');
     $('#recipient_form').val('');
     $('#currentchat_pubkey').hide();
     $('.checkmark').hide();

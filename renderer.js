@@ -409,4 +409,10 @@ $("document").ready(function(){
 
 });
 
+$('#avatar_contact').click(function(){
+
+$('#currentchat_header_wrapper').toggleClass('toggled_addr');
+
+});
+
 });

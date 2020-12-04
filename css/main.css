@@ -208,7 +208,7 @@ body {
 }
 
 html, body {
-    background: #161415;
+    background: transparent;
 }
 
 
@@ -821,7 +821,7 @@ border-bottom: 1px solid rgba(255,255,255,0.1);
     line-height: 25px;
     padding: 5px;
     /* top: 5px; */
-    margin-left: -4px;
+    margin-left: 22px;
     font-size: 19pt;
     vertical-align: middle;
     cursor: pointer;
@@ -923,10 +923,15 @@ display: inline-block;
 }
 
 #currentchat_header_wrapper {
-  background: rgb(22,22,22);
+  background: #292929;
   border-bottom: 1px solid rgba(255,255,255,0.1);
-  height: 0;
-  display: none;
+  height: 50px;
+  margin-top: -50px;
+  transition: all 0.2s;
+}
+
+.toggled_addr {
+  margin-top: 0 !important;
 }
 
 overlay {
