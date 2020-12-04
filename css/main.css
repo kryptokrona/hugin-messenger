@@ -301,6 +301,10 @@ html, body {
     -webkit-app-region:drag;
 }
 
+#left_panel > * {
+  -webkit-app-region:no-drag;
+}
+
 #right_panel {
     position: absolute;
     -webkit-app-region:drag;
