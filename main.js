@@ -8,10 +8,23 @@ const path = require('path')
 const url = require('url')
 const xhr = require('xhr')
 
+const fetch = require('electron-fetch').default;
+
+
 const {autoUpdater} = require("electron-updater");
 
 autoUpdater.logger = require("electron-log")
 autoUpdater.logger.transports.file.level = "info"
+
+
+let fetchNodes = () => {
+
+      fetch('https://kryptokrona.se/nodelist.json')
+      .then(res => res.json())
+      .then(json => console.log(json))
+
+}
+
 
 
 var Menu = electron.Menu;
@@ -19,6 +32,10 @@ const {ipcMain} = require('electron');
 
 ipcMain.on('close-me', (evt, arg) => {
   app.quit()
+})
+
+ipcMain.on('get-nodes', (evt, arg) => {
+  fetchNodes();
 })
 
 
@@ -41,7 +58,7 @@ function createWindow () {
     webPreferences: {nodeIntegration: true, experimentalFeatures: true, experimentalCanvasFeatures: true}
   })
 
-  // mainWindow.openDevTools();
+   mainWindow.openDevTools();
 
   // and load the index.html of the app.
   mainWindow.loadURL(url.format({

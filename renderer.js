@@ -4,7 +4,6 @@
 window.$ = window.jQuery = require('jquery');
 
 var remote = require('electron').remote;
-
 var rpc_pw = remote.getGlobal('rpc_pw');
 
 // Global variable for storing the currently used address
@@ -400,7 +399,17 @@ $("document").ready(function(){
   });
 
   $("#walletSettings").click(function(){
+    $('.setting_page').hide();
     $('#settings_page').fadeIn();
+    $('#wallet_settings_page').fadeIn();
+  });
+
+  $("#connectionSettings").click(function(){
+    $('.setting_page').hide();
+    $('#settings_page').fadeIn();
+    $('#connection_settings_page').fadeIn();
+    ipcRenderer.send('get-nodes');
+
   });
 
   $('#avatar').click(function(){

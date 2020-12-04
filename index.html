@@ -176,7 +176,8 @@
 
 
              <!-- <div id="#about"><i class="fa fa-wifi"></i>  Node</div> -->
-             <div id="walletSettings"><i class="fa fa-save"></i>My  Wallet</div>
+             <div id="walletSettings"><i class="fa fa-save"></i> My  Wallet</div>
+             <div id="connectionSettings"><i class="fa fa-globe"></i> Connection</div>
              <!-- <div id="#contact">Media Settings</div>
              <div id="#home">Transactions</div>
              <div id="#contact">Contacts</div>
@@ -217,7 +218,10 @@
        <div id="messages_pane">
 
          <div id="settings_page" style="">
-                   <i class="fa fa-plus" style="rotate: 45deg; position: absolute; right: 60px; top: 10px" onClick='$("#settings_page").fadeOut(); myFunction();'></i>
+                  <i class="fa fa-plus" style="rotate: 45deg; position: absolute; right: 60px; top: 10px" onClick='$("#settings_page").fadeOut(); $(".setting_page").fadeOut(); myFunction();'></i>
+                  <span id="wallet_settings_page" class="setting_page">
+
+
                    <h1>Wallet</h2>
 
                     <button id="getMnemonic">Show mnemonic seed</button>
@@ -243,6 +247,26 @@
                       <br>
                        <input type="textarea" id="importMnemonic">
                       </input>
+
+                    </span>
+
+                    <span id="connection_settings_page" class="setting_page">
+
+                             <h1>Connection</h2>
+
+                              <h3>Node</h3>
+                               <div class="dropdown">
+                                  <button class="dropbtn">pool.kryptokrona.se</button>
+                                  <div class="dropdown-content">
+                                    <a href="#">Link 1</a>
+                                    <a href="#">Link 2</a>
+                                    <a href="#">Link 3</a>
+                                  </div>
+                                </div>
+
+
+                    </span>
+
 
                   </div>
          <div style="display: none" id="drop-overlay">
