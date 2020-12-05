@@ -98,11 +98,13 @@
 }
 
 .dropbtn {
-  background-color: #4CAF50;
-  color: white;
+  background-color: #fff;
+  color: black;
   padding: 16px;
   font-size: 16px;
   border: none;
+  height: 5%
+
 }
 
 /* The container <div> - needed to position the dropdown content */
@@ -136,7 +138,7 @@
 .dropdown:hover .dropdown-content {display: block;}
 
 /* Change the background color of the dropdown button when the dropdown content is shown */
-.dropdown:hover .dropbtn {background-color: #3e8e41;}
+.dropdown:hover .dropbtn {background-color: #ddd;}
 
 
 #balancelogo::before {
@@ -1464,6 +1466,7 @@ overlay p {
 
   width: 100%;
   height: 100%;
+  padding-top: 50%;
 
 }
 
@@ -1949,6 +1952,7 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
     height: 350px;
     display: inline-block;
     border-radius: 50%;
+    margin-top: 10%;
 
 }
 
@@ -1957,6 +1961,7 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
   width: 440px;
   top: -29px;
   left: 6px;
+  margin-top: 10%;
 }
 
 #welcome-text {
@@ -2067,6 +2072,7 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
   border-radius: 2px;
   margin-left: 5px;
   font-family: monospace;
+  padding-top: 8px;
 
 }
 
@@ -2081,6 +2087,8 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
   border-radius: 2px;
   margin-left: 5px;
   font-family: monospace;
+  padding-top: 8px;
+
 
 }
 
@@ -2097,13 +2105,14 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
    font-size: 15px;
    padding: 10px;
    margin: 5px;
+   cursor: pointer;
 
  }
 
  #getPrivatekey:hover, #getMnemonic:hover, #import:hover {
 
-   background: #292929;
-   color: white;
+   background: #ddd;
+   color: black;
  }
 
 #settings_icon {
@@ -2131,15 +2140,62 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
 
 #importMnemonic {
 
-  height: 25px;
-  width: 75%;
-  margin-left: 5px;
-  color: black;
-  margin-top: 5px;
-  font-family: monospace;
-
-
+  background: #595959;
+    color: white;
+    border-radius: 5px;
+    border: none;
+    width: 717px;
+    height: 88px;
+    display: block;
+    margin-top: 10px;
+    margin-left: 5px;
+    padding-top: 8px;
+    resize: none;
+    word-break: break-word;
 }
+
+#nodeInput {
+
+  background: #595959;
+    color: white;
+    border-radius: 5px;
+    border: none;
+    width: 344px;
+    height: 27px;
+    display: block;
+    margin-top: 20px;
+    margin-left: 2px;
+    padding-top: 10px;
+    padding-left: 9px;
+    font-size: 15px;
+    word-break: break-word;
+    resize: none;
+    overflow: hidden;
+}
+
+#nodeConnect {
+
+     background-color: #4CAF50;
+     border: none;
+     color: #ddd;
+     padding: 11px 22px;
+     text-align: center;
+     text-decoration: none;
+     display: inline-block;
+     font-size: 17px;
+     padding: 10px;
+     cursor: pointer;
+
+
+   }
+
+   #nodeConnect:hover {
+
+      background-color: #115f0a;
+      color: white;
+   }
+
+
 
 .in-call {
   padding-top: 70px !important;
