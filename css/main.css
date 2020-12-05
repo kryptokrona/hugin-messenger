@@ -1580,6 +1580,45 @@ box-shadow: none;
     color: #53565c;
   }
 
+  #importMnemonic {
+
+    background: #F5F6F7 !important;
+    color: black !important;
+   }
+
+  #getPrivatekey, #getMnemonic, #import {
+
+     background: #F5F6F7 !important;
+     color: black;
+     padding: 11px 22px;
+     text-align: center;
+     text-decoration: none;
+     display: inline-block;
+     font-size: 15px;
+     padding: 10px;
+     margin: 5px;
+     cursor: pointer;
+
+   }
+
+   #getPrivatekey:hover, #getMnemonic:hover, #import:hover {
+
+
+     color: black;
+     background-color: rgba(222,222,222,0.1) !important;
+
+   }
+
+   #nodeInput {
+     background: #f5f6f7 !important;
+     color: #000 !important;
+   }
+
+   .dropbtn {
+
+    background: #f5f6f7 !important;
+   }
+
  #payment_message {
 
    cursor: pointer;
