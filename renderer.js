@@ -404,10 +404,35 @@ $("document").ready(function(){
     $('#wallet_settings_page').fadeIn();
   });
 
+  $("#nodeConnect").click(function(){
+    let node = $('#nodeInput').val();
+    ipcRenderer.send('change-node', node);
+
+  });
+
   $("#connectionSettings").click(function(){
     $('.setting_page').hide();
     $('#settings_page').fadeIn();
     $('#connection_settings_page').fadeIn();
+    // ipcRenderer.send('get-nodes','ping');
+
+    // console.log(ipcRenderer.sendSync('synchronous-message', 'ping')) // prints "pong"
+
+    ipcRenderer.on('got-nodes', (event, json) => {
+      console.log(json);
+      $('.dropdown-content').empty();
+      for (node in json.nodes) {
+
+        let node_addr = json.nodes[node].url + ":" +json.nodes[node].port;
+
+        $('.dropdown-content').append('<a href="#" id="node' + node + '">' + json.nodes[node].name + '</a>');
+
+        $('#node' + node).click(function() {
+          $('#nodeInput').val(node_addr);
+        })
+
+      }
+    })
     ipcRenderer.send('get-nodes');
 
   });
@@ -415,6 +440,10 @@ $("document").ready(function(){
   $('#avatar').click(function(){
 
   $('header').toggleClass('toggled');
+
+  ipcRenderer.on('got-nodes', (event, json) => {
+    console.log(json) // prints "pong"
+  })
 
 });
 

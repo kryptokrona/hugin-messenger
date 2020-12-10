@@ -12,6 +12,7 @@ const fetch = require('electron-fetch').default;
 
 
 const {autoUpdater} = require("electron-updater");
+const {ipcMain} = require('electron');
 
 autoUpdater.logger = require("electron-log")
 autoUpdater.logger.transports.file.level = "info"
@@ -19,26 +20,57 @@ autoUpdater.logger.transports.file.level = "info"
 
 let fetchNodes = () => {
 
-      fetch('https://kryptokrona.se/nodelist.json')
-      .then(res => res.json())
-      .then(json => console.log(json))
+  return new Promise((resolve, reject) => {
+
+    fetch('https://kryptokrona.se/nodelist.json')
+    .then(res => res.json())
+    .then(json => {
+
+      resolve(json);
+
+    })
+
+  })
+
+
 
 }
 
 
 
 var Menu = electron.Menu;
-const {ipcMain} = require('electron');
+
 
 ipcMain.on('close-me', (evt, arg) => {
   app.quit()
 })
 
-ipcMain.on('get-nodes', (evt, arg) => {
-  fetchNodes();
+// ipcMain.on('get-nodes', (evt, arg) => {
+//   // evt.reply('got-nodes', {nodies: 1});
+// })
+
+ipcMain.on('get-nodes', async (event, arg) => {
+  console.log(arg) // prints "ping"
+  let json = await fetchNodes();
+  event.reply('got-nodes', json)
 })
 
 
+ipcMain.on('change-node', async (event, node) => {
+  console.log(node) // prints "ping"
+
+  db.update({setting : 'walletData'}, { $set: {node : node} } , {} , function (err, numReplaced){
+
+    console.log(numReplaced);
+    wallet.kill('SIGINT');
+    startWallet();
+
+  })
+
+
+
+
+})
 
 
 
@@ -243,7 +275,18 @@ function startWallet() {
   wallet_pw = docs[0].walletPassword;
   global.rpc_pw = docs[0].rpcPassword;
 
-   wallet = spawn(appPath+'kryptokrona-service', ['-l', userDataDir+"/walletd.log",'-w', userDataDir+'/'+wallet_file, '-p', wallet_pw, '--rpc-password', global.rpc_pw, '--daemon-address', 'pool.kryptokrona.se']); //, '--daemon-address', 'localhost'
+  let node = 'pool.kryptokrona.se';
+  let port = '11898'
+  if (docs[0].node) {
+
+    node = docs[0].node.split(':');
+    port = node[1];
+    node = node[0]
+  }
+
+  console.log(node);
+
+   wallet = spawn(appPath+'kryptokrona-service', ['-l', userDataDir+"/walletd.log",'-w', userDataDir+'/'+wallet_file, '-p', wallet_pw, '--rpc-password', global.rpc_pw, '--daemon-address', node, '--daemon-port', port]); //, '--daemon-address', 'localhost'
 
    wallet.stdout.on('data', (data) => {
 
