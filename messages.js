@@ -750,6 +750,11 @@ $('#getPrivatekey').click(function(){
 const {ipcRenderer} = require('electron');
 
 
+ipcRenderer.on('gotNodes', (evt, json) => {
+  console.log(json);
+})
+
+
 
 let decrypt_message = (possibleKeys, box, timestamp) => {
 

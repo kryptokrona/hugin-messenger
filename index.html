@@ -222,7 +222,10 @@
                   <span id="wallet_settings_page" class="setting_page">
 
 
-                   <h1>Wallet</h2>
+                  <h1>Wallet</h2>
+                  <br/>
+
+                  <h3>Mnemonic seed</h3>
 
                     <button id="getMnemonic">Show mnemonic seed</button>
                     <div id="mnemonicbox">
@@ -232,37 +235,45 @@
                       </span>
 
                       </div>
+                      <h3>Private key</h3>
+
                       <button id="getPrivatekey">Show Private Key</button>
                       <div id="privatekeybox">
 
-                        <span id="privatekey">
+                      <span id="privatekey">
                           Never show this key to anyone!
                         </span>
+                      </div>
 
-                        </div>
+                        <br/>
+                        <br/>
+                        <br/>
 
-                        <br>
-
+                      <h3>Import/Rescan wallet</h3>
                       <button id="import">Import wallet</button>
                       <br>
-                       <input type="textarea" id="importMnemonic">
-                      </input>
+                       <div class="Mnemonicfield">
 
+                       <textarea id="importMnemonic"> Input your mnemonic seed to restore your wallet.</textarea>
+                      </div>
                     </span>
 
                     <span id="connection_settings_page" class="setting_page">
 
-                             <h1>Connection</h2>
+                   <h1>Connection</h2>
 
-                              <h3>Node</h3>
-                               <div class="dropdown">
-                                  <button class="dropbtn">pool.kryptokrona.se</button>
-                                  <div class="dropdown-content">
-                                    <a href="#">Link 1</a>
-                                    <a href="#">Link 2</a>
-                                    <a href="#">Link 3</a>
-                                  </div>
-                                </div>
+                    <h3>Node</h3>
+                     <div class="dropdown">
+                        <button class="dropbtn">pool.kryptokrona.se</button>
+                        <div class="dropdown-content">
+                          <a href="#">pool2.kryptokrona.se</a>
+                          <a href="#">floki.kryptokrona.se</a>
+                          <a href="#"></a>
+                          </div>
+                      </div>
+                      <textarea id="nodeInput">127.0.0.1:11898 (Localhost)</textarea>
+                        <br/>
+                      <button id="nodeConnect">Connect</button>
 
 
                     </span>
