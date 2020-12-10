@@ -55,7 +55,7 @@ function createWindow () {
     titleBarStyle: "hidden",
     frame: false,
     transparent: true,
-    webPreferences: {nodeIntegration: true, experimentalFeatures: true, experimentalCanvasFeatures: true}
+    webPreferences: {nodeIntegration: true, experimentalFeatures: true, experimentalCanvasFeatures: true, spellcheck: true}
   })
 
    mainWindow.openDevTools();
