@@ -355,6 +355,21 @@ var currentPage = $("#send_payment");
 
 $("document").ready(function(){
 
+    $("video").dblclick(function() {
+    if (this.requestFullscreen) {
+      this.requestFullscreen();
+    }
+    else if (this.mozRequestFullScreen) {
+      this.mozRequestFullScreen();
+    }
+    else if (this.webkitRequestFullscreen) {
+      this.webkitRequestFullscreen();
+    }
+    else if (this.msRequestFullscreen) {
+      this.msRequestFullscreen();
+    }
+  });
+
   $('.emoji-picker__emoji').click(function() {
 
     $('#message_form').focus();

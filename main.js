@@ -63,7 +63,12 @@ ipcMain.on('change-node', async (event, node) => {
 
     console.log(numReplaced);
     wallet.kill('SIGINT');
-    startWallet();
+    wallet.on('close', () => {
+      console.log('Wallet is closed..');
+      startWallet();
+
+
+    } );
 
   })
 
