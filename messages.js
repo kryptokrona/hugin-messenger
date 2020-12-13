@@ -3,6 +3,7 @@ window.$ = window.jQuery = require('jquery');
 const copy = require( 'copy-to-clipboard' );
 const notifier = require('node-notifier');
 const { openAlias } = require('openalias');
+const { desktopCapturer } = require('electron');
 
 var sdp = require('./sdp');
 
@@ -129,14 +130,53 @@ let parse_sdp = (sdp) => {
 
 }
 
-let startCall = (audio, video) => {
 
 
+function handleError (e) {
+  console.log(e)
+}
+
+let startCall = (audio, video, screenshare=false) => {
+
+if (!screenshare) {
   // get video/voice stream
   navigator.mediaDevices.getUserMedia({
     video: video,
     audio: audio
   }).then(gotMedia).catch(() => {})
+} else { desktopCapturer.getSources({ types: ['window', 'screen'] }).then(async sources => {
+  console.log('SÅRSCESS:', sources)
+  for (const source of sources) {
+    if (source.name === 'Entire Screen') {
+      try {
+
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: {
+            mandatory: {
+              chromeMediaSource: 'desktop',
+              chromeMediaSourceId: source.id
+            }
+          },
+          video: {
+            mandatory: {
+              chromeMediaSource: 'desktop',
+              chromeMediaSourceId: source.id,
+              minWidth: 1280,
+              maxWidth: 1280,
+              minHeight: 720,
+              maxHeight: 720
+            }
+          }
+        })
+        gotMedia(stream)
+      } catch (e) {
+        handleError(e)
+      }
+      return
+    }
+  }
+}) }
+
 
   function gotMedia (stream) {
     if ( video ) {
@@ -414,6 +454,8 @@ let parseCall = (msg, sender=false, emitCall=true) => {
 $('#video-button').click(function() { startCall(true, true) });
 
 $('#call-button').click(function() { startCall(true, false) });
+
+$('#screen-button').click(function() { startCall(true, true, true) });
 
 var holder = document.getElementById('messages_pane');
 
