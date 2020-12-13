@@ -150,13 +150,8 @@ if (!screenshare) {
     if (source.name === 'Entire Screen') {
       try {
 
-        const stream = await navigator.mediaDevices.getUserMedia({
-          audio: {
-            mandatory: {
-              chromeMediaSource: 'desktop',
-              chromeMediaSourceId: source.id
-            }
-          },
+        const screen_stream = await navigator.mediaDevices.getUserMedia({
+          audio: false,
           video: {
             mandatory: {
               chromeMediaSource: 'desktop',
@@ -167,8 +162,13 @@ if (!screenshare) {
               maxHeight: 720
             }
           }
-        })
-        gotMedia(stream)
+        });
+        console.log('Got stream..');
+        navigator.mediaDevices.getUserMedia({
+          video: false,
+          audio: true
+        }).then( function(stream){gotMedia(stream, screen_stream)}).catch(() => {})
+
       } catch (e) {
         handleError(e)
       }
@@ -178,15 +178,28 @@ if (!screenshare) {
 }) }
 
 
-  function gotMedia (stream) {
+  function gotMedia (stream, screen_stream=false) {
     if ( video ) {
     var myvideo = document.getElementById('myvideo')
-    myvideo.srcObject = stream;
 
-    myvideo.play();
 
-    $('video').fadeIn();
+
+
+    if (screen_stream) {
+      myvideo.srcObject = screen_stream;
+      screen_stream.addTrack(stream.getAudioTracks()[0]);
+
+      stream = screen_stream;
+    } else {
+      myvideo.srcObject = stream;
     }
+    myvideo.play();
+    $('video').fadeIn();
+  } else {
+
+  }
+
+
 
 
     var peer1 = new Peer({ initiator: true, stream: stream, trickle: false,
