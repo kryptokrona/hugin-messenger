@@ -874,9 +874,9 @@ border-bottom: 1px solid rgba(255,255,255,0.1);
     font-size: 19pt;
     vertical-align: middle;
     cursor: pointer;
-
-      display: inline-block;
-      margin-top: 1px;
+    color: white;
+    display: inline-block;
+    margin-top: 1px;
 
 }
 
@@ -1160,13 +1160,15 @@ overlay p {
 .sent_message p {
   padding: 15px;
   border-radius: 5px;
-  background: rgba(0,202,255,0.4);
+  background: rgba(77, 210, 106, 0.65);
   width: max-content;
   max-width: 40%;
   margin-left: auto;
   margin-right: 40px;
   word-wrap: break-word;
   border-top-right-radius: 0;
+  font-family: monospace;
+  font-size: 17px;
 
 }
 
@@ -1175,12 +1177,15 @@ overlay p {
 .received_message p, .recieved_message p {
   padding: 15px;
   border-radius: 5px;
-  background: rgba(255,255,255,0.3);
+  background: rgba(57, 76, 145, 0.3);
   width: max-content;
   max-width: 40%;
   word-wrap: break-word;
   border-top-left-radius: 0;
   margin-left: 15px;
+  font-family: monospace;
+  font-size: 17px;
+
 
 }
 
@@ -1522,6 +1527,11 @@ header  {
 
  }
 
+ #new_chat {
+
+   color: #53565c !important;
+
+ }
 
  #answerCall {
 
@@ -1556,20 +1566,23 @@ header  {
 
   #close-app {
 
-box-shadow: none;
+    box-shadow: none;
 
 
   }
 
-  #settings_icon, #new_chat, #call_context_menu {
+  #left_panel .fa {
+
     color: #53565c !important;
+
   }
+
 
   #settings_page {
     background: #fff !important;
   }
 
-  #settings_icon:hover {
+  #settings_icon:hover, #message_icon:hover {
 
     background: white;
     color: black;
@@ -2154,8 +2167,10 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
    color: black;
  }
 
-#settings_icon {
-  width: 35px;
+#settings_icon, #message_icon  {
+
+
+      width: 35px;
       text-align: center;
       line-height: 5px;
       padding-top: 10px;
@@ -2164,14 +2179,18 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
       cursor: pointer;
       display: inline-block;
       top: 8px;
-      color: white;
       padding-bottom: 10px;
       position: relative;
-    margin-left: 44px;
+      margin-left: 44px;
 }
 
+#message_icon  {
 
-#settings_icon:hover {
+    margin-left: 21px;
+    margin-top: 7px;
+}
+
+#settings_icon:hover, #message_icon:hover {
 
   color: black;
   background: white;

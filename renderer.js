@@ -247,6 +247,8 @@ function updateBalance(address) {
 
 }
 
+
+
 function updateStatus() {
 
   walletd.getStatus()
@@ -259,16 +261,20 @@ function updateStatus() {
 
       $("#network_status").text("Synchronized");
       $("#blockcount").text( "Block height: " + knownCount );
-      $('#status_icon').css('background-color','rgba(53,199,72,1)')
+      $('#status_icon').css('background-color','rgba(53,199,72,1)');
+      $("#daemon_status").attr('title', 'Synchronized')
     } else {
     $("#network_status").text("Synchronizing..");
     $("#blockcount").text(blockCount +" / " + knownCount );
-    $('#status_icon').css('background-color','rgba(253,189,65,1)')
+    $('#status_icon').css('background-color','rgba(253,189,65,1)');
+    $("#daemon_status").attr('title', 'Synchronizing: '+blockCount +" / " + knownCount )
     }
 
     })
     .catch(err => {
       console.log(err)
+      $('#status_icon').css('background-color','#FF4743');
+      $("#daemon_status").attr('title', "Can't connect to node...")
     })
 
 }
@@ -422,6 +428,7 @@ $("document").ready(function(){
   $("#nodeConnect").click(function(){
     let node = $('#nodeInput').val();
     ipcRenderer.send('change-node', node);
+    updateStatus();
 
   });
 
@@ -469,3 +476,7 @@ $('#currentchat_header_wrapper').toggleClass('toggled_addr');
 });
 
 });
+
+$('#message_icon').click(function(){
+$("#settings_page").fadeOut(); $(".setting_page").fadeOut(); myFunction();
+})
