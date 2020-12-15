@@ -3,6 +3,7 @@ window.$ = window.jQuery = require('jquery');
 const copy = require( 'copy-to-clipboard' );
 const notifier = require('node-notifier');
 const { openAlias } = require('openalias');
+const { desktopCapturer } = require('electron');
 
 var sdp = require('./sdp');
 
@@ -129,24 +130,76 @@ let parse_sdp = (sdp) => {
 
 }
 
-let startCall = (audio, video) => {
 
 
+function handleError (e) {
+  console.log(e)
+}
+
+let startCall = (audio, video, screenshare=false) => {
+
+if (!screenshare) {
   // get video/voice stream
   navigator.mediaDevices.getUserMedia({
     video: video,
     audio: audio
   }).then(gotMedia).catch(() => {})
+} else { desktopCapturer.getSources({ types: ['window', 'screen'] }).then(async sources => {
+  console.log('SÅRSCESS:', sources)
+  for (const source of sources) {
+    if (source.name === 'Entire Screen') {
+      try {
 
-  function gotMedia (stream) {
+        const screen_stream = await navigator.mediaDevices.getUserMedia({
+          audio: false,
+          video: {
+            mandatory: {
+              chromeMediaSource: 'desktop',
+              chromeMediaSourceId: source.id,
+              minWidth: 1280,
+              maxWidth: 1280,
+              minHeight: 720,
+              maxHeight: 720
+            }
+          }
+        });
+        console.log('Got stream..');
+        navigator.mediaDevices.getUserMedia({
+          video: false,
+          audio: true
+        }).then( function(stream){gotMedia(stream, screen_stream)}).catch(() => {})
+
+      } catch (e) {
+        handleError(e)
+      }
+      return
+    }
+  }
+}) }
+
+
+  function gotMedia (stream, screen_stream=false) {
     if ( video ) {
     var myvideo = document.getElementById('myvideo')
-    myvideo.srcObject = stream;
 
-    myvideo.play();
 
-    $('video').fadeIn();
+
+
+    if (screen_stream) {
+      myvideo.srcObject = screen_stream;
+      screen_stream.addTrack(stream.getAudioTracks()[0]);
+
+      stream = screen_stream;
+    } else {
+      myvideo.srcObject = stream;
     }
+    myvideo.play();
+    $('video').fadeIn();
+  } else {
+
+  }
+
+
 
 
     var peer1 = new Peer({ initiator: true, stream: stream, trickle: false,
@@ -414,6 +467,8 @@ let parseCall = (msg, sender=false, emitCall=true) => {
 $('#video-button').click(function() { startCall(true, true) });
 
 $('#call-button').click(function() { startCall(true, false) });
+
+$('#screen-button').click(function() { startCall(true, true, true) });
 
 var holder = document.getElementById('messages_pane');
 
