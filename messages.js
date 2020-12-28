@@ -34,6 +34,13 @@ let endCall = (peer, stream) => {
   $('#settings').removeClass('in-call');
   $('#otherid').unbind('change');
   awaiting_callback = false;
+
+
+    $('#video-button').click(function() { startCall(true, true) });
+
+    $('#call-button').click(function() { startCall(true, false) });
+
+    $('#screen-button').click(function() { startCall(true, true, true) });
 }
 
 let parse_sdp = (sdp) => {
@@ -137,6 +144,12 @@ function handleError (e) {
 }
 
 let startCall = (audio, video, screenshare=false) => {
+
+  $('#video-button').unbind('click');
+
+  $('#call-button').unbind('click');
+
+  $('#screen-button').unbind('click');
 
 if (!screenshare) {
   // get video/voice stream
@@ -421,6 +434,7 @@ let parseCall = (msg, sender=false, emitCall=true) => {
 
          // Handle answer/decline
          $('#answerCall').click(function() {
+           $('#answerCall').unbind('click');
            if ($('#recipient_form').text() != sender) {
               print_conversation(sender);
            }
