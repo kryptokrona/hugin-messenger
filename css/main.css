@@ -360,6 +360,32 @@ html, body {
     background: #161415;
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
+    color: white;
+}
+
+.contact-buttons {
+
+
+      height: 25px;
+      width: 25px;
+      text-align: center;
+      line-height: 15px;
+      padding: 5px;
+      /* top: 5px; */
+      font-size: 12pt;
+      vertical-align: middle;
+      cursor: pointer;
+      display: inline-block;
+      padding-top: 10px;
+
+}
+
+.contact-buttons:hover {
+
+background-color: rgba(222,222,222,0.2) !important;
+border-radius: 5px;
+
+
 }
 
 #bottombar {
@@ -599,16 +625,6 @@ padding: 5px;
   width: 100% !important;
 margin-top:-15px;
 
-}
-
-#call-button:hover {
-
-  color:green;
-}
-
-#video-button:hover {
-
-  color:green;
 }
 
 
@@ -1415,35 +1431,9 @@ overlay p {
   content: " ";
 }
 
-.contact_address {
-  display: block;
-  white-space: nowrap;
-  width: 180px;
-  overflow: hidden;
-  text-overflow:ellipsis;
-  font-size: 10px;
-  margin-top: -35px;
-  font-weight: 400;
-}
-
-.contact_avatar {
-  border-radius: 50%;
-  position: relative;
-  left: -50px;
-  top: 0px;
-}
-
-.listed_message {
-  display: block;
-  width: 180px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow:ellipsis;
-  font-size: 11px;
-  opacity: 0.7;
-  margin-top: -10px;
-
-}
+.contact_address { display: block; white-space: nowrap; width: 74%; overflow: hidden; text-overflow: ellipsis; font-size: 10px; margin-top: -35px; font-weight: 400; margin-left: 5px; }
+.contact_avatar { border-radius: 50%; position: relative; left: -43px; top: 2px; }
+.listed_message { display: block; width: 74%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 11px; opacity: 0.7; margin-top: -10px; margin-left: 5px; }
 
 #messages_contacts {
   --scrollbarBG: transparent;
@@ -1489,6 +1479,7 @@ overlay p {
 #settings div:hover {
 
   background-color: rgba(222,222,222,0.2) !important;
+  border-radius: 5px;
 
 }
 
@@ -1533,6 +1524,18 @@ header  {
 
  }
 
+.received_message p {
+
+  background: rgba(57, 76, 145, 0.3) !important;
+
+}
+
+.sent_message p {
+
+  background: rgba(77, 210, 106, 0.88) !important;
+
+}
+
  #answerCall {
 
    color:white;
@@ -1542,6 +1545,12 @@ header  {
  #declineCall {
 
    color:white;
+
+ }
+
+ #right_panel {
+
+ color: #53565c !important;
 
  }
 
@@ -1582,10 +1591,11 @@ header  {
     background: #fff !important;
   }
 
-  #settings_icon:hover, #message_icon:hover {
+  #settings_icon:hover, #message_icon:hover , #new_chat:hover{
 
-    background: white;
+    background-color: rgba(222,222,222,0.2) !important;
     color: black;
+    border-radius: 5px;
   }
 
   #settings {
@@ -1744,7 +1754,7 @@ color: black;
 
 #messages_sidebar {
 
-  background: white;
+  background: #F5F6F7 !important;
   color: #53565c !important;
 
 }
@@ -1756,12 +1766,6 @@ color: white;
 
 }
 
-.received_message p, .recieved_message p {
-
-background: #999 !important;
-color: white;
-
-}
 
 .time {
 
@@ -1837,9 +1841,6 @@ background: #f5f6f7 !important;
 
 }
 
-#new_chat:hover {
-  background-color: white;
-}
 
 #currentchat_header_wrapper {
 
@@ -2190,10 +2191,11 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
     margin-top: 7px;
 }
 
-#settings_icon:hover, #message_icon:hover {
+#settings_icon:hover, #message_icon:hover, #new_chat:hover {
 
-  color: black;
-  background: white;
+  color: white;
+  background-color: rgba(222,222,222,0.2) !important;
+  border-radius: 5px;
 }
 
 #importMnemonic {
@@ -2233,7 +2235,7 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
 
 #nodeConnect {
 
-     background-color: #4CAF50;
+     background-color: rgba(77, 210, 106, 0.65);
      border: none;
      color: #ddd;
      padding: 11px 22px;
@@ -2249,7 +2251,7 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
 
    #nodeConnect:hover {
 
-      background-color: #115f0a;
+      background-color: rgba(77, 210, 106, 0.55);
       color: white;
    }
 
