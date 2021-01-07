@@ -478,11 +478,11 @@ let parseCall = (msg, sender=false, emitCall=true) => {
 
 }
 
-$('#video-button').click(function() { startCall(true, true) });
+$('#video-button').click(function() { startCall(true, true); $('#video-button').unbind('click'); });
 
-$('#call-button').click(function() { startCall(true, false) });
+$('#call-button').click(function() { startCall(true, false); $('#call-button').unbind('click'); });
 
-$('#screen-button').click(function() { startCall(true, true, true) });
+$('#screen-button').click(function() { startCall(true, true, true); $('#screen-button').unbind('click'); });
 
 var holder = document.getElementById('messages_pane');
 
