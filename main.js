@@ -9,6 +9,8 @@ const url = require('url')
 const xhr = require('xhr')
 const fs = require('fs')
 
+const isDev = require('electron-is-dev');
+
 
 
 
@@ -81,7 +83,7 @@ if (fs.existsSync(userDataDir + '/boards.wallet')) {
     }
 
     /* Enable debug logging to the console */
-    //js_wallet.setLogLevel(WB.LogLevel.DEBUG);
+    js_wallet.setLogLevel(WB.LogLevel.DEBUG);
 
     /* Start wallet sync process */
     await js_wallet.start();
@@ -249,7 +251,7 @@ function createWindow () {
     webPreferences: {nodeIntegration: true, experimentalFeatures: true, experimentalCanvasFeatures: true}
   })
 
-   mainWindow.openDevTools();
+
 
   // and load the index.html of the app.
   mainWindow.loadURL(url.format({
@@ -381,15 +383,6 @@ ipcMain.on('import_wallet', (evt, arg) => {
 
 })
 
-app.on('ready', function()  {
-  autoUpdater.checkForUpdates();
-});
-
-autoUpdater.on('update-downloaded', () => {
-
-  autoUpdater.quitAndInstall()
-
-});
 
 
 // In this file you can include the rest of your app's specific main process
@@ -449,6 +442,22 @@ function startWallet() {
      console.log(`child process exited with code ${code}`);
    });
 
+   if (isDev) {
+   	console.log('Running in development');
+      mainWindow.openDevTools();
+   } else {
+   	console.log('Running in production');
+     app.on('ready', function()  {
+       autoUpdater.checkForUpdates();
+     });
+
+     autoUpdater.on('update-downloaded', () => {
+
+       autoUpdater.quitAndInstall()
+
+     });
+
+   }
 
 
 
