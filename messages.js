@@ -1025,6 +1025,8 @@ let download_messages = (from, to) => {
 
 let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json, silent=false) => {
 
+    console.log(silent);
+
         walletd.sendTransaction(
           mixin,
           transfer,
@@ -1099,7 +1101,9 @@ let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json
 
           $('.' + payload_json.to).find('.listed_message').text(listed_msg).parent().detach().prependTo('#messages_contacts');
         } else {
+
           $('#messages_contacts').prepend('<li class="active_contact ' + payload_json.to + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + get_avatar(payload_json.to) + '" /><span class="contact_address">' + payload_json.to + '</span><br><span class="listed_message">'+handleMagnetListed(payload_json.msg)+'</li>');
+
         }
         }
         return JSON.parse(fromHex(payload_hex)).t;
@@ -1216,7 +1220,7 @@ function sendBoardMessage(message) {
     let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(message);
 
     let id_elem = Date.now();
-    $('#messages').append('<li class="sent_message" id="' + id_elem +  '"><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + message + '</p><span class="time">right now</span></li>');
+    $('#boards_message_form').after('<div class="post">' + message + '</div>');
     if (magnetLinks) {
       handleMagnetLink(magnetLinks, id_elem);
     }
