@@ -83,7 +83,7 @@ if (fs.existsSync(userDataDir + '/boards.wallet')) {
     }
 
     /* Enable debug logging to the console */
-    js_wallet.setLogLevel(WB.LogLevel.DEBUG);
+
 
     /* Start wallet sync process */
     await js_wallet.start();
@@ -445,6 +445,7 @@ function startWallet() {
    if (isDev) {
    	console.log('Running in development');
       mainWindow.openDevTools();
+      js_wallet.setLogLevel(WB.LogLevel.DEBUG);
    } else {
    	console.log('Running in production');
      app.on('ready', function()  {
