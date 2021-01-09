@@ -1202,6 +1202,61 @@ function sendMessage(message, silent=false) {
 
 }
 
+
+function sendBoardMessage(message) {
+
+    console.log('sending board message');
+
+    if (message.length == 0) {
+      return
+    }
+
+    avatar_base64 = get_avatar(currentAddr);
+
+    let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(message);
+
+    let id_elem = Date.now();
+    $('#messages').append('<li class="sent_message" id="' + id_elem +  '"><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + message + '</p><span class="time">right now</span></li>');
+    if (magnetLinks) {
+      handleMagnetLink(magnetLinks, id_elem);
+    }
+
+
+    // Scroll to bottom
+    //$('#messages_pane').scrollTop($('#messages').height());
+
+    $('#boards_message_form').val('');
+    //$('#message_form').focus();
+
+    receiver = 'SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc';
+
+      // Transaction details
+      amount = 1;
+      fee = 10;
+      mixin = 5;
+      timestamp = Date.now();
+
+      // Convert message data to json
+      payload_json = {"msg":message};
+
+      //payload_json_decoded = naclUtil.decodeUTF8(JSON.stringify(payload_json));
+
+      // let box = nacl.box(payload_json_decoded, nonceFromTimestamp(timestamp), hexToUint($('#recipient_pubkey_form').val()), keyPair.secretKey);
+      //
+      // let payload_box;
+
+      let payment_id = '';
+
+      // Convert json to hex
+      let payload_hex = toHex(JSON.stringify(payload_json));
+
+      sendAddr = $("#currentAddrSpan").text();
+      transfer = [ { 'amount':amount, 'address':receiver } ];
+
+      return sendTransaction(mixin, transfer, fee, sendAddr, payload_hex, payload_json, true);
+
+      }
+
 // Detect valid address input into recipient forms
 
 $('#recipient_form').on('input', function() {
@@ -1305,6 +1360,17 @@ $('#message_form').keypress(function (e) {
     return false;    //<---- Add this line
   }
 });
+
+
+$('#boards_message_form').keypress(function (e) {
+
+  if (e.which == 13) {
+    message = $('#boards_message_form').val();
+    sendBoardMessage(escapeHtml(message));
+    return false;    //<---- Add this line
+  }
+});
+
 
 const hexToUint = hexString =>
   new Uint8Array(hexString.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
@@ -2154,6 +2220,10 @@ all_transactions = all_transactions.filter(function (el) {
         save_message(payload_json);
 
     } else {
+
+        if (tx.msg) {
+          continue;
+        }
 
         // If no key is appended to message we need to try the keys in our payload_keychain
         let box = tx.box;
