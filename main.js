@@ -82,6 +82,8 @@ if (fs.existsSync(userDataDir + '/boards.wallet')) {
         return;
     }
 
+    js_wallet.enableAutoOptimization(false);
+
     /* Enable debug logging to the console */
 
 
