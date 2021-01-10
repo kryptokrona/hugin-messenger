@@ -15,9 +15,22 @@ function fromHex(hex,str){
   return str
 }
 
+function escapeHtml(unsafe) {
+    return unsafe
+         // .replace(/&/g, "&amp;")
+         .replace(/</g, "&lt;")
+         .replace(/>/g, "&gt;")
+         .replace(/"/g, "&quot;")
+         .replace(/'/g, "&#039;")
+         .replace(/Δ/g, "&Delta;")
+         .replace(/δ/g, "&delta;")
+         .replace(/Λ/g, "&Lambda;")
+         .replace(/λ/g, "&lambda;");
+ }
+
 var remote = require('electron').remote;
 var rpc_pw = remote.getGlobal('rpc_pw');
-
+var moment = require('moment');
 // Global variable for storing the currently used address
 var currentAddr = "";
 var allAddresses = [];
@@ -491,39 +504,4 @@ $('#currentchat_header_wrapper').toggleClass('toggled_addr');
 
 $('#message_icon').click(function(){
 $("#settings_page").fadeOut(); $(".setting_page").fadeOut(); myFunction();
-})
-
-$('#boards_icon').click(function(){
- $("#boards").toggleClass('hidden');
- $("#messages_page").toggleClass('hidden');
- $('#boards .post').remove();
- ipcRenderer.send('get-boards');
-})
-
-ipcRenderer.on('got-boards', async (event, json) => {
-
-  console.log('txs', json);
-
-  for (tx in json) {
-    let hash = json[tx].hash;
-
-
-    let tx_data = await fetch('http://pool.kryptokrona.se:11898/json_rpc', {
-         method: 'POST',
-         body: JSON.stringify({
-           jsonrpc: '2.0',
-           method: 'f_transaction_json',
-           params: {hash: hash}
-         })
-       })
-
-       const resp = await tx_data.json();
-       result = resp.result.tx.extra.substring(66);
-
-       $('#boards').append('<div class="post">' + JSON.parse(fromHex(result)).msg + '</div>');
-
-
-  }
-
-
 })

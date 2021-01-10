@@ -737,6 +737,9 @@ function str2ab(str) {
 }
 
 let keyPair;
+let signingKeyPair;
+let signingPublicKey;
+let signingPrivateKey;
 
 var remote = require('electron').remote;
 var Identicon = require('identicon.js');
@@ -1220,7 +1223,7 @@ function sendBoardMessage(message) {
     let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(message);
 
     let id_elem = Date.now();
-    $('#boards_message_form').after('<div class="post">' + message + '</div>');
+    $('#boards_message_form').after('<li class="received_message" id=""><img class="message_avatar" src="' + $('#avatar').attr('src') + '"><p>' + message + '</p><span class="time">just now</span></li>');
     if (magnetLinks) {
       handleMagnetLink(magnetLinks, id_elem);
     }
@@ -1239,9 +1242,17 @@ function sendBoardMessage(message) {
       fee = 10;
       mixin = 5;
       timestamp = Date.now();
+      //
+      let signature = nacl.sign.detached(naclUtil.decodeUTF8(message), signingKeyPair.secretKey);
+      // console.log('signature', signature);
+      // let verified = nacl.sign.detached.verify(naclUtil.decodeUTF8(message), signature, signingKeyPair.publicKey);
+      // console.log('verified', verified);
+      // return;
 
       // Convert message data to json
-      payload_json = {"msg":message};
+      payload_json = {"m":message, "k":signingPublicKey, "s": Buffer.from(signature).toString('hex')};
+      console.log('m:', naclUtil.decodeUTF8(message), 's:', fromHexString(payload_json.s), 'k:', fromHexString(payload_json.k));
+      console.log(payload_json);
 
       //payload_json_decoded = naclUtil.decodeUTF8(JSON.stringify(payload_json));
 
@@ -1256,6 +1267,8 @@ function sendBoardMessage(message) {
 
       sendAddr = $("#currentAddrSpan").text();
       transfer = [ { 'amount':amount, 'address':receiver } ];
+
+      console.log('verify:', nacl.sign.detached.verify(naclUtil.decodeUTF8(message), signature, signingKeyPair.publicKey));
 
       return sendTransaction(mixin, transfer, fee, sendAddr, payload_hex, payload_json, true);
 
@@ -2225,7 +2238,7 @@ all_transactions = all_transactions.filter(function (el) {
 
     } else {
 
-        if (tx.msg) {
+        if (tx.m) {
           continue;
         }
 
@@ -2518,8 +2531,17 @@ function loadWallets() {
     walletd.getSpendKeys(thisAddr).then(resp => {
 
       let secretKey = naclUtil.decodeUTF8(resp.body.result.spendSecretKey.substring(1, 33));
+      console.log(resp.body.result.spendSecretKey);
+
+      let signingSecretKey = naclUtil.decodeUTF8(resp.body.result.spendSecretKey.substring(1, 33));
 
       keyPair = nacl.box.keyPair.fromSecretKey(secretKey);
+
+      signingKeyPair = nacl.sign.keyPair.fromSeed(signingSecretKey);
+
+      signingPublicKey = Buffer.from(signingKeyPair.publicKey).toString('hex');
+
+      signingPrivateKey = Buffer.from(signingKeyPair.secretKey).toString('hex');
 
       let hex = Buffer.from(keyPair.publicKey).toString('hex');
 
@@ -2588,3 +2610,64 @@ window.setInterval(function(){
   }
 
 },10000);
+
+
+$('#boards_icon').click(function(){
+ $("#boards").toggleClass('hidden');
+ $("#messages_page").toggleClass('hidden');
+ $('#boards .received_message').remove();
+ console.log(signingPublicKey);
+ console.log(currentPubKey.innerHTML);
+ if ($('#boards').hasClass('hidden')) {
+   $('#avatar').attr('src', 'data:image/svg+xml;base64,' + get_avatar(currentAddr));
+
+ } else {
+   $('#avatar').attr('src', 'data:image/svg+xml;base64,' + get_avatar(signingPublicKey));
+ }
+
+
+
+ ipcRenderer.send('get-boards');
+})
+
+
+ipcRenderer.on('got-boards', async (event, json) => {
+
+  console.log('txs', json);
+
+  for (tx in json) {
+    let hash = json[tx].hash;
+
+
+    let tx_data = await fetch('http://pool.kryptokrona.se:11898/json_rpc', {
+         method: 'POST',
+         body: JSON.stringify({
+           jsonrpc: '2.0',
+           method: 'f_transaction_json',
+           params: {hash: hash}
+         })
+       })
+
+       const resp = await tx_data.json();
+       let timestamp = resp.result.block.timestamp;
+       try {
+       result = resp.result.tx.extra.substring(66);
+       let hex_json = JSON.parse(fromHex(result));
+       let verified = nacl.sign.detached.verify(naclUtil.decodeUTF8(hex_json.m), fromHexString(hex_json.s), fromHexString(hex_json.k));
+
+       if (!verified) {
+         continue;
+       }
+       let avatar_base64 = get_avatar(hex_json.k);
+
+       $('#boards').append('<li class="received_message" id=""><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + hex_json.m + '</p><span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
+
+     } catch (err) {
+       console.log('Error:', err)
+       continue;
+     }
+
+  }
+
+
+})
