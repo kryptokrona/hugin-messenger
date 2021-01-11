@@ -107,6 +107,21 @@
 
 }
 
+#boards_icon > i {
+
+  background: linear-gradient(270deg, #000000, #1b1836);
+  background-size: 400% 400%;
+
+  background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, #abf25f, #5ff281, #5ff2f0) !important;
+    background-size: 1000% 1000% !important;
+
+    -webkit-animation: AnimationName 60s ease infinite;
+    -moz-animation: AnimationName 60s ease infinite;
+    animation: AnimationName 60s ease infinite;
+    max-width: 25%;
+    color: black;
+}
+
 /* The container <div> - needed to position the dropdown content */
 .dropdown {
   position: relative;
@@ -2248,24 +2263,23 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
    color: black;
  }
 
-#left_panel .fa  {
+#left_panel .fa {
 
 
-      width: 35px;
+      margin-left: 20px;
       text-align: center;
-      line-height: 5px;
-      padding-top: 10px;
+      line-height: 15px;
+      padding: 10px;
       font-size: 14pt;
       vertical-align: middle;
       cursor: pointer;
       display: inline-block;
       top: 8px;
-      padding-bottom: 10px;
       position: relative;
-      width: 100%;
       text-align: center;;
       margin-bottom: 10px;
       background-color: none;
+      border-radius: 5px;
 }
 
 
