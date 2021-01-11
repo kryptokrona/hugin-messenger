@@ -89,13 +89,28 @@ if (fs.existsSync(userDataDir + '/boards.wallet')) {
 
     /* Start wallet sync process */
     await js_wallet.start();
-    //
-    // let i = 1;
-    //
-    // for (const address of js_wallet.getAddresses()) {
-    //      console.log(`Address [${i}]: ${address}`);
-    //      i++;
-    // }
+
+    js_wallet.on('incomingtx', (transaction) => {
+        console.log(`Incoming transaction of ${transaction.totalAmount()} received!`);
+    });
+
+
+
+
+    let i = 1;
+
+    let boards_addresses = [];
+
+    for (const address of js_wallet.getAddresses()) {
+         const [publicSpendKey, privateSpendKey, err] = await js_wallet.getSpendKeys(address);
+         boards_addresses[boards_addresses.length] = [address, publicSpendKey];
+         console.log(`Address [${i}]: ${address}`);
+    }
+
+    global.boards_addresses = boards_addresses;
+
+    console.log(boards_addresses);
+
     //
     // console.log("Priv view: ", js_wallet.getPrivateViewKey());
     // console.log("Mnemonic: ", await js_wallet.getMnemonicSeed());
@@ -105,18 +120,18 @@ if (fs.existsSync(userDataDir + '/boards.wallet')) {
     console.log('Started wallet');
     // console.log('Address: ' + js_wallet.getPrimaryAddress());
 
-    const [unlockedBalance, lockedBalance] = await js_wallet.getBalance();
-
-    console.log(lockedBalance);
-    console.log(unlockedBalance);
-
-   console.log(lockedBalance);
-   console.log(unlockedBalance);
-
-   for (const tx of await js_wallet.getTransactions()) {
-    console.log(`Transaction ${tx.hash} - ${WB.prettyPrintAmount(tx.totalAmount())} - ${tx.timestamp}`);
-    console.log(tx);
-  }
+    // const [unlockedBalance, lockedBalance] = await js_wallet.getBalance();
+  //
+  //   console.log(lockedBalance);
+  //   console.log(unlockedBalance);
+  //
+  //  console.log(lockedBalance);
+  //  console.log(unlockedBalance);
+  //
+  //  for (const tx of await js_wallet.getTransactions()) {
+  //   console.log(`Transaction ${tx.hash} - ${WB.prettyPrintAmount(tx.totalAmount())} - ${tx.timestamp}`);
+  //   console.log(tx);
+  // }
 
     while(true) {
     await sleep(1000 * 20);
@@ -136,6 +151,8 @@ if (fs.existsSync(userDataDir + '/boards.wallet')) {
 
 
 
+
+
 const {autoUpdater} = require("electron-updater");
 const {ipcMain} = require('electron');
 
@@ -146,6 +163,22 @@ ipcMain.on('get-boards', async (event, arg) => {
   console.log('get-boards triggered');
 
   event.reply('got-boards', await js_wallet.getTransactions());
+
+})
+
+ipcMain.on('import-view-subwallet', async(event, arg) => {
+
+
+      const [baddress, error] = await js_wallet.importViewSubWallet(arg);
+
+      if (!error) {
+           console.log(`Imported view subwallet with address of ${baddress}`);
+           event.reply('imported-view-subwallet', baddress);
+      } else {
+           console.log(`Failed to import view subwallet: ${error.toString()}`);
+           event.reply('imported-view-subwallet', error.toString());
+      }
+
 
 })
 

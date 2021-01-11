@@ -2523,6 +2523,10 @@ avatar_base64 = get_avatar(conversation);
 }
 
 function loadWallets() {
+  let boards_addresses = rmt.getGlobal('boards_addresses');
+
+  console.log(boards_addresses);
+
   walletd.getAddresses()
   .then(resp => {
     currentAddr = resp.body.result.addresses[0];
@@ -2619,6 +2623,15 @@ $('#boards_icon').click(function(){
  $('.board_message').remove();
  console.log(signingPublicKey);
  console.log(currentPubKey.innerHTML);
+ let boards_addresses = rmt.getGlobal('boards_addresses')
+ console.log('boards_addresses', boards_addresses);
+ console.log('boards_addresses', boards_addresses);
+ console.log('boards_addresses', boards_addresses);
+ console.log('boards_addresses', boards_addresses);
+ for (address in boards_addresses) {
+   console.log('publicspendkey', boards_addresses[address]);
+ }
+
  if ($('#boards').hasClass('hidden')) {
    $('#avatar').attr('src', 'data:image/svg+xml;base64,' + get_avatar(currentAddr));
 
@@ -2630,7 +2643,6 @@ $('#boards_icon').click(function(){
 
  ipcRenderer.send('get-boards');
 })
-
 
 ipcRenderer.on('got-boards', async (event, json) => {
 
