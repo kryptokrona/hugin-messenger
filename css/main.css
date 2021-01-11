@@ -1225,8 +1225,47 @@ overlay p {
 
 }
 
+ .board_message p {
+   padding: 15px;
+   border-radius: 5px;
+   background: rgba(57, 76, 145, 0.3);
+   width: max-content;
+   max-width: 40%;
+   word-wrap: break-word;
+   border-top-left-radius: 0;
+   margin-left: 15px;
+   font-family: monospace;
+   font-size: 17px;
+
+
+ }
+
+ .board_message {
+ list-style: none;
+
+ }
+
+ .board_message_pubkey {
+   vertical-align: 23%;
+font-family: monospace;
+max-width: 105px;
+display: inline-block;
+overflow: hidden;
+text-overflow: ellipsis;
+border-radius: 14px;
+background: rgba(255,255,255,0.1);
+padding: 5px;
+padding-left: 10px;
+padding-right: 10px;
+ }
+
+ .board_message .message_avatar {
+   width: 64px;
+   height: 64px;
+ }
+
 .message_avatar {
-  width:20px !important;
+  width:20px;
   border-radius: 50%;
   margin-bottom: -15px;
 }
