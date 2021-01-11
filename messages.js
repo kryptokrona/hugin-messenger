@@ -1224,7 +1224,7 @@ function sendBoardMessage(message) {
 
     let id_elem = Date.now();
 
-    $('#boards_message_form').after('<li class="board_message" id=""><div class="board_message_user"><img class="message_avatar" src="' +$ ('#avatar').attr('src') + '"><span class="board_message_pubkey">' + signingPublicKey + '</span></div><p>' + message + '</p><span class="time">just now</span></li>');
+    $('#boards_message_form').after('<li class="board_message" id=""><div class="board_message_user"><img class="board_avatar" src="' +$ ('#avatar').attr('src') + '"><span class="board_message_pubkey">' + signingPublicKey + '</span></div><p>' + message + '</p><span class="time">just now</span></li>');
     if (magnetLinks) {
       handleMagnetLink(magnetLinks, id_elem);
     }
@@ -2661,7 +2661,7 @@ ipcRenderer.on('got-boards', async (event, json) => {
        }
        let avatar_base64 = get_avatar(hex_json.k);
 
-       $('#boards').append('<li class="board_message" id=""><div class="board_message_user"><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div><p>' + hex_json.m + '</p><span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
+       $('#boards').append('<li class="board_message" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div><p>' + hex_json.m + '</p><span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
 
      } catch (err) {
        console.log('Error:', err)

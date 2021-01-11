@@ -1259,13 +1259,15 @@ padding-left: 10px;
 padding-right: 10px;
  }
 
- .board_message .message_avatar {
+.board_avatar {
    width: 64px;
    height: 64px;
+   border-radius: 50%;
+   margin-bottom: -15px;
  }
 
 .message_avatar {
-  width:20px;
+  width:20px !important;
   border-radius: 50%;
   margin-bottom: -15px;
 }
