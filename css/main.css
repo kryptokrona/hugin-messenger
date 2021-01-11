@@ -1606,8 +1606,8 @@ background: rgba(57, 76, 145, 0.7) !important;
 
 .received_message p {
 
-  background: rgba(57, 76, 145, 0.3) !important;
-
+  background: rgba(57, 76, 145, 0.6) !important;
+  color: white;
 }
 
 .sent_message p {
@@ -1673,7 +1673,7 @@ background: rgba(57, 76, 145, 0.7) !important;
 
   #left_panel .fa, #new_chat:hover{
 
-    background-color: rgba(222,222,222,0.2) !important;
+    background-color: none;
     color: black;
     border-radius: 5px;
   }
@@ -2265,6 +2265,7 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
       width: 100%;
       text-align: center;;
       margin-bottom: 10px;
+      background-color: none;
 }
 
 
