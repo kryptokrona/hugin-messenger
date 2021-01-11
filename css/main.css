@@ -1562,6 +1562,33 @@ header  {
 
  }
 
+ #boards {
+
+   background: white !important;
+
+ }
+
+ #boards_message_form {
+
+   background: #f5f6f7 !important;
+   color: #53565c !important;
+
+ }
+
+ .board_message p {
+
+background: rgba(57, 76, 145, 0.7) !important;
+
+ }
+
+
+  .board_message_pubkey {
+
+    color: #53565c !important;
+    background: rgba(0,0,0,0.05) !important;
+  }
+
+
  #incomingCall {
 
    background-color: #f5f6f7 !important;
@@ -1569,6 +1596,7 @@ header  {
    color: black;
 
  }
+
 
  #new_chat {
 
