@@ -6,25 +6,35 @@ top: 0;
 
 .board_icon {
   border-radius: 50%;
-width: 63px;
-height: 63px;
-margin-left: 9px;
-margin-bottom: 10px;
-line-height: 63px;
-text-align: center;
-font-size: 25pt;
-color: #161415;
-font-weight: 700;
-text-transform: capitalize;
-text-align: center;
-font-family: "Montserrat";
-cursor: pointer;
+  width: 44px;
+  height: 44px;
+  margin-left: 18px;
+  margin-bottom: 10px;
+  line-height: 45px;
+  text-align: center;
+  font-size: 17pt;
+  color: #ffffff;
+  font-weight: 700;
+  text-transform: capitalize;
+  text-align: center;
+  font-family: "Montserrat";
+  cursor: pointer;
+  vertical-align: middle;
+  margin-top: 20px;
 }
 
 .board_icon.current {
   border-radius: 24px;
   transition: all 0.2s;
 }
+
+#boards_picker .board_icon:hover {
+
+  border-radius: 33%;
+  transition: all 0.3s;
+
+}
+
 
 #new_board {
     border-radius: 50%;
@@ -39,16 +49,23 @@ cursor: pointer;
     font-size: 38pt;
     /* vertical-align: middle; */
     cursor: pointer;
-    color: #161415;
-    margin-top: 1px;
+    color: #ffffff;
     /* position: absolute; */
     /* top: 21px; */
     /* right: 22px; */
-    display: block;
+
     line-height: 63px;
     margin: auto;
     margin-bottom: 9px;
+    margin-top: 25px;
 }
+
+#new_board:hover {
+
+  border-radius: 33%;
+  transition: all 0.3s;
+}
+
 
 #modal {
   position: absolute;

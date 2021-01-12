@@ -64,7 +64,8 @@ if (fs.existsSync(userDataDir + '/boards.wallet')) {
     const daemon = new WB.Daemon('pool.kryptokrona.se', 11898);
 
     if (c === 'c') {
-        const [newWallet, error] = await WB.WalletBackend.importViewWallet(daemon, 580000, '1ee35767b8a247c03423e78c302f7c3c64c5e3c145878e4fbf1cc3bbbb35b10c', 'SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc');
+
+        const [newWallet, error] = await WB.WalletBackend.importViewWallet(daemon, 590880, '1ee35767b8a247c03423e78c302f7c3c64c5e3c145878e4fbf1cc3bbbb35b10c', 'SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc');
 
         js_wallet = newWallet;
     } else if (c === 'o') {
@@ -174,6 +175,16 @@ ipcMain.on('get-boards', async (event, arg) => {
 
 })
 
+ipcMain.on('remove-subwallet', async(event, addr) => {
+
+  const error = await js_wallet.deleteSubWallet(addr);
+
+  if (error) {
+       console.log(`Failed to delete subwallet: ${error.toString()}`);
+  }
+
+});
+
 ipcMain.on('import-view-subwallet', async(event, arg) => {
 
 
@@ -185,6 +196,22 @@ ipcMain.on('import-view-subwallet', async(event, arg) => {
       if (!error) {
            console.log(`Imported view subwallet with address of ${baddress}`);
            event.reply('imported-view-subwallet', baddress);
+           js_wallet.saveWalletToFile(userDataDir + '/boards.wallet', 'hunter2');
+           let boards_addresses = [];
+
+           let i = 1;
+
+           for (const address of await js_wallet.getAddresses()) {
+              console.log(`Address [${i}]: ${address}`);
+                const [publicSpendKey, privateSpendKey, err] = await js_wallet.getSpendKeys(address);
+                boards_addresses[boards_addresses.length] = [address, publicSpendKey];
+
+                i++;
+           }
+
+           global.boards_addresses = boards_addresses;
+
+
       } else {
            console.log(`Failed to import view subwallet: ${error.toString()}`);
            event.reply('imported-view-subwallet', error.toString());

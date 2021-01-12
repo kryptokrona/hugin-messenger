@@ -2646,7 +2646,7 @@ $('#new_board').click(function(){
 
   $('#modal').toggleClass('hidden');
   $('#modal div').addClass('hidden');
-  $('#new_board_modal').removeClass('hidden');
+  $('#create_pub_board_modal').removeClass('hidden');
 
 })
 
@@ -2661,6 +2661,16 @@ ipcRenderer.on('imported-view-subwallet', async (event, address) => {
 
   console.log('got address:', address);
 
+      if (address == "SEKReX27SM2jE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDTysRXy") {
+        alert('Invalid board address, please try again!');
+        return;
+      } else {
+        $('#boards_icon').click();
+        $('#boards_icon').click();
+        $('#new_board').click();
+        $('#' + address).click();
+      }
+
 });
 
 
@@ -2674,6 +2684,8 @@ $('#boards_icon').click(function(){
  $("#boards").toggleClass('hidden');
  $("#messages_page").toggleClass('hidden');
  $("#new_board").toggleClass('hidden');
+ $("#avatar_contact").hide();
+ $("#context_menu").hide();
  $("#boards_picker").empty().toggleClass('hidden');
  $('.board_message').remove();
  console.log(signingPublicKey);
@@ -2681,6 +2693,9 @@ $('#boards_icon').click(function(){
  let boards_addresses = rmt.getGlobal('boards_addresses');
  for (address in boards_addresses) {
    let this_address = boards_addresses[address];
+   if (this_address[0] == "SEKReX27SM2jE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDTysRXy") {
+     continue;
+   }
    console.log('this_address', this_address);
    let board_color = intToRGB(hashCode((this_address[1])));
    if (this_address[0] == "SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc") {
@@ -2738,6 +2753,7 @@ $('.board_icon').click(function() {
 
 
 });
+
 
 // imported-view-subwallet
 ipcRenderer.on('got-boards', async (event, json) => {
