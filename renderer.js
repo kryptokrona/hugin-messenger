@@ -3,9 +3,34 @@
 // All of the Node.js APIs are available in this process.
 window.$ = window.jQuery = require('jquery');
 
+
+function fromHex(hex,str){
+  try{
+    str = decodeURIComponent(hex.replace(/(..)/g,'%$1'))
+  }
+  catch(e){
+    str = hex
+    console.log('invalid hex input: ' + hex)
+  }
+  return str
+}
+
+function escapeHtml(unsafe) {
+    return unsafe
+         // .replace(/&/g, "&amp;")
+         .replace(/</g, "&lt;")
+         .replace(/>/g, "&gt;")
+         .replace(/"/g, "&quot;")
+         .replace(/'/g, "&#039;")
+         .replace(/Δ/g, "&Delta;")
+         .replace(/δ/g, "&delta;")
+         .replace(/Λ/g, "&Lambda;")
+         .replace(/λ/g, "&lambda;");
+ }
+
 var remote = require('electron').remote;
 var rpc_pw = remote.getGlobal('rpc_pw');
-
+var moment = require('moment');
 // Global variable for storing the currently used address
 var currentAddr = "";
 var allAddresses = [];

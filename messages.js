@@ -478,11 +478,11 @@ let parseCall = (msg, sender=false, emitCall=true) => {
 
 }
 
-$('#video-button').click(function() { startCall(true, true) });
+$('#video-button').click(function() { startCall(true, true); $('#video-button').unbind('click'); });
 
-$('#call-button').click(function() { startCall(true, false) });
+$('#call-button').click(function() { startCall(true, false); $('#call-button').unbind('click'); });
 
-$('#screen-button').click(function() { startCall(true, true, true) });
+$('#screen-button').click(function() { startCall(true, true, true); $('#screen-button').unbind('click'); });
 
 var holder = document.getElementById('messages_pane');
 
@@ -736,7 +736,26 @@ function str2ab(str) {
   return buf;
 }
 
+let invite_code_from_ascii = (invite_code) => {
+  let hex = toHex(invite_code);
+  while(hex.length < 64) {
+    hex = hex + '0';
+  }
+  return hex;
+}
+
+let letter_from_spend_key = (spend_key) => {
+
+  while(spend_key.substr(spend_key.length - 1) == "0") {
+    spend_key = spend_key.substr(0, spend_key.length - 1);
+  }
+  return fromHex(spend_key);
+}
+
 let keyPair;
+let signingKeyPair;
+let signingPublicKey;
+let signingPrivateKey;
 
 var remote = require('electron').remote;
 var Identicon = require('identicon.js');
@@ -1025,6 +1044,8 @@ let download_messages = (from, to) => {
 
 let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json, silent=false) => {
 
+    console.log(silent);
+
         walletd.sendTransaction(
           mixin,
           transfer,
@@ -1099,7 +1120,9 @@ let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json
 
           $('.' + payload_json.to).find('.listed_message').text(listed_msg).parent().detach().prependTo('#messages_contacts');
         } else {
+
           $('#messages_contacts').prepend('<li class="active_contact ' + payload_json.to + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + get_avatar(payload_json.to) + '" /><span class="contact_address">' + payload_json.to + '</span><br><span class="listed_message">'+handleMagnetListed(payload_json.msg)+'</li>');
+
         }
         }
         return JSON.parse(fromHex(payload_hex)).t;
@@ -1201,6 +1224,82 @@ function sendMessage(message, silent=false) {
 
 
 }
+
+
+function sendBoardMessage(message) {
+
+    console.log('sending board message');
+
+    if (message.length == 0) {
+      return
+    }
+
+    avatar_base64 = get_avatar(currentAddr);
+
+    let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(message);
+
+    let id_elem = Date.now();
+
+    $('#boards_message_form').after('<li class="board_message" id=""><div class="board_message_user"><img class="board_avatar" src="' +$ ('#avatar').attr('src') + '"><span class="board_message_pubkey">' + signingPublicKey + '</span></div><p>' + message + '</p><span class="time">just now</span></li>');
+    if (magnetLinks) {
+      handleMagnetLink(magnetLinks, id_elem);
+    }
+
+
+    // Scroll to bottom
+    //$('#messages_pane').scrollTop($('#messages').height());
+
+    $('#boards_message_form').val('');
+    //$('#message_form').focus();
+
+
+
+    let current_board = $('.current').attr('id');
+
+    if (current_board == 'home_board' ) {
+      receiver = 'SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc';
+    } else {
+      receiver = current_board;
+    }
+
+    console.log(receiver);
+
+      // Transaction details
+      amount = 1;
+      fee = 10;
+      mixin = 5;
+      timestamp = Date.now();
+      //
+      let signature = nacl.sign.detached(naclUtil.decodeUTF8(message), signingKeyPair.secretKey);
+      // console.log('signature', signature);
+      // let verified = nacl.sign.detached.verify(naclUtil.decodeUTF8(message), signature, signingKeyPair.publicKey);
+      // console.log('verified', verified);
+      // return;
+
+      // Convert message data to json
+      payload_json = {"m":message, "k":signingPublicKey, "s": Buffer.from(signature).toString('hex')};
+      console.log('m:', naclUtil.decodeUTF8(message), 's:', fromHexString(payload_json.s), 'k:', fromHexString(payload_json.k));
+      console.log(payload_json);
+
+      //payload_json_decoded = naclUtil.decodeUTF8(JSON.stringify(payload_json));
+
+      // let box = nacl.box(payload_json_decoded, nonceFromTimestamp(timestamp), hexToUint($('#recipient_pubkey_form').val()), keyPair.secretKey);
+      //
+      // let payload_box;
+
+      let payment_id = '';
+
+      // Convert json to hex
+      let payload_hex = toHex(JSON.stringify(payload_json));
+
+      sendAddr = $("#currentAddrSpan").text();
+      transfer = [ { 'amount':amount, 'address':receiver } ];
+
+      console.log('verify:', nacl.sign.detached.verify(naclUtil.decodeUTF8(message), signature, signingKeyPair.publicKey));
+
+      return sendTransaction(mixin, transfer, fee, sendAddr, payload_hex, payload_json, true);
+
+      }
 
 // Detect valid address input into recipient forms
 
@@ -1305,6 +1404,17 @@ $('#message_form').keypress(function (e) {
     return false;    //<---- Add this line
   }
 });
+
+
+$('#boards_message_form').keypress(function (e) {
+
+  if (e.which == 13) {
+    message = $('#boards_message_form').val();
+    sendBoardMessage(escapeHtml(message));
+    return false;    //<---- Add this line
+  }
+});
+
 
 const hexToUint = hexString =>
   new Uint8Array(hexString.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
@@ -2155,6 +2265,10 @@ all_transactions = all_transactions.filter(function (el) {
 
     } else {
 
+        if (tx.m) {
+          continue;
+        }
+
         // If no key is appended to message we need to try the keys in our payload_keychain
         let box = tx.box;
 
@@ -2435,6 +2549,10 @@ avatar_base64 = get_avatar(conversation);
 }
 
 function loadWallets() {
+  let boards_addresses = rmt.getGlobal('boards_addresses');
+
+  console.log(boards_addresses);
+
   walletd.getAddresses()
   .then(resp => {
     currentAddr = resp.body.result.addresses[0];
@@ -2444,8 +2562,17 @@ function loadWallets() {
     walletd.getSpendKeys(thisAddr).then(resp => {
 
       let secretKey = naclUtil.decodeUTF8(resp.body.result.spendSecretKey.substring(1, 33));
+      console.log(resp.body.result.spendSecretKey);
+
+      let signingSecretKey = naclUtil.decodeUTF8(resp.body.result.spendSecretKey.substring(1, 33));
 
       keyPair = nacl.box.keyPair.fromSecretKey(secretKey);
+
+      signingKeyPair = nacl.sign.keyPair.fromSeed(signingSecretKey);
+
+      signingPublicKey = Buffer.from(signingKeyPair.publicKey).toString('hex');
+
+      signingPrivateKey = Buffer.from(signingKeyPair.secretKey).toString('hex');
 
       let hex = Buffer.from(keyPair.publicKey).toString('hex');
 
@@ -2514,3 +2641,144 @@ window.setInterval(function(){
   }
 
 },10000);
+
+$('#new_board').click(function(){
+
+  $('#modal').toggleClass('hidden');
+  $('#modal div').addClass('hidden');
+  $('#new_board_modal').removeClass('hidden');
+
+})
+
+$('#create_pub_board_button').click(function(){
+
+  let invite_code = invite_code_from_ascii($('#create_pub_board_input').val());
+  ipcRenderer.send('import-view-subwallet', invite_code);
+});
+
+
+ipcRenderer.on('imported-view-subwallet', async (event, address) => {
+
+  console.log('got address:', address);
+
+});
+
+
+let load_board = (board) => {
+  console.log(board);
+}
+
+$('#join_board_button').click(function(){});
+
+$('#boards_icon').click(function(){
+ $("#boards").toggleClass('hidden');
+ $("#messages_page").toggleClass('hidden');
+ $("#new_board").toggleClass('hidden');
+ $("#boards_picker").empty().toggleClass('hidden');
+ $('.board_message').remove();
+ console.log(signingPublicKey);
+ console.log(currentPubKey.innerHTML);
+ let boards_addresses = rmt.getGlobal('boards_addresses');
+ for (address in boards_addresses) {
+   let this_address = boards_addresses[address];
+   console.log('this_address', this_address);
+   let board_color = intToRGB(hashCode((this_address[1])));
+   if (this_address[0] == "SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc") {
+     $('#boards_picker').append('<div class="board_icon current" id="home_board" style="background: rgb(' + board_color.red + ',' +  board_color.green + ',' +  board_color.blue + ')"><i class="fa fa-home"></i></div>');
+   } else {
+     $('#boards_picker').append('<div class="board_icon" title="' + letter_from_spend_key(this_address[1]) +  '" id="' + this_address[0] + '" style="background: rgb(' + board_color.red + ',' +  board_color.green + ',' +  board_color.blue + ')">' + letter_from_spend_key(this_address[1]).substring(0, 1) + '</div>');
+   }
+
+ }
+
+
+ $('.board_icon').click(function() {
+
+
+
+   let this_board = $(this).attr('id');
+
+   if (this_board == "home_board") {
+     this_board = 'SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc';
+   }
+
+   console.log(this_board);
+
+   ipcRenderer.send('get-boards', this_board);
+   $('.current').removeClass('current');
+   $(this).addClass('current');
+
+
+ });
+
+ if ($('#boards').hasClass('hidden')) {
+   $('#avatar').attr('src', 'data:image/svg+xml;base64,' + get_avatar(currentAddr));
+
+ } else {
+   $('#avatar').attr('src', 'data:image/svg+xml;base64,' + get_avatar(signingPublicKey));
+ }
+
+
+
+ ipcRenderer.send('get-boards', 'SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc');
+})
+
+
+$('.board_icon').click(function() {
+
+  console.log('sneed!');
+  //
+  // let this_board = $(this).attr('id');
+  //
+  // console.log(this_board);
+  //
+  // //ipcRenderer.send('get-boards', this_board);
+  // $('.current').removeClass('current');
+  // $(this).addClass('current');
+
+
+});
+
+// imported-view-subwallet
+ipcRenderer.on('got-boards', async (event, json) => {
+
+  $('#boards .board_message').remove();
+
+  console.log('txs', json);
+
+  for (tx in json) {
+    let hash = json[tx].hash;
+
+
+    let tx_data = await fetch('http://pool.kryptokrona.se:11898/json_rpc', {
+         method: 'POST',
+         body: JSON.stringify({
+           jsonrpc: '2.0',
+           method: 'f_transaction_json',
+           params: {hash: hash}
+         })
+       })
+
+       const resp = await tx_data.json();
+       let timestamp = resp.result.block.timestamp;
+       try {
+       result = resp.result.tx.extra.substring(66);
+       let hex_json = JSON.parse(fromHex(result));
+       let verified = nacl.sign.detached.verify(naclUtil.decodeUTF8(hex_json.m), fromHexString(hex_json.s), fromHexString(hex_json.k));
+
+       if (!verified) {
+         continue;
+       }
+       let avatar_base64 = get_avatar(hex_json.k);
+
+       $('#boards').append('<li class="board_message" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div><p>' + hex_json.m + '</p><span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
+
+     } catch (err) {
+       console.log('Error:', err)
+       continue;
+     }
+
+  }
+
+
+})

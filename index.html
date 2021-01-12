@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" type="text/css" href="css/extra.css">
     <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
     <title>Hugin Messenger</title>
 
@@ -105,11 +106,14 @@
 
   <button id="close-app"></button>
 
-  <img id="avatar" src="static/logo.svg" />
+  <img id="avatar" src="" />
 
   <div id="new_chat">+</div>
   <div id="settings_icon"><i class="fa fa-cogs"></i></div>
   <div id="message_icon"><i class="fa fa-comment-o"></i></div>
+  <div id="boards_icon"><i class="fa fa-comments-o"></i></div>
+
+
 
 
   <div id="daemon_status" title='Connecting...'>
@@ -124,6 +128,48 @@
 
 
     <div id="container">
+
+      <div id="modal" class="hidden">
+
+        <div id="new_board_modal" class="hidden">
+          <h2>Create a board</h2>
+          <button id="create_pub_board" onClick="$('#modal div').addClass('hidden'); $('#create_pub_board_modal').removeClass('hidden');">Create a public board</button>
+          <!-- <button id="create_priv_board" onClick="$('#modal div').addClass('hidden'); $('#create_priv_board_modal').removeClass('hidden');">Create a private board</button> -->
+          <button id="join_server" onClick="$('#modal div').addClass('hidden'); $('#join_board_modal').removeClass('hidden');">Join a board</button>
+        </div>
+
+
+        <div id="create_pub_board_modal" class="hidden">
+          <h2>Create a public board</h2>
+          <p>Type the name of the board, the name will also be used as an invite link for others!</p>
+          <input id="create_pub_board_input"></input>
+          <button id="create_pub_board_button">Create</button>
+        </div>
+
+
+
+        <div id="create_priv_board_modal" class="hidden">
+          <h2>Create a private board</h2>
+          <input id="create_priv_board_input"></input>
+          <button id="create_priv_board_button">Create</button>
+        </div>
+
+
+
+        <div id="join_board_modal" class="hidden">
+          <h2>Join a board</h2>
+          <input id="join_board_input"></input>
+          <button id="join_board_button">Join</button>
+        </div>
+
+      </div>
+
+      <div id="boards" class="hidden">
+
+        <input id="boards_message_form" type="text" placeholder="Message"></input>
+
+
+      </div>
 
       <div id="wallet_summary" style="display: none;">
 
@@ -427,6 +473,10 @@
       <div class="contact-buttons" id="call-button" ><i class="fa fa-phone"></i></div><br />
       <div class="contact-buttons" id="screen-button" ><i class="fa fa-desktop"></i></div>
     </span>
+
+    </div>
+    <span id="new_board" class="hidden">+</span>
+    <div id="boards_picker" class="hidden">
 
     </div>
 

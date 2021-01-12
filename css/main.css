@@ -107,6 +107,21 @@
 
 }
 
+#boards_icon > i {
+
+  background: linear-gradient(270deg, #000000, #1b1836);
+  background-size: 400% 400%;
+
+  background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, #abf25f, #5ff281, #5ff2f0) !important;
+    background-size: 1000% 1000% !important;
+
+    -webkit-animation: AnimationName 60s ease infinite;
+    -moz-animation: AnimationName 60s ease infinite;
+    animation: AnimationName 60s ease infinite;
+    max-width: 25%;
+    color: black;
+}
+
 /* The container <div> - needed to position the dropdown content */
 .dropdown {
   position: relative;
@@ -560,6 +575,7 @@ a {
 
 .hidden {
   display: none;
+  transition: 0.2s all;
 }
 
 #send_payment h1 {
@@ -952,6 +968,25 @@ border-bottom: 1px solid rgba(255,255,255,0.1);
 
 }
 
+#boards_message_form {
+  font-size: 12pt;
+
+  height: 64px !important;
+  width: 96%;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  padding-left: 10px !important;
+  line-height: 100%;
+  vertical-align: top;
+  background: #3F3F3F !important;
+  border-radius: 5px !important;
+  color: rgba(255,255,255,0.6) !important;
+  display: inline-block !important;
+  border: none;
+  margin-bottom: 25px;
+
+}
+
 #payment_message {
   width: 20px;
   height: 20px;
@@ -1205,6 +1240,47 @@ overlay p {
 
 }
 
+ .board_message p {
+   padding: 15px;
+   border-radius: 5px;
+   background: rgba(57, 76, 145, 0.3);
+   width: max-content;
+   max-width: 40%;
+   word-wrap: break-word;
+   border-top-left-radius: 0;
+   margin-left: 15px;
+   font-family: monospace;
+   font-size: 17px;
+
+
+ }
+
+ .board_message {
+ list-style: none;
+
+ }
+
+ .board_message_pubkey {
+   vertical-align: 23%;
+font-family: monospace;
+max-width: 105px;
+display: inline-block;
+overflow: hidden;
+text-overflow: ellipsis;
+border-radius: 14px;
+background: rgba(255,255,255,0.1);
+padding: 5px;
+padding-left: 10px;
+padding-right: 10px;
+ }
+
+.board_avatar {
+   width: 64px;
+   height: 64px;
+   border-radius: 50%;
+   margin-bottom: -15px;
+ }
+
 .message_avatar {
   width:20px !important;
   border-radius: 50%;
@@ -1301,15 +1377,6 @@ overlay p {
   cursor: pointer;
 }
 
-#settings_icon {
-  width:5%;
-  position: absolute;
-  top: 18px;
-  right: 22px;
-  cursor: pointer;
-  -webkit-app-region:no-drag;
-}
-
 
 #new_chat:hover {
   background-color: white;
@@ -1331,9 +1398,13 @@ overlay p {
 
 
 #messages_contacts > li {
-  width:100%;
+
   height: 45px;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
+  border-radius: 5px;
+  background-color: rgba(0,0,0,0.1);
+  overflow: hidden;
+  margin: 7px;
+  margin-left: 7px;
 }
 
 .flipswitch {
@@ -1433,7 +1504,7 @@ overlay p {
 
 .contact_address { display: block; white-space: nowrap; width: 74%; overflow: hidden; text-overflow: ellipsis; font-size: 10px; margin-top: -35px; font-weight: 400; margin-left: 5px; }
 .contact_avatar { border-radius: 50%; position: relative; left: -43px; top: 2px; }
-.listed_message { display: block; width: 74%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 11px; opacity: 0.7; margin-top: -10px; margin-left: 5px; }
+.listed_message { display: block; width: 90%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 11px; opacity: 0.7; margin-top: -10px; margin-left: 5px; }
 
 #messages_contacts {
   --scrollbarBG: transparent;
@@ -1510,6 +1581,33 @@ header  {
 
  }
 
+ #boards {
+
+   background: white !important;
+
+ }
+
+ #boards_message_form {
+
+   background: #f5f6f7 !important;
+   color: #53565c !important;
+
+ }
+
+ .board_message p {
+
+background: rgba(57, 76, 145, 0.7) !important;
+
+ }
+
+
+  .board_message_pubkey {
+
+    color: #53565c !important;
+    background: rgba(0,0,0,0.05) !important;
+  }
+
+
  #incomingCall {
 
    background-color: #f5f6f7 !important;
@@ -1517,6 +1615,7 @@ header  {
    color: black;
 
  }
+
 
  #new_chat {
 
@@ -1526,8 +1625,8 @@ header  {
 
 .received_message p {
 
-  background: rgba(57, 76, 145, 0.3) !important;
-
+  background: rgba(57, 76, 145, 0.6) !important;
+  color: white;
 }
 
 .sent_message p {
@@ -1591,9 +1690,9 @@ header  {
     background: #fff !important;
   }
 
-  #settings_icon:hover, #message_icon:hover , #new_chat:hover{
+  #left_panel .fa, #new_chat:hover{
 
-    background-color: rgba(222,222,222,0.2) !important;
+    background-color: none;
     color: black;
     border-radius: 5px;
   }
@@ -1850,6 +1949,7 @@ background: #f5f6f7 !important;
 
 #currentchat_footer {
 color: black;
+
 }
 
 #top_messages_sidebar {
@@ -1859,11 +1959,19 @@ color: black;
 
   }
 
+#messages_contacts > li {
+
+  background: white !important;
+
+}
+
 #messages_contacts {
   --scrollbarBG: white;
   --thumbBG: black;
+  background: #f9fafc !important;
 
 }
+
   .flip-box > li {
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     color: black;
@@ -2168,30 +2276,27 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
    color: black;
  }
 
-#settings_icon, #message_icon  {
+#left_panel .fa {
 
 
-      width: 35px;
+      margin-left: 20px;
       text-align: center;
-      line-height: 5px;
-      padding-top: 10px;
+      line-height: 15px;
+      padding: 10px;
       font-size: 14pt;
       vertical-align: middle;
       cursor: pointer;
       display: inline-block;
       top: 8px;
-      padding-bottom: 10px;
       position: relative;
-      margin-left: 44px;
+      text-align: center;;
+      margin-bottom: 10px;
+      background-color: none;
+      border-radius: 5px;
 }
 
-#message_icon  {
 
-    margin-left: 21px;
-    margin-top: 7px;
-}
-
-#settings_icon:hover, #message_icon:hover, #new_chat:hover {
+#left_panel .fa:hover, #new_chat:hover {
 
   color: white;
   background-color: rgba(222,222,222,0.2) !important;
@@ -2309,4 +2414,21 @@ li .gradient {
 @keyframes rotate {
     from {rotate: 0deg;}
     to {rotate:360deg;}
+}
+
+#boards {
+  background: #292929;
+  width: 100% !important;
+  height: 100% !important;
+  padding: 25px;
+  overflow-y: scroll;
+}
+
+.post {
+  border-radius: 5px;
+  background: rgba(255,255,255,0.1);
+  padding: 25px;
+  margin-bottom: 10px;
+  width: 92%;
+  word-break: break-all;
 }

@@ -7,12 +7,191 @@ const BrowserWindow = electron.BrowserWindow
 const path = require('path')
 const url = require('url')
 const xhr = require('xhr')
+const fs = require('fs')
+
+const isDev = require('electron-is-dev');
+
+
+
+
+var appRootDir = require('app-root-dir').get().replace('app.asar','');
+var appPath=appRootDir+'/bin/';
+userDataDir = app.getPath('userData');
+
+global.userDataDir = userDataDir;
+
+global.appPath = appRootDir;
+
+global.downloadDir = app.getPath('downloads');
 
 const fetch = require('electron-fetch').default;
+
+const WB = require('kryptokrona-wallet-backend-js');
+const util = require('util');
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+let js_wallet;
+
+// fs.access(userDataDir + '/boards.wallet', (err) => {
+//   if (err) {
+//       console.log('does not exist')
+//     } else {
+//       console.log('exists')
+//     }
+// })
+
+let c = false;
+
+if (fs.existsSync(userDataDir + '/boards.wallet')) {
+    // Do something
+    console.log("Found");
+    c = 'o';
+} else {
+    console.log("No findy");
+    c = 'c';
+}
+
+(async () => {
+
+
+
+
+    /* Initialise our blockchain cache api. Can use a public node or local node
+       with `const daemon = new WB.Daemon('127.0.0.1', 11898);` */
+    const daemon = new WB.Daemon('pool.kryptokrona.se', 11898);
+
+    if (c === 'c') {
+        const [newWallet, error] = await WB.WalletBackend.importViewWallet(daemon, 580000, '1ee35767b8a247c03423e78c302f7c3c64c5e3c145878e4fbf1cc3bbbb35b10c', 'SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc');
+
+        js_wallet = newWallet;
+    } else if (c === 'o') {
+        /* Open wallet, giving our wallet path and password */
+        const [openedWallet, error] = await WB.WalletBackend.openWalletFromFile(daemon, userDataDir + '/boards.wallet', 'hunter2');
+        if (error) {
+            console.log('Failed to open wallet: ' + error.toString());
+            return;
+        }
+
+        js_wallet = openedWallet;
+
+    } else {
+        console.log('Bad input');
+        return;
+    }
+
+    js_wallet.enableAutoOptimization(false);
+
+    /* Enable debug logging to the console */
+
+
+    /* Start wallet sync process */
+    await js_wallet.start();
+
+    js_wallet.on('incomingtx', (transaction) => {
+        console.log(`Incoming transaction of ${transaction.totalAmount()} received!`);
+    });
+
+    let i = 1;
+
+    for (const address of js_wallet.getAddresses()) {
+         console.log(`AaaAaaAddress [${i}]: ${address}`);
+         i++;
+    }
+
+
+
+
+    i = 1;
+
+    let boards_addresses = [];
+
+    for (const address of js_wallet.getAddresses()) {
+         const [publicSpendKey, privateSpendKey, err] = await js_wallet.getSpendKeys(address);
+         boards_addresses[boards_addresses.length] = [address, publicSpendKey];
+         console.log(`Address [${i}]: ${address}`);
+         i++;
+    }
+
+    global.boards_addresses = boards_addresses;
+
+    console.log(boards_addresses);
+
+    //
+    // console.log("Priv view: ", js_wallet.getPrivateViewKey());
+    // console.log("Mnemonic: ", await js_wallet.getMnemonicSeed());
+
+
+
+    console.log('Started wallet');
+    // console.log('Address: ' + js_wallet.getPrimaryAddress());
+
+    // const [unlockedBalance, lockedBalance] = await js_wallet.getBalance();
+  //
+  //   console.log(lockedBalance);
+  //   console.log(unlockedBalance);
+  //
+  //  console.log(lockedBalance);
+  //  console.log(unlockedBalance);
+  //
+  //  for (const tx of await js_wallet.getTransactions()) {
+  //   console.log(`Transaction ${tx.hash} - ${WB.prettyPrintAmount(tx.totalAmount())} - ${tx.timestamp}`);
+  //   console.log(tx);
+  // }
+
+    while(true) {
+    await sleep(1000 * 20);
+
+    /* Save the wallet to disk */
+    js_wallet.saveWalletToFile(userDataDir + '/boards.wallet', 'hunter2');
+    }
+
+    /* Stop the wallet so we can exit */
+    // js_wallet.stop();
+
+    console.log('Saved wallet to file');
+})()
+
+
+
+
+
+
 
 
 const {autoUpdater} = require("electron-updater");
 const {ipcMain} = require('electron');
+
+
+
+ipcMain.on('get-boards', async (event, arg) => {
+
+  console.log('get-boards triggered');
+
+  event.reply('got-boards', await js_wallet.getTransactions(undefined, undefined, true, arg));
+
+})
+
+ipcMain.on('import-view-subwallet', async(event, arg) => {
+
+
+  const [walletBlockCount, localDaemonBlockCount, networkBlockCount] =
+ js_wallet.getSyncStatus();
+
+      const [baddress, error] = await js_wallet.importViewSubWallet(arg, walletBlockCount - 1000);
+
+      if (!error) {
+           console.log(`Imported view subwallet with address of ${baddress}`);
+           event.reply('imported-view-subwallet', baddress);
+      } else {
+           console.log(`Failed to import view subwallet: ${error.toString()}`);
+           event.reply('imported-view-subwallet', error.toString());
+      }
+
+
+})
 
 autoUpdater.logger = require("electron-log")
 autoUpdater.logger.transports.file.level = "info"
@@ -42,7 +221,9 @@ var Menu = electron.Menu;
 
 
 ipcMain.on('close-me', (evt, arg) => {
-  app.quit()
+  js_wallet.stop();
+  app.quit();
+
 })
 
 // ipcMain.on('get-nodes', (evt, arg) => {
@@ -95,7 +276,7 @@ function createWindow () {
     webPreferences: {nodeIntegration: true, experimentalFeatures: true, experimentalCanvasFeatures: true, spellcheck: true}
   })
 
-   mainWindow.openDevTools();
+
 
   // and load the index.html of the app.
   mainWindow.loadURL(url.format({
@@ -227,15 +408,6 @@ ipcMain.on('import_wallet', (evt, arg) => {
 
 })
 
-app.on('ready', function()  {
-  autoUpdater.checkForUpdates();
-});
-
-autoUpdater.on('update-downloaded', () => {
-
-  autoUpdater.quitAndInstall()
-
-});
 
 
 // In this file you can include the rest of your app's specific main process
@@ -255,17 +427,6 @@ let rpc_pw = ''
 
 let wallet;
 
-
-
-var appRootDir = require('app-root-dir').get().replace('app.asar','');
-var appPath=appRootDir+'/bin/';
-userDataDir = app.getPath('userData');
-
-global.userDataDir = userDataDir;
-
-global.appPath = appRootDir;
-
-global.downloadDir = app.getPath('downloads');
 
 
 var db = new Datastore({ filename: userDataDir+'/settings.db', autoload: true });
@@ -306,6 +467,23 @@ function startWallet() {
      console.log(`child process exited with code ${code}`);
    });
 
+   if (isDev) {
+   	console.log('Running in development');
+      mainWindow.openDevTools();
+      // js_wallet.setLogLevel(WB.LogLevel.DEBUG);
+   } else {
+   	console.log('Running in production');
+     app.on('ready', function()  {
+       autoUpdater.checkForUpdates();
+     });
+
+     autoUpdater.on('update-downloaded', () => {
+
+       autoUpdater.quitAndInstall()
+
+     });
+
+   }
 
 
 
