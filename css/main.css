@@ -1259,6 +1259,7 @@ overlay p {
 
  }
 
+
  .board_message {
  list-style: none;
 
@@ -1627,6 +1628,11 @@ background: rgba(57, 76, 145, 0.7) !important;
 
  }
 
+ #new_board {
+
+   background: #3a313133 !important;
+ }
+
 .received_message p {
 
   background: rgba(57, 76, 145, 0.6) !important;
@@ -1706,7 +1712,7 @@ background: rgba(57, 76, 145, 0.7) !important;
     color: #53565c;
   }
 
-  #importMnemonic {
+  #importMnemonic , #privatekeybox , #mnemonicbox {
 
     background: #F5F6F7 !important;
     color: black !important;
@@ -1716,12 +1722,10 @@ background: rgba(57, 76, 145, 0.7) !important;
 
      background: #F5F6F7 !important;
      color: black;
-     padding: 11px 22px;
      text-align: center;
      text-decoration: none;
      display: inline-block;
-     font-size: 15px;
-     padding: 10px;
+     font-size: 17px;
      margin: 5px;
      cursor: pointer;
 
@@ -2230,30 +2234,40 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
 
 #mnemonicbox {
 
-  height: 10%;
-  width: 88%;
+  background: rgba(0,0,0,0.1);
+  color: white;
+  border-radius: 5px;
+  border: none;
+  width: 717px;
+  height: 44px;
   display: block;
-  color: #8ba2b9;
-  border-radius: 2px;
-  margin-left: 5px;
-  font-family: monospace;
+  margin-top: 10px;
+  margin-left: 10px;
   padding-top: 8px;
-
+  resize: none;
+  word-break: break-word;
+  padding-left: 10px;
+  font-family: monospace;
 }
 
 
 
 #privatekeybox {
 
-  height: 5%;
-  width: 88%;
+  background: rgba(0,0,0,0.1);
+  color: white;
+  border-radius: 5px;
+  border: none;
+  width: 717px;
+  height: 44px;
   display: block;
-  color: #8ba2b9;
-  border-radius: 2px;
-  margin-left: 5px;
-  font-family: monospace;
+  margin-top: 10px;
+  margin-left: 10px;
   padding-top: 8px;
-
+  resize: none;
+  word-break: break-word;
+  padding-left: 10px;
+  font-family: monospace;
 
 }
 
@@ -2263,14 +2277,13 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
    background-color: white;
    border: none;
    color: black;
-   padding: 11px 22px;
    text-align: center;
    text-decoration: none;
    display: inline-block;
-   font-size: 15px;
-   padding: 10px;
-   margin: 5px;
+   font-size: 17px;
    cursor: pointer;
+   margin-left: 5px;
+   margin: 10px;
 
  }
 
@@ -2309,7 +2322,7 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
 
 #importMnemonic {
 
-  background: #595959;
+    background: rgba(0,0,0,0.1);
     color: white;
     border-radius: 5px;
     border: none;
@@ -2325,7 +2338,7 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
 
 #nodeInput {
 
-  background: #595959;
+  background: rgba(0,0,0,0.1);
     color: white;
     border-radius: 5px;
     border: none;
@@ -2346,7 +2359,7 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
 
      background-color: rgba(77, 210, 106, 0.65);
      border: none;
-     color: #ddd;
+     color: #f1f2f3;
      padding: 11px 22px;
      text-align: center;
      text-decoration: none;
