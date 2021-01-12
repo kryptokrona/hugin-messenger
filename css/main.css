@@ -1398,9 +1398,13 @@ padding-right: 10px;
 
 
 #messages_contacts > li {
-  width:100%;
+
   height: 45px;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
+  border-radius: 5px;
+  background-color: rgba(0,0,0,0.1);
+  overflow: hidden;
+  margin: 7px;
+  margin-left: 7px;
 }
 
 .flipswitch {
@@ -1500,7 +1504,7 @@ padding-right: 10px;
 
 .contact_address { display: block; white-space: nowrap; width: 74%; overflow: hidden; text-overflow: ellipsis; font-size: 10px; margin-top: -35px; font-weight: 400; margin-left: 5px; }
 .contact_avatar { border-radius: 50%; position: relative; left: -43px; top: 2px; }
-.listed_message { display: block; width: 74%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 11px; opacity: 0.7; margin-top: -10px; margin-left: 5px; }
+.listed_message { display: block; width: 90%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 11px; opacity: 0.7; margin-top: -10px; margin-left: 5px; }
 
 #messages_contacts {
   --scrollbarBG: transparent;
@@ -1945,6 +1949,7 @@ background: #f5f6f7 !important;
 
 #currentchat_footer {
 color: black;
+
 }
 
 #top_messages_sidebar {
@@ -1954,11 +1959,19 @@ color: black;
 
   }
 
+#messages_contacts > li {
+
+  background: white !important;
+
+}
+
 #messages_contacts {
   --scrollbarBG: white;
   --thumbBG: black;
+  background: #f9fafc !important;
 
 }
+
   .flip-box > li {
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     color: black;
