@@ -378,6 +378,10 @@ html, body {
     color: white;
 }
 
+#right_panel * {
+  -webkit-app-region:no-drag;
+}
+
 .contact-buttons {
 
 
