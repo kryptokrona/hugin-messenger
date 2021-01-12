@@ -2681,10 +2681,11 @@ let load_board = (board) => {
 $('#join_board_button').click(function(){});
 
 $('#boards_icon').click(function(){
-
  $("#boards").toggleClass('hidden');
  $("#messages_page").toggleClass('hidden');
  $("#new_board").toggleClass('hidden');
+ $("#avatar_contact").hide();
+ $("#context_menu").hide();
  $("#boards_picker").empty().toggleClass('hidden');
  $('.board_message').remove();
  console.log(signingPublicKey);

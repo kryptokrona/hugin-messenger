@@ -1,7 +1,7 @@
 {
   "name": "hugin-messenger",
   "productName": "HuginMessenger",
-  "version": "0.0.80",
+  "version": "0.0.81",
   "description": "A messenger app built on top of the kryptokrona blockchain",
   "main": "main.js",
   "repository": "https://github.com/kryptokrona/hugin-messenger",
