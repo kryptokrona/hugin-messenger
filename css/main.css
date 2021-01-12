@@ -1949,6 +1949,7 @@ background: #f5f6f7 !important;
 
 #currentchat_footer {
 color: black;
+
 }
 
 #top_messages_sidebar {
@@ -1961,15 +1962,16 @@ color: black;
 #messages_contacts > li {
 
   background: white !important;
-}
 
+}
 
 #messages_contacts {
   --scrollbarBG: white;
   --thumbBG: black;
-  background: #f1f2f3 !important;
+  background: #f9fafc !important;
 
 }
+
   .flip-box > li {
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     color: black;
