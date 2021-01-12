@@ -94,10 +94,17 @@ if (fs.existsSync(userDataDir + '/boards.wallet')) {
         console.log(`Incoming transaction of ${transaction.totalAmount()} received!`);
     });
 
-
-
-
     let i = 1;
+
+    for (const address of js_wallet.getAddresses()) {
+         console.log(`AaaAaaAddress [${i}]: ${address}`);
+         i++;
+    }
+
+
+
+
+    i = 1;
 
     let boards_addresses = [];
 
@@ -105,6 +112,7 @@ if (fs.existsSync(userDataDir + '/boards.wallet')) {
          const [publicSpendKey, privateSpendKey, err] = await js_wallet.getSpendKeys(address);
          boards_addresses[boards_addresses.length] = [address, publicSpendKey];
          console.log(`Address [${i}]: ${address}`);
+         i++;
     }
 
     global.boards_addresses = boards_addresses;
@@ -162,14 +170,17 @@ ipcMain.on('get-boards', async (event, arg) => {
 
   console.log('get-boards triggered');
 
-  event.reply('got-boards', await js_wallet.getTransactions());
+  event.reply('got-boards', await js_wallet.getTransactions(undefined, undefined, true, arg));
 
 })
 
 ipcMain.on('import-view-subwallet', async(event, arg) => {
 
 
-      const [baddress, error] = await js_wallet.importViewSubWallet(arg);
+  const [walletBlockCount, localDaemonBlockCount, networkBlockCount] =
+ js_wallet.getSyncStatus();
+
+      const [baddress, error] = await js_wallet.importViewSubWallet(arg, walletBlockCount - 1000);
 
       if (!error) {
            console.log(`Imported view subwallet with address of ${baddress}`);
@@ -459,7 +470,7 @@ function startWallet() {
    if (isDev) {
    	console.log('Running in development');
       mainWindow.openDevTools();
-      js_wallet.setLogLevel(WB.LogLevel.DEBUG);
+      // js_wallet.setLogLevel(WB.LogLevel.DEBUG);
    } else {
    	console.log('Running in production');
      app.on('ready', function()  {

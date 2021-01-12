@@ -736,6 +736,22 @@ function str2ab(str) {
   return buf;
 }
 
+let invite_code_from_ascii = (invite_code) => {
+  let hex = toHex(invite_code);
+  while(hex.length < 64) {
+    hex = hex + '0';
+  }
+  return hex;
+}
+
+let letter_from_spend_key = (spend_key) => {
+
+  while(spend_key.substr(spend_key.length - 1) == "0") {
+    spend_key = spend_key.substr(0, spend_key.length - 1);
+  }
+  return fromHex(spend_key);
+}
+
 let keyPair;
 let signingKeyPair;
 let signingPublicKey;
@@ -1236,7 +1252,17 @@ function sendBoardMessage(message) {
     $('#boards_message_form').val('');
     //$('#message_form').focus();
 
-    receiver = 'SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc';
+
+
+    let current_board = $('.current').attr('id');
+
+    if (current_board == 'home_board' ) {
+      receiver = 'SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc';
+    } else {
+      receiver = current_board;
+    }
+
+    console.log(receiver);
 
       // Transaction details
       amount = 1;
@@ -2616,21 +2642,74 @@ window.setInterval(function(){
 
 },10000);
 
+$('#new_board').click(function(){
+
+  $('#modal').toggleClass('hidden');
+  $('#modal div').addClass('hidden');
+  $('#new_board_modal').removeClass('hidden');
+
+})
+
+$('#create_pub_board_button').click(function(){
+
+  let invite_code = invite_code_from_ascii($('#create_pub_board_input').val());
+  ipcRenderer.send('import-view-subwallet', invite_code);
+});
+
+
+ipcRenderer.on('imported-view-subwallet', async (event, address) => {
+
+  console.log('got address:', address);
+
+});
+
+
+let load_board = (board) => {
+  console.log(board);
+}
+
+$('#join_board_button').click(function(){});
 
 $('#boards_icon').click(function(){
  $("#boards").toggleClass('hidden');
  $("#messages_page").toggleClass('hidden');
+ $("#new_board").toggleClass('hidden');
+ $("#boards_picker").empty().toggleClass('hidden');
  $('.board_message').remove();
  console.log(signingPublicKey);
  console.log(currentPubKey.innerHTML);
- let boards_addresses = rmt.getGlobal('boards_addresses')
- console.log('boards_addresses', boards_addresses);
- console.log('boards_addresses', boards_addresses);
- console.log('boards_addresses', boards_addresses);
- console.log('boards_addresses', boards_addresses);
+ let boards_addresses = rmt.getGlobal('boards_addresses');
  for (address in boards_addresses) {
-   console.log('publicspendkey', boards_addresses[address]);
+   let this_address = boards_addresses[address];
+   console.log('this_address', this_address);
+   let board_color = intToRGB(hashCode((this_address[1])));
+   if (this_address[0] == "SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc") {
+     $('#boards_picker').append('<div class="board_icon current" id="home_board" style="background: rgb(' + board_color.red + ',' +  board_color.green + ',' +  board_color.blue + ')"><i class="fa fa-home"></i></div>');
+   } else {
+     $('#boards_picker').append('<div class="board_icon" title="' + letter_from_spend_key(this_address[1]) +  '" id="' + this_address[0] + '" style="background: rgb(' + board_color.red + ',' +  board_color.green + ',' +  board_color.blue + ')">' + letter_from_spend_key(this_address[1]).substring(0, 1) + '</div>');
+   }
+
  }
+
+
+ $('.board_icon').click(function() {
+
+
+
+   let this_board = $(this).attr('id');
+
+   if (this_board == "home_board") {
+     this_board = 'SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc';
+   }
+
+   console.log(this_board);
+
+   ipcRenderer.send('get-boards', this_board);
+   $('.current').removeClass('current');
+   $(this).addClass('current');
+
+
+ });
 
  if ($('#boards').hasClass('hidden')) {
    $('#avatar').attr('src', 'data:image/svg+xml;base64,' + get_avatar(currentAddr));
@@ -2641,10 +2720,29 @@ $('#boards_icon').click(function(){
 
 
 
- ipcRenderer.send('get-boards');
+ ipcRenderer.send('get-boards', 'SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc');
 })
 
+
+$('.board_icon').click(function() {
+
+  console.log('sneed!');
+  //
+  // let this_board = $(this).attr('id');
+  //
+  // console.log(this_board);
+  //
+  // //ipcRenderer.send('get-boards', this_board);
+  // $('.current').removeClass('current');
+  // $(this).addClass('current');
+
+
+});
+
+// imported-view-subwallet
 ipcRenderer.on('got-boards', async (event, json) => {
+
+  $('#boards .board_message').remove();
 
   console.log('txs', json);
 
