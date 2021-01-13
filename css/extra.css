@@ -6,11 +6,11 @@ top: 0;
 
 .board_icon {
   border-radius: 50%;
-  width: 44px;
-  height: 44px;
-  margin-left: 18px;
-  margin-bottom: 10px;
-  line-height: 45px;
+  width: 50px;
+  height: 50px;
+  margin-left: 15px;
+  margin-bottom: 8px;
+  line-height: 50px;
   text-align: center;
   font-size: 17pt;
   color: #ffffff;
@@ -20,13 +20,23 @@ top: 0;
   font-family: "Montserrat";
   cursor: pointer;
   vertical-align: middle;
-  margin-top: 20px;
+  margin-top: 16px;
+}
+
+#boards_picker {
+    -webkit-app-region: drag;
 }
 
 .board_icon.current {
-  border-radius: 24px;
+  border-radius: 33%;
   transition: all 0.2s;
 }
+
+/* .current::after {
+  content: ".";
+  font-size: 200pt;
+  color: white;
+} */
 
 #boards_picker .board_icon:hover {
 
@@ -37,27 +47,26 @@ top: 0;
 
 
 #new_board {
-    border-radius: 50%;
-    width: 63px;
-    height: 63px;
-    background: rgba(255,255,255,0.2);
-    text-align: center;
-    line-height: 25px;
-    /* padding: 5px; */
-    /* top: 5px; */
-    /* margin-left: 20px; */
-    font-size: 38pt;
-    /* vertical-align: middle; */
-    cursor: pointer;
-    color: #ffffff;
-    /* position: absolute; */
-    /* top: 21px; */
-    /* right: 22px; */
-
-    line-height: 63px;
-    margin: auto;
-    margin-bottom: 9px;
-    margin-top: 25px;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  background: rgba(255,255,255,0.2);
+  text-align: center;
+  line-height: 25px;
+  /* padding: 5px; */
+  /* top: 5px; */
+  /* margin-left: 20px; */
+  font-size: 26pt;
+  /* vertical-align: middle; */
+  cursor: pointer;
+  color: #ffffff;
+  /* position: absolute; */
+  /* top: 21px; */
+  /* right: 22px; */
+  line-height: 50px;
+  margin: auto;
+  margin-bottom: 9px;
+  margin-top: 14px;
 }
 
 #new_board:hover {
