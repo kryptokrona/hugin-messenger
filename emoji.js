@@ -9,3 +9,12 @@ picker.on('emoji', selection => {
 });
 
 trigger.addEventListener('click', () => picker.togglePicker(trigger));
+
+const boards_picker = new EmojiButton();
+const boards_trigger = document.querySelector('.emoji-boards');
+
+boards_picker.on('emoji', selection => {
+  $('#boards_message_form').val($('#boards_message_form').val() + selection.emoji);
+});
+
+boards_trigger.addEventListener('click', () => boards_picker.togglePicker(boards_trigger));

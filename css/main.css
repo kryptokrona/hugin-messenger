@@ -2637,3 +2637,7 @@ li .gradient {
   width: 92%;
   word-break: break-all;
 }
+
+.emoji-message {
+  font-size: 32pt !important;
+}

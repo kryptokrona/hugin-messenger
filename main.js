@@ -509,29 +509,33 @@ function startWallet() {
      console.log(`child process exited with code ${code}`);
    });
 
+
+})
+
+}
+
+
+
+
+ app.on('ready', function()  {
+
    if (isDev) {
-   	console.log('Running in development');
+     console.log('Running in development');
       mainWindow.openDevTools();
       // js_wallet.setLogLevel(WB.LogLevel.DEBUG);
    } else {
-   	console.log('Running in production');
-     app.on('ready', function()  {
-       autoUpdater.checkForUpdates();
-     });
-
-     autoUpdater.on('update-downloaded', () => {
-
-       autoUpdater.quitAndInstall()
-
-     });
-
+     console.log('Running in production');
+     autoUpdater.checkForUpdates();
    }
+ });
 
 
+ autoUpdater.on('update-downloaded', () => {
 
-});
+   autoUpdater.quitAndInstall()
 
-}
+ });
+
 
 function randomString() {
   return parseInt(Math.random()*100000000000000000).toString(36);

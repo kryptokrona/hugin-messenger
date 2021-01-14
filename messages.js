@@ -13,6 +13,12 @@ var en = require('int-encoder');
 
 var WebTorrent = require('webtorrent');
 
+function containsOnlyEmojis(text) {
+  const onlyEmojis = text.replace(new RegExp('[\u0000-\u1eeff]', 'g'), '')
+  const visibleChars = text.replace(new RegExp('[\n\r\s]+|( )+', 'g'), '')
+  return onlyEmojis.length === visibleChars.length
+}
+
 var Peer = require('simple-peer')
 let listener = () => {}
 let endCall = (peer, stream) => {
@@ -1238,9 +1244,51 @@ function sendBoardMessage(message) {
 
     let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(message);
 
+
+      geturl = new RegExp(
+              "(^|[ \t\r\n])((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&~=-])|%[A-Fa-f0-9]{2}){3,}(#([a-zA-Z0-9][a-zA-Z0-9$_.+!*(),;/?:@&~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))"
+             ,"g"
+           );
+
+    // Instantiate attachments
+    let youtube_links = '';
+    let image_attached = '';
+
+    // Find links
+    let links_in_message = message.match(geturl);
+
+    // Supported image attachment filetypes
+    let imagetypes = ['.png','.jpg','.gif', '.webm', '.jpeg', '.webp'];
+
+    // Find magnet links
+    //let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(message);
+
+    //message = message.replace(magnetLinks[0], "");
+
+    if (links_in_message) {
+
+      for (let j = 0; j < links_in_message.length; j++) {
+
+        if (links_in_message[j].match(/youtu/) || links_in_message[j].match(/y2u.be/)) { // Embeds YouTube links
+          message = message.replace(links_in_message[j],'');
+          embed_code = links_in_message[j].split('/').slice(-1)[0].split('=').slice(-1)[0];
+          youtube_links += '<div style="position:relative;height:0;padding-bottom:42.42%"><iframe src="https://www.youtube.com/embed/' + embed_code + '" style="position:absolute;width:80%;height:100%;left:10%" width="849" height="360" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>';
+        } else if (imagetypes.indexOf(links_in_message[j].substr(-4)) > -1 ) { // Embeds image links
+          message = message.replace(links_in_message[j],'');
+          image_attached_url = links_in_message[j];
+          image_attached = '<img class="attachment" src="' + image_attached_url + '" />';
+        } else { // Embeds other links
+          message = message.replace(links_in_message[j],'<a target="_new" href="' + links_in_message[j] + '">' + links_in_message[j] + '</a>');
+        }
+      }
+    }
+
+
+
     let id_elem = Date.now();
 
-    $('#boards_message_form').after('<li class="board_message" id=""><div class="board_message_user"><img class="board_avatar" src="' +$ ('#avatar').attr('src') + '"><span class="board_message_pubkey">' + signingPublicKey + '</span></div><p>' + message + '</p><span class="time">just now</span></li>');
+
+    $('#boards_message_form').after('<li class="board_message" id=""><div class="board_message_user"><img class="board_avatar" src="' +$ ('#avatar').attr('src') + '"><span class="board_message_pubkey">' + signingPublicKey + '</span></div><p>' + message + image_attached + youtube_links + '</p><span class="time">just now</span></li>');
     if (magnetLinks) {
       handleMagnetLink(magnetLinks, id_elem);
     }
@@ -2229,7 +2277,7 @@ all_transactions = all_transactions.filter(function (el) {
       continue;
     }
 
-    if (tx.key) {
+    if (tx.key && tx.t) {
 
         let senderKey = tx.key;
 
@@ -2278,19 +2326,23 @@ all_transactions = all_transactions.filter(function (el) {
 
         let decryptBox = false;
 
+        console.log('known_keys.length', known_keys.length)
+
         while (i < known_keys.length && !decryptBox) {
 
           let possibleKey = known_keys[i].key;
+          i = i+1;
           try {
            decryptBox = nacl.box.open(hexToUint(box),
            nonceFromTimestamp(timestamp),
            hexToUint(possibleKey),
            keyPair.secretKey);
          } catch (err) {
+           console.log('timestamp', timestamp);
            console.log(err);
            continue;
          }
-           i = i+1;
+
 
           }
 
@@ -2786,8 +2838,53 @@ ipcRenderer.on('got-boards', async (event, json) => {
         if (current_board != fetching_board) {
           continue;
         }
+        let addClasses = '';
+        if (containsOnlyEmojis(hex_json.m)) {
+          addClasses = 'emoji-message';
+        }
 
-       $('#boards').append('<li class="board_message" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div><p>' + hex_json.m + '</p><span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
+        let message = hex_json.m;
+
+          geturl = new RegExp(
+                  "(^|[ \t\r\n])((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&~=-])|%[A-Fa-f0-9]{2}){3,}(#([a-zA-Z0-9][a-zA-Z0-9$_.+!*(),;/?:@&~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))"
+                 ,"g"
+               );
+
+        // Instantiate attachments
+        let youtube_links = '';
+        let image_attached = '';
+
+        // Find links
+        let links_in_message = message.match(geturl);
+
+        // Supported image attachment filetypes
+        let imagetypes = ['.png','.jpg','.gif', '.webm', '.jpeg', '.webp'];
+
+        // Find magnet links
+        //let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(message);
+
+        //message = message.replace(magnetLinks[0], "");
+
+        if (links_in_message) {
+
+          for (let j = 0; j < links_in_message.length; j++) {
+
+            if (links_in_message[j].match(/youtu/) || links_in_message[j].match(/y2u.be/)) { // Embeds YouTube links
+              message = message.replace(links_in_message[j],'');
+              embed_code = links_in_message[j].split('/').slice(-1)[0].split('=').slice(-1)[0];
+              youtube_links += '<div style="position:relative;height:0;padding-bottom:42.42%"><iframe src="https://www.youtube.com/embed/' + embed_code + '" style="position:absolute;width:80%;height:100%;left:10%" width="849" height="360" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>';
+            } else if (imagetypes.indexOf(links_in_message[j].substr(-4)) > -1 ) { // Embeds image links
+              message = message.replace(links_in_message[j],'');
+              image_attached_url = links_in_message[j];
+              image_attached = '<img class="attachment" src="' + image_attached_url + '" />';
+            } else { // Embeds other links
+              message = message.replace(links_in_message[j],'<a target="_new" href="' + links_in_message[j] + '">' + links_in_message[j] + '</a>');
+            }
+          }
+        }
+
+
+       $('#boards').append('<li class="board_message" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
 
      } catch (err) {
        console.log('Error:', err)
