@@ -6,7 +6,7 @@ const { openAlias } = require('openalias');
 const { desktopCapturer } = require('electron');
 
 var sdp = require('./sdp');
-
+ let current_board = '';
 const Datastore = require('nedb');
 
 var en = require('int-encoder');
@@ -1254,7 +1254,7 @@ function sendBoardMessage(message) {
 
 
 
-    let current_board = $('.current').attr('id');
+    current_board = $('.current').attr('id');
 
     if (current_board == 'home_board' ) {
       receiver = 'SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc';
@@ -2678,6 +2678,7 @@ let load_board = (board) => {
   console.log(board);
 }
 
+
 $('#join_board_button').click(function(){});
 
 $('#boards_icon').click(function(){
@@ -2707,12 +2708,21 @@ $('#boards_icon').click(function(){
  }
 
 
+
+
  $('.board_icon').click(function() {
+
+
 
 
 
    let this_board = $(this).attr('id');
 
+   if ($(this).hasClass('current')) {
+     return;
+   }
+
+   current_board = this_board;
    if (this_board == "home_board") {
      this_board = 'SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc';
    }
@@ -2739,24 +2749,10 @@ $('#boards_icon').click(function(){
 })
 
 
-$('.board_icon').click(function() {
-
-  console.log('sneed!');
-  //
-  // let this_board = $(this).attr('id');
-  //
-  // console.log(this_board);
-  //
-  // //ipcRenderer.send('get-boards', this_board);
-  // $('.current').removeClass('current');
-  // $(this).addClass('current');
-
-
-});
-
-
 // imported-view-subwallet
 ipcRenderer.on('got-boards', async (event, json) => {
+
+  let fetching_board = current_board;
 
   $('#boards .board_message').remove();
 
@@ -2766,7 +2762,7 @@ ipcRenderer.on('got-boards', async (event, json) => {
     let hash = json[tx].hash;
 
 
-    let tx_data = await fetch('http://pool.kryptokrona.se:11898/json_rpc', {
+    let tx_data = await fetch('http://' + rmt.getGlobal('node') + '/json_rpc', {
          method: 'POST',
          body: JSON.stringify({
            jsonrpc: '2.0',
@@ -2786,6 +2782,10 @@ ipcRenderer.on('got-boards', async (event, json) => {
          continue;
        }
        let avatar_base64 = get_avatar(hex_json.k);
+
+        if (current_board != fetching_board) {
+          continue;
+        }
 
        $('#boards').append('<li class="board_message" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div><p>' + hex_json.m + '</p><span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
 

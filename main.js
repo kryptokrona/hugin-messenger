@@ -8,11 +8,9 @@ const path = require('path')
 const url = require('url')
 const xhr = require('xhr')
 const fs = require('fs')
+const notifier = require('node-notifier');
 
 const isDev = require('electron-is-dev');
-
-
-
 
 var appRootDir = require('app-root-dir').get().replace('app.asar','');
 var appPath=appRootDir+'/bin/';
@@ -93,6 +91,13 @@ if (fs.existsSync(userDataDir + '/boards.wallet')) {
 
     js_wallet.on('incomingtx', (transaction) => {
         console.log(`Incoming transaction of ${transaction.totalAmount()} received!`);
+
+        notifier.notify({
+          title: "New Hugin Boards message",
+          message: "Open Hugin to read it",
+          wait: true // Wait with callback, until user action is taken against notification
+        });
+
     });
 
     let i = 1;
@@ -170,6 +175,9 @@ const {ipcMain} = require('electron');
 ipcMain.on('get-boards', async (event, arg) => {
 
   console.log('get-boards triggered');
+
+  const daemonInfo = js_wallet.getDaemonConnectionInfo();
+  console.log(`Connected to ${daemonInfo.ssl ? 'https://' : 'http://'}${daemonInfo.host}:${daemonInfo.port}`);
 
   event.reply('got-boards', await js_wallet.getTransactions(undefined, undefined, true, arg));
 
@@ -470,6 +478,9 @@ function startWallet() {
 
   let node = 'pool.kryptokrona.se';
   let port = '11898'
+
+
+
   if (docs[0].node) {
 
     node = docs[0].node.split(':');
@@ -477,7 +488,11 @@ function startWallet() {
     node = node[0]
   }
 
-  console.log(node);
+  const daemon = new WB.Daemon(node, parseInt(port));
+
+  js_wallet.swapNode(daemon);
+
+  global.node = node+':'+port;
 
    wallet = spawn(appPath+'kryptokrona-service', ['-l', userDataDir+"/walletd.log",'-w', userDataDir+'/'+wallet_file, '-p', wallet_pw, '--rpc-password', global.rpc_pw, '--daemon-address', node, '--daemon-port', port]); //, '--daemon-address', 'localhost'
 
