@@ -2790,11 +2790,12 @@ $('#boards_icon').click(function(){
 
  } else {
    $('#avatar').attr('src', 'data:image/svg+xml;base64,' + get_avatar(signingPublicKey));
+    ipcRenderer.send('get-boards', 'SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc');
  }
 
 
 
- ipcRenderer.send('get-boards', 'SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc');
+
 })
 
 

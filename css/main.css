@@ -1758,6 +1758,10 @@ padding-right: 10px;
 
 @media (prefers-color-scheme: light) {
 
+  .emoji-boards {
+    color: black;
+  }
+
   #status_icon {
     background: url(../static/xkr-logo-mask-light.svg);
     box-shadow: inset 0px 0px 0px 1px #f5f6f7;

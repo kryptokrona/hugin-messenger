@@ -179,7 +179,7 @@ ipcMain.on('get-boards', async (event, arg) => {
   const daemonInfo = js_wallet.getDaemonConnectionInfo();
   console.log(`Connected to ${daemonInfo.ssl ? 'https://' : 'http://'}${daemonInfo.host}:${daemonInfo.port}`);
 
-  event.reply('got-boards', await js_wallet.getTransactions(undefined, undefined, true, arg));
+  event.reply('got-boards', await js_wallet.getTransactions(undefined, 25, true, arg));
 
 })
 
