@@ -1243,7 +1243,7 @@ function sendBoardMessage(message) {
     avatar_base64 = get_avatar(currentAddr);
 
     let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(message);
-
+    let message_to_send = message;
 
       geturl = new RegExp(
               "(^|[ \t\r\n])((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&~=-])|%[A-Fa-f0-9]{2}){3,}(#([a-zA-Z0-9][a-zA-Z0-9$_.+!*(),;/?:@&~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))"
@@ -1318,16 +1318,15 @@ function sendBoardMessage(message) {
       mixin = 5;
       timestamp = Date.now();
       //
-      let signature = nacl.sign.detached(naclUtil.decodeUTF8(message), signingKeyPair.secretKey);
+      let signature = nacl.sign.detached(naclUtil.decodeUTF8(message_to_send), signingKeyPair.secretKey);
       // console.log('signature', signature);
       // let verified = nacl.sign.detached.verify(naclUtil.decodeUTF8(message), signature, signingKeyPair.publicKey);
       // console.log('verified', verified);
       // return;
 
       // Convert message data to json
-      payload_json = {"m":message, "k":signingPublicKey, "s": Buffer.from(signature).toString('hex')};
-      console.log('m:', naclUtil.decodeUTF8(message), 's:', fromHexString(payload_json.s), 'k:', fromHexString(payload_json.k));
-      console.log(payload_json);
+      payload_json = {"m":message_to_send, "k":signingPublicKey, "s": Buffer.from(signature).toString('hex')};
+
 
       //payload_json_decoded = naclUtil.decodeUTF8(JSON.stringify(payload_json));
 
@@ -1342,8 +1341,6 @@ function sendBoardMessage(message) {
 
       sendAddr = $("#currentAddrSpan").text();
       transfer = [ { 'amount':amount, 'address':receiver } ];
-
-      console.log('verify:', nacl.sign.detached.verify(naclUtil.decodeUTF8(message), signature, signingKeyPair.publicKey));
 
       return sendTransaction(mixin, transfer, fee, sendAddr, payload_hex, payload_json, true);
 
@@ -2845,6 +2842,10 @@ ipcRenderer.on('got-boards', async (event, json) => {
 
         let message = hex_json.m;
 
+        if (message.length < 1) {
+          continue;
+        }
+
           geturl = new RegExp(
                   "(^|[ \t\r\n])((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&~=-])|%[A-Fa-f0-9]{2}){3,}(#([a-zA-Z0-9][a-zA-Z0-9$_.+!*(),;/?:@&~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))"
                  ,"g"
@@ -2883,9 +2884,17 @@ ipcRenderer.on('got-boards', async (event, json) => {
           }
         }
 
+        if (message.length < 1 && youtube_links.length > 0) {
+          $('#boards').append('<li class="board_message" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div>'+ image_attached + youtube_links +'<span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
 
-       $('#boards').append('<li class="board_message" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
+        } else if (image_attached > 0 && youtube_links.length > 0) {
 
+          $('#boards').append('<li class="board_message" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
+
+
+        } else  {
+          $('#boards').append('<li class="board_message" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
+       }
      } catch (err) {
        console.log('Error:', err)
        continue;
