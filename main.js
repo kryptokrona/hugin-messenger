@@ -91,12 +91,12 @@ if (fs.existsSync(userDataDir + '/boards.wallet')) {
 
     js_wallet.on('incomingtx', (transaction) => {
         console.log(`Incoming transaction of ${transaction.totalAmount()} received!`);
-
-        notifier.notify({
-          title: "New Hugin Boards message",
-          message: "Open Hugin to read it",
-          wait: true // Wait with callback, until user action is taken against notification
-        });
+        //
+        // notifier.notify({
+        //   title: "New Hugin Boards message",
+        //   message: "Open Hugin to read it",
+        //   wait: true // Wait with callback, until user action is taken against notification
+        // });
 
     });
 
