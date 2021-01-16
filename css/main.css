@@ -270,6 +270,7 @@
 
 }
 
+
 #boards_icon > i {
 
   background: linear-gradient(270deg, #000000, #1b1836);
@@ -318,6 +319,22 @@
 /* Change the background color of the dropdown button when the dropdown content is shown */
 .dropdown:hover .dropbtn {background-color: #ddd;}
 
+
+#boards_message_form {
+    font-size: 12pt;
+    height: 64px !important;
+    width: 83%;
+    padding: 0;
+    padding-left: 10px;
+    line-height: 100%;
+    vertical-align: top;
+    background: #3F3F3F !important;
+    border-radius: 5px !important;
+    color: rgba(255,255,255,0.6) !important;
+    display: inline-block !important;
+    border: none;
+    font-family: monospace;
+}
 
 #balancelogo::before {
   font-family: 'XKR';
@@ -1131,21 +1148,6 @@ h1, h2, h3, h4 {
 
 }
 
-#boards_message_form {
-    font-size: 12pt;
-    height: 64px !important;
-    width: 83%;
-    border-radius: 0 !important;
-    padding: 0 !important;
-    padding-left: 10px !important;
-    line-height: 100%;
-    vertical-align: top;
-    background: #3F3F3F !important;
-    border-radius: 5px !important;
-    color: rgba(255,255,255,0.6) !important;
-    display: inline-block !important;
-    border: none;
-}
 
 #boards_nickname_form {
     font-size: 12pt;
@@ -1163,6 +1165,8 @@ h1, h2, h3, h4 {
     margin-bottom: 25px;
     margin-right: 1.5%;
     width: 11%;
+    font-family: 'Montserrat';
+    font-weight: 700;
 
 }
 
@@ -1459,14 +1463,13 @@ overlay p {
    margin-left: 15px;
    font-family: monospace;
    font-size: 17px;
-
+   cursor: pointer;
 
  }
 
 
  .board_message {
  list-style: none;
-
  }
 
  .board_message_pubkey {
@@ -2647,6 +2650,7 @@ li .gradient {
   height: 100% !important;
   padding: 25px;
   overflow-y: scroll;
+  position: relative;
 }
 
 .post {
@@ -2681,5 +2685,75 @@ li .gradient {
     padding-right: 12px;
     font-family: "Montserrat";
     font-weight: 700;
+
+}
+
+#replyto {
+  position: absolute;
+    height: 64px;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    color: #292929;
+    padding-left: 40px;
+    padding-right: 20px;
+    vertical-align: bottom;
+    font-family: 'Montserrat';
+    font-weight: 700;
+    line-height: 64px;
+}
+
+#replyto_exit {
+  font-size: 22pt;
+  color: #292929;
+  transform: rotate(45deg);
+  position: absolute;
+  margin-left: 6px;
+  cursor: pointer;
+  font-family: 'Montserrat';
+  left: 172px;
+  top: 39px;
+  font-weight: 700;
+
+}
+
+
+.rgb {
+
+  background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, #abf25f, #5ff281, #5ff2f0) !important;
+    background-size: 1000% 1000% !important;
+
+    -webkit-animation: AnimationName 60s ease infinite;
+    -moz-animation: AnimationName 60s ease infinite;
+    animation: AnimationName 60s ease infinite;
+}
+
+.board_avatar_reply {
+  display: inline-block;
+  margin-top: 4px;
+}
+
+.board_message_reply {
+  margin-bottom: -18px;
+  opacity: 0.6;
+}
+
+.board_message_reply p {
+  display: inline-block;
+  font-size: 8pt;
+  padding: 8px;
+  margin-left: 4px;
+  /* padding-top: 0; */
+  vertical-align: top;
+}
+
+
+.board_message_reply::before {
+
+  content: "∟";
+display: inline-block;
+transform: rotate(90deg);
+font-weight: 700;
+font-size: 28pt;
+margin-left: 31px;
 
 }
