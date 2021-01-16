@@ -673,8 +673,7 @@ misc.find({}, function (err,docs){
 
     if (docs.length == 0) {
 
-    misc.insert({"height": 1});
-    misc.insert({"nickname": undefined});
+    misc.insert({"height": 1, "nickname": undefined});
 
   } else {
     last_block_checked = docs[0].height;
@@ -2253,7 +2252,7 @@ async function get_new_conversations(unconfirmed) {
       unconfirmed_transactions = await get_unconfirmed_messages();
 
       all_transactions = confirmed_transactions.concat(unconfirmed_transactions);
-      misc.update({}, {height: check_block});
+      misc.update({}, { $set: {height: check_block} });
       last_block_checked = check_block;
 
 
