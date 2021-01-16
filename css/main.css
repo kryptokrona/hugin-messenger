@@ -1132,21 +1132,37 @@ h1, h2, h3, h4 {
 }
 
 #boards_message_form {
-  font-size: 12pt;
+    font-size: 12pt;
+    height: 64px !important;
+    width: 83%;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    padding-left: 10px !important;
+    line-height: 100%;
+    vertical-align: top;
+    background: #3F3F3F !important;
+    border-radius: 5px !important;
+    color: rgba(255,255,255,0.6) !important;
+    display: inline-block !important;
+    border: none;
+}
 
-  height: 64px !important;
-  width: 96%;
-  border-radius: 0 !important;
-  padding: 0 !important;
-  padding-left: 10px !important;
-  line-height: 100%;
-  vertical-align: top;
-  background: #3F3F3F !important;
-  border-radius: 5px !important;
-  color: rgba(255,255,255,0.6) !important;
-  display: inline-block !important;
-  border: none;
-  margin-bottom: 25px;
+#boards_nickname_form {
+    font-size: 12pt;
+    height: 64px !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    padding-left: 10px !important;
+    line-height: 100%;
+    vertical-align: top;
+    background: #3F3F3F !important;
+    border-radius: 5px !important;
+    color: rgba(255,255,255,0.6) !important;
+    display: inline-block !important;
+    border: none;
+    margin-bottom: 25px;
+    margin-right: 1.5%;
+    width: 11%;
 
 }
 
@@ -2648,4 +2664,22 @@ li .gradient {
 
 .attachment {
   max-width: 100%;
+}
+
+.boards_nickname {
+
+    vertical-align: 12%;
+    font-family: monospace;
+    /* max-width: 105px; */
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-radius: 14px;
+    /* background: rgba(255,255,255,0.1); */
+    padding: 5px;
+    padding-left: 0px;
+    padding-right: 12px;
+    font-family: "Montserrat";
+    font-weight: 700;
+
 }

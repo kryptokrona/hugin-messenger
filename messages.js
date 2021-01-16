@@ -674,6 +674,7 @@ misc.find({}, function (err,docs){
     if (docs.length == 0) {
 
     misc.insert({"height": 1});
+    misc.insert({"nickname": undefined});
 
   } else {
     last_block_checked = docs[0].height;
@@ -1326,6 +1327,15 @@ function sendBoardMessage(message) {
 
       // Convert message data to json
       payload_json = {"m":message_to_send, "k":signingPublicKey, "s": Buffer.from(signature).toString('hex')};
+
+      if ($('#boards_nickname_form').val().length) {
+        payload_json.n = $('#boards_nickname_form').val();
+
+        misc.update({}, {nickname: payload_json.n});
+
+
+
+      }
 
 
       //payload_json_decoded = naclUtil.decodeUTF8(JSON.stringify(payload_json));
@@ -2731,6 +2741,13 @@ let load_board = (board) => {
 $('#join_board_button').click(function(){});
 
 $('#boards_icon').click(function(){
+  misc.find({}, function (err,docs){
+    if (docs[0]) {
+      $('#boards_nickname_form').val(docs[0].nickname);
+    }
+
+  });
+
  $("#boards").toggleClass('hidden');
  $("#messages_page").toggleClass('hidden');
  $("#new_board").toggleClass('hidden');
@@ -2885,17 +2902,25 @@ ipcRenderer.on('got-boards', async (event, json) => {
           }
         }
 
+
+
         if (message.length < 1 && youtube_links.length > 0) {
-          $('#boards').append('<li class="board_message" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div>'+ image_attached + youtube_links +'<span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
+          $('#boards').append('<li class="board_message this_board_message" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div>'+ image_attached + youtube_links +'<span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
 
         } else if (image_attached > 0 && youtube_links.length > 0) {
 
-          $('#boards').append('<li class="board_message" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
+          $('#boards').append('<li class="board_message this_board_message" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
 
 
         } else  {
-          $('#boards').append('<li class="board_message" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
+          $('#boards').append('<li class="board_message this_board_message" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
        }
+
+       if (hex_json.n) {
+         $('.this_board_message .board_message_pubkey').before('<span class="boards_nickname">' + hex_json.n + '</span>')
+       }
+       $('.this_board_message').removeClass('this_board_message');
+
      } catch (err) {
        console.log('Error:', err)
        continue;
