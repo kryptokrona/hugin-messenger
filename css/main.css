@@ -272,7 +272,7 @@
 
 
 #boards_icon > i {
-
+/*
   background: linear-gradient(270deg, #000000, #1b1836);
   background-size: 400% 400%;
 
@@ -281,7 +281,7 @@
 
     -webkit-animation: AnimationName 60s ease infinite;
     -moz-animation: AnimationName 60s ease infinite;
-    animation: AnimationName 60s ease infinite;
+    animation: AnimationName 60s ease infinite; */
     max-width: 25%;
     color: black;
 }
@@ -608,7 +608,7 @@ border-radius: 5px;
   bottom: -1px;
   left: 15px;
   width: 50px;
-  background: linear-gradient(270deg, #000000, #1b1836);
+  /* background: linear-gradient(270deg, #000000, #1b1836);
   background-size: 400% 400%;
 
   background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, #abf25f, #5ff281, #5ff2f0) !important;
@@ -616,7 +616,7 @@ border-radius: 5px;
 
     -webkit-animation: AnimationName 10s ease infinite;
     -moz-animation: AnimationName 10s ease infinite;
-    animation: AnimationName 10s ease infinite;
+    animation: AnimationName 10s ease infinite; */
 }
 
 #status_icon {
@@ -770,13 +770,13 @@ a {
   position: absolute;
   left: 0;
   top: 0;
-  background: linear-gradient(270deg, #000000, #1b1836);
+  /* background: linear-gradient(270deg, #000000, #1b1836);
   background-size: 400% 400%;
   background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, #abf25f, #5ff281, #5ff2f0) !important;
   background-size: 1000% 1000% !important;
   -webkit-animation: AnimationName 60s ease infinite;
   -moz-animation: AnimationName 60s ease infinite;
-  animation: AnimationName 60s ease infinite;
+  animation: AnimationName 60s ease infinite; */
   height: 3px;
 }
 
@@ -2328,7 +2328,7 @@ display: none;
 width: 200px;
 background: black;
 margin-bottom: 10px;
-background: linear-gradient(270deg, #000000, #1b1836);
+/* background: linear-gradient(270deg, #000000, #1b1836);
 background-size: 400% 400%;
 
 background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, #abf25f, #5ff281, #5ff2f0) !important;
@@ -2336,7 +2336,7 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
 
   -webkit-animation: AnimationName 60s ease infinite;
   -moz-animation: AnimationName 60s ease infinite;
-  animation: AnimationName 60s ease infinite;
+  animation: AnimationName 60s ease infinite; */
 
 }
 
@@ -2349,7 +2349,7 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
 }
 
 #hugin-background {
-  background: linear-gradient(270deg, #000000, #1b1836);
+  /* background: linear-gradient(270deg, #000000, #1b1836);
 background-size: 400% 400%;
 
 background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, #abf25f, #5ff281, #5ff2f0) !important;
@@ -2358,7 +2358,7 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
 
     -webkit-animation: AnimationName 60s ease infinite;
     -moz-animation: AnimationName 60s ease infinite;
-    animation: AnimationName 60s ease infinite;
+    animation: AnimationName 60s ease infinite; */
     width: 350px;
     height: 350px;
     display: inline-block;
@@ -2394,7 +2394,7 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
     z-index: 1;
     top: -65px;
     left: 0;
-    background: linear-gradient(270deg, #000000, #1b1836);
+    /* background: linear-gradient(270deg, #000000, #1b1836);
   background-size: 400% 400%;
 
   background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, #abf25f, #5ff281, #5ff2f0) !important;
@@ -2403,7 +2403,7 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
 
       -webkit-animation: AnimationName 60s ease infinite;
       -moz-animation: AnimationName 60s ease infinite;
-      animation: AnimationName 60s ease infinite;
+      animation: AnimationName 60s ease infinite; */
   }
 
   @-webkit-keyframes AnimationName {
@@ -2625,13 +2625,13 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
   padding-top: 70px !important;
 }
 
-.gradient {
+/* .gradient {
   background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, #abf25f, #5ff281, #5ff2f0) !important;
   background-size: 1000% 1000% !important;
   -webkit-animation: AnimationName 60s ease infinite;
   -moz-animation: AnimationName 60s ease infinite;
   animation: AnimationName 60s ease infinite alternate;
-}
+} */
 
 button {
   border-radius: 3px;
@@ -2748,14 +2748,12 @@ li .gradient {
 }
 
 
-.rgb {
+.rgb, .gradient {
 
-  background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, #abf25f, #5ff281, #5ff2f0) !important;
-    background-size: 1000% 1000% !important;
-
-    -webkit-animation: AnimationName 60s ease infinite;
-    -moz-animation: AnimationName 60s ease infinite;
-    animation: AnimationName 60s ease infinite;
+  background: #5f86f2;
+  -webkit-animation: rgb 60s ease infinite;
+  -moz-animation: rgb 60s ease infinite;
+  animation: rgb 60s ease infinite;
 }
 
 .board_avatar_reply {
@@ -2792,4 +2790,32 @@ margin-left: 31px;
 .removed {
   transition: 0.5s all;
   transform: scale(0);
+}
+
+@keyframes rgb {
+  0%, 100% {
+    background: #5f86f2;
+  }
+  12.5% {
+    background: #a65ff2;
+  }
+  25% {
+    background: #f25fd0;
+  }
+  37.5% {
+    background: #f25f61;
+  }
+  50% {
+    background: #f2cb5f;
+  }
+  62.5% {
+    background: #abf25f;
+  }
+  75% {
+    background: #5ff281;
+  }
+  87.5% {
+    background: 5ff2f0;
+  }
+  , , , , , , , #) !important;
 }
