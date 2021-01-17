@@ -2363,16 +2363,16 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
     height: 350px;
     display: inline-block;
     border-radius: 50%;
-    margin-top: 10%;
+    margin-top: 2%;
 
 }
 
 #hugin-background img {
-  position: absolute;
-  width: 440px;
-  top: -29px;
-  left: 6px;
-  margin-top: 10%;
+    position: absolute;
+    width: 440px;
+    top: -97px;
+    left: 3px;
+    margin-top: 10%;
 }
 
 #welcome-text {

@@ -503,6 +503,8 @@ $('#currentchat_header_wrapper').toggleClass('toggled_addr');
 });
 
 $('#message_icon').click(function(){
+  $("#new_board").addClass('hidden');
+$("#boards_picker").empty().addClass('hidden');
 $("#settings_page").fadeOut();
 $(".setting_page").fadeOut();
 if (!$('#boards').hasClass('hidden') || $('#flip-box-inner').hasClass('flip')) {

@@ -21,6 +21,22 @@ contextMenu({
 	]
 });
 
+function dataURLtoFile(dataurl, filename) {
+
+       var arr = dataurl.split(','),
+           mime = arr[0].match(/:(.*?);/)[1],
+           bstr = atob(arr[1]),
+           n = bstr.length,
+           u8arr = new Uint8Array(n);
+
+       while(n--){
+           u8arr[n] = bstr.charCodeAt(n);
+       }
+
+       return new File([u8arr], filename, {type:mime});
+   }
+
+
 var sdp = require('./sdp');
  let current_board = '';
 const Datastore = require('nedb');
@@ -1567,7 +1583,7 @@ function sortMessages(arr){
    return arr;
 }
 
-function get_avatar(hash) {
+function get_avatar(hash, format='svg') {
 
   // Get custom color scheme based on address
   rgb = intToRGB(hashCode(hash));
@@ -1578,7 +1594,7 @@ function get_avatar(hash) {
         background: [parseInt(rgb.red/10), parseInt(rgb.green/10), parseInt(rgb.blue/10), 0],         // rgba white
         margin: 0.2,                              // 20% margin
         size: 40,                                // 420px square
-        format: 'svg'                             // use SVG instead of PNG
+        format: format                             // use SVG instead of PNG
       };
 
   // create a base64 encoded SVG
@@ -2482,9 +2498,16 @@ all_transactions = all_transactions.filter(function (el) {
             handleMagnetLink(magnetLinks, payload_json.t, true, payload_json.from);
           }
           if (handleMagnetListed(payload_json.msg)) {
+
+            require("fs").writeFile(payload_json.from + ".png", get_avatar(payload_json.from, 'png'), 'base64', function(err) {
+              console.log(err);
+            });
+
+
             notifier.notify({
               title: payload_json.from,
               message: handleMagnetListed(parseCall(payload_json.msg, payload_json.from)),
+              icon: payload_json.from + ".png",
               wait: true // Wait with callback, until user action is taken against notification
             });
           }
