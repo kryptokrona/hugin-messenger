@@ -2781,8 +2781,10 @@ $('#boards_icon').click(function(){
  $('.board_message').remove();
  console.log(signingPublicKey);
  console.log(currentPubKey.innerHTML);
- $('#home_board').addClass('current');
+
  print_boards();
+
+ $('#home_board').addClass('current');
 
 
 
