@@ -2171,6 +2171,9 @@ function find_messages(opt, skip, limit, sort=-
 
 
 async function get_confirmed_messages(from, to) {
+  if (!from || !to) {
+    return;
+  }
   return new Promise(function(resolve, reject) {
 
     walletd.getTransactions(
@@ -2179,6 +2182,12 @@ async function get_confirmed_messages(from, to) {
       '',
       [],
       '').then(resp => {
+
+        console.log(resp);
+        console.log(resp);
+        console.log(resp);
+        console.log(resp);
+        console.log(resp);
 
         let arr = [];
 
@@ -2306,6 +2315,8 @@ async function print_conversations() {
 
 print_conversations();
 
+let known_txs = [];
+
 
 async function get_new_conversations(unconfirmed) {
 
@@ -2344,7 +2355,24 @@ async function get_new_conversations(unconfirmed) {
     }
       unconfirmed_transactions = await get_unconfirmed_messages();
 
-      all_transactions = confirmed_transactions.concat(unconfirmed_transactions);
+      for (tx in unconfirmed_transactions) {
+
+        if (!known_txs.includes(unconfirmed_transactions[tx])) {
+          known_txs.push(unconfirmed_transactions[tx]);
+        } else {
+          unconfirmed_transactions.splice(tx);
+        }
+
+
+      }
+
+      console.log(unconfirmed_transactions);
+
+      // console.log(confirmed_transactions);
+
+
+
+      all_transactions = unconfirmed_transactions;
       misc.update({}, { $set: {height: check_block} });
       last_block_checked = check_block;
 
@@ -2352,6 +2380,19 @@ async function get_new_conversations(unconfirmed) {
 } else {
 
     unconfirmed_transactions = await get_unconfirmed_messages();
+
+
+    for (tx in unconfirmed_transactions) {
+
+      if (!known_txs.includes(unconfirmed_transactions[tx])) {
+        known_txs.push(unconfirmed_transactions[tx]);
+      } else {
+        unconfirmed_transactions.splice(tx);
+      }
+
+    }
+
+
 
   all_transactions = unconfirmed_transactions;
 }
