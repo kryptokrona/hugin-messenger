@@ -49,6 +49,28 @@ let endCall = (peer, stream) => {
     $('#screen-button').click(function() { startCall(true, true, true) });
 }
 
+let print_boards = () => {
+
+  $('#boards_picker').empty();
+
+  let boards_addresses = rmt.getGlobal('boards_addresses');
+  for (address in boards_addresses) {
+    let this_address = boards_addresses[address];
+    if (this_address[0] == "SEKReX27SM2jE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDTysRXy") {
+      continue;
+    }
+    console.log('this_address', this_address);
+    let board_color = intToRGB(hashCode((this_address[1])));
+    if (this_address[0] == "SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc") {
+      $('#boards_picker').append('<div class="board_icon" id="home_board" style="background: rgb(' + board_color.red + ',' +  board_color.green + ',' +  board_color.blue + ')"><i class="fa fa-home"></i></div>');
+    } else {
+      $('#boards_picker').append('<div class="board_icon" title="' + letter_from_spend_key(this_address[1]) +  '" id="' + this_address[0] + '" style="background: rgb(' + board_color.red + ',' +  board_color.green + ',' +  board_color.blue + ')">' + letter_from_spend_key(this_address[1]).substring(0, 1) + '</div>');
+    }
+
+  }
+
+}
+
 let parse_sdp = (sdp) => {
 
   // console.log("sdp:",sdp);
@@ -1339,7 +1361,7 @@ function sendBoardMessage(message) {
         $('#replyto_exit').click();
       }
 
-      print_board_message(payload_json.k, payload_json.m, payload_json.t, $('.current').attr('id'), payload_json.n, payload_json.r);
+      print_board_message(payload_json.k, payload_json.m, Date.now()/1000, $('.current').attr('id'), payload_json.n, payload_json.r);
 
 
       //payload_json_decoded = naclUtil.decodeUTF8(JSON.stringify(payload_json));
@@ -2728,10 +2750,8 @@ ipcRenderer.on('imported-view-subwallet', async (event, address) => {
         alert('Invalid board address, please try again!');
         return;
       } else {
-        $('#boards_icon').click();
-        $('#boards_icon').click();
         $('#new_board').click();
-        $('#' + address).click();
+        print_boards();
       }
 
 });
@@ -2761,22 +2781,8 @@ $('#boards_icon').click(function(){
  $('.board_message').remove();
  console.log(signingPublicKey);
  console.log(currentPubKey.innerHTML);
- let boards_addresses = rmt.getGlobal('boards_addresses');
- for (address in boards_addresses) {
-   let this_address = boards_addresses[address];
-   if (this_address[0] == "SEKReX27SM2jE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDTysRXy") {
-     continue;
-   }
-   console.log('this_address', this_address);
-   let board_color = intToRGB(hashCode((this_address[1])));
-   if (this_address[0] == "SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc") {
-     $('#boards_picker').append('<div class="board_icon current" id="home_board" style="background: rgb(' + board_color.red + ',' +  board_color.green + ',' +  board_color.blue + ')"><i class="fa fa-home"></i></div>');
-   } else {
-     $('#boards_picker').append('<div class="board_icon" title="' + letter_from_spend_key(this_address[1]) +  '" id="' + this_address[0] + '" style="background: rgb(' + board_color.red + ',' +  board_color.green + ',' +  board_color.blue + ')">' + letter_from_spend_key(this_address[1]).substring(0, 1) + '</div>');
-   }
-
- }
-
+ $('#home_board').addClass('current');
+ print_boards();
 
 
 
