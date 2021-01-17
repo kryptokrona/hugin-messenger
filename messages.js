@@ -1294,7 +1294,7 @@ function sendBoardMessage(message) {
         if (links_in_message[j].match(/youtu/) || links_in_message[j].match(/y2u.be/)) { // Embeds YouTube links
           message = message.replace(links_in_message[j],'');
           embed_code = links_in_message[j].split('/').slice(-1)[0].split('=').slice(-1)[0];
-          youtube_links += '<div style="position:relative;height:0;padding-bottom:42.42%"><iframe src="https://www.youtube.com/embed/' + embed_code + '" style="position:absolute;width:80%;height:100%;left:10%" width="849" height="360" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>';
+          youtube_links += '<div id ="ytv" style="position:relative;height:0;padding-bottom:42.42%"><iframe src="https://www.youtube.com/embed/' + embed_code + '?modestbranding=1" style="position:absolute;width:80%;height:100%;left:10%" width="849" height="360" frameborder="0" allow="autoplay; encrypted-media"></iframe></div>';
         } else if (imagetypes.indexOf(links_in_message[j].substr(-4)) > -1 ) { // Embeds image links
           message = message.replace(links_in_message[j],'');
           image_attached_url = links_in_message[j];
@@ -2921,7 +2921,7 @@ let print_board_message = async (pubkey, message, timestamp, fetching_board, nic
        if (links_in_message[j].match(/youtu/) || links_in_message[j].match(/y2u.be/)) { // Embeds YouTube links
          message = message.replace(links_in_message[j],'');
          embed_code = links_in_message[j].split('/').slice(-1)[0].split('=').slice(-1)[0];
-         youtube_links += '<div style="position:relative;height:0;padding-bottom:42.42%"><iframe src="https://www.youtube.com/embed/' + embed_code + '" style="position:absolute;width:80%;height:100%;left:10%" width="849" height="360" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>';
+         youtube_links += '<div style="position:relative;height:0;padding-bottom:42.42%"><iframe src="https://www.youtube.com/embed/' + embed_code + '?modestbranding=1" style="position:absolute;width:80%;height:100%;left:10%" width="849" height="360" frameborder="0" allow="autoplay; encrypted-media"></iframe></div>';
        } else if (imagetypes.indexOf(links_in_message[j].substr(-4)) > -1 ) { // Embeds image links
          message = message.replace(links_in_message[j],'');
          image_attached_url = links_in_message[j];
@@ -2931,6 +2931,7 @@ let print_board_message = async (pubkey, message, timestamp, fetching_board, nic
        }
      }
    }
+
 
 
 
@@ -2976,9 +2977,8 @@ let print_board_message = async (pubkey, message, timestamp, fetching_board, nic
        $('.' + toString(timestamp*1000) + ' img').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/svg+xml;base64,' + avatar_base64_reply + '"><p>' + message_reply.substring(0,25)  +'..</p></div>');
 
 
-
-
   }
+
 }
 
 
@@ -3057,7 +3057,7 @@ ipcRenderer.on('got-boards', async (event, json) => {
             if (links_in_message[j].match(/youtu/) || links_in_message[j].match(/y2u.be/)) { // Embeds YouTube links
               message = message.replace(links_in_message[j],'');
               embed_code = links_in_message[j].split('/').slice(-1)[0].split('=').slice(-1)[0];
-              youtube_links += '<div style="position:relative;height:0;padding-bottom:42.42%"><iframe src="https://www.youtube.com/embed/' + embed_code + '" style="position:absolute;width:80%;height:100%;left:10%" width="849" height="360" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>';
+              youtube_links += '<div style="position:relative;height:0;padding-bottom:42.42%"><iframe src="https://www.youtube.com/embed/' + embed_code + '?modestbranding=1" style="position:absolute;width:80%;height:100%;left:10%" width="849" height="360" frameborder="0" allow="autoplay; encrypted-media"></iframe></div>';
             } else if (imagetypes.indexOf(links_in_message[j].substr(-4)) > -1 ) { // Embeds image links
               message = message.replace(links_in_message[j],'');
               image_attached_url = links_in_message[j];
