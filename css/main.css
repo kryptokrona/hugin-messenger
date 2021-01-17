@@ -1812,7 +1812,7 @@ header  {
 
  .board_message p {
 
-background: rgba(57, 76, 145, 0.7) !important;
+background: rgba(57, 76, 145, 0.7);
 
  }
 
@@ -1943,10 +1943,9 @@ background: rgba(57, 76, 145, 0.7) !important;
     background: #fff !important;
   }
 
-  #left_panel .fa, #new_chat:hover{
+  #boards_icon .fa:hover {
 
-    background-color: none;
-    color: black;
+    color: white !important;
     border-radius: 5px;
   }
 
