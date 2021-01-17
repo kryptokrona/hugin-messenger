@@ -203,6 +203,8 @@ ipcMain.on('remove-subwallet', async(event, addr) => {
 
   event.reply('removed-subwallet', addr);
 
+  js_wallet.saveWalletToFile(userDataDir + '/boards.wallet', 'hunter2');
+
 });
 
 ipcMain.on('import-view-subwallet', async(event, arg) => {
@@ -230,7 +232,7 @@ ipcMain.on('import-view-subwallet', async(event, arg) => {
            }
 
            global.boards_addresses = boards_addresses;
-           
+
            js_wallet.saveWalletToFile(userDataDir + '/boards.wallet', 'hunter2');
 
 
