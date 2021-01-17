@@ -85,6 +85,30 @@ let print_boards = () => {
 
   }
 
+
+   $('.board_icon').click(function() {
+
+
+     let this_board = $(this).attr('id');
+
+     if ($(this).hasClass('current')) {
+       return;
+     }
+
+     current_board = this_board;
+     if (this_board == "home_board") {
+       this_board = 'SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc';
+     }
+
+     console.log(this_board);
+
+     ipcRenderer.send('get-boards', this_board);
+     $('.current').removeClass('current');
+     $(this).addClass('current');
+
+
+   });
+
 }
 
 let parse_sdp = (sdp) => {
@@ -2817,33 +2841,6 @@ $('#boards_icon').click(function(){
 
  $('#home_board').addClass('current');
 
-
-
- $('.board_icon').click(function() {
-
-
-
-
-
-   let this_board = $(this).attr('id');
-
-   if ($(this).hasClass('current')) {
-     return;
-   }
-
-   current_board = this_board;
-   if (this_board == "home_board") {
-     this_board = 'SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc';
-   }
-
-   console.log(this_board);
-
-   ipcRenderer.send('get-boards', this_board);
-   $('.current').removeClass('current');
-   $(this).addClass('current');
-
-
- });
 
  if ($('#boards').hasClass('hidden')) {
    $('#avatar').attr('src', 'data:image/svg+xml;base64,' + get_avatar(currentAddr));

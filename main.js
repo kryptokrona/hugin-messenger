@@ -187,6 +187,20 @@ ipcMain.on('remove-subwallet', async(event, addr) => {
 
   const error = await js_wallet.deleteSubWallet(addr);
 
+
+  let boards_addresses = [];
+
+  let i = 0;
+
+  for (const address of js_wallet.getAddresses()) {
+       const [publicSpendKey, privateSpendKey, err] = await js_wallet.getSpendKeys(address);
+       boards_addresses[boards_addresses.length] = [address, publicSpendKey];
+       console.log(`Address [${i}]: ${address}`);
+       i++;
+  }
+
+  global.boards_addresses = boards_addresses;
+
   event.reply('removed-subwallet', addr);
 
 });
@@ -216,6 +230,8 @@ ipcMain.on('import-view-subwallet', async(event, arg) => {
            }
 
            global.boards_addresses = boards_addresses;
+           
+           js_wallet.saveWalletToFile(userDataDir + '/boards.wallet', 'hunter2');
 
 
       } else {
