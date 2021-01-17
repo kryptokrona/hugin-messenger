@@ -3011,7 +3011,7 @@ ipcRenderer.on('got-boards', async (event, json) => {
           addClasses = 'emoji-message';
         }
 
-        let message = hex_json.m;
+        let message = escapeHtml(hex_json.m);
 
         if (message.length < 1) {
           continue;
@@ -3070,12 +3070,11 @@ ipcRenderer.on('got-boards', async (event, json) => {
        }
 
        if (hex_json.n) {
-         $('.this_board_message .board_message_pubkey').before('<span class="boards_nickname">' + hex_json.n + '</span>')
+         $('.this_board_message .board_message_pubkey').before('<span class="boards_nickname">' + escapeHtml(hex_json.n) + '</span>')
        }
 
        if (hex_json.r) {
          // $('.this_board_message .board_message_pubkey').before('<span class="boards_nickname">' + hex_json.n + '</span>')
-         console.log('reply to:', hex_json.r);
          let tx_data_reply = await fetch('http://' + rmt.getGlobal('node') + '/json_rpc', {
               method: 'POST',
               body: JSON.stringify({
