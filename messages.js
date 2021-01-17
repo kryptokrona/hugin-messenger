@@ -2700,10 +2700,12 @@ $("document").ready(function(){
 
   $('#new_chat').click(function(){
     $('#currentchat_header_wrapper').addClass('toggled_addr');
-    $('#recipient_form').val('');
     $('#currentchat_pubkey').hide();
     $('.checkmark').hide();
     $('#messages').empty();
+    $('#boards').addClass('hidden');
+    $('#messages_page').removeClass('hidden');
+    $('#recipient_form').val('').focus();
   })
 });
 

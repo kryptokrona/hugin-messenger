@@ -503,5 +503,12 @@ $('#currentchat_header_wrapper').toggleClass('toggled_addr');
 });
 
 $('#message_icon').click(function(){
-$("#settings_page").fadeOut(); $(".setting_page").fadeOut(); myFunction();
+$("#settings_page").fadeOut();
+$(".setting_page").fadeOut();
+if (!$('#boards').hasClass('hidden') || $('#flip-box-inner').hasClass('flip')) {
+myFunction();
+}
+
+$('#boards').addClass('hidden');
+$("#messages_page").removeClass('hidden');
 })
