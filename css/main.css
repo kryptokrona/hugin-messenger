@@ -1823,6 +1823,38 @@ background: rgba(57, 76, 145, 0.7) !important;
     background: rgba(0,0,0,0.05) !important;
   }
 
+  .boards_nickname {
+
+    color: black;
+
+  }
+
+  .board_message_reply::before {
+
+    color: black;
+  }
+
+  #boards_nickname_form {
+
+    background: rgba(0,0,0,0.1) !important;
+    color:black !important;
+  }
+
+  #modal {
+
+      background: #f1f2f3 !important;
+      color: black;
+
+  }
+
+  #modal input {
+
+    color: black !important;
+    background: white !important;
+
+
+  }
+
 
  #incomingCall {
 
