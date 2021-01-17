@@ -187,9 +187,7 @@ ipcMain.on('remove-subwallet', async(event, addr) => {
 
   const error = await js_wallet.deleteSubWallet(addr);
 
-  if (error) {
-       console.log(`Failed to delete subwallet: ${error.toString()}`);
-  }
+  event.reply('removed-subwallet', addr);
 
 });
 

@@ -2788,3 +2788,8 @@ font-size: 28pt;
 margin-left: 31px;
 
 }
+
+.removed {
+  transition: 0.5s all;
+  transform: scale(0);
+}

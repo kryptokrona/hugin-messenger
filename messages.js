@@ -4,6 +4,22 @@ const copy = require( 'copy-to-clipboard' );
 const notifier = require('node-notifier');
 const { openAlias } = require('openalias');
 const { desktopCapturer } = require('electron');
+const contextMenu = require('electron-context-menu');
+
+contextMenu({
+	prepend: (defaultActions, params, browserWindow) => [
+		{
+			label: 'Remove',
+			// Only show it when right-clicking images
+			visible: document.elementFromPoint(params.x, params.y).className.split(' ').includes('board_icon'),
+      click: () => {
+        // console.log(document.elementFromPoint(params.x, params.y).id);
+        ipcRenderer.send('remove-subwallet', document.elementFromPoint(params.x, params.y).id);
+
+      }
+		}
+	]
+});
 
 var sdp = require('./sdp');
  let current_board = '';
@@ -869,6 +885,16 @@ const {ipcRenderer} = require('electron');
 ipcRenderer.on('gotNodes', (evt, json) => {
   console.log(json);
 })
+
+
+ipcRenderer.on('removed-subwallet', (evt, addr) => {
+ $('#' + addr).addClass('removed');
+
+ if ($('#' + addr).hasClass('current')) {
+   $('#home_board').click();
+ }
+})
+
 
 
 
