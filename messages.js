@@ -91,7 +91,7 @@ let print_boards = () => {
     if (this_address[0] == "SEKReX27SM2jE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDTysRXy") {
       continue;
     }
-    console.log('this_address', this_address);
+
     let board_color = intToRGB(hashCode((this_address[1])));
     if (this_address[0] == "SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc") {
       $('#boards_picker').append('<div class="board_icon" id="home_board" style="background: rgb(' + board_color.red + ',' +  board_color.green + ',' +  board_color.blue + ')"><i class="fa fa-home"></i></div>');
@@ -116,7 +116,7 @@ let print_boards = () => {
        this_board = 'SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc';
      }
 
-     console.log(this_board);
+
 
      ipcRenderer.send('get-boards', this_board);
      $('.current').removeClass('current');
@@ -242,7 +242,7 @@ if (!screenshare) {
     audio: audio
   }).then(gotMedia).catch(() => {})
 } else { desktopCapturer.getSources({ types: ['window', 'screen'] }).then(async sources => {
-  console.log('SÅRSCESS:', sources)
+
   for (const source of sources) {
     if (source.name === 'Entire Screen') {
       try {
@@ -1138,7 +1138,6 @@ let download_messages = (from, to) => {
 
 let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json, silent=false) => {
 
-    console.log(silent);
 
         walletd.sendTransaction(
           mixin,
@@ -1322,8 +1321,6 @@ function sendMessage(message, silent=false) {
 
 function sendBoardMessage(message) {
 
-    console.log('sending board message');
-
     if (message.length == 0) {
       return
     }
@@ -1397,8 +1394,6 @@ function sendBoardMessage(message) {
     } else {
       receiver = current_board;
     }
-
-    console.log(receiver);
 
       // Transaction details
       amount = 1;
@@ -2183,12 +2178,6 @@ async function get_confirmed_messages(from, to) {
       [],
       '').then(resp => {
 
-        console.log(resp);
-        console.log(resp);
-        console.log(resp);
-        console.log(resp);
-        console.log(resp);
-
         let arr = [];
 
         if (resp.code == 'ETOOLARGE') {
@@ -2271,12 +2260,16 @@ function get_unconfirmed_messages() {
       for (let i = 0; i < txsLength; i++) {
       walletd.getTransaction(response.body.result.transactionHashes[i])
       .then(resp => {
+        try {
         transaction = resp.body.result.transaction;
 
         transactions[i] = transaction.extra.substring(66);
         if ( (txsLength - i) == 1) {
           resolve(transactions);
         }
+      } catch (err) {
+        console.log(err);
+      }
       }).catch(err => {
         reject(err);
       });
@@ -2322,6 +2315,8 @@ async function get_new_conversations(unconfirmed) {
 
   known_keys = await find(keychain, {});
 
+  let unconfirmed_transactions = [];
+
   block_height = await get_block_height();
   let check_block = last_block_checked;
 
@@ -2357,18 +2352,17 @@ async function get_new_conversations(unconfirmed) {
 
       for (tx in unconfirmed_transactions) {
 
+        console.log(unconfirmed_transactions[tx]);
+
         if (!known_txs.includes(unconfirmed_transactions[tx])) {
           known_txs.push(unconfirmed_transactions[tx]);
         } else {
-          unconfirmed_transactions.splice(tx);
+          unconfirmed_transactions.splice(tx, 1);
         }
 
 
       }
 
-      console.log(unconfirmed_transactions);
-
-      // console.log(confirmed_transactions);
 
 
 
@@ -2387,7 +2381,7 @@ async function get_new_conversations(unconfirmed) {
       if (!known_txs.includes(unconfirmed_transactions[tx])) {
         known_txs.push(unconfirmed_transactions[tx]);
       } else {
-        unconfirmed_transactions.splice(tx);
+        unconfirmed_transactions.splice(tx, 1);
       }
 
     }
@@ -2465,8 +2459,6 @@ all_transactions = all_transactions.filter(function (el) {
         let i = 0;
 
         let decryptBox = false;
-
-        console.log('known_keys.length', known_keys.length)
 
         while (i < known_keys.length && !decryptBox) {
 
@@ -2844,7 +2836,7 @@ window.setInterval(function(){
     get_new_conversations(false);
   }
 
-},10000);
+},10333);
 
 $('#new_board').click(function(){
 
@@ -2863,8 +2855,6 @@ $('#create_pub_board_button').click(function(){
 
 ipcRenderer.on('imported-view-subwallet', async (event, address) => {
 
-  console.log('got address:', address);
-
       if (address == "SEKReX27SM2jE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDTysRXy") {
         alert('Invalid board address, please try again!');
         return;
@@ -2875,10 +2865,6 @@ ipcRenderer.on('imported-view-subwallet', async (event, address) => {
 
 });
 
-
-let load_board = (board) => {
-  console.log(board);
-}
 
 
 $('#join_board_button').click(function(){});
@@ -2898,8 +2884,6 @@ $('#boards_icon').click(function(){
  $("#context_menu").hide();
  $("#boards_picker").empty().toggleClass('hidden');
  $('.board_message').remove();
- console.log(signingPublicKey);
- console.log(currentPubKey.innerHTML);
 
  print_boards();
 
@@ -3075,8 +3059,6 @@ ipcRenderer.on('got-boards', async (event, json) => {
   let fetching_board = current_board;
 
   $('#boards .board_message').remove();
-
-  console.log('txs', json);
 
   for (tx in json) {
     let hash = json[tx].hash;
