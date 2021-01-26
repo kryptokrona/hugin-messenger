@@ -74,11 +74,11 @@ let endCall = (peer, stream) => {
   awaiting_callback = false;
 
 
-    $('#video-button').click(function() { startCall(true, true) });
+    $('#video-button').unbind('click').click(function() { startCall(true, true) });
 
-    $('#call-button').click(function() { startCall(true, false) });
+    $('#call-button').unbind('click').click(function() { startCall(true, false) });
 
-    $('#screen-button').click(function() { startCall(true, true, true) });
+    $('#screen-button').unbind('click').click(function() { startCall(true, true, true) });
 }
 
 let print_boards = () => {
@@ -228,6 +228,8 @@ function handleError (e) {
 }
 
 let startCall = (audio, video, screenshare=false) => {
+
+  console.log('Starting call..');
 
   $('#video-button').unbind('click');
 
@@ -1226,6 +1228,8 @@ let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json
 }
 
 function sendMessage(message, silent=false) {
+
+	console.log('Sending messages..');
 
   let has_history = false;
 
