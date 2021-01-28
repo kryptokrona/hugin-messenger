@@ -2,7 +2,7 @@ const electron = require('electron')
 // Module to control application life.
 const app = electron.app
 
-const { Tray } = require('electron')
+const { nativeTheme, Tray } = require('electron')
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow
 
@@ -12,10 +12,26 @@ const xhr = require('xhr')
 const fs = require('fs')
 const notifier = require('node-notifier');
 
+//
+//
+// function getTrayIcon(isDark = nativeTheme.shouldUseDarkColors): string {
+//   return path.resolve(`/path/to/icons/tray_icon${isDark ? "_dark" : ""}.png`
+//   )
+// }
+
+function getTrayIcon(isDark = nativeTheme.shouldUseDarkColors): string {
+  return path.resolve(`static/tray-icon${isDark ? "-dark" : ""}.png`
+  )
+
 let tray = null
 app.whenReady().then(() => {
-  console.log('Ready');
-  tray = new Tray('static/tray-iconTemplate.png')
+  let isDark = nativeTheme.shouldUseDarkColors;
+  if (process.platform == 'darwin') {
+    console.log('macfag detected');
+  tray = new Tray('static/tray-iconTemplate.png');
+} else {
+  tray = new Tray(`static/tray-icon${isDark ? "-dark" : ""}.png`);
+}
   const contextMenu = Menu.buildFromTemplate([
     { label: 'Item1', type: 'radio' },
     { label: 'Item2', type: 'radio' },
@@ -24,7 +40,11 @@ app.whenReady().then(() => {
   ])
   tray.setToolTip('This is my application.')
   tray.setContextMenu(contextMenu)
-  console.log('ReadyR');
+  nativeTheme.on("updated", () => {
+    if (process.platform != 'darwin') {
+    tray.setImage(getTrayIcon());
+  }
+  });
 })
 
 const isDev = require('electron-is-dev');
