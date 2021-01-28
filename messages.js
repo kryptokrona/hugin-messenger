@@ -2550,6 +2550,7 @@ all_transactions = all_transactions.filter(function (el) {
           }
           notifier.on('click', function(notifierObject, options) {
             // Triggers if `wait: true` and user clicks notification
+						ipcRenderer.send('show-window');
             print_conversation(payload_json.from);
 
           });
@@ -3058,6 +3059,85 @@ let print_board_message = async (pubkey, message, timestamp, fetching_board, nic
 
 
 // imported-view-subwallet
+
+ipcRenderer.on('new-message', async (event, transaction) => {
+
+
+  let tx_data = await fetch('http://' + rmt.getGlobal('node') + '/json_rpc', {
+       method: 'POST',
+       body: JSON.stringify({
+         jsonrpc: '2.0',
+         method: 'f_transaction_json',
+         params: {hash: transaction.hash}
+       })
+     })
+
+		 const resp = await tx_data.json();
+		 let timestamp = resp.result.block.timestamp;
+
+		 result = resp.result.tx.extra.substring(66);
+		 let hex_json = JSON.parse(fromHex(result));
+		 let verified = nacl.sign.detached.verify(naclUtil.decodeUTF8(hex_json.m), fromHexString(hex_json.s), fromHexString(hex_json.k));
+
+		 if (!verified) {
+			 return;
+		 }
+		 let to_board = letter_from_spend_key(transaction.transfers[0].publicKey);
+     require("fs").writeFile(payload_json.from + ".png", get_avatar(hex_json.k, 'png'), 'base64', function(err) {
+       console.log(err);
+     });
+
+     let message = escapeHtml(hex_json.m);
+
+     if (message.length < 1) {
+       return;
+     }
+
+		 let name;
+
+    if (hex_json.n) {
+      name = hex_json.n;
+    } else {
+			name = 'Anonymous';
+		}
+		if (hex_json.k != Buffer.from(signingKeyPair.publicKey).toString('hex')) {
+     notifier.notify({
+       title: name + " in " + to_board,
+       message: message,
+       icon: payload_json.from + ".png",
+       wait: true // Wait with callback, until user action is taken against notification
+     });
+
+   notifier.on('click', function(notifierObject, options) {
+     // Triggers if `wait: true` and user clicks notification
+			ipcRenderer.send('show-window');
+			//
+			//
+			//      let this_board = $(this).attr('id');
+			//
+			//      if ($(this).hasClass('current')) {
+			//        return;
+			//      }
+			//
+			//      current_board = this_board;
+			//      if (this_board == "home_board") {
+			//        this_board = 'SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc';
+			//      }
+			//
+			//
+			//
+			//      ipcRenderer.send('get-boards', this_board);
+			//      $('.current').removeClass('current');
+			//      $(this).addClass('current');
+     	// open_board(payload_json.from);
+
+   });
+
+}
+
+
+})
+
 ipcRenderer.on('got-boards', async (event, json) => {
 
   let fetching_board = current_board;

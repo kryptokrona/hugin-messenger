@@ -24,15 +24,6 @@ autoLauncher.isEnabled().then(function(isEnabled) {
   throw err;
 });
 
-
-
-//
-//
-// function getTrayIcon(isDark = nativeTheme.shouldUseDarkColors): string {
-//   return path.resolve(`/path/to/icons/tray_icon${isDark ? "_dark" : ""}.png`
-//   )
-// }
-
 function getTrayIcon() {
   let isDark = nativeTheme.shouldUseDarkColors;
   return `static/tray-icon${isDark ? "-dark" : ""}.png`;
@@ -83,6 +74,8 @@ if (fs.existsSync(userDataDir + '/boards.wallet')) {
     c = 'c';
 }
 
+let syncing = true;
+
 (async () => {
 
 
@@ -121,15 +114,22 @@ if (fs.existsSync(userDataDir + '/boards.wallet')) {
     await js_wallet.start();
 
     js_wallet.on('incomingtx', (transaction) => {
+
         console.log(`Incoming transaction of ${transaction.totalAmount()} received!`);
-        //
-        // notifier.notify({
-        //   title: "New Hugin Boards message",
-        //   message: "Open Hugin to read it",
-        //   wait: true // Wait with callback, until user action is taken against notification
-        // });
+
+        if (!syncing) {
+          mainWindow.webContents.send('new-message', transaction.toJSON());
+        }
 
     });
+
+    js_wallet.on('sync', (heights) => {
+
+      syncing = false;
+
+    });
+
+
 
     let i = 1;
 
@@ -389,11 +389,18 @@ function createWindow () {
   })
 
 
+      ipcMain.on('show-window', async (event) => {
+
+
+        mainWindow.show();
+
+      })
+
+
 
 
       let isDark = nativeTheme.shouldUseDarkColors;
       if (process.platform == 'darwin') {
-        console.log('macfag detected');
       tray = new Tray('static/tray-iconTemplate.png');
     } else {
       tray = new Tray(`static/tray-icon${isDark ? "-dark" : ""}.png`);
