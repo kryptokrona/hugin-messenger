@@ -1,6 +1,8 @@
 const electron = require('electron')
 // Module to control application life.
 const app = electron.app
+
+const { Tray } = require('electron')
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow
 
@@ -9,6 +11,21 @@ const url = require('url')
 const xhr = require('xhr')
 const fs = require('fs')
 const notifier = require('node-notifier');
+
+let tray = null
+app.whenReady().then(() => {
+  console.log('Ready');
+  tray = new Tray('static/tray-iconTemplate.png')
+  const contextMenu = Menu.buildFromTemplate([
+    { label: 'Item1', type: 'radio' },
+    { label: 'Item2', type: 'radio' },
+    { label: 'Item3', type: 'radio', checked: true },
+    { label: 'Item4', type: 'radio' }
+  ])
+  tray.setToolTip('This is my application.')
+  tray.setContextMenu(contextMenu)
+  console.log('ReadyR');
+})
 
 const isDev = require('electron-is-dev');
 
