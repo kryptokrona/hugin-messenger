@@ -25,28 +25,7 @@ function getTrayIcon() {
 }
 
 let tray = null
-app.whenReady().then(() => {
-  let isDark = nativeTheme.shouldUseDarkColors;
-  if (process.platform == 'darwin') {
-    console.log('macfag detected');
-  tray = new Tray('static/tray-iconTemplate.png');
-} else {
-  tray = new Tray(`static/tray-icon${isDark ? "-dark" : ""}.png`);
-}
-  const contextMenu = Menu.buildFromTemplate([
-    { label: 'Item1', type: 'radio' },
-    { label: 'Item2', type: 'radio' },
-    { label: 'Item3', type: 'radio', checked: true },
-    { label: 'Item4', type: 'radio' }
-  ])
-  tray.setToolTip('This is my application.')
-  tray.setContextMenu(contextMenu)
-  nativeTheme.on("updated", () => {
-    if (process.platform != 'darwin') {
-    tray.setImage(getTrayIcon());
-  }
-  });
-})
+
 
 const isDev = require('electron-is-dev');
 
@@ -309,11 +288,15 @@ let fetchNodes = () => {
 var Menu = electron.Menu;
 
 
+
 ipcMain.on('close-me', (evt, arg) => {
-  js_wallet.stop();
-  app.quit();
+  console.log('hello');
+  if(!app.isQuiting){
+      mainWindow.hide();
+  }
 
 })
+
 
 // ipcMain.on('get-nodes', (evt, arg) => {
 //   // evt.reply('got-nodes', {nodies: 1});
@@ -366,7 +349,6 @@ function createWindow () {
   })
 
 
-
   // and load the index.html of the app.
   mainWindow.loadURL(url.format({
     pathname: path.join(__dirname, 'index.html'),
@@ -379,8 +361,49 @@ function createWindow () {
     // Dereference the window object, usually you would store windows
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
-    mainWindow = null
+    // mainWindow = null
   })
+
+  mainWindow.on('close', function (e) {
+
+    e.preventDefault();
+    mainWindow.hide();
+    // Dereference the window object, usually you would store windows
+    // in an array if your app supports multi windows, this is the time
+    // when you should delete the corresponding element.
+    // mainWindow = null
+  })
+
+
+
+
+      let isDark = nativeTheme.shouldUseDarkColors;
+      if (process.platform == 'darwin') {
+        console.log('macfag detected');
+      tray = new Tray('static/tray-iconTemplate.png');
+    } else {
+      tray = new Tray(`static/tray-icon${isDark ? "-dark" : ""}.png`);
+    }
+      const contextMenu = Menu.buildFromTemplate([
+        { label: 'Show App', click:  function(){
+           mainWindow.show();
+       } },
+       { label: 'Hide App', click:  function(){
+          mainWindow.hide();
+      } },
+       { label: 'Quit', click:  function(){
+           js_wallet.stop();
+           app.exit(0);
+       } }
+      ])
+      tray.setToolTip('Hugin Messenger')
+      tray.setContextMenu(contextMenu)
+      nativeTheme.on("updated", () => {
+        if (process.platform != 'darwin') {
+        tray.setImage(getTrayIcon());
+      }
+      });
+
 
   // Create the Application's main menu
   var template = [{
