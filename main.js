@@ -19,9 +19,10 @@ const notifier = require('node-notifier');
 //   )
 // }
 
-function getTrayIcon(isDark = nativeTheme.shouldUseDarkColors): string {
-  return path.resolve(`static/tray-icon${isDark ? "-dark" : ""}.png`
-  )
+function getTrayIcon() {
+  let isDark = nativeTheme.shouldUseDarkColors;
+  return `static/tray-icon${isDark ? "-dark" : ""}.png`;
+}
 
 let tray = null
 app.whenReady().then(() => {
