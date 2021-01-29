@@ -440,7 +440,7 @@ margin: 0;
 }
 
 body {
-  font-family: "Roboto";
+  font-family: monospace;
   color: white;
   overflow-x: hidden;
   overflow-y: hidden;
@@ -1455,42 +1455,47 @@ overlay p {
  .board_message p {
    padding: 15px;
    border-radius: 5px;
-   background: rgba(57, 76, 145, 0.3);
    width: max-content;
-   max-width: 40%;
+   max-width: 70%;
    word-wrap: break-word;
    border-top-left-radius: 0;
    margin-left: 15px;
    font-family: monospace;
    font-size: 17px;
    cursor: pointer;
+   margin-bottom: 10px;
+   padding-top: 0px;
 
  }
 
 
  .board_message {
  list-style: none;
+ max-width: 60%;
+ background: rgba(0,0,0,0.05);
+ margin-bottom: 10px;
+
  }
 
  .board_message_pubkey {
    vertical-align: 23%;
 font-family: monospace;
-max-width: 105px;
+max-width: 77px;
 display: inline-block;
 overflow: hidden;
 text-overflow: ellipsis;
-border-radius: 14px;
-background: rgba(255,255,255,0.1);
+border-radius: 10px;
+background: rgba(255,255,255,0.05);
 padding: 5px;
-padding-left: 10px;
-padding-right: 10px;
+padding-left: 7px;
+padding-right: 7px;
+font-size: 7pt;
  }
 
 .board_avatar {
    width: 64px;
    height: 64px;
    border-radius: 50%;
-   margin-bottom: -15px;
  }
 
 .message_avatar {
@@ -1810,11 +1815,17 @@ header  {
 
  }
 
- .board_message p {
+ .board_message {
 
-background: rgba(57, 76, 145, 0.7);
+  background: rgba(0,0,0,0.01) !important;
+  color: black;
 
  }
+
+  #board_box {
+    background: rgba(0,0,0,0.01) !important;
+    color: black !important
+  }
 
 
   .board_message_pubkey {
@@ -1824,7 +1835,7 @@ background: rgba(57, 76, 145, 0.7);
   }
 
   .boards_nickname {
-
+    position: absolute;
     color: black;
 
   }
@@ -2434,6 +2445,8 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
 }
 
 #caller_menu_type {
+  font-family: "Montserrat";
+  font-size: 12pt;
 
 }
 
@@ -2694,7 +2707,8 @@ li .gradient {
 }
 
 .emoji-message {
-  font-size: 32pt !important;
+  font-size: 27pt !important;
+  padding-top: 2px
 }
 
 .attachment {
@@ -2711,11 +2725,12 @@ li .gradient {
     text-overflow: ellipsis;
     border-radius: 14px;
     /* background: rgba(255,255,255,0.1); */
-    padding: 5px;
-    padding-left: 0px;
+    padding: 10px;
+    padding-top: 15px;
     padding-right: 12px;
     font-family: "Montserrat";
     font-weight: 700;
+    position: absolute;
 
 }
 
@@ -2768,9 +2783,9 @@ li .gradient {
 
 .board_message_reply p {
   display: inline-block;
-  font-size: 8pt;
+  font-size: 10pt;
   padding: 8px;
-  margin-left: 4px;
+  margin-left: 5px;
   /* padding-top: 0; */
   vertical-align: top;
 }
