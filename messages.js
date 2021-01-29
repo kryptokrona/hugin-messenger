@@ -2561,21 +2561,9 @@ all_transactions = all_transactions.filter(function (el) {
 								ipcRenderer.send('show-window');
 		            print_conversation(payload_json.from);
 							}
-							if(metadata.activationValue == "Answer") {
-								console.log('le triggerino');
+							if(metadata.activationValue == "Answer" || metadata.activationValue == "answer" ) {
 
-								$('#answerCall').unbind('click');
-		            answerCall(payload_json.msg);
-		            $('#messages_contacts').addClass('in-call');
-		            $('#settings').addClass('in-call');
-
-		            $('#caller_menu').fadeIn().css('top','0px');
-		            $('#caller_menu_type').text('Connecting..');
-		            $('#caller_menu_contact').text(payload_json.from);
-		            $('#incomingCall img').attr('src',"data:image/svg+xml;base64," + avatar_base64);
-
-		            $('#incomingCall').hide();
-		            $('#incomingCall audio').remove();
+								$('#answerCall').('click');
 
 							}
 					  });
