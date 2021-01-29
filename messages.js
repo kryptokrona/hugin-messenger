@@ -2561,7 +2561,7 @@ all_transactions = all_transactions.filter(function (el) {
 								ipcRenderer.send('show-window');
 		            print_conversation(payload_json.from);
 							}
-							if(metadata.activationValue == "Answer" || metadata.activationValue == "answer" ) {
+							if(metadata.activationValue == "Answer" || metadata.response == "answer" ) {
 
 								$('#answerCall').click();
 
