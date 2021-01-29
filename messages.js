@@ -2563,7 +2563,7 @@ all_transactions = all_transactions.filter(function (el) {
 							}
 							if(metadata.activationValue == "Answer" || metadata.activationValue == "answer" ) {
 
-								$('#answerCall').('click');
+								$('#answerCall').click();
 
 							}
 					  });
