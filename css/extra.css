@@ -86,15 +86,3 @@ top: 0;
   top: 15% !important;
   left: 25% !important;
 }
-
-#board_box {
-
-background-color: rgba(0,0,0,0.1);
-border-radius: 5px;
-width: 33%;
-color: white;
-position: absolute;
-right: 50px;
-font-size: 11pt;
-padding: 10px;
-}
