@@ -832,6 +832,10 @@ let invite_code_from_ascii = (invite_code) => {
 
 let letter_from_spend_key = (spend_key) => {
 
+	if (spend_key == '0b66b223812861ad15e5310b4387f475c414cd7bda76be80be6d3a55199652fc') {
+		return 'Home';
+	}
+
   while(spend_key.substr(spend_key.length - 1) == "0") {
     spend_key = spend_key.substr(0, spend_key.length - 1);
   }
