@@ -2549,15 +2549,22 @@ all_transactions = all_transactions.filter(function (el) {
               title: payload_json.from,
               message: handleMagnetListed(parseCall(payload_json.msg, payload_json.from)),
               icon: payload_json.from + ".png",
-              wait: true // Wait with callback, until user action is taken against notification
-            });
+              wait: true, // Wait with callback, until user action is taken against notification,
+							actions: ["Answer", "Decline"]
+            },function (err, response, metadata) {
+					    // Response is response from notification
+					    // Metadata contains activationType, activationAt, deliveredAt
+							console.log(response, metadata.activationValue);
+							if (response != 'timeout') {
+								ipcRenderer.send('show-window');
+		            print_conversation(payload_json.from);
+							}
+							if((payload_json.msg.substring(0,1) == "Δ" || payload_json.msg.substring(0,1) == "Λ") && metadata.activationValue == "Answer") {
+								console.log('le triggerino');
+								$('#answerCall').click();
+							}
+					  });
           }
-          notifier.on('click', function(notifierObject, options) {
-            // Triggers if `wait: true` and user clicks notification
-						ipcRenderer.send('show-window');
-            print_conversation(payload_json.from);
-
-          });
           //
           //
           // let myNotification = new Notification(payload_json.from, {
@@ -3060,9 +3067,6 @@ let print_board_message = async (pubkey, message, timestamp, fetching_board, nic
   }
 
 }
-
-
-// imported-view-subwallet
 
 ipcRenderer.on('new-message', async (event, transaction) => {
 
