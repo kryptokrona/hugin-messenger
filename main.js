@@ -134,7 +134,7 @@ let syncing = true;
     let i = 1;
 
     for (const address of js_wallet.getAddresses()) {
-         console.log(`AaaAaaAddress [${i}]: ${address}`);
+         console.log(`Address [${i}]: ${address}`);
          i++;
     }
 
@@ -156,27 +156,8 @@ let syncing = true;
 
     console.log(boards_addresses);
 
-    //
-    // console.log("Priv view: ", js_wallet.getPrivateViewKey());
-    // console.log("Mnemonic: ", await js_wallet.getMnemonicSeed());
-
-
-
     console.log('Started wallet');
-    // console.log('Address: ' + js_wallet.getPrimaryAddress());
 
-    // const [unlockedBalance, lockedBalance] = await js_wallet.getBalance();
-  //
-  //   console.log(lockedBalance);
-  //   console.log(unlockedBalance);
-  //
-  //  console.log(lockedBalance);
-  //  console.log(unlockedBalance);
-  //
-  //  for (const tx of await js_wallet.getTransactions()) {
-  //   console.log(`Transaction ${tx.hash} - ${WB.prettyPrintAmount(tx.totalAmount())} - ${tx.timestamp}`);
-  //   console.log(tx);
-  // }
 
     while(true) {
     await sleep(1000 * 20);

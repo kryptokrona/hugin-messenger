@@ -3062,7 +3062,6 @@ let print_board_message = async (pubkey, message, timestamp, fetching_board, nic
 
 ipcRenderer.on('new-message', async (event, transaction) => {
 
-
   let tx_data = await fetch('http://' + rmt.getGlobal('node') + '/json_rpc', {
        method: 'POST',
        body: JSON.stringify({
@@ -3083,7 +3082,7 @@ ipcRenderer.on('new-message', async (event, transaction) => {
 			 return;
 		 }
 		 let to_board = letter_from_spend_key(transaction.transfers[0].publicKey);
-     require("fs").writeFile(payload_json.from + ".png", get_avatar(hex_json.k, 'png'), 'base64', function(err) {
+     require("fs").writeFile(hex_json.k + ".png", get_avatar(hex_json.k, 'png'), 'base64', function(err) {
        console.log(err);
      });
 
@@ -3100,11 +3099,12 @@ ipcRenderer.on('new-message', async (event, transaction) => {
     } else {
 			name = 'Anonymous';
 		}
+
 		if (hex_json.k != Buffer.from(signingKeyPair.publicKey).toString('hex')) {
      notifier.notify({
        title: name + " in " + to_board,
        message: message,
-       icon: payload_json.from + ".png",
+       icon: hex_json.k + ".png",
        wait: true // Wait with callback, until user action is taken against notification
      });
 
