@@ -12,6 +12,20 @@ const xhr = require('xhr')
 const fs = require('fs')
 const notifier = require('node-notifier');
 
+
+
+const isDev = require('electron-is-dev');
+
+var appRootDir = require('app-root-dir').get().replace('app.asar','');
+var appPath=appRootDir+'/bin/';
+userDataDir = app.getPath('userData');
+
+global.userDataDir = userDataDir;
+
+global.appPath = appRootDir;
+
+global.downloadDir = app.getPath('downloads');
+
 var AutoLaunch = require('auto-launch');
 var autoLauncher = new AutoLaunch({
     name: "Hugin Messenger"
@@ -26,23 +40,11 @@ autoLauncher.isEnabled().then(function(isEnabled) {
 
 function getTrayIcon() {
   let isDark = nativeTheme.shouldUseDarkColors;
-  return `static/tray-icon${isDark ? "-dark" : ""}.png`;
+  return appRootDir + `/static/tray-icon${isDark ? "-dark" : ""}.png`;
 }
 
 let tray = null
 
-
-const isDev = require('electron-is-dev');
-
-var appRootDir = require('app-root-dir').get().replace('app.asar','');
-var appPath=appRootDir+'/bin/';
-userDataDir = app.getPath('userData');
-
-global.userDataDir = userDataDir;
-
-global.appPath = appRootDir;
-
-global.downloadDir = app.getPath('downloads');
 
 const fetch = require('electron-fetch').default;
 
@@ -382,9 +384,9 @@ function createWindow () {
 
       let isDark = nativeTheme.shouldUseDarkColors;
       if (process.platform == 'darwin') {
-      tray = new Tray('static/tray-iconTemplate.png');
+      tray = new Tray(appRootDir + '/static/tray-iconTemplate.png');
     } else {
-      tray = new Tray(`static/tray-icon${isDark ? "-dark" : ""}.png`);
+      tray = new Tray(appRootDir + `/static/tray-icon${isDark ? "-dark" : ""}.png`);
     }
       const contextMenu = Menu.buildFromTemplate([
         { label: 'Show App', click:  function(){
