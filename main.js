@@ -29,12 +29,6 @@ global.downloadDir = app.getPath('downloads');
 console.log(appPath);
 console.log(appRootDir);
 console.log(appRootDir + 'static/tray-iconTemplate.png');
-let tray_dir;
-if (isDev) {
-  tray_dir = appRootDir + '/';
-} else {
-  tray_dir = appRootDir;
-}
 
 var AutoLaunch = require('auto-launch');
 var autoLauncher = new AutoLaunch({
@@ -51,7 +45,7 @@ autoLauncher.isEnabled().then(function(isEnabled) {
 
 function getTrayIcon() {
   let isDark = nativeTheme.shouldUseDarkColors;
-  return tray_dir + `static/tray-icon${isDark ? "-dark" : ""}.png`;
+  return path.join(__dirname, `static/tray-icon${isDark ? "-dark" : ""}.png`);
 }
 
 let tray = null
@@ -395,9 +389,9 @@ function createWindow () {
 
       let isDark = nativeTheme.shouldUseDarkColors;
       if (process.platform == 'darwin') {
-      tray = new Tray(tray_dir + 'static/tray-iconTemplate.png');
+      tray = new Tray(path.join(__dirname, 'static/tray-iconTemplate.png'));
     } else {
-      tray = new Tray(tray_dir + `static/tray-icon${isDark ? "-dark" : ""}.png`);
+      tray = new Tray(path.join(__dirname, `static/tray-icon${isDark ? "-dark" : ""}.png`));
     }
       const contextMenu = Menu.buildFromTemplate([
         { label: 'Show App', click:  function(){
