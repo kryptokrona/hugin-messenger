@@ -51,7 +51,7 @@ autoLauncher.isEnabled().then(function(isEnabled) {
 
 function getTrayIcon() {
   let isDark = nativeTheme.shouldUseDarkColors;
-  return tray_dir + `/static/tray-icon${isDark ? "-dark" : ""}.png`;
+  return tray_dir + `static/tray-icon${isDark ? "-dark" : ""}.png`;
 }
 
 let tray = null
@@ -395,9 +395,9 @@ function createWindow () {
 
       let isDark = nativeTheme.shouldUseDarkColors;
       if (process.platform == 'darwin') {
-      tray = new Tray(tray_dir + '/static/tray-iconTemplate.png');
+      tray = new Tray(tray_dir + 'static/tray-iconTemplate.png');
     } else {
-      tray = new Tray(tray_dir + `/static/tray-icon${isDark ? "-dark" : ""}.png`);
+      tray = new Tray(tray_dir + `static/tray-icon${isDark ? "-dark" : ""}.png`);
     }
       const contextMenu = Menu.buildFromTemplate([
         { label: 'Show App', click:  function(){
