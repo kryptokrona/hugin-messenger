@@ -28,7 +28,8 @@ global.downloadDir = app.getPath('downloads');
 
 var AutoLaunch = require('auto-launch');
 var autoLauncher = new AutoLaunch({
-    name: "Hugin Messenger"
+    name: "Hugin Messenger",
+    isHidden: true
 });
 // Checking if autoLaunch is enabled, if not then enabling it.
 autoLauncher.isEnabled().then(function(isEnabled) {
