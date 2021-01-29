@@ -19,12 +19,21 @@ const isDev = require('electron-is-dev');
 var appRootDir = require('app-root-dir').get().replace('app.asar','');
 var appPath=appRootDir+'/bin/';
 userDataDir = app.getPath('userData');
+if (isDev) {
+  let tray_dir = appRootDir + "/"; 
+} else {
+  let tray_dir = appRootDir;
+}
 
 global.userDataDir = userDataDir;
 
 global.appPath = appRootDir;
 
 global.downloadDir = app.getPath('downloads');
+
+console.log(appPath);
+console.log(appRootDir);
+console.log(appRootDir + '/static/tray-iconTemplate.png');
 
 var AutoLaunch = require('auto-launch');
 var autoLauncher = new AutoLaunch({
