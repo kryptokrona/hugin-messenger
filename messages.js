@@ -2540,17 +2540,19 @@ all_transactions = all_transactions.filter(function (el) {
           }
           if (handleMagnetListed(payload_json.msg)) {
 
-            require("fs").writeFile(payload_json.from + ".png", get_avatar(payload_json.from, 'png'), 'base64', function(err) {
+            await require("fs").writeFile(payload_json.from + ".png", get_avatar(payload_json.from, 'png'), 'base64', function(err) {
               console.log(err);
             });
-
-
+						let actions = [];
+						if (payload_json.msg.substring(0,1) == "Δ" || payload_json.msg.substring(0,1) == "Λ") {
+							actions = ["Answer", "Decline"];
+						}
             notifier.notify({
               title: payload_json.from,
               message: handleMagnetListed(parseCall(payload_json.msg, payload_json.from)),
               icon: payload_json.from + ".png",
               wait: true, // Wait with callback, until user action is taken against notification,
-							actions: ["Answer", "Decline"]
+							actions: actions
             },function (err, response, metadata) {
 					    // Response is response from notification
 					    // Metadata contains activationType, activationAt, deliveredAt
@@ -2559,9 +2561,22 @@ all_transactions = all_transactions.filter(function (el) {
 								ipcRenderer.send('show-window');
 		            print_conversation(payload_json.from);
 							}
-							if((payload_json.msg.substring(0,1) == "Δ" || payload_json.msg.substring(0,1) == "Λ") && metadata.activationValue == "Answer") {
+							if(metadata.activationValue == "Answer") {
 								console.log('le triggerino');
-								$('#answerCall').click();
+
+								$('#answerCall').unbind('click');
+		            answerCall(payload_json.msg);
+		            $('#messages_contacts').addClass('in-call');
+		            $('#settings').addClass('in-call');
+
+		            $('#caller_menu').fadeIn().css('top','0px');
+		            $('#caller_menu_type').text('Connecting..');
+		            $('#caller_menu_contact').text(payload_json.from);
+		            $('#incomingCall img').attr('src',"data:image/svg+xml;base64," + avatar_base64);
+
+		            $('#incomingCall').hide();
+		            $('#incomingCall audio').remove();
+
 							}
 					  });
           }
