@@ -73,11 +73,9 @@ let js_wallet;
 let c = false;
 
 if (fs.existsSync(userDataDir + '/boards.wallet')) {
-    // Do something
-    console.log("Found");
+    // We have found a boards wallet file
     c = 'o';
 } else {
-    console.log("No findy");
     c = 'c';
 }
 
@@ -136,17 +134,12 @@ let syncing = true;
 
     });
 
-
-
     let i = 1;
 
     for (const address of js_wallet.getAddresses()) {
          console.log(`Address [${i}]: ${address}`);
          i++;
     }
-
-
-
 
     i = 1;
 
@@ -171,10 +164,13 @@ let syncing = true;
 
     /* Save the wallet to disk */
     js_wallet.saveWalletToFile(userDataDir + '/boards.wallet', 'hunter2');
+    const [walletBlockCount, localDaemonBlockCount, networkBlockCount] =
+     await js_wallet.getSyncStatus();
+     if((localDaemonBlockCount - walletBlockCount) < 2  ) {
+       // Diff between wallet height and node height is 1 or 0, we are synced
+       syncing = false;
+     }
     }
-
-    /* Stop the wallet so we can exit */
-    // js_wallet.stop();
 
     console.log('Saved wallet to file');
 })()

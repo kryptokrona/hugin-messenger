@@ -3066,6 +3066,8 @@ let print_board_message = async (pubkey, message, timestamp, fetching_board, nic
 
 ipcRenderer.on('new-message', async (event, transaction) => {
 
+	console.log('new message triggered');
+
   let tx_data = await fetch('http://' + rmt.getGlobal('node') + '/json_rpc', {
        method: 'POST',
        body: JSON.stringify({
@@ -3086,7 +3088,7 @@ ipcRenderer.on('new-message', async (event, transaction) => {
 			 return;
 		 }
 		 let to_board = letter_from_spend_key(transaction.transfers[0].publicKey);
-     require("fs").writeFile(hex_json.k + ".png", get_avatar(hex_json.k, 'png'), 'base64', function(err) {
+     await require("fs").writeFile(hex_json.k + ".png", get_avatar(hex_json.k, 'png'), 'base64', function(err) {
        console.log(err);
      });
 
