@@ -5,6 +5,7 @@ const notifier = require('node-notifier');
 const { openAlias } = require('openalias');
 const { desktopCapturer } = require('electron');
 const contextMenu = require('electron-context-menu');
+const path = require('path');
 
 contextMenu({
 	prepend: (defaultActions, params, browserWindow) => [
@@ -2538,9 +2539,9 @@ all_transactions = all_transactions.filter(function (el) {
           if (magnetLinks) {
             handleMagnetLink(magnetLinks, payload_json.t, true, payload_json.from);
           }
-          if (handleMagnetListed(payload_json.msg)) {
+          if (handleMagnetListed(payload_json.msg) && payload_json.from != $('.currentAddr').text()) {
 
-            await require("fs").writeFile(payload_json.from + ".png", get_avatar(payload_json.from, 'png'), 'base64', function(err) {
+            await require("fs").writeFile(userDataDir + "/" +payload_json.from + ".png", get_avatar(payload_json.from, 'png'), 'base64', function(err) {
               console.log(err);
             });
 						let actions = [];
@@ -2550,13 +2551,13 @@ all_transactions = all_transactions.filter(function (el) {
             notifier.notify({
               title: payload_json.from,
               message: handleMagnetListed(parseCall(payload_json.msg, payload_json.from)),
-              icon: payload_json.from + ".png",
+              icon: userDataDir + "/" +payload_json.from + ".png",
               wait: true, // Wait with callback, until user action is taken against notification,
 							actions: actions
             },function (err, response, metadata) {
 					    // Response is response from notification
 					    // Metadata contains activationType, activationAt, deliveredAt
-							console.log(response, metadata.activationValue);
+							console.log(response, metadata.activationValue, err);
 							if (response != 'timeout') {
 								ipcRenderer.send('show-window');
 		            print_conversation(payload_json.from);
@@ -3095,7 +3096,7 @@ ipcRenderer.on('new-message', async (event, transaction) => {
 			 return;
 		 }
 		 let to_board = letter_from_spend_key(transaction.transfers[0].publicKey);
-     await require("fs").writeFile(hex_json.k + ".png", get_avatar(hex_json.k, 'png'), 'base64', function(err) {
+     await require("fs").writeFile(userDataDir + "/" +hex_json.k + ".png", get_avatar(hex_json.k, 'png'), 'base64', function(err) {
        console.log(err);
      });
 
@@ -3117,9 +3118,11 @@ ipcRenderer.on('new-message', async (event, transaction) => {
      notifier.notify({
        title: name + " in " + to_board,
        message: message,
-       icon: hex_json.k + ".png",
+       icon: userDataDir + "/" +hex_json.k + ".png",
        wait: true // Wait with callback, until user action is taken against notification
-     });
+     },function (err, response, metadata) {
+			 console.log(err, response, metadata);
+		 });
 
    notifier.on('click', function(notifierObject, options) {
      // Triggers if `wait: true` and user clicks notification

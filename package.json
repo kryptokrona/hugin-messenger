@@ -19,7 +19,8 @@
         "owner": "kryptokrona",
         "repo": "hugin-messenger"
       }
-    ]
+    ],
+    "asarUnpack": "./node_modules/node-notifier/vendor/**"
   },
   "keywords": [
     "Electron",
