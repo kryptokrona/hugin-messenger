@@ -1,4 +1,4 @@
-  /**
+#292929  /**
  * @Author: Harry
  * @Date:   2018-02-24T11:59:36+01:00
  * @Last modified by:   Harry
@@ -266,8 +266,8 @@
   padding: 16px;
   font-size: 16px;
   border: none;
-  height: 5%
-
+  height: 5%;
+  font-family: "Montserrat";
 }
 
 
@@ -401,14 +401,13 @@ header > * {
 }
 
 #headerText {
-  margin-top: 15px;
   display: inline-block;
   width: 350px;
   vertical-align: top;
-  font-size: 11pt;
-  margin-left: 22px;
+  font-size: 10pt;
   border-radius: 5px;
   border: 1px solid rgba(255,255,255,0.2);
+  margin-top: 5px;
 }
 
 #currentAddr {
@@ -433,10 +432,10 @@ margin: 0;
 .description {
   padding: 0;
   margin: 0;
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 700;
-
-  color: rgba(255,255,255,0.8);
+  font-family: "montserrat";
+  color: rgba(255,255,255,1);
 }
 
 body {
@@ -837,8 +836,7 @@ margin-top:-15px;
   height:32px;
   width: 32px;
   vertical-align: top;
-  margin-top: 17px;
-  margin-left: 5px;
+  margin-top: 30px;
   transition: all 0.2s;
   color: #00CAFF;
 }
@@ -1067,7 +1065,7 @@ h1, h2, h3, h4 {
 
     position: absolute;
     width: 25%;
-    background: #272528;
+    background: #2b2b2b;
     height: 100%;
     top:0;
     left:0;
@@ -1205,11 +1203,14 @@ right: 5;
   display: inline-block;
   background: transparent;
   background-size: contain;
-  margin-top: 11px;
+  margin-top: 12px;
   background-repeat: no-repeat;
   opacity: 0.5;
   cursor: pointer;
   padding-left: 16px;
+  position: absolute;
+  font-family: "Roboto";
+  font-size: 17px;
 }
 
 textarea:focus, input:focus{
@@ -1309,13 +1310,11 @@ overlay p {
   }
 }
 
-#currentPubKey {
-  margin-left: 23px;
-}
 
 #currentAddrSpan, #currentPubKey {
   font-family: monospace;
-  width: 150px;
+  font-weight: 200;
+  width: 250px;
   display: inline-block;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -1340,11 +1339,12 @@ overlay p {
 #currentAddr {
 
   width: calc(100% - 96px);
-  padding: 15px;
+  padding: 10px;
+  padding-top: 10px;
   border-radius: 4px;
-
   overflow: hidden;
   text-overflow: ellipsis;
+  padding-left: 17px;
 }
 
 .fifty {
@@ -1453,18 +1453,16 @@ overlay p {
 }
 
  .board_message p {
-   padding: 15px;
-   border-radius: 5px;
-   width: max-content;
-   max-width: 70%;
-   word-wrap: break-word;
-   border-top-left-radius: 0;
-   margin-left: 15px;
-   font-family: monospace;
-   font-size: 17px;
-   cursor: pointer;
-   margin-bottom: 10px;
-   padding-top: 0px;
+
+    padding: 10px;
+    border-radius: 5px;
+    width: max-content;
+    max-width: 95%;
+    word-wrap: break-word;
+    border-top-left-radius: 0;
+    font-size: 22px;
+    font-family: monospace;
+    margin-left: 15px;
 
  }
 
@@ -1472,8 +1470,10 @@ overlay p {
  .board_message {
  list-style: none;
  max-width: 60%;
- background: rgba(0,0,0,0.05);
+ background: rgba(0,0,0,0.1);
  margin-bottom: 10px;
+ border-radius: 5px;
+ margin-left: 20%;
 
  }
 
@@ -1516,6 +1516,7 @@ font-size: 7pt;
   font-size: 10px;
   margin-top: -10px;
   display: block;
+  margin-left: 10px;
 }
 .sent_message .time {
   margin-left: auto;
@@ -1719,7 +1720,7 @@ font-size: 7pt;
   content: " ";
 }
 
-.contact_address { display: block; white-space: nowrap; width: 74%; overflow: hidden; text-overflow: ellipsis; font-size: 10px; margin-top: -35px; font-weight: 400; margin-left: 5px; }
+.contact_address { display: block; white-space: nowrap; width: 74%; overflow: hidden; text-overflow: ellipsis; font-size: 11px; margin-top: -35px; font-weight: 400; margin-left: 5px; font-family: "Roboto";}
 .contact_avatar { border-radius: 50%; position: relative; left: -43px; top: 2px; }
 .listed_message { display: block; width: 90%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 11px; opacity: 0.7; margin-top: -10px; margin-left: 5px; }
 
@@ -1757,7 +1758,7 @@ font-size: 7pt;
   padding: 11px 16px;
   text-decoration: none;
   display: block;
-  font-family: 'Roboto';
+  font-family: "Montserrat";
   font-size: 17px;
   cursor: pointer;
 
@@ -2152,7 +2153,7 @@ color: white;
 
 
 #headerText {
-
+ margin-left: 25px;
  background: white;
  border: none;
  border-color: rgba(0,0,0,0.1)
@@ -2446,7 +2447,7 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
 
 #caller_menu_type {
   font-family: "Montserrat";
-  font-size: 12pt;
+  font-size: 10pt;
 
 }
 
@@ -2456,7 +2457,7 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
     overflow: hidden;
     text-overflow: ellipsis;
     display: block;
-    font-size: 11px;
+    font-size: 12px;
 }
 
 #caller_menu .fa {
@@ -2539,6 +2540,7 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
    cursor: pointer;
    margin-left: 5px;
    margin: 10px;
+   padding: 10px;
 
  }
 
