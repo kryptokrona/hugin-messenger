@@ -486,6 +486,7 @@ $("document").ready(function(){
   })
 
   $("#connectionSettings").click(function(){
+    $('#nodeInputStatus').text('');
     $('.setting_page').hide();
     $('#settings_page').fadeIn();
     $('#connection_settings_page').fadeIn();
