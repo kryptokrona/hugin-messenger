@@ -862,12 +862,23 @@ const hashAddr = (addr) => {
   return hash_hex;
 }
 
-const hashCode = (str) => {
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-        hash = str.charCodeAt(i) + ((hash << 5) - hash);
+String.prototype.hashCode = function() {
+    var hash = 0;
+    if (this.length == 0) {
+        return hash;
     }
-    return parseInt(Math.abs(hash/10000));
+    for (var i = 0; i < this.length; i++) {
+        var char = this.charCodeAt(i);
+        hash = ((hash<<5)-hash)+char;
+        hash = hash & hash; // Convert to 32bit integer
+    }
+    return hash;
+}
+
+const hashCode = (str) => {
+		let hash = Math.abs(str.hashCode())*0.007812499538;
+    return Math.floor(hash);
+
 }
 
 

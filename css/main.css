@@ -1516,19 +1516,7 @@ overlay p {
 
 }
 
- .board_message p {
-
-    padding: 10px;
-    border-radius: 5px;
-    width: max-content;
-    max-width: 95%;
-    word-wrap: break-word;
-    border-top-left-radius: 0;
-    font-size: 22px;
-    font-family: monospace;
-    margin-left: 15px;
-
- }
+ .board_message p {padding: 10px;border-radius: 5px;width: max-content;max-width: 95%;word-wrap: break-word;border-top-left-radius: 0;font-size: 22px;font-family: monospace;/* margin-left: 15px; */padding-top: 0;/* font-weight: normal; */margin: 0;padding-left: 21px;padding-bottom: 17px;}
 
 
  .board_message {
@@ -1537,7 +1525,7 @@ overlay p {
    max-width: 60%;
    background: rgba(0,0,0,0.1);
    margin-bottom: 10px;
-   border-radius: 5px;
+   border-radius: 15px;
    margin-left: 20%;
    border: 0.3px solid rgba(0, 0, 0, 0.5);
 
@@ -1545,26 +1533,16 @@ overlay p {
 
  }
 
- .board_message_pubkey {
+ .board_message_pubkey {vertical-align: 255%;font-family: monospace;max-width: 77px;display: inline-block;overflow: hidden;text-overflow: ellipsis;border-radius: 10px;background: rgba(255,255,255,0.05);padding: 5px;padding-left: 7px;padding-right: 7px;font-size: 7pt;}
 
-  vertical-align: 23%;
-  font-family: monospace;
-  max-width: 77px;
-  display: inline-block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  border-radius: 10px;
-  background: rgba(255,255,255,0.05);
-  padding: 5px;
-  padding-left: 7px;
-  padding-right: 7px;
-  font-size: 7pt;
- }
 
-.board_avatar {
-   width: 64px;
-   height: 64px;
-   border-radius: 50%;
+ .board_avatar {
+     width: 64px;
+     height: 64px;
+     border-radius: 50%;
+     margin-left: -1px;
+     padding-bottom: 7px;
+     margin-top: -12px;
  }
 
 .message_avatar {
@@ -1583,9 +1561,9 @@ overlay p {
 .time {
   opacity: 0.4;
   font-size: 10px;
-  margin-top: -10px;
   display: block;
-  margin-left: 10px;
+  margin-left: 20px;
+  padding-bottom: 10px;
 }
 .sent_message .time {
   margin-left: auto;
@@ -1911,7 +1889,6 @@ header  {
 
   .boards_nickname {
 
-    position: absolute;
     color: black;
 
   }
@@ -2822,20 +2799,19 @@ li .gradient {
 
 .boards_nickname {
 
-    vertical-align: 12%;
-    font-family: monospace;
-    /* max-width: 105px; */
-    display: inline-block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    border-radius: 14px;
-    /* background: rgba(255,255,255,0.1); */
-    padding: 10px;
-    padding-top: 15px;
-    padding-right: 12px;
-    font-family: "Montserrat";
-    font-weight: 700;
-    position: absolute;
+  vertical-align: 26px;
+      font-family: monospace;
+      /* max-width: 105px; */
+      display: inline-block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      border-radius: 14px;
+      /* background: rgba(255,255,255,0.1); */
+      /* padding: 10px; */
+      padding-top: 0 !important;
+      padding-right: 12px;
+      font-family: "Montserrat";
+      font-weight: 700;
 
 }
 
@@ -2890,22 +2866,13 @@ li .gradient {
   display: inline-block;
   font-size: 10pt;
   padding: 8px;
-  margin-left: 5px;
+  margin-left: -5px;
   /* padding-top: 0; */
-  vertical-align: top;
+  vertical-align: 16px;
 }
 
 
-.board_message_reply::before {
-
-  content: "∟";
-display: inline-block;
-transform: rotate(90deg);
-font-weight: 700;
-font-size: 28pt;
-margin-left: 31px;
-
-}
+.board_message_reply::before {margin-bottom: 10px;content: "∟";display: inline-block;transform: rotate(90deg);font-weight: 700;font-size: 28pt;margin-left: 27px;}
 
 .removed {
   transition: 0.5s all;
