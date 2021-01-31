@@ -3154,9 +3154,15 @@ ipcRenderer.on('new-message', async (event, transaction) => {
 
 })
 
+let global_nonce;
+
 ipcRenderer.on('got-boards', async (event, json) => {
 
   let fetching_board = current_board;
+
+	let printing_nonce = Date.now();
+
+	global_nonce = printing_nonce;
 
   $('#boards .board_message').remove();
 
@@ -3185,8 +3191,8 @@ ipcRenderer.on('got-boards', async (event, json) => {
        }
        let avatar_base64 = get_avatar(hex_json.k);
 
-        if (current_board != fetching_board) {
-          continue;
+        if (printing_nonce != global_nonce) {
+          return;
         }
         let addClasses = '';
         if (containsOnlyEmojis(hex_json.m)) {
