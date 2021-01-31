@@ -337,14 +337,21 @@
 
                     <h3>Node</h3>
                      <div class="dropdown">
-                        <button class="dropbtn">pool.kryptokrona.se</button>
+                        <button class="dropbtn">Choose pool</button>
                         <div class="dropdown-content">
                           <a href="#">pool2.kryptokrona.se</a>
                           <a href="#">floki.kryptokrona.se</a>
                           <a href="#"></a>
                           </div>
                       </div>
-                      <textarea id="nodeInput">127.0.0.1:11898 (Localhost)</textarea>
+                      <div style="position: relative;">
+                      <textarea id="nodeInput">127.0.0.1:11898 (Localhost)
+
+                      </textarea>
+                      <span id="nodeInputLoading"><div class="lds-ripple-small"><div></div><div></div></div></span>
+                      <span id="nodeInputStatus"></span>
+                      </div>
+
                         <br/>
                       <button id="nodeConnect">Connect</button>
 

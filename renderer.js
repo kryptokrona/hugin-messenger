@@ -2,7 +2,7 @@
 // be executed in the renderer process for that window.
 // All of the Node.js APIs are available in this process.
 window.$ = window.jQuery = require('jquery');
-
+const rmt = require('electron').remote;
 
 function fromHex(hex,str){
   try{
@@ -457,6 +457,34 @@ $("document").ready(function(){
 
   });
 
+  $('#nodeInput').blur(function(){
+
+      $('#nodeInputStatus').text('');
+      $('#nodeInputLoading').show();
+
+
+        fetch('http://' + $('#nodeInput').val() + '/json_rpc', {
+             method: 'POST',
+             body: JSON.stringify({
+               jsonrpc: '2.0',
+               method: 'getblockcount',
+               params: {}
+             })
+           }).then(json => {
+             console.log(json);
+             $('#nodeInputLoading').hide();
+             $('#nodeInputStatus').text('✅');
+
+           }).catch(err => {
+             console.log(err);
+             $('#nodeInputLoading').hide();
+             $('#nodeInputStatus').text('❌');
+           })
+
+
+
+  })
+
   $("#connectionSettings").click(function(){
     $('.setting_page').hide();
     $('#settings_page').fadeIn();
@@ -464,7 +492,7 @@ $("document").ready(function(){
     // ipcRenderer.send('get-nodes','ping');
 
     // console.log(ipcRenderer.sendSync('synchronous-message', 'ping')) // prints "pong"
-
+    $('#nodeInput').val(rmt.getGlobal('node'));
     ipcRenderer.on('got-nodes', (event, json) => {
       console.log(json);
       $('.dropdown-content').empty();
@@ -475,7 +503,7 @@ $("document").ready(function(){
         $('.dropdown-content').append('<a href="#" id="node' + node + '">' + json.nodes[node].name + '</a>');
 
         $('#node' + node).click(function() {
-          $('#nodeInput').val(node_addr);
+          $('#nodeInput').val(node_addr).focus().blur();
         })
 
       }
