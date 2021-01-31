@@ -99,3 +99,11 @@ font-size: 11pt;
 padding: 10px;
 display: none;
 }
+
+.board_message_reply {
+  display: none;
+}
+
+.board_message_user > .board_message_reply:first-child {
+  display: block;
+}

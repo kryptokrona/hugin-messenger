@@ -95,7 +95,7 @@ let print_boards = () => {
 
     let board_color = intToRGB(hashCode((this_address[1])));
     if (this_address[0] == "SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc") {
-      $('#boards_picker').append('<div class="board_icon" id="home_board" style="background: rgb(' + board_color.red + ',' +  board_color.green + ',' +  board_color.blue + ')"><i class="fa fa-home"></i></div>');
+      $('#boards_picker').append('<div class="board_icon rgb" id="home_board" style=""><i class="fa fa-home"></i></div>');
     } else {
       $('#boards_picker').append('<div class="board_icon" title="' + letter_from_spend_key(this_address[1]) +  '" id="' + this_address[0] + '" style="background: rgb(' + board_color.red + ',' +  board_color.green + ',' +  board_color.blue + ')">' + letter_from_spend_key(this_address[1]).substring(0, 1) + '</div>');
     }

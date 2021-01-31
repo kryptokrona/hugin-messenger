@@ -2847,9 +2847,9 @@ li .gradient {
 .rgb, .gradient {
 
   background: #5f86f2;
-  -webkit-animation: rgb 60s ease infinite;
-  -moz-animation: rgb 60s ease infinite;
-  animation: rgb 60s ease infinite;
+  -webkit-animation: rgb 30s ease infinite;
+  -moz-animation: rgb 30s ease infinite;
+  animation: rgb 30s ease infinite;
 }
 
 .board_avatar_reply {
