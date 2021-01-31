@@ -531,6 +531,11 @@ $('#currentchat_header_wrapper').toggleClass('toggled_addr');
 
 });
 
+function myFunction() {
+  document.getElementById("flip-box-inner").classList.toggle("flip");
+
+};
+
 $('#message_icon').click(function(){
   $("#new_board").addClass('hidden');
 $("#boards_picker").empty().addClass('hidden');
@@ -542,4 +547,19 @@ myFunction();
 
 $('#boards').addClass('hidden');
 $("#messages_page").removeClass('hidden');
+});
+
+$('#settings_icon').click(function(){
+myFunction(); $('#settings_page').fadeIn();
+$('#boards').addClass('hidden');
+$("#messages_page").removeClass('hidden');
+$("#new_board").addClass('hidden');
+$("#boards_picker").empty().addClass('hidden');
+});
+
+$('.close').click(function(){
+  $(".settings_page").fadeOut(); $("#settings_page").fadeOut(); myFunction();
+});
+$("#modal > i").click(function(){
+$("#modal").toggleClass("hidden");
 })

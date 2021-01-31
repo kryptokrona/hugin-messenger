@@ -1841,6 +1841,7 @@ $("#messages_contacts").on("click", "li", function(){
     $('#recipient_form').val($(this).find('.contact_address').text());
     $(this).removeClass('unread_message');
     print_conversation($(this).find('.contact_address').text());
+		$('#settings_page').fadeOut();
 });
 
 var lastMessage = 0;
@@ -2927,11 +2928,11 @@ let current_reply_to = '';
 
 $('#replyto_exit').click(function(){
 
-    $('#replyto').fadeOut();
-    $('#replyto_exit').fadeOut();
+    $('#replyto').hide();
+    $('#replyto_exit').hide();
     current_reply_to = '';
     $('#boards_message_form').attr('style','');
-    $('.board_message p.rgb').removeClass('rgb');
+    $('.board_message').removeClass('rgb');
 
 })
 
@@ -2939,7 +2940,7 @@ $('#replyto_exit').click(function(){
 let reply = (hash) => {
 
   current_reply_to = hash;
-  $('.board_message p.rgb').removeClass('rgb');
+  $('.board_message').removeClass('rgb');
   let nickname = false;
 
   try {
@@ -3065,7 +3066,7 @@ let print_board_message = async (pubkey, message, timestamp, fetching_board, nic
        let avatar_base64_reply = get_avatar(hex_json_reply.k);
        let message_reply = hex_json_reply.m;
 
-       $('.' + toString(timestamp*1000) + ' img').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/svg+xml;base64,' + avatar_base64_reply + '"><p>' + message_reply.substring(0,25)  +'..</p></div>');
+       $('.' + toString(timestamp*1000) + ' img').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/svg+xml;base64,' + avatar_base64_reply + '"><p>' + message_reply.substring(0,55)  +'..</p></div>');
 
 
   }
@@ -3284,7 +3285,7 @@ ipcRenderer.on('got-boards', async (event, json) => {
             let avatar_base64_reply = get_avatar(hex_json_reply.k);
             let message_reply = hex_json_reply.m;
 
-            $('.this_board_message img').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/svg+xml;base64,' + avatar_base64_reply + '"><p>' + message_reply.substring(0,25)  +'..</p></div>');
+            $('.this_board_message img').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/svg+xml;base64,' + avatar_base64_reply + '"><p>' + message_reply.substring(0,55)  +'..</p></div>');
 
 
 
@@ -3293,7 +3294,7 @@ ipcRenderer.on('got-boards', async (event, json) => {
 
        $('.this_board_message').addClass(hash).removeClass('this_board_message').click(function(){
          reply(hash);
-         $(this).find('p').addClass('rgb');
+         $(this).addClass('rgb');
          $('#boards').scrollTop('0');
        });
 

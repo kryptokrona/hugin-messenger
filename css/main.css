@@ -1,4 +1,4 @@
-#292929  /**
+ /**
  * @Author: Harry
  * @Date:   2018-02-24T11:59:36+01:00
  * @Last modified by:   Harry
@@ -268,6 +268,7 @@
   border: none;
   height: 5%;
   font-family: "Montserrat";
+  cursor: pointer;
 }
 
 
@@ -406,7 +407,6 @@ header > * {
   vertical-align: top;
   font-size: 10pt;
   border-radius: 5px;
-  border: 1px solid rgba(255,255,255,0.2);
   margin-top: 5px;
 }
 
@@ -627,6 +627,7 @@ border-radius: 5px;
   background: url(../static/xkr-logo-mask.svg);
   background-size: 100% 100%;
   box-shadow: inset 0px 0px 0px 1px #161415;
+  cursor: pointer;
 }
 
 #container > div {
@@ -651,7 +652,7 @@ border-radius: 5px;
   margin-left: 10%;
   cursor: pointer;
   color:rgba(255,255,255,0.8);
-  border-radius: 30px;
+  border-radius: 5px;
   width: 80% !important;
   background: url("../static/loadbar.png");
   background-repeat: no-repeat;
@@ -712,6 +713,7 @@ margin: 0;
 line-height: 50px;
 font-size: 20pt;
 font-weight: 600;
+font-family: "Montserrat";
 }
 
 ul {
@@ -741,8 +743,8 @@ a {
 #send_payment {
   position: absolute;
   top: auto !important;
-  bottom: 215px;
-  right:15px;
+  bottom: 95px;
+  right:2px;
   border-radius: 5px;
   height: 50% !important;
 
@@ -750,11 +752,17 @@ a {
 
 #payment_container {
   padding: 20px;
-  background: rgba(0,0,0,0.9);
+  background: #181818;
   border-radius: 5px;
-  height: 100%;
+  height: 75%;
 
 }
+
+
+ #payment_rec_addr, #payment_id {
+
+   font-family: "Montserrat";
+ }
 
 .hidden {
   display: none;
@@ -780,28 +788,32 @@ a {
 }
 
 #payment_form input, #currentchat_footer input {
-height: 25px;
-width: 95%;
-font-size: 9.8pt;
-border: none;
-border-radius: 17px;
-font-family: "Roboto";
-padding: 3px;
-margin-bottom: 10px;
+  height: 25px;
+  width: 95%;
+  font-size: 9.8pt;
+  border: none;
+  border-radius: 17px;
+  font-family: "Roboto";
+  padding: 3px;
+
+}
+
+#payment_form {
+  max-width: 100%
 }
 
 #payment_form input {
   width: 100% !important;
-  background: rgba(255,255,255,0.1);
+  background: #181818;
   color: white;
 }
 
 .text-field {
-height: 25px;
-border: none;
-border-radius: 17px;
-font-family: "Roboto";
-padding: 5px;
+  height: 25px;
+  border: none;
+  border-radius: 17px;
+  font-family: "Roboto";
+  padding: 5px;
 }
 
 #payment_form input {
@@ -839,6 +851,7 @@ margin-top:-15px;
   margin-top: 30px;
   transition: all 0.2s;
   color: #00CAFF;
+  cursor: pointer;
 }
 #copyBoth:active, #copyBoth:focus, #copyBoth:hover {
   transform: translate(1px, 1px);
@@ -902,6 +915,8 @@ input[type=number]::-webkit-outer-spin-button {
   width: auto;
   margin-left: 5px;
   color: rgba(255,255,255,0.4);
+  font-family: "Montserrat";
+  font-size: 15px;
 }
 
 #payment_amount_wrap .form_col {
@@ -1430,7 +1445,7 @@ overlay p {
   width: 100%;
 }
 #close-app {
-  border-radius: 50%;
+    border-radius: 50%;
     width: 20px;
     height: 20px;
     background: #FF4743;
@@ -1517,28 +1532,33 @@ overlay p {
 
 
  .board_message {
- list-style: none;
- max-width: 60%;
- background: rgba(0,0,0,0.1);
- margin-bottom: 10px;
- border-radius: 5px;
- margin-left: 20%;
+   transition: 0.2s;
+   list-style: none;
+   max-width: 60%;
+   background: rgba(0,0,0,0.1);
+   margin-bottom: 10px;
+   border-radius: 5px;
+   margin-left: 20%;
+   border: 0.3px solid rgba(0, 0, 0, 0.5);
+
+
 
  }
 
  .board_message_pubkey {
-   vertical-align: 23%;
-font-family: monospace;
-max-width: 77px;
-display: inline-block;
-overflow: hidden;
-text-overflow: ellipsis;
-border-radius: 10px;
-background: rgba(255,255,255,0.05);
-padding: 5px;
-padding-left: 7px;
-padding-right: 7px;
-font-size: 7pt;
+
+  vertical-align: 23%;
+  font-family: monospace;
+  max-width: 77px;
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.05);
+  padding: 5px;
+  padding-left: 7px;
+  padding-right: 7px;
+  font-size: 7pt;
  }
 
 .board_avatar {
@@ -1665,7 +1685,7 @@ font-size: 7pt;
 
 
 #messages_contacts > li {
-
+  cursor: pointer;
   height: 45px;
   border-radius: 5px;
   background-color: rgba(0,0,0,0.1);
@@ -1852,6 +1872,11 @@ header  {
 
  }
 
+ .contact_address {
+
+   color: #53565c;
+ }
+
  #boards {
 
    background: white !important;
@@ -1885,6 +1910,7 @@ header  {
   }
 
   .boards_nickname {
+
     position: absolute;
     color: black;
 
@@ -1967,6 +1993,11 @@ header  {
 
  }
 
+ #payment_rec_addr, #payment_id {
+
+   background: #f5f6f7 !important;
+ }
+
 
  #balancelogo::before {
    font-family: 'XKR';
@@ -1981,6 +2012,7 @@ header  {
    color: black;
 
  }
+
  #close-app:hover {
 
     background: #FF7773;
@@ -2031,6 +2063,7 @@ header  {
      font-size: 17px;
      margin: 5px;
      cursor: pointer;
+     font-family: "Montserrat";
 
    }
 
@@ -2042,17 +2075,32 @@ header  {
 
    }
 
-   #nodeInput {
-     background: #f5f6f7 !important;
-     color: #000 !important;
-   }
+#nodeInput {
 
-   .dropbtn {
+   background: #f5f6f7 !important;
+   color: #000 !important;
 
-    background: #f5f6f7 !important;
-   }
+ }
 
- #payment_message {
+ #nodeConnect, #modal button {
+
+   color: white !important;
+ }
+
+ #nodeConnect:hover, #modal button:hover {
+
+    background-color: rgba(77, 210, 106, 0.55);
+    color: white;
+ }
+
+.dropbtn {
+
+  background: #f5f6f7 !important;
+
+  }
+
+
+#payment_message {
 
    cursor: pointer;
    color: black;
@@ -2061,9 +2109,9 @@ header  {
 
 #sendbutton_sendpage:hover {
 
- background: white;
 
- opacity: 1;
+ transition: 0.2s;
+ opacity: 0.9;
 
 }
 
@@ -2099,14 +2147,13 @@ ul {
 
 #payment_form input {
 
-background: white;
 color: #53565c !important;
 
 }
 
-#payment_amount {
+#payment_amount input {
 
-  background: white;
+  background: white !important;
   color: #53565c !important;
 
 }
@@ -2125,7 +2172,7 @@ color: black;
 
 }
 
-#payment_form input, #currentchat_footer input {
+#currentchat_footer input {
 
   background: #f5f6f7 !important;
   color: black !important;
@@ -2543,16 +2590,17 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
   color: white;
   border-radius: 5px;
   border: none;
-  width: 717px;
+  width: 700px;
   height: 44px;
   display: block;
   margin-top: 10px;
+  font-size: 11pt;
   margin-left: 10px;
-  padding-top: 8px;
+  padding-top: 10px;
   resize: none;
   word-break: break-word;
-  padding-left: 10px;
   font-family: monospace;
+  padding: 15px;
 }
 
 
@@ -2563,16 +2611,18 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
   color: white;
   border-radius: 5px;
   border: none;
-  width: 717px;
+  width: 700px;
   height: 44px;
+  font-size: 11pt;
   display: block;
   margin-top: 10px;
   margin-left: 10px;
-  padding-top: 8px;
+  padding-top: 10px;
   resize: none;
   word-break: break-word;
   padding-left: 10px;
   font-family: monospace;
+  padding: 15px;
 
 }
 
@@ -2590,6 +2640,7 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
    margin-left: 5px;
    margin: 10px;
    padding: 10px;
+   font-family: "Montserrat";
 
  }
 
@@ -2628,18 +2679,20 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
 
 #importMnemonic {
 
-    background: rgba(0,0,0,0.1);
-    color: white;
-    border-radius: 5px;
-    border: none;
-    width: 717px;
-    height: 88px;
-    display: block;
-    margin-top: 10px;
-    margin-left: 5px;
-    padding-top: 8px;
-    resize: none;
-    word-break: break-word;
+      background: rgba(0,0,0,0.1);
+      color: white;
+      border-radius: 5px;
+      border: none;
+      width: 700px;
+      height: 88px;
+      display: block;
+      margin-top: 10px;
+      word-break: break-word;
+      padding-left: 5px;
+      padding: 10px;
+      padding-top: 15px;
+      font-size: 11pt;
+      margin-left: 10px;
 }
 
 #nodeInput {
@@ -2674,7 +2727,7 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
      font-size: 17px;
      padding: 10px;
      cursor: pointer;
-
+     font-family: "Montserrat";
 
    }
 
@@ -2885,4 +2938,8 @@ margin-left: 31px;
     background: 5ff2f0;
   }
   , , , , , , , #) !important;
+}
+
+.profile-avatar {
+  width: 100%;s
 }

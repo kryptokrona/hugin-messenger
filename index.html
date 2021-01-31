@@ -105,8 +105,9 @@
 <div id="left_panel">
 
   <button id="close-app"></button>
-
+  <div class="profile-avatar">
   <img id="avatar" src="" />
+  </div>
 
   <div id="new_chat">+</div>
   <div id="settings_icon"><i class="fa fa-cogs"></i></div>
@@ -131,7 +132,7 @@
 
       <div id="modal" class="hidden">
 
-        <i class="fa fa-plus" style="rotate: 45deg; position: absolute; right: 15px; top: 10px" onClick='$("#modal").toggleClass("hidden")'></i>
+        <i class="fa fa-plus" style="rotate: 45deg; position: absolute; right: 15px; top: 10px"></i>
 
 
         <div id="new_board_modal" class="hidden">
@@ -293,12 +294,11 @@
        <div id="messages_pane">
 
          <div id="settings_page" style="">
-                  <i class="fa fa-plus" style="rotate: 45deg; position: absolute; right: 60px; top: 10px" onClick='$("#settings_page").fadeOut(); $(".setting_page").fadeOut(); myFunction();'></i>
+                  <i class="fa fa-plus close" style="rotate: 45deg; position: absolute; right: 60px; top: 10px"></i>
                   <span id="wallet_settings_page" class="setting_page">
 
 
                   <h1>Wallet</h2>
-                  <br/>
 
                   <h3>Mnemonic Seed</h3>
 
@@ -319,8 +319,6 @@
                           Never show this key to anyone!
                         </span>
                       </div>
-
-                        <br/>
 
                       <h3>Import/Rescan Wallet</h3>
                       <button id="import">Import Wallet</button>
@@ -392,6 +390,7 @@
           <input id="message_form" type="text" spellcheck="true" placeholder="Message"></input>
           <i class="fa fa-smile-o trigger"></i>
           <div id="payment_message">$</div>
+
 
         </div>
       </div>
@@ -529,21 +528,6 @@
 
   </div>
 
-
-  <script>
-
-document.getElementById("settings_icon").onclick = function() {myFunction(); $('#settings_page').fadeIn(); $('#boards').addClass('hidden'); $("#messages_page").removeClass('hidden'); $("#new_board").addClass('hidden');
-$("#boards_picker").empty().addClass('hidden')};
-
-
-function myFunction() {
-  document.getElementById("flip-box-inner").classList.toggle("flip");
-
-
-}
-
-
-</script>
 
 
     <script>
