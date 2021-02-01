@@ -612,7 +612,7 @@ function startWallet() {
  });
 
 
- autoUpdater.on('update-available', () => {
+ autoUpdater.on('update-downloaded', () => {
 
    notifier.notify({
      title: "New update",
@@ -625,9 +625,7 @@ function startWallet() {
      console.log(response, metadata.activationValue, err);
 
      if(metadata.activationValue == "Yes" || metadata.button == "Yes" ) {
-         autoUpdater.on('update-downloaded', () => {
            autoUpdater.quitAndInstall()
-         });
        }
      });
 
