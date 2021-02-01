@@ -625,14 +625,13 @@ function startWallet() {
      console.log(response, metadata.activationValue, err);
 
      if(metadata.activationValue == "Yes" || metadata.button == "Yes" ) {
-       autoUpdater.on('update-downloaded', () => {
-         autoUpdater.quitAndInstall()
+         autoUpdater.on('update-downloaded', () => {
+           autoUpdater.quitAndInstall()
+         });
        }
-     }
+     });
+
    });
-
-
- });
 
 
 function randomString() {
