@@ -612,9 +612,25 @@ function startWallet() {
  });
 
 
- autoUpdater.on('update-downloaded', () => {
+ autoUpdater.on('update-available', () => {
 
-   autoUpdater.quitAndInstall()
+   notifier.notify({
+     title: "New update",
+     message: "A new update is available, would you like to install it now?",
+     wait: true, // Wait with callback, until user action is taken against notification,
+     actions: ['Yes', 'Later']
+   },function (err, response, metadata) {
+     // Response is response from notification
+     // Metadata contains activationType, activationAt, deliveredAt
+     console.log(response, metadata.activationValue, err);
+
+     if(metadata.activationValue == "Yes" || metadata.button == "Yes" ) {
+       autoUpdater.on('update-downloaded', () => {
+         autoUpdater.quitAndInstall()
+       }
+     }
+   });
+
 
  });
 
