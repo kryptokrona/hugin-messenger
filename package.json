@@ -20,7 +20,9 @@
         "repo": "hugin-messenger"
       }
     ],
+    "mac": {
     "asarUnpack": "./node_modules/node-notifier/vendor/**"
+    }
   },
   "keywords": [
     "Electron",
