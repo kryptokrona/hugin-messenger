@@ -11,6 +11,7 @@ const url = require('url')
 const xhr = require('xhr')
 const fs = require('fs')
 const notifier = require('node-notifier');
+const { shell } = require('electron');
 
 
 
@@ -611,11 +612,11 @@ function startWallet() {
    }
  });
 
-
+if (process.platform !== 'darwin') {
  autoUpdater.on('update-downloaded', () => {
 
    notifier.notify({
-     title: "New update",
+     title: "Hugin Messenger",
      message: "A new update is available, would you like to install it now?",
      wait: true, // Wait with callback, until user action is taken against notification,
      actions: ['Yes', 'Later']
@@ -624,12 +625,39 @@ function startWallet() {
      // Metadata contains activationType, activationAt, deliveredAt
      console.log(response, metadata.activationValue, err);
 
-     if(metadata.activationValue == "Yes" || metadata.button == "Yes" ) {
-           autoUpdater.quitAndInstall()
+     if(metadata.activationValue != "Later" || metadata.button != "Later" ) {
+           autoUpdater.quitAndInstall();
+           app.exit();
        }
      });
 
    });
+
+ } else {
+
+   autoUpdater.on('update-available', () => {
+     notifier.notify({
+       title: "Hugin Messenger",
+       message: "A new update is available, would you like to install it now?",
+       wait: true, // Wait with callback, until user action is taken against notification,
+       actions: ['Yes', 'Later']
+     },function (err, response, metadata) {
+       // Response is response from notification
+       // Metadata contains activationType, activationAt, deliveredAt
+       console.log(response, metadata.activationValue, err);
+
+       if(metadata.activationValue == "Yes" || metadata.button == "Yes" ) {
+
+
+        shell.openExternal('https://github.com/kryptokrona/hugin-messenger/releases/latest');
+
+
+         }
+       });
+
+ });
+
+}
 
 
 function randomString() {
