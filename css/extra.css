@@ -78,13 +78,14 @@ top: 0;
 
 #modal {
   position: absolute;
-  height: 500px;
+  padding: 25px;
+  padding-top: 0;
   width: 500px;
   background: #181818;
   border-radius: 20px;
   z-index: 999;
   top: 12% !important;
-  left: 57% !important;
+  right: 25px !important;
 }
 
 #board_box {

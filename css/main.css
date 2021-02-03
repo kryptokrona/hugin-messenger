@@ -630,7 +630,7 @@ border-radius: 5px;
   cursor: pointer;
 }
 
-#container > div {
+#container > div:not(#modal) {
 
   width: 40%;
   height: 100%;
@@ -1183,9 +1183,6 @@ h1, h2, h3, h4 {
 
 }
 
-#modal {
-  height: 36% !important;
-}
 
 #modal p {
   font-family: monospace;
@@ -2909,4 +2906,13 @@ li .gradient {
 
 .profile-avatar {
   width: 100%;s
+}
+
+.board_icon .fa-lock {
+  position: absolute;
+    background: rgba(0,0,0,0.5);
+    padding: 5px;
+    border-radius: 50%;
+    width: 14px;
+    font-size: 16px;
 }

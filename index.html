@@ -136,14 +136,14 @@
 
 
         <div id="new_board_modal" class="hidden">
-          <h2>Create a board</h2>
-          <button id="create_pub_board" onClick="$('#modal div').addClass('hidden'); $('#create_pub_board_modal').removeClass('hidden');">Create a public board</button>
+          <h2>What would you like to do?</h2>
+          <button id="pub_board" onClick="$('#modal div').addClass('hidden'); $('#pub_board_modal').removeClass('hidden');">Create or join a <b>public</b> board</button><br><br>
           <!-- <button id="create_priv_board" onClick="$('#modal div').addClass('hidden'); $('#create_priv_board_modal').removeClass('hidden');">Create a private board</button> -->
-          <button id="join_server" onClick="$('#modal div').addClass('hidden'); $('#join_board_modal').removeClass('hidden');">Join a board</button>
+          <button id="join_board" onClick="$('#modal div').addClass('hidden'); $('#priv_board_modal').removeClass('hidden');">Create or join a <b>private</b> board</button>
         </div>
 
 
-        <div id="create_pub_board_modal" class="hidden">
+        <div id="pub_board_modal" class="hidden">
           <h2>Join/create a public board</h2>
           <p>Type the name of the board, the name will also be used as an invite link for others!
 
@@ -153,19 +153,13 @@
         </div>
 
 
-
-        <div id="create_priv_board_modal" class="hidden">
+        <div id="priv_board_modal" class="hidden">
+          <h2>Join a private board</h2>
+          <input id="join_priv_board_input"></input>
+          <button id="join_priv_board_button">Join</button>
           <h2>Create a private board</h2>
-          <input id="create_priv_board_input"></input>
-          <button id="create_priv_board_button">Create</button>
-        </div>
-
-
-
-        <div id="join_board_modal" class="hidden">
-          <h2>Join a board</h2>
-          <input id="join_board_input"></input>
-          <button id="join_board_button">Join</button>
+          <p>An invite link will be generated for you.</p>
+          <button id="create_priv_board_button">Create new private board</button>
         </div>
 
       </div>

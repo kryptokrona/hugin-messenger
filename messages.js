@@ -92,13 +92,17 @@ let print_boards = () => {
     if (this_address[0] == "SEKReX27SM2jE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDTysRXy") {
       continue;
     }
-
+		console.log(this_address[1]);
     let board_color = intToRGB(hashCode((this_address[1])));
     if (this_address[0] == "SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc") {
       $('#boards_picker').append('<div class="board_icon rgb" id="home_board" style=""><i class="fa fa-home"></i></div>');
     } else {
       $('#boards_picker').append('<div class="board_icon" title="' + letter_from_spend_key(this_address[1]) +  '" id="' + this_address[0] + '" style="background: rgb(' + board_color.red + ',' +  board_color.green + ',' +  board_color.blue + ')">' + letter_from_spend_key(this_address[1]).substring(0, 1) + '</div>');
     }
+
+		if (this_address[1].substring(59,64) != '00000') {
+			$('#' + this_address[0]).append('<i class="fa fa-lock"></i>').addClass('private');
+		}
 
   }
 
@@ -787,22 +791,26 @@ setTimeout(function(){ console.log('resetting..');walletd.reset() }, 330000);
 const nacl = require('tweetnacl');
 const naclUtil = require('tweetnacl-util');
 
-  const nonceFromTimestamp = (tmstmp) => {
+const generatePrivateBoard = () => {
+	return  Buffer.from(nacl.randomBytes(32)).toString('hex');
+}
 
-    let nonce = hexToUint(String(tmstmp));
+const nonceFromTimestamp = (tmstmp) => {
 
-    while ( nonce.length < nacl.box.nonceLength ) {
+  let nonce = hexToUint(String(tmstmp));
 
-      tmp_nonce = Array.from(nonce);
+  while ( nonce.length < nacl.box.nonceLength ) {
 
-      tmp_nonce.push(0);
+    tmp_nonce = Array.from(nonce);
 
-      nonce = Uint8Array.from(tmp_nonce);
+    tmp_nonce.push(0);
 
-    }
+    nonce = Uint8Array.from(tmp_nonce);
 
-    return nonce;
-    }
+  }
+
+  return nonce;
+  }
 
 const fromHexString = hexString =>
   new Uint8Array(hexString.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
@@ -1243,6 +1251,21 @@ let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json
         })
 }
 
+const save_private_board = (address, key) => {
+	keychain.find({ "address": address }, function (err, docs) {
+
+		if (docs.length == 0) {
+
+			keychain.insert({key: key, address: address});
+			return true
+
+		} else {
+			return false
+		}
+
+	});
+}
+
 function sendMessage(message, silent=false) {
 
 	console.log('Sending messages..');
@@ -1455,6 +1478,32 @@ function sendBoardMessage(message) {
 
       // Convert json to hex
       let payload_hex = toHex(JSON.stringify(payload_json));
+
+			// insert encryption
+			if ($('.board_icon.current').hasClass('private')) {
+				console.log('private innit');
+				let key = $('.board_icon.current').attr('title');
+				let secretKey = naclUtil.decodeUTF8(key.substring(1, 33));
+
+				let this_keyPair = nacl.box.keyPair.fromSecretKey(secretKey);
+
+				let timestamp = Date.now();
+				payload_json_decoded = naclUtil.decodeUTF8(JSON.stringify(payload_json));
+
+				let box = nacl.box(payload_json_decoded, nonceFromTimestamp(timestamp), keyPair.publicKey, keyPair.secretKey);
+
+				let payload_box;
+				let payment_id = '';
+
+				let this_payload_box = {"box":Buffer.from(box).toString('hex'), "t":timestamp};
+
+
+				console.log(this_payload_box);
+
+				// Convert json to hex
+				payload_hex = toHex(JSON.stringify(this_payload_box));
+			}
+
 
       sendAddr = $("#currentAddrSpan").text();
       transfer = [ { 'amount':amount, 'address':receiver } ];
@@ -2801,7 +2850,7 @@ function loadWallets() {
 
       $('#currentPubKey').text(hex);
 
-      avatar_base64 = get_avatar(currentAddr);
+      avatar_base64 = get_avatar($('#currentPubKey').text());
       $('#avatar').attr('src','data:image/svg+xml;base64,' + avatar_base64);
       $('#avatar').css('border-radius','50%');
 
@@ -2874,7 +2923,7 @@ $('#new_board').click(function(){
 
   $('#modal').toggleClass('hidden');
   $('#modal div').addClass('hidden');
-  $('#create_pub_board_modal').removeClass('hidden');
+  $('#new_board_modal').removeClass('hidden');
 
 })
 
@@ -2882,6 +2931,21 @@ $('#create_pub_board_button').click(function(){
 
   let invite_code = invite_code_from_ascii($('#create_pub_board_input').val());
   ipcRenderer.send('import-view-subwallet', invite_code);
+});
+
+$('#join_priv_board_button').click(function(){
+
+	let invite_code = $('#join_priv_board_input').val();
+	ipcRenderer.send('import-view-subwallet', invite_code);
+
+});
+
+$('#create_priv_board_button').click(function(){
+
+	let invite_code = generatePrivateBoard();
+	ipcRenderer.send('import-view-subwallet', invite_code);
+
+
 });
 
 
@@ -3102,6 +3166,17 @@ ipcRenderer.on('new-message', async (event, transaction) => {
 
 		 result = resp.result.tx.extra.substring(66);
 		 let hex_json = JSON.parse(fromHex(result));
+
+		 if (hex_json.box) {
+
+			 let key = transaction.transfers[0].publicKey;
+			 let secretKey = naclUtil.decodeUTF8(key.substring(1, 33));
+
+			 let this_keyPair = nacl.box.keyPair.fromSecretKey(secretKey);
+			 hex_json = nacl.box.open(hex_json.box, nonceFromTimestamp(hex_json.t), this_keyPair.publicKey, this_keyPair.secretKey);
+
+		 }
+
 		 let verified = nacl.sign.detached.verify(naclUtil.decodeUTF8(hex_json.m), fromHexString(hex_json.s), fromHexString(hex_json.k));
 
 		 if (!verified) {
@@ -3196,6 +3271,15 @@ ipcRenderer.on('got-boards', async (event, json) => {
        try {
        result = resp.result.tx.extra.substring(66);
        let hex_json = JSON.parse(fromHex(result));
+			 if (hex_json.box) {
+				 console.log(json[tx]);
+				 let key = json[tx].transfers[0].publicKey;
+				 let secretKey = naclUtil.decodeUTF8(key.substring(1, 33));
+
+				 let this_keyPair = nacl.box.keyPair.fromSecretKey(secretKey);
+				 hex_json = nacl.box.open(hex_json.box, nonceFromTimestamp(hex_json.t), this_keyPair.publicKey, this_keyPair.secretKey);
+
+			 }
        let verified = nacl.sign.detached.verify(naclUtil.decodeUTF8(hex_json.m), fromHexString(hex_json.s), fromHexString(hex_json.k));
 
        if (!verified) {
