@@ -1199,7 +1199,11 @@ let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json
 
           // $('#message_form').prop('disabled',false);
 
-          }
+				} else if (payload_json.m.length) {
+					console.log('we done');
+					return;
+
+				}
           db_json = {"conversation": payload_json.to, "type":"sent","message":payload_json.msg,"timestamp":JSON.parse(fromHex(payload_hex)).t}
 
           // Add message to datastore
@@ -1490,12 +1494,12 @@ function sendBoardMessage(message) {
 				let timestamp = Date.now();
 				payload_json_decoded = naclUtil.decodeUTF8(JSON.stringify(payload_json));
 
-				let box = nacl.box(payload_json_decoded, nonceFromTimestamp(timestamp), keyPair.publicKey, keyPair.secretKey);
+				let box = nacl.box(payload_json_decoded, nonceFromTimestamp(timestamp), this_keyPair.publicKey, this_keyPair.secretKey);
 
 				let payload_box;
 				let payment_id = '';
 
-				let this_payload_box = {"box":Buffer.from(box).toString('hex'), "t":timestamp};
+				let this_payload_box = {"b":Buffer.from(box).toString('hex'), "t":timestamp};
 
 
 				console.log(this_payload_box);
@@ -2364,8 +2368,11 @@ async function print_conversations() {
 
       if (!conversations.includes(conversation)) {
         conversations.push(conversation);
+				try {
         $('#messages_contacts').append('<li class="active_contact ' + conversation + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + get_avatar(conversation) + '" /><span class="contact_address">' + conversation + '</span><br><span class="listed_message">'+handleMagnetListed(messages[m].message)+'</li>');
-      }
+      } catch (error) {
+
+			}
 
   }
 
@@ -2373,6 +2380,8 @@ async function print_conversations() {
 
 
   // Now we have all conversations in the database
+
+}
 
 }
 
@@ -2489,7 +2498,7 @@ all_transactions = all_transactions.filter(function (el) {
 
         let timestamp = tx.t;
 
-        let decryptBox = nacl.box.open(hexToUint(box), nonceFromTimestamp(timestamp), hexToUint(senderKey), keyPair.secretKey);
+	        let decryptBox = nacl.box.open(hexToUint(box), nonceFromTimestamp(timestamp), hexToUint(senderKey), keyPair.secretKey);
 
         if (!decryptBox) {
           continue;
@@ -2517,7 +2526,7 @@ all_transactions = all_transactions.filter(function (el) {
 
     } else {
 
-        if (tx.m) {
+        if (tx.m || tx.b) {
           continue;
         }
 
@@ -3167,13 +3176,13 @@ ipcRenderer.on('new-message', async (event, transaction) => {
 		 result = resp.result.tx.extra.substring(66);
 		 let hex_json = JSON.parse(fromHex(result));
 
-		 if (hex_json.box) {
+		 if (hex_json.b) {
 
 			 let key = transaction.transfers[0].publicKey;
 			 let secretKey = naclUtil.decodeUTF8(key.substring(1, 33));
 
 			 let this_keyPair = nacl.box.keyPair.fromSecretKey(secretKey);
-			 hex_json = nacl.box.open(hex_json.box, nonceFromTimestamp(hex_json.t), this_keyPair.publicKey, this_keyPair.secretKey);
+			 hex_json = naclUtil.encodeUTF8(nacl.box.open(fromHexString(hex_json.b), nonceFromTimestamp(hex_json.t), this_keyPair.publicKey, this_keyPair.secretKey));
 
 		 }
 
@@ -3270,16 +3279,17 @@ ipcRenderer.on('got-boards', async (event, json) => {
        let timestamp = resp.result.block.timestamp;
        try {
        result = resp.result.tx.extra.substring(66);
+			 console.log(result);
        let hex_json = JSON.parse(fromHex(result));
-			 if (hex_json.box) {
-				 console.log(json[tx]);
-				 let key = json[tx].transfers[0].publicKey;
+			 if (hex_json.b) {
+				 let key = $('.current').attr('title');
 				 let secretKey = naclUtil.decodeUTF8(key.substring(1, 33));
 
 				 let this_keyPair = nacl.box.keyPair.fromSecretKey(secretKey);
-				 hex_json = nacl.box.open(hex_json.box, nonceFromTimestamp(hex_json.t), this_keyPair.publicKey, this_keyPair.secretKey);
-
+				 console.log(this_keyPair);
+				  hex_json = JSON.parse(naclUtil.encodeUTF8(nacl.box.open(fromHexString(hex_json.b), nonceFromTimestamp(hex_json.t), this_keyPair.publicKey, this_keyPair.secretKey)));
 			 }
+			 console.log(hex_json);
        let verified = nacl.sign.detached.verify(naclUtil.decodeUTF8(hex_json.m), fromHexString(hex_json.s), fromHexString(hex_json.k));
 
        if (!verified) {
