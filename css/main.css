@@ -1270,6 +1270,11 @@ overlay {
   display: block !important;
   transition: background-color 2s;
   overflow: hidden;
+  -webkit-app-region:drag;
+}
+
+#login > h2 {
+  width: 100%;
 }
 
 overlay div {
@@ -1297,6 +1302,7 @@ overlay #hugin-background img {
 overlay h1 {
   font-weight: 100;
   border: none;
+  width: 100%;
 }
 
 overlay p {
@@ -3000,4 +3006,16 @@ li .gradient {
     transform: scale(1.1);
     filter: brightness(200%);
   }
+}
+#login-decoration {
+
+  background: rgba(255,255,255,0.05);
+  position: absolute;
+  right: -120vh;
+  height: 200vh;
+  border-radius: 50%;
+  z-index: -1;
+  width: 200vh;
+  display: block;
+  top: -50vh;
 }

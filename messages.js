@@ -3066,6 +3066,8 @@ ipcRenderer.on('wallet-started', async () => {
 							return;
 						}
 
+						ipcRenderer.send('login-complete');
+
 						window.clearInterval(int);
 						// avatar_base64 = get_avatar($('#currentAddrSpan').text());
 						$('#login_avatar').attr('src','data:image/svg+xml;base64,' + avatar_base64).addClass('shiny');

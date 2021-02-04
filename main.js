@@ -186,6 +186,11 @@ let syncing = true;
 const {autoUpdater} = require("electron-updater");
 const {ipcMain} = require('electron');
 
+ipcMain.on('login-complete', async (event, arg) => {
+
+  mainWindow.webContents.send('got-login-complete');
+
+});
 
 
 ipcMain.on('get-boards', async (event, arg) => {

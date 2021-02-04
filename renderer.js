@@ -298,30 +298,12 @@ function updateStatus() {
 
 }
 
+ipcRenderer.on('got-login-complete', async () => {
 
-function updateAddresses(){
-  walletd.getAddresses()
-  .then(resp => {
-    currentAddr = resp.body.result.addresses[0];
-    allAddresses = resp.body.result.addresses;
-    var thisAddr = resp.body.result.addresses[0];
-    $("#currentAddrSpan").text(thisAddr);
-
-    updateBalance(thisAddr);
-
-    addresses_loaded = true;
-
-  })
-  .catch(err => {
-    console.log(err)
-  })
-}
-
-let addresses_loaded = false;
-
-
-ipcRenderer.on('wallet-started', async () => {
-
+  console.log('Wallet started!');
+  console.log('Wallet started!');
+  console.log('Wallet started!');
+  console.log('Wallet started!');
 
   walletd = new TurtleCoinWalletd(
     'http://127.0.0.1',
@@ -335,6 +317,12 @@ ipcRenderer.on('wallet-started', async () => {
     currentAddr = resp.body.result.addresses[0];
     allAddresses = resp.body.result.addresses;
     var thisAddr = resp.body.result.addresses[0];
+    console.log(thisAddr);
+    console.log(thisAddr);
+    console.log(thisAddr);
+    console.log(thisAddr);
+    console.log(thisAddr);
+    console.log(thisAddr);
     $("#currentAddrSpan").text(thisAddr);
 
     updateBalance(thisAddr);
@@ -348,10 +336,6 @@ ipcRenderer.on('wallet-started', async () => {
 
     updateBalance(currentAddr);
     updateStatus();
-    //getHistory();
-    if (!addresses_loaded) {
-    updateAddresses();
-    }
 
 
   },10000);
