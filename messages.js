@@ -766,7 +766,36 @@ misc.find({}, function (err,docs){
 
 });
 
+$('#import').click(function(){
 
+  if ($('#importMnemonic').val().split(" ").length == 25) {
+
+  let r = confirm("Are you sure? If you have not backed up your mnemonic seed, you will loose all your data. This process may take a while, please be patient.");
+  if (r == true) {
+    console.log('Importing: ' + $('#importMnemonic').val());
+
+    db.remove({}, { multi: true }, function (err, numRemoved) {
+    });
+    misc.remove({}, { multi: true }, function (err, numRemoved) {
+    });
+    keychain.remove({}, { multi: true }, function (err, numRemoved) {
+    });
+    ipcRenderer.send('import_wallet',$('#importMnemonic').val());
+
+    setTimeout(function(){ console.log('resetting..');walletd.reset() }, 330000);
+
+  } else {
+
+  return;
+
+
+
+  }} else {
+
+   alert("Incorrect Mnemonic Seed");
+  }
+
+});
 
 const nacl = require('tweetnacl');
 const naclUtil = require('tweetnacl-util');
