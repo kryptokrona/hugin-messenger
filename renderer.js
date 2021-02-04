@@ -29,7 +29,6 @@ function escapeHtml(unsafe) {
  }
 
 var remote = require('electron').remote;
-var rpc_pw = remote.getGlobal('rpc_pw');
 var moment = require('moment');
 // Global variable for storing the currently used address
 var currentAddr = "";
@@ -47,7 +46,7 @@ const closeApp = document.getElementById('close-app');
 closeApp.addEventListener('click', () => {
     ipcRenderer.send('close-me')
 });
-
+let walletd;
 
 // Open links in browser
 $(document).on('click', 'a[href^="http"]', function(event) {
@@ -80,14 +79,6 @@ $(document).on('click', 'a[href^="http"]', function(event) {
 
 
 var TurtleCoinWalletd = require('kryptokrona-service-rpc-js').default
-
-let walletd = new TurtleCoinWalletd(
-  'http://127.0.0.1',
-  8070,
-  rpc_pw
-)
-
-walletd.logging = false;
 
 const messageWallet = settings.get('messageWallet');
 
@@ -276,6 +267,8 @@ function updateBalance(address) {
 
 function updateStatus() {
 
+
+
   walletd.getStatus()
   .then(resp => {
     console.log(resp);
@@ -305,19 +298,6 @@ function updateStatus() {
 
 }
 
-walletd.getAddresses()
-.then(resp => {
-  currentAddr = resp.body.result.addresses[0];
-  allAddresses = resp.body.result.addresses;
-  var thisAddr = resp.body.result.addresses[0];
-  $("#currentAddrSpan").text(thisAddr);
-
-  updateBalance(thisAddr);
-
-})
-.catch(err => {
-  console.log(err)
-})
 
 function updateAddresses(){
   walletd.getAddresses()
@@ -339,21 +319,49 @@ function updateAddresses(){
 
 let addresses_loaded = false;
 
-window.setInterval(function(){
 
-  updateBalance(currentAddr);
-  updateStatus();
-  //getHistory();
-  if (!addresses_loaded) {
-  updateAddresses();
-  }
+ipcRenderer.on('wallet-started', async () => {
 
 
-},10000);
+  walletd = new TurtleCoinWalletd(
+    'http://127.0.0.1',
+    8070,
+    remote.getGlobal('rpc_pw')
+  )
 
-window.setInterval(function() {
-  walletd.save();
-}, 60000);
+
+  walletd.getAddresses()
+  .then(resp => {
+    currentAddr = resp.body.result.addresses[0];
+    allAddresses = resp.body.result.addresses;
+    var thisAddr = resp.body.result.addresses[0];
+    $("#currentAddrSpan").text(thisAddr);
+
+    updateBalance(thisAddr);
+
+  })
+  .catch(err => {
+    console.log(err)
+  })
+
+  window.setInterval(function(){
+
+    updateBalance(currentAddr);
+    updateStatus();
+    //getHistory();
+    if (!addresses_loaded) {
+    updateAddresses();
+    }
+
+
+  },10000);
+
+  window.setInterval(function() {
+    walletd.save();
+  }, 60000);
+
+ })
+
 
 function load_page(prev,next) {
 

@@ -199,6 +199,13 @@ ipcMain.on('get-boards', async (event, arg) => {
 
 })
 
+ipcMain.on('start-wallet', async(event, addr) => {
+
+  await startWallet();
+  event.reply('wallet-started');
+
+})
+
 ipcMain.on('remove-subwallet', async(event, addr) => {
 
   const error = await js_wallet.deleteSubWallet(addr);
@@ -553,11 +560,16 @@ let startWallet = async () => {
 
   console.log('Starting wallet..');
 
-  db.find({setting : 'walletData'}, async function (err,docs){
+  await db.find({setting : 'walletData'}, async function (err,docs){
 
   wallet_file = docs[0].walletFile;
   wallet_pw = docs[0].walletPassword;
   global.rpc_pw = docs[0].rpcPassword;
+
+  console.log(docs[0].rpcPassword);
+  console.log(docs[0].rpcPassword);
+  console.log(docs[0].rpcPassword);
+  console.log(docs[0].rpcPassword);
 
   let node = 'pool.kryptokrona.se';
   let port = '11898'
@@ -699,7 +711,7 @@ db.find({}, function (err, docs) {
 
      gen_wallet.on('close', (code) => {
 
-       startWallet();
+       // startWallet();
      });
 
 
@@ -713,6 +725,6 @@ db.find({}, function (err, docs) {
     db.insert(walletData);
 
   } else {
-  startWallet();
+  // startWallet();
   }
 });

@@ -927,19 +927,14 @@ function fromHex(hex,str){
 }
 
 
-var rpc_pw = remote.getGlobal('rpc_pw');
+var rpc_pw;
 
 let downloadDir = remote.getGlobal('downloadDir');
 
 
 var TurtleCoinWalletd = require('kryptokrona-service-rpc-js').default
 
-let walletd = new TurtleCoinWalletd(
-  'http://127.0.0.1',
-  8070,
-  rpc_pw,
-  false
-)
+let walletd;
 
 $('#getMnemonic').click(function(){
   walletd.getMnemonicSeed($('#currentAddrSpan').text()).then(resp => {
@@ -2845,15 +2840,23 @@ let loadWallets = async () => {
 
   console.log(boards_addresses);
 
-	await sleep(1000);
+	await sleep(2000);
 
   return walletd.getAddresses()
   .then(resp => {
+
+					console.log(resp);
+					console.log(resp);
+					console.log(resp);
+					console.log(resp);
+					console.log(resp);
+
     currentAddr = resp.body.result.addresses[0];
     allAddresses = resp.body.result.addresses;
     var thisAddr = resp.body.result.addresses[0];
 
     return walletd.getSpendKeys(thisAddr).then(resp => {
+
 
       let secretKey = naclUtil.decodeUTF8(resp.body.result.spendSecretKey.substring(1, 33));
       console.log(resp.body.result.spendSecretKey);
@@ -2872,7 +2875,7 @@ let loadWallets = async () => {
 
       $('#currentPubKey').text(hex);
 
-      avatar_base64 = get_avatar($('#currentAddrSpan').text());
+      avatar_base64 = get_avatar(thisAddr);
       $('#avatar').attr('src','data:image/svg+xml;base64,' + avatar_base64);
       $('#avatar').css('border-radius','50%');
 			console.log('Return:', avatar_base64);
@@ -2944,48 +2947,9 @@ $("document").ready(function(){
   //
   // }, 15000);
 
-	$('#login_button').click(async function(){
+	$('#login_button').click(function(){
 
-					let avatar_base64 = false;
-
-					while ((avatar_base64 == false || avatar_base64 == undefined) && start_attempts < 6) {
-						start_attempts++;
-						avatar_base64 = await loadWallets();
-						// await sleep(1000);
-						console.log(start_attempts);
-						console.log(avatar_base64);
-						console.log('Trying again');
-					}
-
-					if (!avatar_base64) {
-						alert('Cant connect to node');
-						return;
-					}
-
-					window.clearInterval(int);
-					// avatar_base64 = get_avatar($('#currentAddrSpan').text());
-					$('#login_avatar').attr('src','data:image/svg+xml;base64,' + avatar_base64).addClass('shiny');
-
-					await sleep(1000);
-
-					$('overlay > *').fadeOut();
-
-		      $('overlay').css('background-color','white').animate({
-		        marginTop: "50vh",
-		        height: "3px",
-		        backgroundColor: "white"
-		      }, 1000, function() {
-		        // Animation complete.
-
-		        $(this).animate({
-		          width: "0",
-		          marginLeft: "50vw"
-		        }, 500, function() {
-		          // Animation complete.
-		        });
-
-		      });
-
+					ipcRenderer.send('start-wallet');
 
 	});
 
@@ -3010,24 +2974,6 @@ $("document").ready(function(){
 });
 
 let locked = $('#lockedBalanceText').text();
-
-window.setInterval(function(){
-
-  get_new_conversations(true);
-
-
-},1000);
-
-let getting_new_conversations = false;
-
-
-window.setInterval(function(){
-
-  if (!getting_new_conversations) {
-    get_new_conversations(false);
-  }
-
-},10333);
 
 $('#new_board').click(function(){
 
@@ -3068,6 +3014,82 @@ ipcRenderer.on('imported-view-subwallet', async (event, address) => {
         $('#new_board').click();
         print_boards();
       }
+
+});
+
+ipcRenderer.on('wallet-started', async () => {
+
+						console.log('started-wallet');
+
+						walletd = new TurtleCoinWalletd(
+							'http://127.0.0.1',
+							8070,
+							remote.getGlobal('rpc_pw'),
+							false
+						);
+
+
+						window.setInterval(function(){
+
+						  get_new_conversations(true);
+
+
+						},1000);
+
+						let getting_new_conversations = false;
+
+
+						window.setInterval(function(){
+
+						  if (!getting_new_conversations) {
+						    get_new_conversations(false);
+						  }
+
+						},10333);
+
+
+
+
+						let avatar_base64 = false;
+
+						while ((avatar_base64 == false || avatar_base64 == undefined) && start_attempts < 6) {
+							start_attempts++;
+							avatar_base64 = await loadWallets();
+							// await sleep(1000);
+							console.log(start_attempts);
+							console.log(avatar_base64);
+							console.log('Trying again');
+						}
+
+						if (!avatar_base64) {
+							alert('Cant connect to node');
+							return;
+						}
+
+						window.clearInterval(int);
+						// avatar_base64 = get_avatar($('#currentAddrSpan').text());
+						$('#login_avatar').attr('src','data:image/svg+xml;base64,' + avatar_base64).addClass('shiny');
+
+						await sleep(1000);
+
+						$('overlay > *').fadeOut();
+
+			      $('overlay').css('background-color','white').animate({
+			        marginTop: "50vh",
+			        height: "3px",
+			        backgroundColor: "white"
+			      }, 1000, function() {
+			        // Animation complete.
+
+			        $(this).animate({
+			          width: "0",
+			          marginLeft: "50vw"
+			        }, 500, function() {
+			          // Animation complete.
+			        });
+
+			      });
+
 
 });
 
