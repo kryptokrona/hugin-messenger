@@ -1272,8 +1272,26 @@ overlay {
   overflow: hidden;
 }
 
+overlay div {
+  display: inline-block;
+  width: 45%;
+  height: 100%;
+}
+
 overlay .wrapper {
+  width: 100%;
+}
+
+overlay #welcome {
   margin-top: 200px;
+}
+
+overlay #hugin-background img {
+    position: absolute;
+    width: 440px;
+    top: 135px;
+    left: 88px;
+    margin-top: 10%;
 }
 
 overlay h1 {
@@ -1283,6 +1301,10 @@ overlay h1 {
 
 overlay p {
       font-family: monospace;
+}
+
+overlay #login {
+  margin-top: 200px;
 }
 
 #welcome {
