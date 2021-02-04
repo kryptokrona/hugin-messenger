@@ -2856,8 +2856,23 @@ function loadWallets() {
   })
 }
 
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+let changing_faces = async (token, element) => {
+	while (token) {
+		avatar_base64 = get_avatar(Buffer.from(nacl.randomBytes(32)).toString('hex'));
+		$(element).attr('src','data:image/svg+xml;base64,' + avatar_base64);
+		await sleep(500);
+	}
+}
+
+
 $("document").ready(function(){
 
+	changing_faces(true, '#login_avatar');
 
   loadWallets();
   //
