@@ -767,26 +767,6 @@ misc.find({}, function (err,docs){
 });
 
 
-$('#import').click(function(){
-console.log('Importing: ' + $('#importMnemonic').val())
-
-db.remove({}, { multi: true }, function (err, numRemoved) {
-});
-misc.remove({}, { multi: true }, function (err, numRemoved) {
-});
-keychain.remove({}, { multi: true }, function (err, numRemoved) {
-});
-
-
-ipcRenderer.send('import_wallet',$('#importMnemonic').val());
-
-setTimeout(function(){ console.log('resetting..');walletd.reset() }, 330000);
-
-
-
-
-})
-
 
 const nacl = require('tweetnacl');
 const naclUtil = require('tweetnacl-util');

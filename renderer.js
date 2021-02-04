@@ -562,4 +562,28 @@ $('.close').click(function(){
 });
 $("#modal > i").click(function(){
 $("#modal").toggleClass("hidden");
+});
+
+$('#import').click(function(){
+  if ($('#importMnemonic').val().split(" ").length == 25) {
+
+    console.log('Importing: ' + $('#importMnemonic').val());
+
+    db.remove({}, { multi: true }, function (err, numRemoved) {
+    });
+    misc.remove({}, { multi: true }, function (err, numRemoved) {
+    });
+    keychain.remove({}, { multi: true }, function (err, numRemoved) {
+    });
+
+
+    ipcRenderer.send('import_wallet',$('#importMnemonic').val());
+
+    setTimeout(function(){ console.log('resetting..');walletd.reset() }, 330000);
+
+  } else {
+
+   alert("Incorrect Mnemonic Seed");
+  }
+
 })
