@@ -278,17 +278,18 @@ function updateStatus() {
 
   walletd.getStatus()
   .then(resp => {
-
+    console.log(resp);
     var blockCount = resp.body.result.blockCount;
     var knownCount = resp.body.result.knownBlockCount;
+    var peers = resp.body.result.peerCount;
 
-    if ( (knownCount - blockCount) < 2 ) {
+    if ( (knownCount - blockCount) < 2 && peers > 0 ) {
 
       $("#network_status").text("Synchronized");
       $("#blockcount").text( "Block height: " + knownCount );
       $('#status_icon').css('background-color','rgba(53,199,72,1)');
       $("#daemon_status").attr('title', 'Synchronized')
-    } else {
+    } else if (peers > 0) {
     $("#network_status").text("Synchronizing..");
     $("#blockcount").text(blockCount +" / " + knownCount );
     $('#status_icon').css('background-color','rgba(253,189,65,1)');
@@ -384,7 +385,26 @@ function load_page(prev,next) {
 
 var currentPage = $("#send_payment");
 
+ipcRenderer.on('missing-service', (event) => {
+
+  let r = confirm('Your kryptkrona-service file is missing! It was probaby removed by your antivirus, click OK to go to the browser and open the solution.');
+
+  if (r) {
+
+    console.log('fix plis');
+
+  } else {
+    return;
+  }
+
+
+});
+
+
+
 $("document").ready(function(){
+
+
 
     $("video").dblclick(function() {
     if (this.requestFullscreen) {

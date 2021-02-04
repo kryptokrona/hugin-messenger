@@ -549,11 +549,11 @@ let wallet;
 
 var db = new Datastore({ filename: userDataDir+'/settings.db', autoload: true });
 
-function startWallet() {
+let startWallet = async () => {
 
   console.log('Starting wallet..');
 
-  db.find({setting : 'walletData'}, function (err,docs){
+  db.find({setting : 'walletData'}, async function (err,docs){
 
   wallet_file = docs[0].walletFile;
   wallet_pw = docs[0].walletPassword;
@@ -561,8 +561,6 @@ function startWallet() {
 
   let node = 'pool.kryptokrona.se';
   let port = '11898'
-
-
 
   if (docs[0].node) {
 
@@ -576,6 +574,15 @@ function startWallet() {
   js_wallet.swapNode(daemon);
 
   global.node = node+':'+port;
+
+  if (fs.existsSync(appPath+'kryptokrona-service') || fs.existsSync(appPath+'kryptokrona-service.exe' )) {
+    console.log('File exists!');
+  } else {
+    console.log('File does not exist!');
+    await sleep(10000);
+    mainWindow.webContents.send('missing-service');
+    return;
+  }
 
    wallet = spawn(appPath+'kryptokrona-service', ['-l', userDataDir+"/walletd.log",'-w', userDataDir+'/'+wallet_file, '-p', wallet_pw, '--rpc-password', global.rpc_pw, '--daemon-address', node, '--daemon-port', port]); //, '--daemon-address', 'localhost'
 

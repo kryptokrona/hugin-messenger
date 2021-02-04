@@ -1265,9 +1265,9 @@ overlay {
   position: absolute;
   top:0;
   left:0;
-  background-color: black;
+  background-color: #161415;
   z-index: 999999999;
-  display: none;
+  display: block !important;
   transition: background-color 2s;
   overflow: hidden;
 }
@@ -1304,7 +1304,17 @@ overlay p {
 }
 
 overlay #login {
-  margin-top: 200px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+overlay hr {
+  border-color: rgba(0,0,0,0.2);
+  width: 50%;
+}
+
+overlay #login img {
+  height: 128px;
 }
 
 #welcome {
@@ -2691,6 +2701,44 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
       margin-left: 10px;
 }
 
+input {
+
+  background: rgba(0,0,0,0.1);
+    color: rgba(255,255,255,0.8);
+    border-radius: 5px;
+    border: none;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 9px;
+    font-size: 15px;
+    word-break: break-word;
+    resize: none;
+    overflow: hidden;
+
+}
+
+button {
+
+  background: rgba(0,0,0,0.1);
+    color: rgba(255,255,255,0.4);
+    border-radius: 5px;
+    border: none;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 9px;
+    font-size: 15px;
+    font-family: monospace;
+    cursor: pointer;
+
+}
+
+button:hover {
+
+  color: rgba(255,255,255,0.5);
+  background: rgba(50,50,50,0.1);
+
+}
+
 #nodeInput {
 
   background: rgba(0,0,0,0.1);
@@ -2747,12 +2795,12 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
   animation: AnimationName 60s ease infinite alternate;
 } */
 
-button {
+/* button {
   border-radius: 3px;
   background: none;
   border: 3px solid black;
 
-}
+} */
 
 li .gradient {
   color: black !important;
@@ -2898,6 +2946,10 @@ li .gradient {
   transform: scale(0);
 }
 
+.shiny {
+  animation: shine 0.6s ease infinite
+}
+
 @keyframes rgb {
   0%, 100% {
     background: #5f86f2;
@@ -2923,11 +2975,10 @@ li .gradient {
   87.5% {
     background: 5ff2f0;
   }
-  , , , , , , , #) !important;
 }
 
 .profile-avatar {
-  width: 100%;s
+  width: 100%;
 }
 
 .board_icon .fa-lock {
@@ -2937,4 +2988,16 @@ li .gradient {
     border-radius: 50%;
     width: 14px;
     font-size: 16px;
+}
+
+@keyframes shine {
+  0%, 100% {
+
+    transform: scale(1);
+
+  }
+  50% {
+    transform: scale(1.1);
+    filter: brightness(200%);
+  }
 }

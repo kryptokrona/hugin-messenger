@@ -2809,18 +2809,22 @@ avatar_base64 = get_avatar(conversation);
 
 }
 
-function loadWallets() {
+let start_attempts = 0;
+
+let loadWallets = async () => {
   let boards_addresses = rmt.getGlobal('boards_addresses');
 
   console.log(boards_addresses);
 
-  walletd.getAddresses()
+	await sleep(1000);
+
+  return walletd.getAddresses()
   .then(resp => {
     currentAddr = resp.body.result.addresses[0];
     allAddresses = resp.body.result.addresses;
     var thisAddr = resp.body.result.addresses[0];
 
-    walletd.getSpendKeys(thisAddr).then(resp => {
+    return walletd.getSpendKeys(thisAddr).then(resp => {
 
       let secretKey = naclUtil.decodeUTF8(resp.body.result.spendSecretKey.substring(1, 33));
       console.log(resp.body.result.spendSecretKey);
@@ -2839,9 +2843,11 @@ function loadWallets() {
 
       $('#currentPubKey').text(hex);
 
-      avatar_base64 = get_avatar($('#currentPubKey').text());
+      avatar_base64 = get_avatar($('#currentAddrSpan').text());
       $('#avatar').attr('src','data:image/svg+xml;base64,' + avatar_base64);
       $('#avatar').css('border-radius','50%');
+			console.log('Return:', avatar_base64);
+			return avatar_base64;
 
 
     })
@@ -2849,8 +2855,17 @@ function loadWallets() {
   })
   .catch(err => {
 
-    console.log(err);
-    loadWallets();
+		return false;
+		//
+    // console.log(err);
+		// await sleep(1000);
+		// if (start_attempts < 6) {
+		// 	console.log('Trying again..');
+    // 	let re = await loadWallets();
+		// 	return re;
+		// } else {
+		// 	return false;
+		// }
 
 
   })
@@ -2861,20 +2876,38 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-let changing_faces = async (token, element) => {
-	while (token) {
-		avatar_base64 = get_avatar(Buffer.from(nacl.randomBytes(32)).toString('hex'));
-		$(element).attr('src','data:image/svg+xml;base64,' + avatar_base64);
-		await sleep(500);
+let changing_faces = async (element) => {
+
+	let faces = [];
+
+	for (let i = 0; i < 10; i++) {
+		faces.push(get_avatar(Buffer.from(nacl.randomBytes(32)).toString('hex')));
 	}
+
+	let i = 0;
+
+	int = self.setInterval(function(){i = avatarLoop(i, element, faces)},500);
+
 }
 
+let int;
+
+function avatarLoop(i, element, faces) {
+
+		$(element).attr('src','data:image/svg+xml;base64,' + faces[i]);
+		if (i < 9) {
+			return i+1;
+		} else {
+			return 0;
+		}
+
+}
 
 $("document").ready(function(){
 
-	changing_faces(true, '#login_avatar');
+	changing_faces('#login_avatar');
 
-  loadWallets();
+
   //
   // setTimeout(function() {
   //
@@ -2882,6 +2915,50 @@ $("document").ready(function(){
   //
   // }, 15000);
 
+	$('#login_button').click(async function(){
+
+					let avatar_base64 = false;
+
+					while ((avatar_base64 == false || avatar_base64 == undefined) && start_attempts < 6) {
+						start_attempts++;
+						avatar_base64 = await loadWallets();
+						// await sleep(1000);
+						console.log(start_attempts);
+						console.log(avatar_base64);
+						console.log('Trying again');
+					}
+
+					if (!avatar_base64) {
+						alert('Cant connect to node');
+						return;
+					}
+
+					window.clearInterval(int);
+					// avatar_base64 = get_avatar($('#currentAddrSpan').text());
+					$('#login_avatar').attr('src','data:image/svg+xml;base64,' + avatar_base64).addClass('shiny');
+
+					await sleep(1000);
+
+					$('overlay > *').fadeOut();
+
+		      $('overlay').css('background-color','white').animate({
+		        marginTop: "50vh",
+		        height: "3px",
+		        backgroundColor: "white"
+		      }, 1000, function() {
+		        // Animation complete.
+
+		        $(this).animate({
+		          width: "0",
+		          marginLeft: "50vw"
+		        }, 500, function() {
+		          // Animation complete.
+		        });
+
+		      });
+
+
+	});
 
   $('#copyBoth').click(function(){
     copy($('#currentAddrSpan').text() + $('#currentPubKey').text() );
