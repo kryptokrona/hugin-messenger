@@ -1270,21 +1270,30 @@ overlay {
   display: block !important;
   transition: background-color 2s;
   overflow: hidden;
-  -webkit-app-region:drag;
+  /* -webkit-app-region:drag; */
 }
 
 #login > h2 {
   width: 100%;
 }
 
-overlay div {
+#login, #welcome {
   display: inline-block;
   width: 45%;
   height: 100%;
 }
 
+#login {
+  vertical-align: 20% !important;
+}
 overlay .wrapper {
   width: 100%;
+}
+
+#login_swap_node_modal {
+    background: #161415;
+    border-radius: 10px;
+    padding: 30px;
 }
 
 overlay #welcome {

@@ -394,8 +394,122 @@ ipcRenderer.on('missing-service', (event) => {
 
 
 
-$("document").ready(function(){
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
+
+$("document").ready(async function(){
+
+            while (rmt.getGlobal('node') == undefined) {
+              await sleep(1000);
+              console.log('no node :()');
+            }
+
+            $('#login_status span').text(rmt.getGlobal('node'));
+
+
+            fetch('http://' + rmt.getGlobal('node') + '/json_rpc', {
+                 method: 'POST',
+                 body: JSON.stringify({
+                   jsonrpc: '2.0',
+                   method: 'getblockcount',
+                   params: {}
+                 })
+               }).then(json => {
+
+
+                 $('#login_status span').text(rmt.getGlobal('node') + ' ✅');
+
+               }).catch(err => {
+                 console.log(err);
+
+                 $('#login_status span').text(rmt.getGlobal('node') + ' ❌');
+                 $('#login_swap_node').show().click(function() {
+                   ipcRenderer.on('got-nodes', (event, json) => {
+                     console.log(json);
+                     $('#login_swap_node_modal .dropdown-content').empty();
+                     for (node in json.nodes) {
+
+                       let node_addr = json.nodes[node].url + ":" +json.nodes[node].port;
+
+                       $('#login_swap_node_modal .dropdown-content').append('<a href="#" id="node' + node + '">' + json.nodes[node].name + '</a>');
+
+                       $('#login_swap_node_modal #node' + node).click(function() {
+                         $('#login_swap_node_modal #nodeInput').val(node_addr).focus().blur();
+                       })
+
+                     }
+                   })
+                   ipcRenderer.send('get-nodes');
+
+                   $('#connection_settings_page').clone().appendTo('#login_swap_node_modal').find('h1, h3').unwrap().remove();
+
+                   $('#login_swap_node_modal').fadeIn();
+
+                   $("#login_swap_node_modal #nodeConnect").click(function(){
+                     let node = $('#login_swap_node_modal #nodeInput').val();
+                     ipcRenderer.send('change-node', node, false);
+                     $('#login_status span').text(node);
+                     $('#login_swap_node_modal').hide();
+
+
+                     fetch('http://' + node + '/json_rpc', {
+                          method: 'POST',
+                          body: JSON.stringify({
+                            jsonrpc: '2.0',
+                            method: 'getblockcount',
+                            params: {}
+                          })
+                        }).then(json => {
+
+                          $('#login_swap_node').hide();
+                          $('#login_status span').text(node + ' ✅');
+                          $('#login_swap_node').hide();
+
+                        }).catch(err => {
+                          console.log(err);
+
+                          $('#login_status span').text(node + ' ❌');
+                        });
+
+                   });
+
+                   $('#login_swap_node_modal #nodeInput').blur(function(){
+
+                       $('#login_swap_node_modal #nodeInputStatus').text('');
+                       $('#login_swap_node_modal #nodeInputLoading').show();
+
+
+                         fetch('http://' + $('#login_swap_node_modal #nodeInput').val() + '/json_rpc', {
+                              method: 'POST',
+                              body: JSON.stringify({
+                                jsonrpc: '2.0',
+                                method: 'getblockcount',
+                                params: {}
+                              })
+                            }).then(json => {
+                              console.log(json);
+                              $('#login_swap_node_modal #nodeInputLoading').hide();
+                              $('#login_swap_node_modal #nodeInputStatus').text('✅');
+
+                            }).catch(err => {
+                              console.log(err);
+                              $('#login_swap_node_modal #nodeInputLoading').hide();
+                              $('#login_swap_node_modal #nodeInputStatus').text('❌');
+                            })
+
+
+
+                   })
+
+
+
+
+                 });
+
+
+               })
 
 
     $("video").dblclick(function() {
@@ -468,6 +582,7 @@ $("document").ready(function(){
     updateStatus();
 
   });
+
 
   $('#nodeInput').blur(function(){
 

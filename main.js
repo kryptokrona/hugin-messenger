@@ -320,19 +320,29 @@ ipcMain.on('get-nodes', async (event, arg) => {
 })
 
 
-ipcMain.on('change-node', async (event, node) => {
+ipcMain.on('change-node', async (event, node, kill=true) => {
   console.log(node) // prints "ping"
+
+  global.node = node;
+  const daemon = new WB.Daemon(node.split(':')[0], parseInt(node.split(':')[1]));
+  js_wallet.swapNode(daemon);
 
   db.update({setting : 'walletData'}, { $set: {node : node} } , {} , function (err, numReplaced){
 
     console.log(numReplaced);
-    wallet.kill('SIGINT');
-    wallet.on('close', () => {
-      console.log('Wallet is closed..');
-      startWallet();
+    if (kill) {
+
+      wallet.kill('SIGINT');
+      wallet.on('close', () => {
+        console.log('Wallet is closed..');
+        startWallet();
 
 
-    } );
+      } );
+
+    } else {
+      // app.relaunch();
+    }
 
   })
 
@@ -563,34 +573,6 @@ var db = new Datastore({ filename: userDataDir+'/settings.db', autoload: true })
 
 let startWallet = async () => {
 
-  console.log('Starting wallet..');
-
-  await db.find({setting : 'walletData'}, async function (err,docs){
-
-  wallet_file = docs[0].walletFile;
-  wallet_pw = docs[0].walletPassword;
-  global.rpc_pw = docs[0].rpcPassword;
-
-  console.log(docs[0].rpcPassword);
-  console.log(docs[0].rpcPassword);
-  console.log(docs[0].rpcPassword);
-  console.log(docs[0].rpcPassword);
-
-  let node = 'pool.kryptokrona.se';
-  let port = '11898'
-
-  if (docs[0].node) {
-
-    node = docs[0].node.split(':');
-    port = node[1];
-    node = node[0]
-  }
-
-  const daemon = new WB.Daemon(node, parseInt(port));
-
-  js_wallet.swapNode(daemon);
-
-  global.node = node+':'+port;
 
   if (fs.existsSync(appPath+'kryptokrona-service') || fs.existsSync(appPath+'kryptokrona-service.exe' )) {
     console.log('File exists!');
@@ -601,7 +583,7 @@ let startWallet = async () => {
     return;
   }
 
-   wallet = spawn(appPath+'kryptokrona-service', ['-l', userDataDir+"/walletd.log",'-w', userDataDir+'/'+wallet_file, '-p', wallet_pw, '--rpc-password', global.rpc_pw, '--daemon-address', node, '--daemon-port', port]); //, '--daemon-address', 'localhost'
+   wallet = spawn(appPath+'kryptokrona-service', ['-l', userDataDir+"/walletd.log",'-w', userDataDir+'/'+wallet_file, '-p', wallet_pw, '--rpc-password', global.rpc_pw, '--daemon-address', global.node.split(':')[0], '--daemon-port', global.node.split(':')[1]]); //, '--daemon-address', 'localhost'
 
    wallet.stdout.on('data', (data) => {
 
@@ -617,7 +599,7 @@ let startWallet = async () => {
    });
 
 
-})
+
 
 }
 
@@ -689,7 +671,7 @@ function randomString() {
 }
 
 // Check if any message data is stored
-db.find({}, function (err, docs) {
+db.find({}, async function (err, docs) {
   datastore_docs = docs;
 
 
@@ -729,7 +711,35 @@ db.find({}, function (err, docs) {
 
     db.insert(walletData);
 
+    global.node = "pool.kryptokrona.se:11898";
+
   } else {
-  // startWallet();
-  }
+
+      console.log('Starting wallet..');
+
+      await db.find({setting : 'walletData'}, async function (err,docs){
+
+      wallet_file = docs[0].walletFile;
+      wallet_pw = docs[0].walletPassword;
+      global.rpc_pw = docs[0].rpcPassword;
+
+
+      let node = 'pool.kryptokrona.se';
+      let port = '11898'
+
+      if (docs[0].node) {
+
+        node = docs[0].node.split(':');
+        port = node[1];
+        node = node[0]
+      }
+
+      const daemon = new WB.Daemon(node, parseInt(port));
+
+      js_wallet.swapNode(daemon);
+
+      global.node = node+':'+port;
+
+  })
+}
 });
