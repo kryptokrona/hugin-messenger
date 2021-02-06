@@ -1291,9 +1291,32 @@ overlay .wrapper {
 }
 
 #login_swap_node_modal {
-    background: #161415;
+
+
     border-radius: 10px;
     padding: 30px;
+    position: absolute;
+    width: 300px;
+    padding: 20px;
+    position: absolute;
+    background: #292929;
+    right: 229px;
+    border-radius: 15px
+}
+#login_swap_node_modal #nodeInput {
+  margin-left: 5px;
+  max-width: 95%;
+}
+#login_swap_node_modal .lds-ripple-small{
+  right: 40px;
+
+}
+#login_swap_node_modal #nodeInputStatus, #nodeInputLoading {
+
+    position: absolute;
+    top: 2px;
+    left: 270px;
+    font-size: 19pt;
 }
 
 overlay #welcome {
@@ -3027,4 +3050,9 @@ li .gradient {
   width: 200vh;
   display: block;
   top: -50vh;
+}
+
+#login_status {
+
+  cursor: pointer;;
 }

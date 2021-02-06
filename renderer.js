@@ -103,6 +103,7 @@ if (!messageWallet) {
           marginLeft: "50vw"
         }, 500, function() {
           // Animation complete.
+          $('overlay').remove();
         });
 
       });
@@ -425,93 +426,110 @@ $("document").ready(async function(){
 
                }).catch(err => {
                  console.log(err);
-
+                 $('#login_swap_node').show();
                  $('#login_status span').text(rmt.getGlobal('node') + ' ❌');
-                 $('#login_swap_node').show().click(function() {
-                   ipcRenderer.on('got-nodes', (event, json) => {
-                     console.log(json);
-                     $('#login_swap_node_modal .dropdown-content').empty();
-                     for (node in json.nodes) {
-
-                       let node_addr = json.nodes[node].url + ":" +json.nodes[node].port;
-
-                       $('#login_swap_node_modal .dropdown-content').append('<a href="#" id="node' + node + '">' + json.nodes[node].name + '</a>');
-
-                       $('#login_swap_node_modal #node' + node).click(function() {
-                         $('#login_swap_node_modal #nodeInput').val(node_addr).focus().blur();
-                       })
-
-                     }
-                   })
-                   ipcRenderer.send('get-nodes');
-
-                   $('#connection_settings_page').clone().appendTo('#login_swap_node_modal').find('h1, h3').unwrap().remove();
-
-                   $('#login_swap_node_modal').fadeIn();
-
-                   $("#login_swap_node_modal #nodeConnect").click(function(){
-                     let node = $('#login_swap_node_modal #nodeInput').val();
-                     ipcRenderer.send('change-node', node, false);
-                     $('#login_status span').text(node);
-                     $('#login_swap_node_modal').hide();
 
 
-                     fetch('http://' + node + '/json_rpc', {
-                          method: 'POST',
-                          body: JSON.stringify({
-                            jsonrpc: '2.0',
-                            method: 'getblockcount',
-                            params: {}
-                          })
-                        }).then(json => {
-
-                          $('#login_swap_node').hide();
-                          $('#login_status span').text(node + ' ✅');
-                          $('#login_swap_node').hide();
-
-                        }).catch(err => {
-                          console.log(err);
-
-                          $('#login_status span').text(node + ' ❌');
-                        });
-
-                   });
-
-                   $('#login_swap_node_modal #nodeInput').blur(function(){
-
-                       $('#login_swap_node_modal #nodeInputStatus').text('');
-                       $('#login_swap_node_modal #nodeInputLoading').show();
 
 
-                         fetch('http://' + $('#login_swap_node_modal #nodeInput').val() + '/json_rpc', {
-                              method: 'POST',
-                              body: JSON.stringify({
-                                jsonrpc: '2.0',
-                                method: 'getblockcount',
-                                params: {}
-                              })
-                            }).then(json => {
-                              console.log(json);
-                              $('#login_swap_node_modal #nodeInputLoading').hide();
-                              $('#login_swap_node_modal #nodeInputStatus').text('✅');
 
-                            }).catch(err => {
-                              console.log(err);
-                              $('#login_swap_node_modal #nodeInputLoading').hide();
-                              $('#login_swap_node_modal #nodeInputStatus').text('❌');
+                 }).finally(function() {
+                   console.log('tja');
+
+                   $('#login_swap_node').show().click(function() {
+                     console.log('tja');
+                       $('#login_swap_node_modal').empty();
+                       $('#connection_settings_page').clone().appendTo('#login_swap_node_modal').find('h1, h3').unwrap().remove();
+                     ipcRenderer.on('got-nodes', (event, json) => {
+                       console.log(json);
+
+
+
+                      $('#login_swap_node_modal .dropdown-content').empty();
+                       for (node in json.nodes) {
+
+                         let node_addr = json.nodes[node].url + ":" +json.nodes[node].port;
+
+                         $('#login_swap_node_modal .dropdown-content').append('<a href="#" id="node' + node + '">' + json.nodes[node].name + '</a>');
+
+                         $('#login_swap_node_modal #node' + node).click(function() {
+                           $('#login_swap_node_modal #nodeInput').val(node_addr).focus().blur();
+                         })
+
+                       }
+                     })
+                     ipcRenderer.send('get-nodes');
+
+                      console.log('lololol');
+                       console.log('lalallal');
+
+                     $('#login_swap_node_modal').show();
+                     console.log( $("#login_swap_node_modal #nodeConnect").length);
+
+                     $("#login_swap_node_modal #nodeConnect").click(function(){
+                       console.log('bruuuuuuuum');
+                       let node = $('#login_swap_node_modal #nodeInput').val();
+                       ipcRenderer.send('change-node', node, false);
+                       $('#login_status span').text(node);
+                       $('#login_swap_node_modal').hide();
+
+
+                       fetch('http://' + node + '/json_rpc', {
+                            method: 'POST',
+                            body: JSON.stringify({
+                              jsonrpc: '2.0',
+                              method: 'getblockcount',
+                              params: {}
                             })
+                          }).then(json => {
+
+                            $('#login_swap_node').hide();
+                            $('#login_status span').text(node + ' ✅');
+                            $('#login_swap_node').hide();
+
+                          }).catch(err => {
+                            console.log(err);
+
+                            $('#login_status span').text(node + ' ❌');
+
+                          });
+
+                     });
+
+                     $('#login_swap_node_modal #nodeInput').blur(function(){
+
+                         $('#login_swap_node_modal #nodeInputStatus').text('');
+                         $('#login_swap_node_modal #nodeInputLoading').show();
 
 
+                           fetch('http://' + $('#login_swap_node_modal #nodeInput').val() + '/json_rpc', {
+                                method: 'POST',
+                                body: JSON.stringify({
+                                  jsonrpc: '2.0',
+                                  method: 'getblockcount',
+                                  params: {}
+                                })
+                              }).then(json => {
+                                console.log(json);
+                                $('#login_swap_node_modal #nodeInputLoading').hide();
+                                $('#login_swap_node_modal #nodeInputStatus').text('✅');
 
-                   })
+                              }).catch(err => {
+                                console.log(err);
+                                $('#login_swap_node_modal #nodeInputLoading').hide();
+                                $('#login_swap_node_modal #nodeInputStatus').text('❌');
+                              })
 
 
 
 
                  });
-
-
                })
+
+
+               });
+
+             });
 
 
     $("video").dblclick(function() {
@@ -586,13 +604,13 @@ $("document").ready(async function(){
   });
 
 
-  $('#nodeInput').blur(function(){
+  $('#connection_settings_page #nodeInput').blur(function(){
 
       $('#nodeInputStatus').text('');
       $('#nodeInputLoading').show();
 
 
-        fetch('http://' + $('#nodeInput').val() + '/json_rpc', {
+        fetch('http://' + $('#connection_settings_page #nodeInput').val() + '/json_rpc', {
              method: 'POST',
              body: JSON.stringify({
                jsonrpc: '2.0',
@@ -624,7 +642,7 @@ $("document").ready(async function(){
     // console.log(ipcRenderer.sendSync('synchronous-message', 'ping')) // prints "pong"
     $('#nodeInput').val(rmt.getGlobal('node'));
     ipcRenderer.on('got-nodes', (event, json) => {
-      console.log(json);
+      console.log('tJISSSSSSAN');
       $('.dropdown-content').empty();
       for (node in json.nodes) {
 
@@ -655,8 +673,6 @@ $("document").ready(async function(){
 $('#avatar_contact').click(function(){
 
 $('#currentchat_header_wrapper').toggleClass('toggled_addr');
-
-});
 
 });
 
