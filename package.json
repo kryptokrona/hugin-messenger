@@ -21,7 +21,7 @@
       }
     ],
     "mac": {
-    "asarUnpack": "./node_modules/node-notifier/vendor/**"
+      "asarUnpack": "./node_modules/node-notifier/vendor/**"
     }
   },
   "keywords": [
@@ -45,7 +45,7 @@
     "child_process": "^1.0.2",
     "copy-to-clipboard": "^3.2.0",
     "electron-context-menu": "^2.4.0",
-    "electron-fetch": "^1.7.2",
+    "electron-fetch": "^1.7.3",
     "electron-is-dev": "^1.2.0",
     "electron-log": "^2.2.17",
     "electron-settings": "^3.1.4",
@@ -61,6 +61,7 @@
     "md5": "^2.2.1",
     "moment": "^2.22.2",
     "nedb": "^1.8.0",
+    "node-fetch": "^2.6.1",
     "node-notifier": "^8.0.1",
     "openalias": "^1.0.0",
     "play-sound": "^1.1.3",

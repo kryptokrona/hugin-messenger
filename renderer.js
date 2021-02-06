@@ -3,6 +3,7 @@
 // All of the Node.js APIs are available in this process.
 window.$ = window.jQuery = require('jquery');
 const rmt = require('electron').remote;
+const fetch = require('node-fetch');
 
 function fromHex(hex,str){
   try{
@@ -411,6 +412,7 @@ $("document").ready(async function(){
 
             fetch('http://' + rmt.getGlobal('node') + '/json_rpc', {
                  method: 'POST',
+                 timeout: 5000,
                  body: JSON.stringify({
                    jsonrpc: '2.0',
                    method: 'getblockcount',
