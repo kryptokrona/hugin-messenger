@@ -2951,6 +2951,8 @@ $("document").ready(function(){
 
 					ipcRenderer.send('start-wallet');
 
+					$('#login_avatar').after('<p class="saving">Connecting to blockchain<span>.</span><span>.</span><span>.</span></p>');
+
 	});
 
   $('#copyBoth').click(function(){
