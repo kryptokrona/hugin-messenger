@@ -320,6 +320,8 @@
 /* Change the background color of the dropdown button when the dropdown content is shown */
 .dropdown:hover .dropbtn {background-color: #ddd;}
 
+.dropbtn:hover {color: black;}
+
 
 #boards_message_form {
     font-size: 12pt;
@@ -1275,6 +1277,11 @@ overlay {
 
 #login > h2 {
   width: 100%;
+  font-family: "Montserrat";
+}
+
+#login button {
+  font-family: "Montserrat";
 }
 
 #login, #welcome {
@@ -1901,6 +1908,38 @@ overlay #login img {
     color: black;
   }
 
+  overlay {
+    background: #f9fafc !important;
+
+  }
+
+  #login-decoration {
+    background: rgba(255,255,255,0.9) !important;
+  }
+
+  #login > h2 {
+    color: #53565c;
+
+  }
+
+  #login, #welcome {
+    color: #53565c;
+  }
+
+  #login_swap_node_modal {
+    color: #53565c;
+    background: #f9fafc !important;
+
+  }
+
+  #login_swap_node_modal #nodeInput {
+    background: white !important;
+  }
+
+  #login button {
+    color: black;
+  }
+
   #status_icon {
     background: url(../static/xkr-logo-mask-light.svg);
     box-shadow: inset 0px 0px 0px 1px #f5f6f7;
@@ -2137,9 +2176,9 @@ header  {
     color: white;
  }
 
-.dropbtn {
+.dropbtn:hover {
 
-  background: #f5f6f7 !important;
+  color: black;
 
   }
 
@@ -2765,7 +2804,6 @@ button {
     padding-bottom: 10px;
     padding-left: 9px;
     font-size: 15px;
-    font-family: monospace;
     cursor: pointer;
 
 }
@@ -2799,7 +2837,7 @@ button:hover {
 
 #nodeConnect, #modal button {
 
-     background-color: rgba(77, 210, 106, 0.65);
+     background-color: rgba(77, 210, 106, 0.85);
      border: none;
      color: #f1f2f3;
      padding: 11px 22px;

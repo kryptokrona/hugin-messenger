@@ -606,8 +606,8 @@ $("document").ready(async function(){
 
   $('#connection_settings_page #nodeInput').blur(function(){
 
-      $('#nodeInputStatus').text('');
-      $('#nodeInputLoading').show();
+      $('#connection_settings_page #nodeInputStatus').text('');
+      $('#connection_settings_page #nodeInputLoading').show();
 
 
         fetch('http://' + $('#connection_settings_page #nodeInput').val() + '/json_rpc', {
@@ -619,13 +619,13 @@ $("document").ready(async function(){
              })
            }).then(json => {
              console.log(json);
-             $('#nodeInputLoading').hide();
-             $('#nodeInputStatus').text('✅');
+             $('#connection_settings_page #nodeInputLoading').hide();
+             $('#connection_settings_page #nodeInputStatus').text('✅');
 
            }).catch(err => {
              console.log(err);
-             $('#nodeInputLoading').hide();
-             $('#nodeInputStatus').text('❌');
+             $('#connection_settings_page #nodeInputLoading').hide();
+             $('#connection_settings_page #nodeInputStatus').text('❌');
            })
 
 
@@ -633,7 +633,7 @@ $("document").ready(async function(){
   })
 
   $("#connectionSettings").click(function(){
-    $('#nodeInputStatus').text('');
+    $('#connection_settings_page #nodeInputStatus').text('');
     $('.setting_page').hide();
     $('#settings_page').fadeIn();
     $('#connection_settings_page').fadeIn();
@@ -648,10 +648,10 @@ $("document").ready(async function(){
 
         let node_addr = json.nodes[node].url + ":" +json.nodes[node].port;
 
-        $('.dropdown-content').append('<a href="#" id="node' + node + '">' + json.nodes[node].name + '</a>');
+        $('#connection_settings_page .dropdown-content').append('<a href="#" id="node' + node + '">' + json.nodes[node].name + '</a>');
 
         $('#node' + node).click(function() {
-          $('#nodeInput').val(node_addr).focus().blur();
+          $('#connection_settings_page #nodeInput').val(node_addr).focus().blur();
         })
 
       }
@@ -708,3 +708,15 @@ $('.close').click(function(){
 $("#modal > i").click(function(){
 $("#modal").toggleClass("hidden");
 });
+
+$("#status_icon").click(function(){
+  myFunction(); $('#settings_page').fadeIn();
+  $('#boards').addClass('hidden');
+  $("#messages_page").removeClass('hidden');
+  $("#new_board").addClass('hidden');
+  $("#boards_picker").empty().addClass('hidden');
+  $('#connection_settings_page #nodeInputStatus').text('');
+  $('.setting_page').hide();
+  $('#settings_page').fadeIn();
+  $('#connection_settings_page').fadeIn();
+  });
