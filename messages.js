@@ -832,9 +832,62 @@ contextMenu({
         ipcRenderer.send('remove-subwallet', document.elementFromPoint(params.x, params.y).id);
 
       }
-		}
+		},	{
+				label: 'Rename',
+				// Only show it when right-clicking images
+				visible: document.elementFromPoint(params.x, params.y).className.split(' ').includes('active_contact'),
+	      click: () => {
+	        // console.log(document.elementFromPoint(params.x, params.y).id);
+								console.log('Renaming');
+								let e = document.elementFromPoint(params.x, params.y);
+								let contact = e.className.replace('active_contact ', '');
+
+								prompt({
+								    title: 'Rename contact',
+								    label: 'New name:',
+								    value: 'Type here..',
+								    inputAttrs: {
+								        type: 'text',
+												required: true
+								    },
+								    type: 'input'
+								})
+								.then((r) => {
+								    if(r === null) {
+								        console.log('user cancelled');
+												return;
+								    } else {
+								        console.log('result', r);
+
+												dictionary.find({ original: contact }, function (err,docs){
+
+														if (docs.length == 0) {
+
+														dictionary.insert({"original": contact, "translation": r});
+
+													} else {
+														// last_block_checked = docs[0].height;
+														dictionary.update({original : contact}, { $set: {translation : r} } , {} , function (err, numReplaced){
+															console.log(err);
+															console.log(numReplaced);
+														});
+													}
+
+													$('.' + contact + ' .contact_address').text(r);
+
+												});
+								    }
+								})
+								.catch(console.error);
+
+
+
+
+	      }
+			}
 	]
 });
+
 
 
 let last_block_checked = 1;
@@ -1993,7 +2046,7 @@ $("#messages_contacts").on("click", "li", function(){
     $('#message_form').focus();
     $('#recipient_form').val($(this).find('.contact_address').text());
     $(this).removeClass('unread_message');
-    print_conversation($(this).find('.contact_address').text());
+    print_conversation($(this).attr('address'));
 		$('#settings_page').fadeOut();
 });
 
@@ -2279,6 +2332,45 @@ function find(db, opt) {
     })
   })
 }
+//
+// let get_translation = async (conversation) => {
+// 	dictionary.find({ original: conversation }, function (err,docs){
+//
+// 	 conversation_display = '';
+//
+// 		 if (!docs.length == 0) {
+//
+// 			 conversation_display = docs[0].translation;
+//
+// 		 } else {
+// 			 conversation_display = conversation;
+// 		 }
+//
+// 		 return conversation_display;
+//
+// 	 })
+// }
+
+function get_translation(conversation) {
+  return new Promise(function(resolve, reject) {
+    dictionary.find({ original: conversation}).exec(function(err, doc) {
+      if (err) {
+        reject(err)
+      } else {
+				let conversation_display = '';
+
+		 		 if (!doc.length == 0) {
+
+		 			 conversation_display = doc[0].translation;
+
+		 		 } else {
+		 			 conversation_display = conversation;
+		 		 }
+        resolve(conversation_display);
+      }
+    })
+  })
+}
 
 function find_messages(opt, skip, limit, sort=-
   1) {
@@ -2458,7 +2550,10 @@ async function print_conversations() {
       if (!conversations.includes(conversation)) {
         conversations.push(conversation);
 				try {
-        $('#messages_contacts').append('<li class="active_contact ' + conversation + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + get_avatar(conversation) + '" /><span class="contact_address">' + conversation + '</span><br><span class="listed_message">'+handleMagnetListed(messages[m].message)+'</li>');
+
+							 let conversation_display = await get_translation(conversation);
+						  	$('#messages_contacts').append('<li class="active_contact ' + conversation + '" address="' + conversation +  '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + get_avatar(conversation) + '" /><span class="contact_address">' + conversation_display + '</span><br><span class="listed_message">'+handleMagnetListed(messages[m].message)+'</li>');
+
       } catch (error) {
 
 			}
