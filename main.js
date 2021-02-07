@@ -464,6 +464,7 @@ function createWindow () {
       } },
        { label: 'Quit', click:  function(){
            js_wallet.stop();
+           wallet.kill('SIGINT');
            app.exit(0);
        } }
       ])

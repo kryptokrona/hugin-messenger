@@ -1338,6 +1338,10 @@ overlay #hugin-background img {
     margin-top: 10%;
 }
 
+#login-screen h1, #login-screen h2 {
+  width: 100%;
+}
+
 overlay h1 {
   font-weight: 100;
   border: none;

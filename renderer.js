@@ -81,40 +81,40 @@ $(document).on('click', 'a[href^="http"]', function(event) {
 
 var TurtleCoinWalletd = require('kryptokrona-service-rpc-js').default
 
-const messageWallet = settings.get('messageWallet');
-
-if (!messageWallet) {
-  $('overlay').show();
-  walletd.createAddress()
-  .then(resp => {
-
-    settings.set('messageWallet', resp.body.result.address);
-    setTimeout(function(){
-
-      $('overlay').css('background-color','white').animate({
-        marginTop: "50vh",
-        height: "3px",
-        backgroundColor: "white"
-      }, 1000, function() {
-        // Animation complete.
-
-        $(this).animate({
-          width: "0",
-          marginLeft: "50vw"
-        }, 500, function() {
-          // Animation complete.
-          $('overlay').remove();
-        });
-
-      });
-
-    }, 3000);
-
-
-  });
-} else {
-  $('overlay').hide();
-}
+// const messageWallet = settings.get('messageWallet');
+//
+// if (!messageWallet) {
+//   $('overlay').show();
+//   walletd.createAddress()
+//   .then(resp => {
+//
+//     settings.set('messageWallet', resp.body.result.address);
+//     setTimeout(function(){
+//
+//       $('overlay').css('background-color','white').animate({
+//         marginTop: "50vh",
+//         height: "3px",
+//         backgroundColor: "white"
+//       }, 1000, function() {
+//         // Animation complete.
+//
+//         $(this).animate({
+//           width: "0",
+//           marginLeft: "50vw"
+//         }, 500, function() {
+//           // Animation complete.
+//           $('overlay').remove();
+//         });
+//
+//       });
+//
+//     }, 3000);
+//
+//
+//   });
+// } else {
+//   $('overlay').hide();
+// }
 
 function sendTransaction() {
 
@@ -400,13 +400,52 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+ipcRenderer.on('created-account', (event) => {
+
+  console.log('Account has been created successfully..');
+
+  ipcRenderer.send('start-wallet');
+
+})
+
+
+$('#create_account_button').click(function(){
+  console.log('Clicked create account..');
+  ipcRenderer.send('create-account');
+
+})
 
 $("document").ready(async function(){
+
+
+            if (rmt.getGlobal('first_start')) {
+              console.log('First start!');
+              $('#login-screen').remove();
+              $('#create-account').css({
+                position: "absolute",
+                width: 500,
+                top: "40%",
+                right: 50
+              })
+            } else {
+              console.log('Not! first start!');
+              $('#create-account').remove();
+              $('body hr').remove();
+              $('#login-screen').css({
+                position: "absolute",
+                width: 500,
+                top: "28%",
+                right: 50
+              })
+
+            }
+
 
             while (rmt.getGlobal('node') == undefined) {
               await sleep(1000);
               console.log('no node :()');
             }
+
 
             $('#login_status span').text(rmt.getGlobal('node'));
 
@@ -460,9 +499,6 @@ $("document").ready(async function(){
                      })
                      ipcRenderer.send('get-nodes');
 
-                      console.log('lololol');
-                       console.log('lalallal');
-
                      $('#login_swap_node_modal').show();
                      console.log( $("#login_swap_node_modal #nodeConnect").length);
 
@@ -483,7 +519,7 @@ $("document").ready(async function(){
                             })
                           }).then(json => {
 
-                            
+
                             $('#login_status span').text(node + ' ✅');
                             $('#login_swap_node_modal').hide();
 
