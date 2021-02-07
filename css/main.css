@@ -1304,11 +1304,13 @@ overlay .wrapper {
     padding: 30px;
     position: absolute;
     width: 300px;
-    padding: 20px;
+    padding: 25px;
     position: absolute;
-    background: #222222;
-    right: 229px;
+    background: #222021;
+    right: 75px;
+    top: 25px;
     border-radius: 15px
+
 }
 #login_swap_node_modal #nodeInput {
   margin-left: 5px;
@@ -1594,7 +1596,7 @@ overlay #login img {
 
 }
 
- .board_message p {padding: 10px;border-radius: 5px;width: max-content;max-width: 95%;word-wrap: break-word;border-top-left-radius: 0;font-size: 22px;font-family: monospace;/* margin-left: 15px; */padding-top: 0;/* font-weight: normal; */margin: 0;padding-left: 21px;padding-bottom: 17px;}
+ .board_message p {padding: 10px;border-radius: 5px;width: max-content;max-width: 95%;word-wrap: break-word;border-top-left-radius: 0;font-size: 22px;font-family: "Montserrat";/* margin-left: 15px; */padding-top: 0;/* font-weight: normal; */margin: 0;padding-left: 21px;padding-bottom: 17px;}
 
 
  .board_message {
@@ -3110,6 +3112,11 @@ li .gradient {
 #login_status {
 
   cursor: pointer;;
+}
+
+#create_account_button {
+
+  margin-left: -20px;
 }
 
 @keyframes blink {
