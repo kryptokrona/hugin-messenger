@@ -7,21 +7,6 @@ const { desktopCapturer } = require('electron');
 const contextMenu = require('electron-context-menu');
 const path = require('path');
 
-contextMenu({
-	prepend: (defaultActions, params, browserWindow) => [
-		{
-			label: 'Remove',
-			// Only show it when right-clicking images
-			visible: document.elementFromPoint(params.x, params.y).className.split(' ').includes('board_icon'),
-      click: () => {
-        // console.log(document.elementFromPoint(params.x, params.y).id);
-        ipcRenderer.send('remove-subwallet', document.elementFromPoint(params.x, params.y).id);
-
-      }
-		}
-	]
-});
-
 function dataURLtoFile(dataurl, filename) {
 
        var arr = dataurl.split(','),
@@ -82,7 +67,7 @@ let endCall = (peer, stream) => {
     $('#screen-button').unbind('click').click(function() { startCall(true, true, true) });
 }
 
-let print_boards = () => {
+let print_boards = async () => {
 
   $('#boards_picker').empty();
 
@@ -97,38 +82,62 @@ let print_boards = () => {
     if (this_address[0] == "SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc") {
       $('#boards_picker').append('<div class="board_icon rgb" id="home_board" style=""><i class="fa fa-home"></i></div>');
     } else {
-      $('#boards_picker').append('<div class="board_icon" title="' + letter_from_spend_key(this_address[1]) +  '" id="' + this_address[0] + '" style="background: rgb(' + board_color.red + ',' +  board_color.green + ',' +  board_color.blue + ')">' + letter_from_spend_key(this_address[1]).substring(0, 1) + '</div>');
-    }
+			await dictionary.find({ original: this_address[1] }, function (err,docs){
+
+
+					if (!docs.length == 0) {
+
+						console.log(docs.length);
+						console.log(docs.length);
+						console.log(docs.length);
+						console.log(docs[0].translation);
+						console.log(docs);
+						let translation  = docs[0].translation;
+					$('#boards_picker').append('<div class="board_icon" inviteKey="' + this_address[1] + '" title="' + translation +  '" id="' + this_address[0] + '" style="background: rgb(' + board_color.red + ',' +  board_color.green + ',' +  board_color.blue + ')">' + docs[0].translation.substring(0, 1) + '</div>');
+
+				} else {
+      $('#boards_picker').append('<div class="board_icon" inviteKey="' + this_address[1] + '" title="' + letter_from_spend_key(this_address[1]) +  '" id="' + this_address[0] + '" style="background: rgb(' + board_color.red + ',' +  board_color.green + ',' +  board_color.blue + ')">' + letter_from_spend_key(this_address[1]).substring(0, 1) + '</div>');
+		}
+
 
 		if (this_address[1].substring(59,64) != '00000') {
+			console.log('Private teceted:', this_address[0]);
 			$('#' + this_address[0]).append('<i class="fa fa-lock"></i>').addClass('private');
 		}
+
+
+		   $('.board_icon').click(function() {
+
+				 console.log('clicked');
+
+
+		     let this_board = $(this).attr('id');
+
+		     if ($(this).hasClass('current')) {
+		       return;
+		     }
+
+		     current_board = this_board;
+		     if (this_board == "home_board") {
+		       this_board = 'SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc';
+		     }
+
+
+
+		     ipcRenderer.send('get-boards', this_board);
+		     $('.current').removeClass('current');
+		     $(this).addClass('current');
+
+
+		   });
+
+	});
+}
+
 
   }
 
 
-   $('.board_icon').click(function() {
-
-
-     let this_board = $(this).attr('id');
-
-     if ($(this).hasClass('current')) {
-       return;
-     }
-
-     current_board = this_board;
-     if (this_board == "home_board") {
-       this_board = 'SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc';
-     }
-
-
-
-     ipcRenderer.send('get-boards', this_board);
-     $('.current').removeClass('current');
-     $(this).addClass('current');
-
-
-   });
 
 }
 
@@ -751,6 +760,82 @@ let db = new Datastore({ filename: userDataDir+'/messages.db', autoload: true })
 let misc = new Datastore({ filename: userDataDir+'/misc.db', autoload: true });
 
 let keychain = new Datastore({ filename: userDataDir+'/keychain.db', autoload: true });
+
+let dictionary = new Datastore({ filename: userDataDir+'/dict.db', autoload: true });
+
+const prompt = require('electron-prompt');
+
+contextMenu({
+	prepend: (defaultActions, params, browserWindow) => [
+		{
+			label: 'Rename',
+			// Only show it when right-clicking images
+			visible: document.elementFromPoint(params.x, params.y).className.split(' ').includes('board_icon'),
+      click: () => {
+        // console.log(document.elementFromPoint(params.x, params.y).id);
+							console.log('Renaming');
+							let e = document.elementFromPoint(params.x, params.y);
+							let board = e.getAttribute('inviteKey');
+
+							prompt({
+							    title: 'Rename board',
+							    label: 'New name:',
+							    value: 'Type here..',
+							    inputAttrs: {
+							        type: 'text',
+											required: true
+							    },
+							    type: 'input'
+							})
+							.then((r) => {
+							    if(r === null) {
+							        console.log('user cancelled');
+											return;
+							    } else {
+							        console.log('result', r);
+
+											dictionary.find({ original: board }, function (err,docs){
+
+													console.log(docs.length);
+													console.log(docs.length);
+													console.log(docs.length);
+													console.log(docs.length);
+
+													if (docs.length == 0) {
+
+													dictionary.insert({"original": board, "translation": r});
+
+												} else {
+													// last_block_checked = docs[0].height;
+													dictionary.update({original : board}, { $set: {translation : r} } , {} , function (err, numReplaced){
+														console.log(err);
+														console.log(numReplaced);
+													});
+												}
+
+											});
+							    }
+							})
+							.catch(console.error);
+
+
+
+
+      }
+		},
+		{
+			label: 'Delete',
+			// Only show it when right-clicking images
+			visible: document.elementFromPoint(params.x, params.y).className.split(' ').includes('board_icon'),
+      click: () => {
+        // console.log(document.elementFromPoint(params.x, params.y).id);
+        ipcRenderer.send('remove-subwallet', document.elementFromPoint(params.x, params.y).id);
+
+      }
+		}
+	]
+});
+
 
 let last_block_checked = 1;
 
@@ -3309,70 +3394,90 @@ ipcRenderer.on('new-message', async (event, transaction) => {
 			 let secretKey = naclUtil.decodeUTF8(key.substring(1, 33));
 
 			 let this_keyPair = nacl.box.keyPair.fromSecretKey(secretKey);
-			 hex_json = naclUtil.encodeUTF8(nacl.box.open(fromHexString(hex_json.b), nonceFromTimestamp(hex_json.t), this_keyPair.publicKey, this_keyPair.secretKey));
+			 hex_json = JSON.parse(naclUtil.encodeUTF8(nacl.box.open(fromHexString(hex_json.b), nonceFromTimestamp(hex_json.t), this_keyPair.publicKey, this_keyPair.secretKey)));
 
 		 }
+
+		 console.log('Debug me', hex_json);
 
 		 let verified = nacl.sign.detached.verify(naclUtil.decodeUTF8(hex_json.m), fromHexString(hex_json.s), fromHexString(hex_json.k));
 
 		 if (!verified) {
 			 return;
 		 }
-		 let to_board = letter_from_spend_key(transaction.transfers[0].publicKey);
-     await require("fs").writeFile(userDataDir + "/" +hex_json.k + ".png", get_avatar(hex_json.k, 'png'), 'base64', function(err) {
-       console.log(err);
-     });
 
-     let message = escapeHtml(hex_json.m);
+		 let to_board;
 
-     if (message.length < 1) {
-       return;
-     }
+		 await dictionary.find({ original: transaction.transfers[0].publicKey }, async function (err,docs){
 
-		 let name;
+			 console.log(docs)
 
-    if (hex_json.n) {
-      name = hex_json.n;
-    } else {
-			name = 'Anonymous';
-		}
+				 if (!docs.length == 0) {
 
-		if (hex_json.k != Buffer.from(signingKeyPair.publicKey).toString('hex')) {
-     notifier.notify({
-       title: name + " in " + to_board,
-       message: message,
-       icon: userDataDir + "/" +hex_json.k + ".png",
-       wait: true // Wait with callback, until user action is taken against notification
-     },function (err, response, metadata) {
-			 console.log(err, response, metadata);
-		 });
+					 to_board = docs[0].translation;
 
-   notifier.on('click', function(notifierObject, options) {
-     // Triggers if `wait: true` and user clicks notification
-			ipcRenderer.send('show-window');
-			//
-			//
-			//      let this_board = $(this).attr('id');
-			//
-			//      if ($(this).hasClass('current')) {
-			//        return;
-			//      }
-			//
-			//      current_board = this_board;
-			//      if (this_board == "home_board") {
-			//        this_board = 'SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc';
-			//      }
-			//
-			//
-			//
-			//      ipcRenderer.send('get-boards', this_board);
-			//      $('.current').removeClass('current');
-			//      $(this).addClass('current');
-     	// open_board(payload_json.from);
+				 } else {
+					 to_board = letter_from_spend_key(transaction.transfers[0].publicKey);
+				 }
 
-   });
 
-}
+				      await require("fs").writeFile(userDataDir + "/" +hex_json.k + ".png", get_avatar(hex_json.k, 'png'), 'base64', function(err) {
+				        console.log(err);
+				      });
+
+				      let message = escapeHtml(hex_json.m);
+
+				      if (message.length < 1) {
+				        return;
+				      }
+
+				 		 let name;
+
+				     if (hex_json.n) {
+				       name = hex_json.n;
+				     } else {
+				 			name = 'Anonymous';
+				 		}
+
+				 		if (hex_json.k != Buffer.from(signingKeyPair.publicKey).toString('hex')) {
+				      notifier.notify({
+				        title: name + " in " + to_board,
+				        message: message,
+				        icon: userDataDir + "/" +hex_json.k + ".png",
+				        wait: true // Wait with callback, until user action is taken against notification
+				      },function (err, response, metadata) {
+				 			 console.log(err, response, metadata);
+				 		 });
+
+				    notifier.on('click', function(notifierObject, options) {
+				      // Triggers if `wait: true` and user clicks notification
+				 			ipcRenderer.send('show-window');
+				 			//
+				 			//
+				 			//      let this_board = $(this).attr('id');
+				 			//
+				 			//      if ($(this).hasClass('current')) {
+				 			//        return;
+				 			//      }
+				 			//
+				 			//      current_board = this_board;
+				 			//      if (this_board == "home_board") {
+				 			//        this_board = 'SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc';
+				 			//      }
+				 			//
+				 			//
+				 			//
+				 			//      ipcRenderer.send('get-boards', this_board);
+				 			//      $('.current').removeClass('current');
+				 			//      $(this).addClass('current');
+				      	// open_board(payload_json.from);
+
+				    });
+
+				 }
+
+			 })
+
 
 
 })
@@ -3409,7 +3514,7 @@ ipcRenderer.on('got-boards', async (event, json) => {
 			 console.log(result);
        let hex_json = JSON.parse(fromHex(result));
 			 if (hex_json.b) {
-				 let key = $('.current').attr('title');
+				 let key = $('.current').attr('inviteKey');
 				 let secretKey = naclUtil.decodeUTF8(key.substring(1, 33));
 
 				 let this_keyPair = nacl.box.keyPair.fromSecretKey(secretKey);
