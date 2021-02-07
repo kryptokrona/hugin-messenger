@@ -261,14 +261,14 @@
 }
 
 .dropbtn {
-  background-color: #fff;
-  color: black;
+  background-color: #f1f2f3;
   padding: 16px;
   font-size: 16px;
   border: none;
   height: 5%;
   font-family: "Montserrat";
   cursor: pointer;
+  color: #53565c;
 }
 
 
@@ -1306,7 +1306,7 @@ overlay .wrapper {
     width: 300px;
     padding: 20px;
     position: absolute;
-    background: #292929;
+    background: #222222;
     right: 229px;
     border-radius: 15px
 }
@@ -1322,7 +1322,7 @@ overlay .wrapper {
 
     position: absolute;
     top: 2px;
-    left: 270px;
+    left: 265px;
     font-size: 19pt;
 }
 
@@ -1346,6 +1346,7 @@ overlay h1 {
 
 overlay p {
       font-family: monospace;
+      font-size: 15px;
 }
 
 overlay #login {
@@ -1402,14 +1403,13 @@ overlay #login img {
 #nodeInputLoading {
   display: none;
   position: absolute;
-    top: 7px;
-    left: 310px;
+    left: 320px;
 }
 
 #nodeInputStatus {
   position: absolute;
-    top: 4px;
-    left: 324px;
+    top: 2px;
+    left: 320px;
     font-size: 19pt;
 }
 
@@ -1928,7 +1928,7 @@ overlay #login img {
 
   #login_swap_node_modal {
     color: #53565c;
-    background: #f9fafc !important;
+    background: white !important;
 
   }
 
@@ -1948,6 +1948,14 @@ overlay #login img {
   #left_panel, #right_panel {
     background: #F5F6F7;
   }
+
+
+.lds-ripple-small div {
+    color: #53565c !important;
+    border: 2px solid #53565c;
+
+  }
+
 
 header  {
 
@@ -2166,14 +2174,19 @@ header  {
  }
 
  #nodeConnect, #modal button {
-
+   background-color: rgba(77, 220, 106, 0.75) !important;
    color: white !important;
  }
 
  #nodeConnect:hover, #modal button:hover {
 
-    background-color: rgba(77, 210, 106, 0.55);
+    background-color: rgba(77, 220, 106, 0.95) !important;
     color: white;
+ }
+
+ .dropbtn {
+
+   background: rgba(222,222,222,0.1) !important;
  }
 
 .dropbtn:hover {
@@ -2797,7 +2810,7 @@ input {
 button {
 
   background: rgba(0,0,0,0.1);
-    color: rgba(255,255,255,0.4);
+    color: rgba(255,255,255,0.8);
     border-radius: 5px;
     border: none;
     padding-top: 10px;
@@ -2837,7 +2850,7 @@ button:hover {
 
 #nodeConnect, #modal button {
 
-     background-color: rgba(77, 210, 106, 0.85);
+     background-color: rgba(77, 210, 106, 0.65);
      border: none;
      color: #f1f2f3;
      padding: 11px 22px;
@@ -2853,7 +2866,7 @@ button:hover {
 
    #nodeConnect:hover {
 
-      background-color: rgba(77, 210, 106, 0.55);
+      background-color: rgba(77, 210, 106, 0.75);
       color: white;
    }
 

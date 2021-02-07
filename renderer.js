@@ -483,9 +483,9 @@ $("document").ready(async function(){
                             })
                           }).then(json => {
 
-                            $('#login_swap_node').hide();
+                            
                             $('#login_status span').text(node + ' ✅');
-                            $('#login_swap_node').hide();
+                            $('#login_swap_node_modal').hide();
 
                           }).catch(err => {
                             console.log(err);
