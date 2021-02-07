@@ -129,12 +129,6 @@ let syncing = true;
 
     });
 
-    js_wallet.on('sync', (heights) => {
-
-      syncing = false;
-
-    });
-
     let i = 1;
 
     for (const address of js_wallet.getAddresses()) {
@@ -162,7 +156,6 @@ let syncing = true;
 
     while(true) {
     await sleep(1000 * 20);
-
     /* Save the wallet to disk */
     js_wallet.saveWalletToFile(userDataDir + '/boards.wallet', 'hunter2');
     const [walletBlockCount, localDaemonBlockCount, networkBlockCount] =

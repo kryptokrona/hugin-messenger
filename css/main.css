@@ -1307,8 +1307,8 @@ overlay .wrapper {
     padding: 25px;
     position: absolute;
     background: #222021;
-    right: 75px;
-    top: 25px;
+    right: 150px;
+    top: 250px;
     border-radius: 15px
 
 }
@@ -1344,6 +1344,10 @@ overlay #hugin-background img {
   width: 100%;
 }
 
+#login-screen {
+  right: 75px;
+}
+
 overlay h1 {
   font-weight: 100;
   border: none;
@@ -1357,7 +1361,7 @@ overlay p {
 
 overlay #login {
   text-align: center;
-  vertical-align: middle;
+  margin-left: 75px;
 }
 
 overlay hr {

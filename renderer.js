@@ -429,7 +429,7 @@ $("document").ready(async function(){
                 position: "absolute",
                 width: 500,
                 top: "40%",
-                right: 50
+                right: 75
               })
             } else {
               console.log('Not! first start!');
@@ -439,7 +439,7 @@ $("document").ready(async function(){
                 position: "absolute",
                 width: 500,
                 top: "28%",
-                right: 50
+                right: 75
               })
 
             }
