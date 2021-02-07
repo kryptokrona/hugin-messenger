@@ -224,14 +224,13 @@ ipcMain.on('create-account', async (event) => {
         setting: 'walletData',
         walletFile: new_wallet_name,
         walletPassword: new_wallet_password,
-        rpcPassword: new_rpc_pw
+        rpcPassword: new_rpc_pw,
+        node: global.node
       };
 
       db.insert(walletData);
 
-      global.node = "pool.kryptokrona.se:11898";
 
-      db.update({setting : 'walletData'}, { $set: {node : 'pool.kryptokrona.se:11898'} } , {} , function (err, numReplaced){});
 
       event.reply('created-account');
 
@@ -364,6 +363,15 @@ ipcMain.on('get-nodes', async (event, arg) => {
   event.reply('got-nodes', json)
 })
 
+ipcMain.on('kill-wallet', async (event) => {
+
+  try {
+    wallet.kill('SIGINT');
+  } catch (err) {
+
+  }
+
+})
 
 ipcMain.on('change-node', async (event, node, kill=true) => {
   console.log(node) // prints "ping"
@@ -376,8 +384,9 @@ ipcMain.on('change-node', async (event, node, kill=true) => {
 
     console.log(numReplaced);
     if (kill) {
-
+      try {
       wallet.kill('SIGINT');
+    } catch (err) {}
       wallet.on('close', () => {
         console.log('Wallet is closed..');
         startWallet();
@@ -528,9 +537,11 @@ app.on('activate', function () {
 
 app.on('before-quit', function() {
 
+  try{
+    wallet.kill('SIGINT');
+  } catch (err) {
 
-  wallet.kill('SIGINT');
-
+  }
 
 
 })
@@ -628,8 +639,8 @@ let startWallet = async () => {
 
 
 
-  let node = 'pool.kryptokrona.se';
-  let port = '11898'
+  let node = global.node.split(':')[0];
+  let port = global.node.split(':')[1];
 
   if (docs[0].node) {
 
@@ -754,7 +765,7 @@ db.find({}, async function (err, docs) {
 
   // If there are no messages stored, load messages from block 0
   if (!datastore_docs[0]) {
-
+    global.node = "pool.kryptokrona.se:11898";
     global.first_start = true;
     return;
     // Generate wallet name and password

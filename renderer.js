@@ -295,7 +295,8 @@ function updateStatus() {
     .catch(err => {
       console.log(err)
       $('#status_icon').css('background-color','#FF4743');
-      $("#daemon_status").attr('title', "Can't connect to node...")
+      $("#daemon_status").attr('title', "Can't connect to node...");
+      ipcRenderer.send('kill-wallet');
     })
 
 }
