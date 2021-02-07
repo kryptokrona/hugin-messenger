@@ -406,12 +406,15 @@ ipcRenderer.on('created-account', (event) => {
 
   ipcRenderer.send('start-wallet');
 
+  $('#saving').text('Connecting to blockchain');
+
 })
 
 
 $('#create_account_button').click(function(){
   console.log('Clicked create account..');
   ipcRenderer.send('create-account');
+  $('#create_account_button').after('<p class="saving">Creating account<span>.</span><span>.</span><span>.</span></p>');
 
 })
 
