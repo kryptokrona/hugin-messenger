@@ -200,6 +200,8 @@ ipcMain.on('create-account', async (event) => {
       let new_wallet_password = randomString() + randomString() + randomString();
       let new_rpc_pw = randomString() + randomString() + randomString();
 
+      global.rpc_pw = new_rpc_pw;
+
       // Generate wallet with settings from above
 
       let gen_wallet = spawn(appPath + 'kryptokrona-service', ['-l', userDataDir+"/walletd.log",'-g','-w', userDataDir+'/'+new_wallet_name, '-p', new_wallet_password, '--rpc-password', new_rpc_pw]);
