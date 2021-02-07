@@ -2803,7 +2803,7 @@ all_transactions = all_transactions.filter(function (el) {
 							actions = ["Answer", "Decline"];
 						}
             notifier.notify({
-              title: payload_json.from,
+              title: await get_translation(payload_json.from),
               message: handleMagnetListed(parseCall(payload_json.msg, payload_json.from)),
               icon: userDataDir + "/" +payload_json.from + ".png",
               wait: true, // Wait with callback, until user action is taken against notification,
