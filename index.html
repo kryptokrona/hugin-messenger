@@ -52,27 +52,30 @@
         <div id="login">
 
           <span id="login-decoration"></span>
+          <span id="login-screen">
+            <h2>Login</h2>
 
-          <h2>Login</h2>
+            <img src="" id="login_avatar" /> <br>
 
-          <img src="" id="login_avatar" /> <br>
+            <input id="login_password" type="password" style="display: none;"></input>
 
-          <input id="login_password" type="password" style="display: none;"></input>
+            <button id="login_button">Login</button>
 
-          <button id="login_button">Login</button>
-
-          <br>
-          <p id="login_status"><b>Node:</b> <span>  </span> </p>
-          <button id="login_swap_node" style="display: none">Swap node</button>
-          <div id="login_swap_node_modal" class="hidden"></div>
-          <br>
-          <hr />
-
+            <br>
+            <p id="login_status"><b>Node:</b> <span>  </span> </p>
+            <button id="login_swap_node" style="display: none">Swap node</button>
+            <div id="login_swap_node_modal" class="hidden"></div>
+            <br>
+            <hr />
+          </span>
+          <span id="create-account">
           <h2>Restore / Create</h2>
 
-          <button id="login_button">Create new account</button><br><br>
+          <button id="create_account_button">Create new account</button><br><br>
 
-          <button id="login_button">Restore account</button>
+          <button id="restore_account_button">Restore account</button>
+
+        </span>
 
         </div>
 

@@ -192,6 +192,49 @@ ipcMain.on('login-complete', async (event, arg) => {
 
 });
 
+ipcMain.on('create-account', async (event) => {
+
+      console.log('Creating new account');
+
+      let new_wallet_name = randomString() + randomString() + randomString();
+      let new_wallet_password = randomString() + randomString() + randomString();
+      let new_rpc_pw = randomString() + randomString() + randomString();
+
+      // Generate wallet with settings from above
+
+      let gen_wallet = spawn(appPath + 'kryptokrona-service', ['-l', userDataDir+"/walletd.log",'-g','-w', userDataDir+'/'+new_wallet_name, '-p', new_wallet_password, '--rpc-password', new_rpc_pw]);
+
+       gen_wallet.stdout.on('data', (data) => {
+
+       });
+
+       gen_wallet.stderr.on('data', (data) => {
+
+       });
+
+       gen_wallet.on('close', (code) => {
+
+         // startWallet();
+       });
+
+
+      let walletData = {
+        setting: 'walletData',
+        walletFile: new_wallet_name,
+        walletPassword: new_wallet_password,
+        rpcPassword: new_rpc_pw
+      };
+
+      db.insert(walletData);
+
+      global.node = "pool.kryptokrona.se:11898";
+
+      db.update({setting : 'walletData'}, { $set: {node : 'pool.kryptokrona.se:11898'} } , {} , function (err, numReplaced){});
+
+      event.reply('created-account');
+
+})
+
 
 ipcMain.on('get-boards', async (event, arg) => {
 
@@ -205,7 +248,7 @@ ipcMain.on('get-boards', async (event, arg) => {
 })
 
 ipcMain.on('start-wallet', async(event, addr) => {
-
+  console.log('Starting wallet..');
   await startWallet();
   event.reply('wallet-started');
 
@@ -573,30 +616,61 @@ var db = new Datastore({ filename: userDataDir+'/settings.db', autoload: true })
 
 let startWallet = async () => {
 
+  await db.find({setting : 'walletData'}, function (err,docs){
 
-  if (fs.existsSync(appPath+'kryptokrona-service') || fs.existsSync(appPath+'kryptokrona-service.exe' )) {
-    console.log('File exists!');
-  } else {
-    console.log('File does not exist!');
-    await sleep(10000);
-    mainWindow.webContents.send('missing-service');
-    return;
+  wallet_file = docs[0].walletFile;
+  wallet_pw = docs[0].walletPassword;
+  global.rpc_pw = docs[0].rpcPassword;
+
+
+
+
+  let node = 'pool.kryptokrona.se';
+  let port = '11898'
+
+  if (docs[0].node) {
+
+    node = docs[0].node.split(':');
+    port = node[1];
+    node = node[0]
   }
 
-   wallet = spawn(appPath+'kryptokrona-service', ['-l', userDataDir+"/walletd.log",'-w', userDataDir+'/'+wallet_file, '-p', wallet_pw, '--rpc-password', global.rpc_pw, '--daemon-address', global.node.split(':')[0], '--daemon-port', global.node.split(':')[1]]); //, '--daemon-address', 'localhost'
+  const daemon = new WB.Daemon(node, parseInt(port));
 
-   wallet.stdout.on('data', (data) => {
+  js_wallet.swapNode(daemon);
+
+  global.node = node+':'+port;
 
 
-   });
 
-   wallet.stderr.on('data', (data) => {
+    if (fs.existsSync(appPath+'kryptokrona-service') || fs.existsSync(appPath+'kryptokrona-service.exe' )) {
+      console.log('File exists!');
+    } else {
+      console.log('File does not exist!');
+      mainWindow.webContents.send('missing-service');
+      return;
+    }
 
-   });
+    console.log(appPath+'kryptokrona-service', ['-l', userDataDir+"/walletd.log",'-w', userDataDir+'/'+wallet_file, '-p', wallet_pw, '--rpc-password', global.rpc_pw, '--daemon-address', global.node.split(':')[0], '--daemon-port', global.node.split(':')[1]]);
 
-   wallet.on('close', (code) => {
-     console.log(`child process exited with code ${code}`);
-   });
+     wallet = spawn(appPath+'kryptokrona-service', ['-l', userDataDir+"/walletd.log",'-w', userDataDir+'/'+wallet_file, '-p', wallet_pw, '--rpc-password', global.rpc_pw, '--daemon-address', global.node.split(':')[0], '--daemon-port', global.node.split(':')[1]]); //, '--daemon-address', 'localhost'
+
+     wallet.stdout.on('data', (data) => {
+
+
+     });
+
+     wallet.stderr.on('data', (data) => {
+
+     });
+
+     wallet.on('close', (code) => {
+       console.log(`child process exited with code ${code}`);
+     });
+
+
+
+})
 
 
 
@@ -678,51 +752,14 @@ db.find({}, async function (err, docs) {
   // If there are no messages stored, load messages from block 0
   if (!datastore_docs[0]) {
 
+    global.first_start = true;
+    return;
     // Generate wallet name and password
-
-    let new_wallet_name = randomString() + randomString() + randomString();
-    let new_wallet_password = randomString() + randomString() + randomString();
-    let new_rpc_pw = randomString() + randomString() + randomString();
-
-    // Generate wallet with settings from above
-
-    let gen_wallet = spawn(appPath + 'kryptokrona-service', ['-l', userDataDir+"/walletd.log",'-g','-w', userDataDir+'/'+new_wallet_name, '-p', new_wallet_password, '--rpc-password', new_rpc_pw]);
-
-     gen_wallet.stdout.on('data', (data) => {
-
-     });
-
-     gen_wallet.stderr.on('data', (data) => {
-
-     });
-
-     gen_wallet.on('close', (code) => {
-
-       // startWallet();
-     });
-
-
-    let walletData = {
-      setting: 'walletData',
-      walletFile: new_wallet_name,
-      walletPassword: new_wallet_password,
-      rpcPassword: new_rpc_pw
-    };
-
-    db.insert(walletData);
-
-    global.node = "pool.kryptokrona.se:11898";
 
   } else {
 
-      console.log('Starting wallet..');
 
-      await db.find({setting : 'walletData'}, async function (err,docs){
-
-      wallet_file = docs[0].walletFile;
-      wallet_pw = docs[0].walletPassword;
-      global.rpc_pw = docs[0].rpcPassword;
-
+      await db.find({setting : 'walletData'}, function (err,docs){
 
       let node = 'pool.kryptokrona.se';
       let port = '11898'
@@ -734,12 +771,8 @@ db.find({}, async function (err, docs) {
         node = node[0]
       }
 
-      const daemon = new WB.Daemon(node, parseInt(port));
+      global.node = node + ":" + port;
+    });
+  }
 
-      js_wallet.swapNode(daemon);
-
-      global.node = node+':'+port;
-
-  })
-}
 });
