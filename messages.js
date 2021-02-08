@@ -2812,6 +2812,7 @@ all_transactions = all_transactions.filter(function (el) {
 							}
 							if(metadata.activationValue == "Answer" || metadata.button == "Answer" ) {
 
+								$('#boards').addClass('hidden');
 								$('#answerCall').click();
 
 							}
