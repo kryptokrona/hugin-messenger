@@ -844,12 +844,12 @@ contextMenu({
 		},	{
 				label: 'Rename',
 				// Only show it when right-clicking images
-				visible: document.elementFromPoint(params.x, params.y).className.split(' ').includes('active_contact'),
+				visible: document.elementFromPoint(params.x, params.y).className.split(' ').includes('contact_address'),
 	      click: () => {
 	        // console.log(document.elementFromPoint(params.x, params.y).id);
 								console.log('Renaming');
 								let e = document.elementFromPoint(params.x, params.y);
-								let contact = e.className.replace('active_contact ', '');
+								let contact = e.parentNode.className.replace('contact_adress ', '');
 
 								prompt({
 								    title: 'Rename contact',
