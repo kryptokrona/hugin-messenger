@@ -1272,6 +1272,7 @@ overlay {
   display: block !important;
   transition: background-color 2s;
   overflow: hidden;
+  border-radius: 5px;
   /* -webkit-app-region:drag; */
 }
 
@@ -1375,6 +1376,7 @@ overlay #login img {
 
 #welcome {
   text-align: center;
+  -webkit-app-region:drag;
 }
 
 .lds-ripple {
