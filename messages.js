@@ -829,7 +829,7 @@ contextMenu({
 
 								console.log('Renaming');
 								let e = document.elementFromPoint(params.x, params.y);
-								let contact = e.parentNode.className.replace('contact_adress ', '');
+								let contact = e.parentNode.className.replace('active_contact ', '');
 
 								prompt({
 								    title: 'Rename contact',
