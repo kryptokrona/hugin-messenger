@@ -2755,10 +2755,10 @@ all_transactions = all_transactions.filter(function (el) {
 
     }
 
-      if (payload_json.t > latest_transaction_time && payload_json.from != $('#currentAddrSpan').text() ) {
+      if (payload_json.t > latest_transaction_time) {
 
 
-        if ($('#recipient_form').val() == payload_json.from ){
+        if ($('#recipient_form').val() == payload_json.from  && payload_json.from != $('#currentAddrSpan').text() ){
 
           // If a new message is received, and it's from the active contacts
           // this function will print the new message in the messages field.
