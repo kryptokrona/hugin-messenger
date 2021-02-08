@@ -812,6 +812,8 @@ contextMenu({
 														console.log(numReplaced);
 													});
 												}
+												e.innerHTML = r.substring(0, 1) + '<i class="fa fa-lock"></i>';
+												e.setAttribute('title', r);
 
 											});
 							    }
