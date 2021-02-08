@@ -3112,6 +3112,7 @@ $("document").ready(function(){
     $('#boards').addClass('hidden');
     $('#messages_page').removeClass('hidden');
     $('#recipient_form').val('').focus();
+    $('#settings_page').hide();
     if (!$('#boards').hasClass('hidden') || $('#flip-box-inner').hasClass('flip')) {
     myFunction();
     }
