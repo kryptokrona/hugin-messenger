@@ -1628,7 +1628,7 @@ function sendBoardMessage(message) {
 			// insert encryption
 			if ($('.board_icon.current').hasClass('private')) {
 				console.log('private innit');
-				let key = $('.board_icon.current').attr('title');
+				let key = $('.board_icon.current').attr('inviteKey');
 				let secretKey = naclUtil.decodeUTF8(key.substring(1, 33));
 
 				let this_keyPair = nacl.box.keyPair.fromSecretKey(secretKey);
