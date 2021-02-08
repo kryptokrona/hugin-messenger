@@ -1304,11 +1304,11 @@ overlay .wrapper {
     padding: 30px;
     position: absolute;
     width: 300px;
-    padding: 25px;
+    padding: 30px;
     position: absolute;
     background: #222021;
     right: 150px;
-    top: 250px;
+    top: 249px;
     border-radius: 15px
 
 }
