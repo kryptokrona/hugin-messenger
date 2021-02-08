@@ -1461,6 +1461,7 @@ function sendMessage(message, silent=false) {
       fee = 10;
       mixin = 5;
       sendAddr = $("#currentAddrSpan").text();
+      console.log(sendAddr);
       timestamp = Date.now();
 
       // Convert message data to json
@@ -2754,10 +2755,10 @@ all_transactions = all_transactions.filter(function (el) {
 
     }
 
-      if (payload_json.t > latest_transaction_time) {
+      if (payload_json.t > latest_transaction_time && payload_json.from != $('#currentAddrSpan').text() ) {
 
 
-        if ($('#recipient_form').val() == payload_json.from){
+        if ($('#recipient_form').val() == payload_json.from ){
 
           // If a new message is received, and it's from the active contacts
           // this function will print the new message in the messages field.
@@ -2793,7 +2794,11 @@ all_transactions = all_transactions.filter(function (el) {
           if (magnetLinks) {
             handleMagnetLink(magnetLinks, payload_json.t, true, payload_json.from);
           }
-          if (handleMagnetListed(payload_json.msg) && payload_json.from != $('.currentAddr').text()) {
+          if (handleMagnetListed(payload_json.msg) && payload_json.from != $('#currentAddrSpan').text() ) {
+            console.log('my-addr:', $('.currentAddr').text());
+            console.log('their-addr:', payload_json.from);
+
+            console.log( 'waddafakk', payload_json.from != $('.currentAddr').text() );
 
             await require("fs").writeFile(userDataDir + "/" +payload_json.from + ".png", get_avatar(payload_json.from, 'png'), 'base64', function(err) {
               console.log(err);
