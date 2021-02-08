@@ -81,40 +81,6 @@ $(document).on('click', 'a[href^="http"]', function(event) {
 
 var TurtleCoinWalletd = require('kryptokrona-service-rpc-js').default
 
-// const messageWallet = settings.get('messageWallet');
-//
-// if (!messageWallet) {
-//   $('overlay').show();
-//   walletd.createAddress()
-//   .then(resp => {
-//
-//     settings.set('messageWallet', resp.body.result.address);
-//     setTimeout(function(){
-//
-//       $('overlay').css('background-color','white').animate({
-//         marginTop: "50vh",
-//         height: "3px",
-//         backgroundColor: "white"
-//       }, 1000, function() {
-//         // Animation complete.
-//
-//         $(this).animate({
-//           width: "0",
-//           marginLeft: "50vw"
-//         }, 500, function() {
-//           // Animation complete.
-//           $('overlay').remove();
-//         });
-//
-//       });
-//
-//     }, 3000);
-//
-//
-//   });
-// } else {
-//   $('overlay').hide();
-// }
 
 function sendTransaction() {
 
@@ -304,9 +270,6 @@ function updateStatus() {
 ipcRenderer.on('got-login-complete', async () => {
 
   console.log('Wallet started!');
-  console.log('Wallet started!');
-  console.log('Wallet started!');
-  console.log('Wallet started!');
 
   walletd = new TurtleCoinWalletd(
     'http://127.0.0.1',
@@ -320,12 +283,6 @@ ipcRenderer.on('got-login-complete', async () => {
     currentAddr = resp.body.result.addresses[0];
     allAddresses = resp.body.result.addresses;
     var thisAddr = resp.body.result.addresses[0];
-    console.log(thisAddr);
-    console.log(thisAddr);
-    console.log(thisAddr);
-    console.log(thisAddr);
-    console.log(thisAddr);
-    console.log(thisAddr);
     $("#currentAddrSpan").text(thisAddr);
 
     updateBalance(thisAddr);
@@ -382,7 +339,7 @@ var currentPage = $("#send_payment");
 
 ipcRenderer.on('missing-service', (event) => {
 
-  let r = confirm('Your kryptkrona-service file is missing! It was probaby removed by your antivirus, click OK to go to the browser and open the solution.');
+  let r = confirm('Your kryptkrona-service file is missing! It was probaby removed by your antivirus, you may need to add Hugin Messengers location as an exclusion in Windows Defender, or your antivirus software.');
 
   if (r) {
 
@@ -477,14 +434,11 @@ $("document").ready(async function(){
 
 
                  }).finally(function() {
-                   console.log('tja');
 
                    $('#login_swap_node').show().click(function() {
-                     console.log('tja');
                        $('#login_swap_node_modal').empty();
                        $('#connection_settings_page').clone().appendTo('#login_swap_node_modal').find('h1, h3').unwrap().remove();
                      ipcRenderer.on('got-nodes', (event, json) => {
-                       console.log(json);
 
 
 
@@ -504,10 +458,8 @@ $("document").ready(async function(){
                      ipcRenderer.send('get-nodes');
 
                      $('#login_swap_node_modal').show();
-                     console.log( $("#login_swap_node_modal #nodeConnect").length);
 
                      $("#login_swap_node_modal #nodeConnect").click(function(){
-                       console.log('bruuuuuuuum');
                        let node = $('#login_swap_node_modal #nodeInput').val();
                        ipcRenderer.send('change-node', node, false);
                        $('#login_status span').text(node);
@@ -677,12 +629,10 @@ $("document").ready(async function(){
     $('.setting_page').hide();
     $('#settings_page').fadeIn();
     $('#connection_settings_page').fadeIn();
-    // ipcRenderer.send('get-nodes','ping');
 
-    // console.log(ipcRenderer.sendSync('synchronous-message', 'ping')) // prints "pong"
     $('#nodeInput').val(rmt.getGlobal('node'));
     ipcRenderer.on('got-nodes', (event, json) => {
-      console.log('tJISSSSSSAN');
+
       $('.dropdown-content').empty();
       for (node in json.nodes) {
 

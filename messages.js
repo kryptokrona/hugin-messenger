@@ -77,7 +77,7 @@ let print_boards = async () => {
     if (this_address[0] == "SEKReX27SM2jE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDTysRXy") {
       continue;
     }
-		console.log(this_address[1]);
+
     let board_color = intToRGB(hashCode((this_address[1])));
     if (this_address[0] == "SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc") {
       $('#boards_picker').append('<div class="board_icon rgb" id="home_board" style=""><i class="fa fa-home"></i></div>');
@@ -87,11 +87,6 @@ let print_boards = async () => {
 
 					if (!docs.length == 0) {
 
-						console.log(docs.length);
-						console.log(docs.length);
-						console.log(docs.length);
-						console.log(docs[0].translation);
-						console.log(docs);
 						let translation  = docs[0].translation;
 					$('#boards_picker').append('<div class="board_icon" inviteKey="' + this_address[1] + '" title="' + translation +  '" id="' + this_address[0] + '" style="background: rgb(' + board_color.red + ',' +  board_color.green + ',' +  board_color.blue + ')">' + docs[0].translation.substring(0, 1) + '</div>');
 
@@ -101,14 +96,13 @@ let print_boards = async () => {
 
 
 		if (this_address[1].substring(59,64) != '00000') {
-			console.log('Private teceted:', this_address[0]);
+
 			$('#' + this_address[0]).append('<i class="fa fa-lock"></i>').addClass('private');
 		}
 
 
 		   $('.board_icon').click(function() {
 
-				 console.log('clicked');
 
 
 		     let this_board = $(this).attr('id');
@@ -142,8 +136,6 @@ let print_boards = async () => {
 }
 
 let parse_sdp = (sdp) => {
-
-  // console.log("sdp:",sdp);
 
   let ice_ufrag = '';
   let ice_pwd = '';
@@ -364,11 +356,6 @@ if (!screenshare) {
         video_elem.src = window.URL.createObjectURL(stream) // for older browsers
       }
       video_elem.play()
-      // if (audio) {
-      //   $('#caller_menu_type').text('Voice connected');
-      // } else if (video) {
-      //   $('#caller_menu_type').text('Video connected');
-      // }
 
     })
 
@@ -655,8 +642,6 @@ let downloadMagnet = (magnetLink, element) => {
 
   var client = new WebTorrent();
 
-   // $('#'+element).find('.download-button').remove();
-
    console.log('Starting torrent!');
    let torrentId = magnetLink+'&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&tr=wss%3A%2F%2Ftracker.fastcast.nz';
 
@@ -667,7 +652,6 @@ let downloadMagnet = (magnetLink, element) => {
 
      torrent.on('download', function (bytes) {
         $('#'+element).find('.progress').css('width',parseInt(torrent.progress * 88) + "px");
-        // $('.progress').text(parseInt(torrent.progress * 88) + "%");
 
 
 
@@ -772,7 +756,7 @@ contextMenu({
 			// Only show it when right-clicking images
 			visible: document.elementFromPoint(params.x, params.y).className.split(' ').includes('board_icon'),
       click: () => {
-        // console.log(document.elementFromPoint(params.x, params.y).id);
+
 							console.log('Renaming');
 							let e = document.elementFromPoint(params.x, params.y);
 							let board = e.getAttribute('inviteKey');
@@ -796,20 +780,14 @@ contextMenu({
 
 											dictionary.find({ original: board }, function (err,docs){
 
-													console.log(docs.length);
-													console.log(docs.length);
-													console.log(docs.length);
-													console.log(docs.length);
-
 													if (docs.length == 0) {
 
 													dictionary.insert({"original": board, "translation": r});
 
 												} else {
-													// last_block_checked = docs[0].height;
+
 													dictionary.update({original : board}, { $set: {translation : r} } , {} , function (err, numReplaced){
 														console.log(err);
-														console.log(numReplaced);
 													});
 												}
 												e.innerHTML = r.substring(0, 1) + '<i class="fa fa-lock"></i>';
@@ -830,7 +808,7 @@ contextMenu({
 			// Only show it when right-clicking images
 			visible: document.elementFromPoint(params.x, params.y).className.split(' ').includes('board_icon'),
       click: () => {
-        // console.log(document.elementFromPoint(params.x, params.y).id);
+
         ipcRenderer.send('remove-subwallet', document.elementFromPoint(params.x, params.y).id);
 
       }
@@ -839,7 +817,7 @@ contextMenu({
 			// Only show it when right-clicking images
 			visible: document.elementFromPoint(params.x, params.y).className.split(' ').includes('board_icon')  && document.elementFromPoint(params.x, params.y).className.split(' ').includes('private'),
       click: () => {
-        // console.log(document.elementFromPoint(params.x, params.y).id);
+
         copy(document.elementFromPoint(params.x, params.y).getAttribute('inviteKey'));
 
       }
@@ -848,7 +826,7 @@ contextMenu({
 				// Only show it when right-clicking images
 				visible: document.elementFromPoint(params.x, params.y).className.split(' ').includes('contact_address'),
 	      click: () => {
-	        // console.log(document.elementFromPoint(params.x, params.y).id);
+
 								console.log('Renaming');
 								let e = document.elementFromPoint(params.x, params.y);
 								let contact = e.parentNode.className.replace('contact_adress ', '');
@@ -877,7 +855,7 @@ contextMenu({
 														dictionary.insert({"original": contact, "translation": r});
 
 													} else {
-														// last_block_checked = docs[0].height;
+
 														dictionary.update({original : contact}, { $set: {translation : r} } , {} , function (err, numReplaced){
 															console.log(err);
 															console.log(numReplaced);
@@ -3034,18 +3012,8 @@ let start_attempts = 0;
 let loadWallets = async () => {
   let boards_addresses = rmt.getGlobal('boards_addresses');
 
-  console.log(boards_addresses);
-
-	await sleep(2000);
-
   return walletd.getAddresses()
   .then(resp => {
-
-					console.log(resp);
-					console.log(resp);
-					console.log(resp);
-					console.log(resp);
-					console.log(resp);
 
     currentAddr = resp.body.result.addresses[0];
     allAddresses = resp.body.result.addresses;
@@ -3055,7 +3023,6 @@ let loadWallets = async () => {
 
 
       let secretKey = naclUtil.decodeUTF8(resp.body.result.spendSecretKey.substring(1, 33));
-      console.log(resp.body.result.spendSecretKey);
 
       let signingSecretKey = naclUtil.decodeUTF8(resp.body.result.spendSecretKey.substring(1, 33));
 
@@ -3074,7 +3041,6 @@ let loadWallets = async () => {
       avatar_base64 = get_avatar(thisAddr);
       $('#avatar').attr('src','data:image/svg+xml;base64,' + avatar_base64);
       $('#avatar').css('border-radius','50%');
-			console.log('Return:', avatar_base64);
 			return avatar_base64;
 
 
@@ -3084,17 +3050,6 @@ let loadWallets = async () => {
   .catch(err => {
 
 		return false;
-		//
-    // console.log(err);
-		// await sleep(1000);
-		// if (start_attempts < 6) {
-		// 	console.log('Trying again..');
-    // 	let re = await loadWallets();
-		// 	return re;
-		// } else {
-		// 	return false;
-		// }
-
 
   })
 }
@@ -3134,14 +3089,6 @@ function avatarLoop(i, element, faces) {
 $("document").ready(function(){
 
 	changing_faces('#login_avatar');
-
-
-  //
-  // setTimeout(function() {
-  //
-  //   get_new_conversations(false);
-  //
-  // }, 15000);
 
 	$('#login_button').click(function(){
 
@@ -3219,8 +3166,6 @@ ipcRenderer.on('wallet-started', async () => {
 
 						console.log('started-wallet');
 
-						// $('#login_avatar .saving').text('')
-
 						walletd = new TurtleCoinWalletd(
 							'http://127.0.0.1',
 							8070,
@@ -3252,13 +3197,10 @@ ipcRenderer.on('wallet-started', async () => {
 
 						let avatar_base64 = false;
 						start_attempts = 0;
-						while ((avatar_base64 == false || avatar_base64 == undefined) && start_attempts < 10) {
+						while ((avatar_base64 == false || avatar_base64 == undefined) && start_attempts < 20) {
 							start_attempts++;
 							avatar_base64 = await loadWallets();
-							await sleep(2000);
-							console.log(start_attempts);
-							console.log(avatar_base64);
-							console.log('Trying again');
+							await sleep(1000);
 						}
 
 						if (!avatar_base64) {
@@ -3275,7 +3217,7 @@ ipcRenderer.on('wallet-started', async () => {
 						ipcRenderer.send('login-complete');
 
 						window.clearInterval(int);
-						// avatar_base64 = get_avatar($('#currentAddrSpan').text());
+
 						$('#login_avatar').attr('src','data:image/svg+xml;base64,' + avatar_base64).addClass('shiny');
 
 						await sleep(1000);
@@ -3571,25 +3513,7 @@ ipcRenderer.on('new-message', async (event, transaction) => {
 				    notifier.on('click', function(notifierObject, options) {
 				      // Triggers if `wait: true` and user clicks notification
 				 			ipcRenderer.send('show-window');
-				 			//
-				 			//
-				 			//      let this_board = $(this).attr('id');
-				 			//
-				 			//      if ($(this).hasClass('current')) {
-				 			//        return;
-				 			//      }
-				 			//
-				 			//      current_board = this_board;
-				 			//      if (this_board == "home_board") {
-				 			//        this_board = 'SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc';
-				 			//      }
-				 			//
-				 			//
-				 			//
-				 			//      ipcRenderer.send('get-boards', this_board);
-				 			//      $('.current').removeClass('current');
-				 			//      $(this).addClass('current');
-				      	// open_board(payload_json.from);
+
 
 				    });
 

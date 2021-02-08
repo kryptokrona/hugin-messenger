@@ -12,9 +12,8 @@ const xhr = require('xhr')
 const fs = require('fs')
 const notifier = require('node-notifier');
 const { shell } = require('electron');
-
-
-
+const {autoUpdater} = require("electron-updater");
+const {ipcMain} = require('electron');
 const isDev = require('electron-is-dev');
 
 var appRootDir = require('app-root-dir').get().replace('app.asar','');
@@ -27,15 +26,12 @@ global.appPath = appRootDir;
 
 global.downloadDir = app.getPath('downloads');
 
-console.log(appPath);
-console.log(appRootDir);
-console.log(appRootDir + 'static/tray-iconTemplate.png');
-
 var AutoLaunch = require('auto-launch');
 var autoLauncher = new AutoLaunch({
     name: "Hugin Messenger",
     isHidden: true
 });
+
 // Checking if autoLaunch is enabled, if not then enabling it.
 autoLauncher.isEnabled().then(function(isEnabled) {
   if (isEnabled) return;
@@ -63,14 +59,6 @@ function sleep(ms) {
 
 let js_wallet;
 
-// fs.access(userDataDir + '/boards.wallet', (err) => {
-//   if (err) {
-//       console.log('does not exist')
-//     } else {
-//       console.log('exists')
-//     }
-// })
-
 let c = false;
 
 if (fs.existsSync(userDataDir + '/boards.wallet')) {
@@ -84,9 +72,6 @@ let syncing = true;
 
 (async () => {
 
-
-
-
     /* Initialise our blockchain cache api. Can use a public node or local node
        with `const daemon = new WB.Daemon('127.0.0.1', 11898);` */
     const daemon = new WB.Daemon('pool.kryptokrona.se', 11898);
@@ -99,12 +84,10 @@ let syncing = true;
         let re = await fetch('http://pool.kryptokrona.se:11898/getinfo');
 
         height = await re.json();
-        console.log(height.height);
+
       } catch (err) {
 
       }
-        console.log(height.height);
-        console.log('Syncing boards from ', parseInt(height.height)-1000);
 
         const [newWallet, error] = await WB.WalletBackend.importViewWallet(daemon, parseInt(height.height)-1000, '1ee35767b8a247c03423e78c302f7c3c64c5e3c145878e4fbf1cc3bbbb35b10c', 'SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc');
 
@@ -162,8 +145,6 @@ let syncing = true;
 
     global.boards_addresses = boards_addresses;
 
-    console.log(boards_addresses);
-
     console.log('Started wallet');
 
 
@@ -182,15 +163,6 @@ let syncing = true;
     console.log('Saved wallet to file');
 })()
 
-
-
-
-
-
-
-
-const {autoUpdater} = require("electron-updater");
-const {ipcMain} = require('electron');
 
 ipcMain.on('login-complete', async (event, arg) => {
 
@@ -212,23 +184,14 @@ ipcMain.on('create-account', async (event) => {
 
       let gen_wallet = spawn(appPath + 'kryptokrona-service', ['-l', userDataDir+"/walletd.log",'-g','-w', userDataDir+'/'+new_wallet_name, '-p', new_wallet_password, '--rpc-password', new_rpc_pw]);
 
-       gen_wallet.stdout.on('data', (data) => {
+       gen_wallet.stdout.on('data', (data) => { });
 
-         console.log(data);
-
-       });
-
-       gen_wallet.stderr.on('data', (data) => {
-
-         console.log(data);
-
-       });
+       gen_wallet.stderr.on('data', (data) => { });
 
        gen_wallet.on('close', (code) => {
 
-         // startWallet();
-         console.log('Dieded');
          event.reply('created-account');
+
        });
 
 
@@ -363,11 +326,6 @@ ipcMain.on('close-me', (evt, arg) => {
 
 })
 
-
-// ipcMain.on('get-nodes', (evt, arg) => {
-//   // evt.reply('got-nodes', {nodies: 1});
-// })
-
 ipcMain.on('get-nodes', async (event, arg) => {
   console.log(arg) // prints "ping"
   let json = await fetchNodes();
@@ -406,7 +364,6 @@ ipcMain.on('change-node', async (event, node, kill=true) => {
       } );
 
     } else {
-      // app.relaunch();
     }
 
   })
@@ -561,13 +518,9 @@ ipcMain.on('import_wallet', (evt, arg) => {
 
   wallet.kill('SIGINT');
 
-  console.log(arg);
-
       let new_wallet_name = randomString() + randomString() + randomString();
       let new_wallet_password = randomString() + randomString() + randomString();
       let new_rpc_pw = global.rpc_pw;
-
-      // console.log('kryptokrona-service --SYNC_FROM_ZERO -l ' + userDataDir+'/walletd.log -g --mnemonic-seed ' + arg + ' -w ' + userDataDir+'/'+new_wallet_name + ' -p ' + new_wallet_password + ' --rpc-password ' + new_rpc_pw)
 
     let gen_wallet = spawn(appPath + 'kryptokrona-service', ['-l', userDataDir+"/walletd.log",'-g','--mnemonic-seed', arg,'-w', userDataDir+'/'+new_wallet_name, '-p', new_wallet_password, '--rpc-password', new_rpc_pw]);
 
@@ -676,8 +629,6 @@ let startWallet = async () => {
       return;
     }
 
-    console.log(appPath+'kryptokrona-service', ['-l', userDataDir+"/walletd.log",'-w', userDataDir+'/'+wallet_file, '-p', wallet_pw, '--rpc-password', global.rpc_pw, '--daemon-address', global.node.split(':')[0], '--daemon-port', global.node.split(':')[1]]);
-
      wallet = spawn(appPath+'kryptokrona-service', ['-l', userDataDir+"/walletd.log",'-w', userDataDir+'/'+wallet_file, '-p', wallet_pw, '--rpc-password', global.rpc_pw, '--daemon-address', global.node.split(':')[0], '--daemon-port', global.node.split(':')[1]]); //, '--daemon-address', 'localhost'
 
      wallet.stdout.on('data', (data) => {
@@ -710,7 +661,6 @@ let startWallet = async () => {
    if (isDev) {
      console.log('Running in development');
       mainWindow.openDevTools();
-      // js_wallet.setLogLevel(WB.LogLevel.DEBUG);
    } else {
      console.log('Running in production');
      autoUpdater.checkForUpdates();
