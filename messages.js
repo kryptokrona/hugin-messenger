@@ -832,6 +832,15 @@ contextMenu({
         ipcRenderer.send('remove-subwallet', document.elementFromPoint(params.x, params.y).id);
 
       }
+		},{
+			label: 'Copy invite link',
+			// Only show it when right-clicking images
+			visible: document.elementFromPoint(params.x, params.y).className.split(' ').includes('board_icon')  && document.elementFromPoint(params.x, params.y).className.split(' ').includes('private'),
+      click: () => {
+        // console.log(document.elementFromPoint(params.x, params.y).id);
+        copy(document.elementFromPoint(params.x, params.y).getAttribute('inviteKey'));
+
+      }
 		},	{
 				label: 'Rename',
 				// Only show it when right-clicking images
@@ -2784,7 +2793,7 @@ all_transactions = all_transactions.filter(function (el) {
           $('#messages_pane').find('audio').remove();
           $('#messages_pane').append('<audio autoplay><source src="static/message.mp3" type="audio/mpeg"></audio>');
 
-        } else {
+        } else if (payload_json.from != $('#currentAddrSpan').text() ) {
           $('#messages_pane').find('audio').remove();
           $('#messages_pane').append('<audio autoplay><source src="static/message.mp3" type="audio/mpeg"></audio>');
 
@@ -2794,7 +2803,7 @@ all_transactions = all_transactions.filter(function (el) {
           if (magnetLinks) {
             handleMagnetLink(magnetLinks, payload_json.t, true, payload_json.from);
           }
-          if (handleMagnetListed(payload_json.msg) && payload_json.from != $('#currentAddrSpan').text() ) {
+          if (handleMagnetListed(payload_json.msg)) {
             console.log('my-addr:', $('.currentAddr').text());
             console.log('their-addr:', payload_json.from);
 
