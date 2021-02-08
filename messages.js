@@ -3657,6 +3657,18 @@ ipcRenderer.on('got-boards', async (event, json) => {
 
             let result_reply = resp_reply.result.tx.extra.substring(66);
             let hex_json_reply = JSON.parse(fromHex(result_reply));
+
+						console.log(hex_json_reply);
+
+						if (hex_json_reply.b) {
+
+			 			 let key = $('.board_icon.current').attr('invitekey');
+			 			 let secretKey = naclUtil.decodeUTF8(key.substring(1, 33));
+
+			 			 let this_keyPair = nacl.box.keyPair.fromSecretKey(secretKey);
+			 			 hex_json_reply = JSON.parse(naclUtil.encodeUTF8(nacl.box.open(fromHexString(hex_json_reply.b), nonceFromTimestamp(hex_json_reply.t), this_keyPair.publicKey, this_keyPair.secretKey)));
+
+			 		 }
             let verified_reply = nacl.sign.detached.verify(naclUtil.decodeUTF8(hex_json_reply.m), fromHexString(hex_json_reply.s), fromHexString(hex_json_reply.k));
 
             if (!verified_reply) {
