@@ -3219,6 +3219,8 @@ ipcRenderer.on('wallet-started', async () => {
 
 						console.log('started-wallet');
 
+						// $('#login_avatar .saving').text('')
+
 						walletd = new TurtleCoinWalletd(
 							'http://127.0.0.1',
 							8070,
@@ -3249,7 +3251,7 @@ ipcRenderer.on('wallet-started', async () => {
 
 
 						let avatar_base64 = false;
-
+						start_attempts = 0;
 						while ((avatar_base64 == false || avatar_base64 == undefined) && start_attempts < 6) {
 							start_attempts++;
 							avatar_base64 = await loadWallets();
@@ -3261,6 +3263,8 @@ ipcRenderer.on('wallet-started', async () => {
 
 						if (!avatar_base64) {
 							alert('Cant connect to node');
+							$('#login-screen .saving').remove();
+							ipcRenderer.send('kill-wallet');
 							return;
 						}
 
