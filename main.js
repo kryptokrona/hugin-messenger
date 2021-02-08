@@ -156,6 +156,9 @@ let syncing = true;
      await js_wallet.getSyncStatus();
      if((localDaemonBlockCount - walletBlockCount) < 2  ) {
        // Diff between wallet height and node height is 1 or 0, we are synced
+       console.log('walletBlockCount',walletBlockCount);
+       console.log('localDaemonBlockCount', localDaemonBlockCount);
+       console.log('networkBlockCount', networkBlockCount);
        syncing = false;
      }
     }
@@ -259,7 +262,14 @@ ipcMain.on('import-view-subwallet', async(event, arg) => {
   const [walletBlockCount, localDaemonBlockCount, networkBlockCount] =
  js_wallet.getSyncStatus();
 
-      const [baddress, error] = await js_wallet.importViewSubWallet(arg, walletBlockCount - 1000);
+      const [baddress, error] = await js_wallet.importViewSubWallet(arg, networkBlockCount - 1000);
+
+      console.log(networkBlockCount - 1000);
+
+      await js_wallet.rewind(networkBlockCount - 1000);
+
+
+      syncing = true;
 
       if (!error) {
            console.log(`Imported view subwallet with address of ${baddress}`);
