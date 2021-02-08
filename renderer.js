@@ -424,7 +424,7 @@ $("document").ready(async function(){
 
             if (rmt.getGlobal('first_start')) {
               console.log('First start!');
-              $('#login-screen').remove();
+              $('#login-screen').hide();
               $('#create-account').css({
                 position: "absolute",
                 width: 500,

@@ -19,7 +19,7 @@ const isDev = require('electron-is-dev');
 
 var appRootDir = require('app-root-dir').get().replace('app.asar','');
 var appPath=appRootDir+'/bin/';
-userDataDir = app.getPath('userData');
+let userDataDir = app.getPath('userData');
 
 global.userDataDir = userDataDir;
 
@@ -93,7 +93,20 @@ let syncing = true;
 
     if (c === 'c') {
 
-        const [newWallet, error] = await WB.WalletBackend.importViewWallet(daemon, 590880, '1ee35767b8a247c03423e78c302f7c3c64c5e3c145878e4fbf1cc3bbbb35b10c', 'SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc');
+        let height = 600000;
+
+        try {
+        let re = await fetch('http://pool.kryptokrona.se:11898/getinfo');
+
+        height = await re.json();
+        console.log(height.height);
+      } catch (err) {
+
+      }
+        console.log(height.height);
+        console.log('Syncing boards from ', parseInt(height.height)-1000);
+
+        const [newWallet, error] = await WB.WalletBackend.importViewWallet(daemon, parseInt(height.height)-1000, '1ee35767b8a247c03423e78c302f7c3c64c5e3c145878e4fbf1cc3bbbb35b10c', 'SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc');
 
         js_wallet = newWallet;
     } else if (c === 'o') {
@@ -201,15 +214,21 @@ ipcMain.on('create-account', async (event) => {
 
        gen_wallet.stdout.on('data', (data) => {
 
+         console.log(data);
+
        });
 
        gen_wallet.stderr.on('data', (data) => {
+
+         console.log(data);
 
        });
 
        gen_wallet.on('close', (code) => {
 
          // startWallet();
+         console.log('Dieded');
+         event.reply('created-account');
        });
 
 
@@ -225,7 +244,6 @@ ipcMain.on('create-account', async (event) => {
 
 
 
-      event.reply('created-account');
 
 })
 

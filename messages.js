@@ -3252,10 +3252,10 @@ ipcRenderer.on('wallet-started', async () => {
 
 						let avatar_base64 = false;
 						start_attempts = 0;
-						while ((avatar_base64 == false || avatar_base64 == undefined) && start_attempts < 6) {
+						while ((avatar_base64 == false || avatar_base64 == undefined) && start_attempts < 10) {
 							start_attempts++;
 							avatar_base64 = await loadWallets();
-							// await sleep(1000);
+							await sleep(2000);
 							console.log(start_attempts);
 							console.log(avatar_base64);
 							console.log('Trying again');
@@ -3265,6 +3265,10 @@ ipcRenderer.on('wallet-started', async () => {
 							alert('Cant connect to node');
 							$('#login-screen .saving').remove();
 							ipcRenderer.send('kill-wallet');
+							if (rmt.getGlobal('first_start')) {
+								$('#create-account').hide();
+								$('#login-screen').show();
+							}
 							return;
 						}
 
