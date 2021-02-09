@@ -283,7 +283,7 @@ if (!screenshare) {
 }) }
 
 
-  function gotMedia (stream, screen_stream=false) {
+  async function gotMedia (stream, screen_stream=false) {
     if ( video ) {
     var myvideo = document.getElementById('myvideo')
 
@@ -317,7 +317,8 @@ if (!screenshare) {
     $('#settings').addClass('in-call');
     $('#caller_menu').fadeIn().css('top','0px');
     $('#caller_menu_type').text('Calling..');
-    $('#caller_menu_contact').text($('#recipient_form').val());
+		let conversation_display = await get_translation($('#recipient_form').val());
+    $('#caller_menu_contact').text(conversation_display);
     let avatar_base64 = get_avatar($('#recipient_form').val());
     $('#caller_menu img').attr('src',"data:image/svg+xml;base64," + avatar_base64);
 
@@ -517,11 +518,28 @@ let parseCall = (msg, sender=false, emitCall=true) => {
          $('#incomingCall').show();
          let avatar_base64 = get_avatar(sender);
          $('#incomingCall img').attr('src',"data:image/svg+xml;base64," + avatar_base64);
-         $('#incomingCall span').text(sender);
+
+				 dictionary.find({ original: sender }, function (err,docs){
+
+						 if (docs.length == 0) {
+
+						 $('#incomingCall span').text(sender);
+
+					 } else {
+
+						 $('#incomingCall span').text(docs[0].translation);
+					 }
+
+				 });
+
 
          // Handle answer/decline
-         $('#answerCall').click(function() {
+         $('#answerCall').click(async function() {
            $('#answerCall').unbind('click');
+					 $('#boards').addClass('hidden');
+					 $('#messages_page').removeClass('hidden');
+					 $('#new_board').addClass('hidden');
+					 $('#boards_picker').addClass('hidden');
            if ($('#recipient_form').text() != sender) {
               print_conversation(sender);
            }
@@ -533,7 +551,8 @@ let parseCall = (msg, sender=false, emitCall=true) => {
 
            $('#caller_menu').fadeIn().css('top','0px');
            $('#caller_menu_type').text('Connecting..');
-           $('#caller_menu_contact').text(sender);
+					 let conversation_display = await get_translation($('#recipient_form').val());
+			     $('#caller_menu_contact').text(conversation_display);
            $('#incomingCall img').attr('src',"data:image/svg+xml;base64," + avatar_base64);
 
            $('#incomingCall').hide();
@@ -1370,11 +1389,16 @@ let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json
           // Add message to contacts list and add class to tell updateMessages
           if ( $('.' + payload_json.to).width() > 0 ){
           let listed_msg = handleMagnetListed(payload_json.msg);
+					//
+					// if (listed_msg.length < 1) {
+					// 	return;
+					// }
 
-
-          $('.' + payload_json.to).find('.listed_message').text(listed_msg).parent().detach().prependTo('#messages_contacts');
+					 if ($('.' + payload_json.to).width() > 0 ) {
+	          	$('.' + payload_json.to).find('.listed_message').text(listed_msg).parent().detach().prependTo('#messages_contacts');
+						}
         } else {
-
+					console.log(handleMagnetListed(payload_json.msg));
           $('#messages_contacts').prepend('<li class="active_contact ' + payload_json.to + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + get_avatar(payload_json.to) + '" /><span class="contact_address">' + payload_json.to + '</span><br><span class="listed_message">'+handleMagnetListed(payload_json.msg)+'</li>');
 
         }
@@ -2236,6 +2260,7 @@ function updateMessages() {
 
                 avatar_base64 = get_avatar(thisAddr);
                 let listed_msg = handleMagnetListed(message);
+								console.log(listed_msg);
                 $('#messages_contacts').prepend('<li class="active_contact ' + thisAddr + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '" /><span class="contact_address">' + thisAddr + '</span><br><span class="listed_message">'+listed_msg+'</li>');
                 messages.push(thisAddr);
 
@@ -2542,6 +2567,7 @@ async function print_conversations() {
 				try {
 
 							 let conversation_display = await get_translation(conversation);
+							 console.log(handleMagnetListed(messages[m].message));
 						  	$('#messages_contacts').append('<li class="active_contact ' + conversation + '" address="' + conversation +  '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + get_avatar(conversation) + '" /><span class="contact_address">' + conversation_display + '</span><br><span class="listed_message">'+handleMagnetListed(messages[m].message)+'</li>');
 
       } catch (error) {
@@ -2812,7 +2838,6 @@ all_transactions = all_transactions.filter(function (el) {
 							}
 							if(metadata.activationValue == "Answer" || metadata.button == "Answer" ) {
 
-								$('#boards').addClass('hidden');
 								$('#answerCall').click();
 
 							}
@@ -2855,7 +2880,7 @@ all_transactions = all_transactions.filter(function (el) {
 
       } else {
         // If there isn't one, create one
-
+				console.log(handleMagnetListed(messages[m].message));
         $('#messages_contacts').prepend('<li class="active_contact unread_message ' + conversation_address + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + get_avatar(conversation_address) + '" /><span class="contact_address">' + conversation_address + '</span><br><span class="listed_message">'+handleMagnetListed(payload_json.msg)+'</li>');
       }
 
