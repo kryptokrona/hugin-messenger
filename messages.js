@@ -1316,7 +1316,7 @@ let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json
 
 
         walletd.sendTransaction(
-          mixin,
+          7,
           transfer,
           fee,
           [sendAddr],
