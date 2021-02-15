@@ -1399,7 +1399,7 @@ let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json
 						}
         } else {
 					console.log(handleMagnetListed(payload_json.msg));
-          $('#messages_contacts').prepend('<li class="active_contact ' + payload_json.to + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + get_avatar(payload_json.to) + '" /><span class="contact_address">' + payload_json.to + '</span><br><span class="listed_message">'+handleMagnetListed(payload_json.msg)+'</li>');
+          $('#messages_contacts').prepend('<li class="active_contact ' + payload_json.to + '" address="' + payload_json.to + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + get_avatar(payload_json.to) + '" /><span class="contact_address">' + payload_json.to + '</span><br><span class="listed_message">'+handleMagnetListed(payload_json.msg)+'</li>');
 
         }
         }
