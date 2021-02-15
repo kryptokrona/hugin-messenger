@@ -70,18 +70,21 @@ if (fs.existsSync(userDataDir + '/boards.wallet')) {
 
 let syncing = true;
 
-(async () => {
+let start_js_wallet = async () => {
 
     /* Initialise our blockchain cache api. Can use a public node or local node
        with `const daemon = new WB.Daemon('127.0.0.1', 11898);` */
-    const daemon = new WB.Daemon('pool.kryptokrona.se', 11898);
+
+   let node = global.node.split(':')[0];
+   let port = parseInt(global.node.split(':')[1]);
+    const daemon = new WB.Daemon(node, port);
 
     if (c === 'c') {
 
         let height = 600000;
 
         try {
-        let re = await fetch('http://pool.kryptokrona.se:11898/getinfo');
+        let re = await fetch('http://' + node + ':' + port + '/getinfo');
 
         height = await re.json();
 
@@ -164,7 +167,7 @@ let syncing = true;
     }
 
     console.log('Saved wallet to file');
-})()
+}
 
 
 ipcMain.on('login-complete', async (event, arg) => {
@@ -625,7 +628,7 @@ let startWallet = async () => {
 
   const daemon = new WB.Daemon(node, parseInt(port));
 
-  js_wallet.swapNode(daemon);
+  start_js_wallet();
 
   global.node = node+':'+port;
 
