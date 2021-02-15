@@ -91,7 +91,7 @@ function sendTransaction() {
   pay_id = $('#payment_id').val();
   fee = parseInt( parseFloat( $('#myRange2').val() ) * 100000 );
   fee = 10;
-  mixin = parseInt( $('#myRange').val() );
+  mixin = 7;
   sendAddr = $("#currentAddrSpan").text();
 
   transfer = [ { 'amount':amount, 'address':receiver } ];
