@@ -2056,13 +2056,6 @@ function getConversation(address) {
         });
 }
 
-$("#messages_contacts").on("click", "li", function(){
-    $('#message_form').focus();
-    $('#recipient_form').val($(this).find('.contact_address').text());
-    $(this).removeClass('unread_message');
-    print_conversation($(this).attr('address'));
-		$('#settings_page').fadeOut();
-});
 
 var lastMessage = 0;
 
@@ -2226,8 +2219,7 @@ function updateMessages() {
 
                   avatar_base64 = get_avatar(senderAddr);
                   let listed_msg = handleMagnetListed(message);
-                  console.log(listed_msg);
-                  $('#messages_contacts').prepend('<li class="active_contact ' + senderAddr + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '" /><span class="contact_address">' + senderAddr + '</span><br><span class="listed_message">'+listed_msg+'</li>');
+                  $('#messages_contacts').prepend('<li class="active_contact ' + senderAddr + '" address="' + senderAddr + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '" /><span class="contact_address">' + senderAddr + '</span><br><span class="listed_message">'+listed_msg+'</li>');
                   messages.push(senderAddr);
                 }
 
@@ -2261,7 +2253,7 @@ function updateMessages() {
                 avatar_base64 = get_avatar(thisAddr);
                 let listed_msg = handleMagnetListed(message);
 								console.log(listed_msg);
-                $('#messages_contacts').prepend('<li class="active_contact ' + thisAddr + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '" /><span class="contact_address">' + thisAddr + '</span><br><span class="listed_message">'+listed_msg+'</li>');
+                $('#messages_contacts').prepend('<li class="active_contact ' + thisAddr + '" address="' + thisAddr + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '" /><span class="contact_address">' + thisAddr + '</span><br><span class="listed_message">'+listed_msg+'</li>');
                 messages.push(thisAddr);
 
 
@@ -2436,9 +2428,10 @@ function find_messages(opt, skip, limit, sort=-
 
 
 async function get_confirmed_messages(from, to) {
-  if (!from || !to) {
-    return;
-  }
+  // if (!from || !to && from != 0) {
+	// 	console.log('Cancelling get_confirmed_messages');
+  //   return;
+  // }
   return new Promise(function(resolve, reject) {
 
     walletd.getTransactions(
@@ -2449,6 +2442,7 @@ async function get_confirmed_messages(from, to) {
       '').then(resp => {
 
         let arr = [];
+				console.log('confirmred:', resp);
 
         if (resp.code == 'ETOOLARGE') {
 
@@ -2501,6 +2495,7 @@ function get_block_height() {
     .then(resp => {
 
       // Set blockCount value to current block count
+			// console.log('bcc', resp.body.result);
       blockCount = parseInt(resp.body.result.blockCount);
       resolve(blockCount);
 
@@ -2590,6 +2585,19 @@ print_conversations();
 let known_txs = [];
 
 
+let apply_conversation_clicks = () => {
+
+	$("#messages_contacts").unbind('click').on("click", "li", function(){
+			console.log('Clicked:', $(this).find('.contact_address').text() );
+	    $('#message_form').focus();
+	    $('#recipient_form').val($(this).find('.contact_address').text());
+	    $(this).removeClass('unread_message');
+	    print_conversation($(this).attr('address'));
+			$('#settings_page').fadeOut();
+	});
+
+}
+
 async function get_new_conversations(unconfirmed) {
 
   known_keys = await find(keychain, {});
@@ -2604,11 +2612,13 @@ async function get_new_conversations(unconfirmed) {
 
 
       if ( last_block_checked == block_height ) {
-        return;
+        // return;
       }
 
       try {
-      confirmed_transactions = await get_confirmed_messages(last_block_checked, block_height-last_block_checked);
+				console.log('heights:', last_block_checked, block_height);
+      confirmed_transactions = await get_confirmed_messages(last_block_checked, block_height);
+			console.log('confirmed txs:', confirmed_transactions);
       check_block = block_height;
     } catch (err) {
 
@@ -2623,6 +2633,8 @@ async function get_new_conversations(unconfirmed) {
           check_block = check_block + 10000;
         }
       }
+
+
 
 
 
@@ -2645,7 +2657,7 @@ async function get_new_conversations(unconfirmed) {
 
 
 
-      all_transactions = unconfirmed_transactions;
+      all_transactions = unconfirmed_transactions.concat(confirmed_transactions) ;
       misc.update({}, { $set: {height: check_block} });
       last_block_checked = check_block;
 
@@ -2654,6 +2666,7 @@ async function get_new_conversations(unconfirmed) {
 
     unconfirmed_transactions = await get_unconfirmed_messages();
 
+		console.log('unconfirmed', unconfirmed_transactions);
 
     for (tx in unconfirmed_transactions) {
 
@@ -2683,14 +2696,19 @@ all_transactions = all_transactions.filter(function (el) {
 
   for (n in all_transactions) {
 
+
+
     try {
       tx = JSON.parse(fromHex(all_transactions[n]));
+			console.log('tx', tx);
     } catch (err) {
 
       continue;
     }
 
     if (tx.key && tx.t) {
+
+				console.log('Found new conversation!');
 
         let senderKey = tx.key;
 
@@ -2701,13 +2719,13 @@ all_transactions = all_transactions.filter(function (el) {
 	        let decryptBox = nacl.box.open(hexToUint(box), nonceFromTimestamp(timestamp), hexToUint(senderKey), keyPair.secretKey);
 
         if (!decryptBox) {
+					console.log('Cant decrypt new conversation');
           continue;
         }
 
         let message_dec = naclUtil.encodeUTF8(decryptBox);
 
         payload_json = JSON.parse(message_dec);
-
 
 
         payload_json.t = timestamp;
@@ -2880,13 +2898,13 @@ all_transactions = all_transactions.filter(function (el) {
 
       } else {
         // If there isn't one, create one
-				console.log(handleMagnetListed(messages[m].message));
-        $('#messages_contacts').prepend('<li class="active_contact unread_message ' + conversation_address + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + get_avatar(conversation_address) + '" /><span class="contact_address">' + conversation_address + '</span><br><span class="listed_message">'+handleMagnetListed(payload_json.msg)+'</li>');
+        $('#messages_contacts').prepend('<li class="active_contact unread_message ' + conversation_address + '" address="' + conversation_address + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + get_avatar(conversation_address) + '" /><span class="contact_address">' + conversation_address + '</span><br><span class="listed_message">'+handleMagnetListed(payload_json.msg)+'</li>');
       }
 
       }
 
   }
+	apply_conversation_clicks();
   getting_new_conversations = false;
 }
 
@@ -2966,13 +2984,15 @@ async function send_message(message, silent=false) {
 }
 
 async function print_conversation(conversation) {
-avatar_base64 = get_avatar(conversation);
+	avatar_base64 = get_avatar(conversation);
   $('#avatar_contact').attr('src','data:image/svg+xml;base64,' + avatar_base64).fadeIn();
   $('#context_menu').fadeIn();
   $('#currentchat_header_wrapper').removeClass('toggled_addr');
 
 
-    keychain.find({ "address": conversation }, function (err, docs) {
+    keychain.find({ address: conversation }, function (err, docs) {
+
+			console.log('found docs initial', docs);
 
       if (docs.length > 0) {
 
@@ -2984,6 +3004,8 @@ avatar_base64 = get_avatar(conversation);
         $('#recipient_pubkey_span').find('.checkmark').fadeIn();
         $('#recipient_span').find('.checkmark').fadeIn();
 
+      } else {
+      	console.log('Key not found for ', conversation);
       }
 
     });
@@ -2995,6 +3017,7 @@ avatar_base64 = get_avatar(conversation);
   let messages = await find_messages({conversation: conversation}, 0, 100);
 
   for (n in messages) {
+		console.log(messages[n]);
     let hash = '';
 
     if (messages[n].type == 'received') {

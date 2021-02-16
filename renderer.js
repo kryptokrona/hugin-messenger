@@ -239,7 +239,6 @@ function updateStatus() {
 
   walletd.getStatus()
   .then(resp => {
-    console.log(resp);
     var blockCount = resp.body.result.blockCount;
     var knownCount = resp.body.result.knownBlockCount;
     var peers = resp.body.result.peerCount;
