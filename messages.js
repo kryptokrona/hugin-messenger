@@ -1363,7 +1363,6 @@ let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json
           // $('#message_form').prop('disabled',false);
 
 				} else if (payload_json.m.length) {
-					console.log('we done');
 					return;
 
 				}
@@ -1411,7 +1410,7 @@ let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json
 	          	$('.' + payload_json.to).find('.listed_message').text(listed_msg).parent().detach().prependTo('#messages_contacts');
 						}
         } else {
-					console.log(handleMagnetListed(payload_json.msg));
+					// console.log(handleMagnetListed(payload_json.msg));
           $('#messages_contacts').prepend('<li class="active_contact ' + payload_json.to + '" address="' + payload_json.to + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + get_avatar(payload_json.to) + '" /><span class="contact_address">' + payload_json.to + '</span><br><span class="listed_message">'+handleMagnetListed(payload_json.msg)+'</li>');
 
         }
@@ -1618,14 +1617,14 @@ async function sendBoardMessage(message) {
       timestamp = Date.now();
       //
       //let signature = nacl.sign.detached(naclUtil.decodeUTF8(message_to_send), signingKeyPair.secretKey);
-      console.log('getting private key for ', currentAddr);
+      // console.log('getting private key for ', currentAddr);
       let private_key = await walletd.getSpendKeys(currentAddr);
       private_key = private_key.body.result;
-      console.log(private_key);
+      // console.log(private_key);
       const addr = await Address.fromAddress(currentAddr);
-      console.log(addr.spend.publicKey);
+      // console.log(addr.spend.publicKey);
       let signature = await xkrUtils.signMessage(message_to_send, private_key.spendSecretKey)
-      console.log(signature);
+      // console.log(signature);
       // console.log('signature', signature);
       // let verified = nacl.sign.detached.verify(naclUtil.decodeUTF8(message), signature, signingKeyPair.publicKey);
       // console.log('verified', verified);
@@ -1662,7 +1661,7 @@ async function sendBoardMessage(message) {
 
 			// insert encryption
 			if ($('.board_icon.current').hasClass('private')) {
-				console.log('private innit');
+				// console.log('private innit');
 				let key = $('.board_icon.current').attr('inviteKey');
 				let secretKey = naclUtil.decodeUTF8(key.substring(1, 33));
 
@@ -1679,7 +1678,7 @@ async function sendBoardMessage(message) {
 				let this_payload_box = {"b":Buffer.from(box).toString('hex'), "t":timestamp};
 
 
-				console.log(this_payload_box);
+				// console.log(this_payload_box);
 
 				// Convert json to hex
 				payload_hex = toHex(JSON.stringify(this_payload_box));
@@ -1705,7 +1704,7 @@ $('#recipient_form').on('input', function() {
       try {
       openAlias(text).then(wallets => {
 
-          console.log(wallets);
+          // console.log(wallets);
 
         if (wallets) {
 
@@ -2273,7 +2272,7 @@ function updateMessages() {
 
                 avatar_base64 = get_avatar(thisAddr);
                 let listed_msg = handleMagnetListed(message);
-								console.log(listed_msg);
+								// console.log(listed_msg);
                 $('#messages_contacts').prepend('<li class="active_contact ' + thisAddr + '" address="' + thisAddr + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '" /><span class="contact_address">' + thisAddr + '</span><br><span class="listed_message">'+listed_msg+'</li>');
                 messages.push(thisAddr);
 
@@ -2284,7 +2283,7 @@ function updateMessages() {
               last_messages[senderAddr] = timestamp;
               // Add message to conversations list
               let listed_msg = handleMagnetListed(message);
-              console.log(listed_msg);
+              // console.log(listed_msg);
               $('.'+thisAddr).find('.listed_message').text(listed_message);
             }
 
@@ -2473,7 +2472,11 @@ async function get_confirmed_messages(from, to) {
         }
 
       if (resp.body) {
+        try {
       let transactions = resp.body.result.items;
+    } catch (err) {
+      return;
+    }
 
       let txsLength = transactions.length;
 
@@ -2501,7 +2504,7 @@ async function get_confirmed_messages(from, to) {
           resolve(arr);
 
         }).catch(err => {
-          console.log(err);
+          // console.log(err);
           reject(err)
         });
       });
@@ -2583,7 +2586,7 @@ async function print_conversations() {
 				try {
 
 							 let conversation_display = await get_translation(conversation);
-							 console.log(handleMagnetListed(messages[m].message));
+							 // console.log(handleMagnetListed(messages[m].message));
 						  	$('#messages_contacts').append('<li class="active_contact ' + conversation + '" address="' + conversation +  '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + get_avatar(conversation) + '" /><span class="contact_address">' + conversation_display + '</span><br><span class="listed_message">'+handleMagnetListed(messages[m].message)+'</li>');
 
       } catch (error) {
@@ -2609,7 +2612,7 @@ let known_txs = [];
 let apply_conversation_clicks = () => {
 
 	$("#messages_contacts").unbind('click').on("click", "li", function(){
-			console.log('Clicked:', $(this).find('.contact_address').text() );
+			// console.log('Clicked:', $(this).find('.contact_address').text() );
 	    $('#message_form').focus();
 	    $('#recipient_form').val($(this).find('.contact_address').text());
 	    $(this).removeClass('unread_message');
@@ -3377,10 +3380,10 @@ $('#boards_icon').click(function(){
 
 
  if ($('#boards').hasClass('hidden')) {
-   $('#avatar').attr('src', 'data:image/svg+xml;base64,' + get_avatar(currentAddr));
+   // $('#avatar').attr('src', 'data:image/svg+xml;base64,' + get_avatar(currentAddr));
 
  } else {
-   $('#avatar').attr('src', 'data:image/svg+xml;base64,' + get_avatar(signingPublicKey));
+   // $('#avatar').attr('src', 'data:image/svg+xml;base64,' + get_avatar(signingPublicKey));
     ipcRenderer.send('get-boards', 'SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc');
  }
 
@@ -3670,21 +3673,21 @@ ipcRenderer.on('got-boards', async (event, json) => {
        let timestamp = resp.result.block.timestamp;
        try {
        result = resp.result.tx.extra.substring(66);
-			 console.log(result);
+			 // console.log(result);
        let hex_json = JSON.parse(fromHex(result));
 			 if (hex_json.b) {
 				 let key = $('.current').attr('inviteKey');
 				 let secretKey = naclUtil.decodeUTF8(key.substring(1, 33));
 
 				 let this_keyPair = nacl.box.keyPair.fromSecretKey(secretKey);
-				 console.log(this_keyPair);
+				 // console.log(this_keyPair);
 				  hex_json = JSON.parse(naclUtil.encodeUTF8(nacl.box.open(fromHexString(hex_json.b), nonceFromTimestamp(hex_json.t), this_keyPair.publicKey, this_keyPair.secretKey)));
 			 }
-			 console.log(hex_json);
+			 // console.log(hex_json);
        let this_addr = await Address.fromAddress(hex_json.k);
-       console.log(this_addr);
+       // console.log(this_addr);
        let verified = await xkrUtils.verifyMessageSignature(hex_json.m, this_addr.spend.publicKey, hex_json.s);
-       console.log(verified);
+       // console.log(verified);
        //let verified = nacl.sign.detached.verify(naclUtil.decodeUTF8(hex_json.m), fromHexString(hex_json.s), fromHexString(hex_json.k));
 
        if (!verified) {
@@ -3778,7 +3781,7 @@ ipcRenderer.on('got-boards', async (event, json) => {
             let result_reply = resp_reply.result.tx.extra.substring(66);
             let hex_json_reply = JSON.parse(fromHex(result_reply));
 
-						console.log(hex_json_reply);
+						// console.log(hex_json_reply);
 
 						if (hex_json_reply.b) {
 
@@ -3790,9 +3793,9 @@ ipcRenderer.on('got-boards', async (event, json) => {
 
 			 		 }
              let this_addr = await Address.fromAddress(hex_json_reply.k);
-             console.log(this_addr);
+             // console.log(this_addr);
              let verified_reply = await xkrUtils.verifyMessageSignature(hex_json_reply.m, this_addr.spend.publicKey, hex_json_reply.s);
-             console.log(verified);
+             // console.log(verified);
             // let verified_reply = nacl.sign.detached.verify(naclUtil.decodeUTF8(hex_json_reply.m), fromHexString(hex_json_reply.s), fromHexString(hex_json_reply.k));
 
             if (!verified_reply) {
@@ -3808,11 +3811,24 @@ ipcRenderer.on('got-boards', async (event, json) => {
 
        }
 
+
+        $('.this_board_message .board_message_pubkey').click(function(e){
+          e.preventDefault();
+
+          let address = $(this).text();
+          $('#payment_rec_addr').val(address);
+          $('#payment_id').val(hash);
+          $('#send_payment').removeClass('hidden');
+
+        })
+
        $('.this_board_message').addClass(hash).removeClass('this_board_message').click(function(){
          reply(hash);
          $(this).addClass('rgb');
          $('#boards').scrollTop('0');
        });
+
+
 
      } catch (err) {
        console.log('Error:', err)
@@ -3820,6 +3836,8 @@ ipcRenderer.on('got-boards', async (event, json) => {
      }
 
   }
+
+
 
 
 })

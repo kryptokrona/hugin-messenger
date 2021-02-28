@@ -84,7 +84,7 @@ var TurtleCoinWalletd = require('kryptokrona-service-rpc-js').default
 
 function sendTransaction() {
 
-  $("#payment_message").unbind('click');
+  // $("#payment_message").unbind('click');
 
   receiver = $('#payment_rec_addr').val();
   amount = parseInt( parseFloat( $('#payment_amount').val() ) * 100000 );
@@ -127,19 +127,19 @@ function sendTransaction() {
     // NEW MESSAGE PAYMENT style
     $('#payment_form').toggleClass('hidden');
     $('#payment_sent').toggleClass('hidden');
-    $('#payment_message').click(function(){
-      $('#payment_form').toggleClass('hidden');
-      $('#payment_sent').toggleClass('hidden');
-      $("#send_payment").toggleClass('hidden');
-      $("#payment_message").unbind('click');
-      $("#payment_message").click(function(){
-
-        //load_page(currentPage,$("#wallet_summary"));
-        $("#payment_rec_addr").val($('#recipient_form').val());
-        $("#send_payment").toggleClass('hidden');
-
-      });
-    })
+    // $('#payment_message').click(function(){
+    //   $('#payment_form').toggleClass('hidden');
+    //   $('#payment_sent').toggleClass('hidden');
+    //   $("#send_payment").toggleClass('hidden');
+    //   $("#payment_message").unbind('click');
+    //   $("#payment_message").click(function(){
+    //
+    //     //load_page(currentPage,$("#wallet_summary"));
+    //     $("#payment_rec_addr").val($('#recipient_form').val());
+    //     $("#send_payment").toggleClass('hidden');
+    //
+    //   });
+    // })
 
   })
   .catch(err => {
@@ -377,6 +377,15 @@ $('#create_account_button').click(function(){
 
 $("document").ready(async function(){
 
+            $('#send_payment .fa-plus').click(function(){
+              $('#send_payment').addClass('hidden');
+              $('#payment_sent').addClass('hidden');
+              $('#payment_form').removeClass('hidden');
+              $('#payment_id').val('');
+              $('#payment_rec_addr').val('');
+              $('#replyto_exit').click();
+            })
+
 
             if (rmt.getGlobal('first_start')) {
               console.log('First start!');
@@ -548,6 +557,8 @@ $("document").ready(async function(){
 
     $("#payment_rec_addr").val($('#recipient_form').val());
     $("#send_payment").toggleClass('hidden');
+    $('#payment_sent').addClass('hidden');
+    $('#payment_form').removeClass('hidden');
 
 
   });
