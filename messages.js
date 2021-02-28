@@ -7,6 +7,19 @@ const { desktopCapturer } = require('electron');
 const contextMenu = require('electron-context-menu');
 const path = require('path');
 
+const {
+    Address,
+    AddressPrefix,
+    Block,
+    BlockTemplate,
+    Crypto,
+    CryptoNote,
+    LevinPacket,
+    Transaction
+} = require('kryptokrona-utils');
+const xkrUtils = new CryptoNote()
+const crypto = new Crypto()
+
 function dataURLtoFile(dataurl, filename) {
 
        var arr = dataurl.split(','),
@@ -1067,7 +1080,7 @@ function fromHex(hex,str){
   }
   catch(e){
     str = hex
-    console.log('invalid hex input: ' + hex)
+    // console.log('invalid hex input: ' + hex)
   }
   return str
 }
@@ -1522,7 +1535,7 @@ function sendMessage(message, silent=false) {
 }
 
 
-function sendBoardMessage(message) {
+async function sendBoardMessage(message) {
 
     if (message.length == 0) {
       return
@@ -1604,14 +1617,22 @@ function sendBoardMessage(message) {
       mixin = 5;
       timestamp = Date.now();
       //
-      let signature = nacl.sign.detached(naclUtil.decodeUTF8(message_to_send), signingKeyPair.secretKey);
+      //let signature = nacl.sign.detached(naclUtil.decodeUTF8(message_to_send), signingKeyPair.secretKey);
+      console.log('getting private key for ', currentAddr);
+      let private_key = await walletd.getSpendKeys(currentAddr);
+      private_key = private_key.body.result;
+      console.log(private_key);
+      const addr = await Address.fromAddress(currentAddr);
+      console.log(addr.spend.publicKey);
+      let signature = await xkrUtils.signMessage(message_to_send, private_key.spendSecretKey)
+      console.log(signature);
       // console.log('signature', signature);
       // let verified = nacl.sign.detached.verify(naclUtil.decodeUTF8(message), signature, signingKeyPair.publicKey);
       // console.log('verified', verified);
       // return;
 
       // Convert message data to json
-      payload_json = {"m":message_to_send, "k":signingPublicKey, "s": Buffer.from(signature).toString('hex')};
+      payload_json = {"m":message_to_send, "k":currentAddr, "s": signature};
 
       if ($('#boards_nickname_form').val().length) {
         payload_json.n = $('#boards_nickname_form').val();
@@ -2442,7 +2463,7 @@ async function get_confirmed_messages(from, to) {
       '').then(resp => {
 
         let arr = [];
-				console.log('confirmred:', resp);
+				// console.log('confirmred:', resp);
 
         if (resp.code == 'ETOOLARGE') {
 
@@ -2603,6 +2624,7 @@ async function get_new_conversations(unconfirmed) {
   known_keys = await find(keychain, {});
 
   let unconfirmed_transactions = [];
+  let confirmed_transactions = [];
 
   block_height = await get_block_height();
   let check_block = last_block_checked;
@@ -2616,9 +2638,9 @@ async function get_new_conversations(unconfirmed) {
       }
 
       try {
-				console.log('heights:', last_block_checked, block_height);
+				// console.log('heights:', last_block_checked, block_height);
       confirmed_transactions = await get_confirmed_messages(last_block_checked, block_height);
-			console.log('confirmed txs:', confirmed_transactions);
+			// console.log('confirmed txs:', confirmed_transactions);
       check_block = block_height;
     } catch (err) {
 
@@ -2643,7 +2665,7 @@ async function get_new_conversations(unconfirmed) {
 
       for (tx in unconfirmed_transactions) {
 
-        console.log(unconfirmed_transactions[tx]);
+        // console.log(unconfirmed_transactions[tx]);
 
         if (!known_txs.includes(unconfirmed_transactions[tx])) {
           known_txs.push(unconfirmed_transactions[tx]);
@@ -2666,7 +2688,7 @@ async function get_new_conversations(unconfirmed) {
 
     unconfirmed_transactions = await get_unconfirmed_messages();
 
-		console.log('unconfirmed', unconfirmed_transactions);
+		// console.log('unconfirmed', unconfirmed_transactions);
 
     for (tx in unconfirmed_transactions) {
 
@@ -2700,7 +2722,7 @@ all_transactions = all_transactions.filter(function (el) {
 
     try {
       tx = JSON.parse(fromHex(all_transactions[n]));
-			console.log('tx', tx);
+			// console.log('tx', tx);
     } catch (err) {
 
       continue;
@@ -2767,8 +2789,8 @@ all_transactions = all_transactions.filter(function (el) {
            hexToUint(possibleKey),
            keyPair.secretKey);
          } catch (err) {
-           console.log('timestamp', timestamp);
-           console.log(err);
+           // console.log('timestamp', timestamp);
+           // console.log(err);
            continue;
          }
 
@@ -2828,13 +2850,13 @@ all_transactions = all_transactions.filter(function (el) {
             handleMagnetLink(magnetLinks, payload_json.t, true, payload_json.from);
           }
           if (handleMagnetListed(payload_json.msg)) {
-            console.log('my-addr:', $('.currentAddr').text());
-            console.log('their-addr:', payload_json.from);
-
-            console.log( 'waddafakk', payload_json.from != $('.currentAddr').text() );
+            // console.log('my-addr:', $('.currentAddr').text());
+            // console.log('their-addr:', payload_json.from);
+            //
+            // console.log( 'waddafakk', payload_json.from != $('.currentAddr').text() );
 
             await require("fs").writeFile(userDataDir + "/" +payload_json.from + ".png", get_avatar(payload_json.from, 'png'), 'base64', function(err) {
-              console.log(err);
+              // console.log(err);
             });
 						let actions = [];
 						if (payload_json.msg.substring(0,1) == "Δ" || payload_json.msg.substring(0,1) == "Λ") {
@@ -3065,6 +3087,7 @@ let loadWallets = async () => {
   .then(resp => {
 
     currentAddr = resp.body.result.addresses[0];
+    console.log(currentAddr);
     allAddresses = resp.body.result.addresses;
     var thisAddr = resp.body.result.addresses[0];
 
@@ -3178,23 +3201,42 @@ $('#new_board').click(function(){
 
 })
 
-$('#create_pub_board_button').click(function(){
+$('#create_pub_board_button').click(async function(){
 
   let invite_code = invite_code_from_ascii($('#create_pub_board_input').val());
-  ipcRenderer.send('import-view-subwallet', invite_code);
+  if(await crypto.checkKey(invite_code)) {
+
+    ipcRenderer.send('import-view-subwallet', invite_code);
+
+  } else {
+    alert('Invalid board name, please try another!')
+  }
+
 });
 
-$('#join_priv_board_button').click(function(){
+$('#join_priv_board_button').click(async function(){
 
 	let invite_code = $('#join_priv_board_input').val();
-	ipcRenderer.send('import-view-subwallet', invite_code);
+  if(await crypto.checkKey(invite_code)) {
+
+    ipcRenderer.send('import-view-subwallet', invite_code);
+
+  } else {
+    alert('Invalid board name, please try another!')
+  }
 
 });
 
-$('#create_priv_board_button').click(function(){
+$('#create_priv_board_button').click(async function(){
 
 	let invite_code = generatePrivateBoard();
-	ipcRenderer.send('import-view-subwallet', invite_code);
+  if(await crypto.checkKey(invite_code)) {
+
+    ipcRenderer.send('import-view-subwallet', invite_code);
+
+  } else {
+    $('#create_priv_board_button').click();
+  }
 
 
 });
@@ -3220,7 +3262,7 @@ ipcRenderer.on('wallet-started', async () => {
 							'http://127.0.0.1',
 							8070,
 							remote.getGlobal('rpc_pw'),
-							false
+							0
 						);
 
 
@@ -3251,6 +3293,22 @@ ipcRenderer.on('wallet-started', async () => {
 							start_attempts++;
 							avatar_base64 = await loadWallets();
 							await sleep(1000);
+
+              // start of signing with sekr-addr
+              // console.log('getting private key for ', currentAddr);
+              // let private_key = await walletd.getSpendKeys(currentAddr);
+              // private_key = private_key.body.result;
+              // console.log(private_key);
+              // const addr = await Address.fromAddress(currentAddr);
+              // console.log(addr.spend.publicKey);
+              // let sig = await xkrUtils.signMessage('hello', private_key.spendSecretKey)
+              // console.log(sig);
+              //
+              // let re = await xkrUtils.verifyMessageSignature('hello', addr.spend.publicKey, sig);
+              // console.log(re);
+              // end of signing with sekr-address
+
+
 						}
 
 						if (!avatar_base64) {
@@ -3465,7 +3523,11 @@ let print_board_message = async (pubkey, message, timestamp, fetching_board, nic
 
        let result_reply = resp_reply.result.tx.extra.substring(66);
        let hex_json_reply = JSON.parse(fromHex(result_reply));
-       let verified_reply = nacl.sign.detached.verify(naclUtil.decodeUTF8(hex_json_reply.m), fromHexString(hex_json_reply.s), fromHexString(hex_json_reply.k));
+       // const addr = await Address.fromAddress(currentAddr);
+       let this_addr = await Address.fromAddress(hex_json_reply.k);
+       console.log(this_addr);
+       let verified_reply = await xkrUtils.verifyMessageSignature(hex_json_reply.m, this_addr.spend.publicKey, hex_json_reply.s);
+       console.log(verified);
 
        if (!verified_reply) {
          return;
@@ -3510,8 +3572,12 @@ ipcRenderer.on('new-message', async (event, transaction) => {
 		 }
 
 		 console.log('Debug me', hex_json);
-
-		 let verified = nacl.sign.detached.verify(naclUtil.decodeUTF8(hex_json.m), fromHexString(hex_json.s), fromHexString(hex_json.k));
+     console.log(hex_json);
+     let this_addr = await Address.fromAddress(hex_json.k);
+     console.log(this_addr);
+     let verified = await xkrUtils.verifyMessageSignature(hex_json.m, this_addr.spend.publicKey, hex_json.s);
+     console.log(verified);
+		 // let verified = nacl.sign.detached.verify(naclUtil.decodeUTF8(hex_json.m), fromHexString(hex_json.s), fromHexString(hex_json.k));
 
 		 if (!verified) {
 			 return;
@@ -3615,7 +3681,11 @@ ipcRenderer.on('got-boards', async (event, json) => {
 				  hex_json = JSON.parse(naclUtil.encodeUTF8(nacl.box.open(fromHexString(hex_json.b), nonceFromTimestamp(hex_json.t), this_keyPair.publicKey, this_keyPair.secretKey)));
 			 }
 			 console.log(hex_json);
-       let verified = nacl.sign.detached.verify(naclUtil.decodeUTF8(hex_json.m), fromHexString(hex_json.s), fromHexString(hex_json.k));
+       let this_addr = await Address.fromAddress(hex_json.k);
+       console.log(this_addr);
+       let verified = await xkrUtils.verifyMessageSignature(hex_json.m, this_addr.spend.publicKey, hex_json.s);
+       console.log(verified);
+       //let verified = nacl.sign.detached.verify(naclUtil.decodeUTF8(hex_json.m), fromHexString(hex_json.s), fromHexString(hex_json.k));
 
        if (!verified) {
          continue;
@@ -3719,7 +3789,11 @@ ipcRenderer.on('got-boards', async (event, json) => {
 			 			 hex_json_reply = JSON.parse(naclUtil.encodeUTF8(nacl.box.open(fromHexString(hex_json_reply.b), nonceFromTimestamp(hex_json_reply.t), this_keyPair.publicKey, this_keyPair.secretKey)));
 
 			 		 }
-            let verified_reply = nacl.sign.detached.verify(naclUtil.decodeUTF8(hex_json_reply.m), fromHexString(hex_json_reply.s), fromHexString(hex_json_reply.k));
+             let this_addr = await Address.fromAddress(hex_json_reply.k);
+             console.log(this_addr);
+             let verified_reply = await xkrUtils.verifyMessageSignature(hex_json_reply.m, this_addr.spend.publicKey, hex_json_reply.s);
+             console.log(verified);
+            // let verified_reply = nacl.sign.detached.verify(naclUtil.decodeUTF8(hex_json_reply.m), fromHexString(hex_json_reply.s), fromHexString(hex_json_reply.k));
 
             if (!verified_reply) {
               continue;
