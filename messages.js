@@ -3616,7 +3616,7 @@ ipcRenderer.on('new-message', async (event, transaction) => {
 				 			name = 'Anonymous';
 				 		}
 
-				 		if (hex_json.k != Buffer.from(signingKeyPair.publicKey).toString('hex')) {
+				 		if (hex_json.k != currentAddr) {
 				      notifier.notify({
 				        title: name + " in " + to_board,
 				        message: message,
