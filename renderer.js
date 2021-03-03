@@ -260,7 +260,7 @@ function updateStatus() {
     .catch(err => {
       console.log(err)
       $('#status_icon').css('background-color','#FF4743');
-      $("#daemon_status").attr('title', "Can't connect to node...");
+      $("#daemon_status").attr('title', "Connecting to node...");
       ipcRenderer.send('kill-wallet');
     })
 
@@ -711,6 +711,7 @@ $("#modal").toggleClass("hidden");
 
 $("#status_icon").click(function(){
   myFunction(); $('#settings_page').fadeIn();
+  $("#connectionSettings").click();
   $('#boards').addClass('hidden');
   $("#messages_page").removeClass('hidden');
   $("#new_board").addClass('hidden');

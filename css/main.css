@@ -1959,6 +1959,11 @@ overlay #login img {
     background: #F5F6F7;
   }
 
+  #send_payment > i {
+
+      color: black;
+    }
+
 
 .lds-ripple-small div {
     color: #53565c !important;
@@ -2297,16 +2302,10 @@ color: black;
   transform: translate(0px, 2px);
   transition: transform 0.2s;
   transform: box-shadow 0.2s;
-  background: black;
+  background: rgba(0,0,0,0.1);
   color: white;
 
 }
-
-#sendbuttontext, #sendbuttontext_sendpage:hover {
-
-  color: white;
-}
-
 
 
 .description {
