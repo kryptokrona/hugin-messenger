@@ -1613,6 +1613,7 @@ overlay #login img {
    margin-bottom: 10px;
    border-radius: 15px;
    margin-left: 20%;
+   position: relative;
 
  }
 
@@ -3185,4 +3186,12 @@ li .gradient {
      * would animate at the same time
      */
     animation-delay: .4s;
+}
+
+
+.tips {
+  position: absolute;
+top: 15px;
+right: 15px;
+
 }

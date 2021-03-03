@@ -3646,6 +3646,8 @@ ipcRenderer.on('new-message', async (event, transaction) => {
 
 let global_nonce;
 
+
+
 ipcRenderer.on('got-boards', async (event, json) => {
 
   let fetching_board = current_board;
@@ -3656,9 +3658,19 @@ ipcRenderer.on('got-boards', async (event, json) => {
 
   $('#boards .board_message').remove();
 
+  let thisBlockCount = 0;
+  if (thisBlockCount == 0) {
+
+    let status = await walletd.getStatus();
+    thisBlockCount = status.body.result.blockCount;
+  }
   for (tx in json) {
     let hash = json[tx].hash;
-
+    console.log();
+    let this_json_tx = json[tx];
+    if (!hash) {
+      continue;
+    }
 
     let tx_data = await fetch('http://' + rmt.getGlobal('node') + '/json_rpc', {
          method: 'POST',
@@ -3685,6 +3697,40 @@ ipcRenderer.on('got-boards', async (event, json) => {
 			 }
 			 // console.log(hex_json);
        let this_addr = await Address.fromAddress(hex_json.k);
+       let tips = 0;
+       if (hex_json.k == currentAddr) {
+
+
+
+         console.log(thisBlockCount);
+         console.log(this_json_tx);
+         console.log(hash);
+
+        let transactions = await walletd.getTransactions(
+          thisBlockCount - this_json_tx.blockHeight,
+          this_json_tx.blockHeight,
+          '',
+          [],
+          hash);
+
+
+           let blocks = transactions.body.result.items;
+
+
+
+           for (block in blocks) {
+             let block_txs = blocks[block].transactions;
+             for (tx in block_txs) {
+               let this_tx = block_txs[tx].amount;
+               if (this_tx) {
+                  tips += this_tx;
+               }
+
+             }
+           }
+
+         }
+
        // console.log(this_addr);
        let verified = await xkrUtils.verifyMessageSignature(hex_json.m, this_addr.spend.publicKey, hex_json.s);
        // console.log(verified);
@@ -3810,6 +3856,10 @@ ipcRenderer.on('got-boards', async (event, json) => {
 
 
        }
+
+          if (tips) {
+              $('.this_board_message').append('<span class="tips">' + parseFloat(tips/100000).toFixed(5) + ' XKR</span>');
+          }
 
 
         $('.this_board_message .board_message_pubkey').click(function(e){
