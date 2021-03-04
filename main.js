@@ -216,6 +216,13 @@ ipcMain.on('create-account', async (event) => {
 
 })
 
+ipcMain.on('get-profile', async (event, arg) => {
+
+  console.log('getting profile..');
+
+  event.reply('got-profile', await js_wallet.getTransactions(undefined, 5, true, arg));
+
+})
 
 ipcMain.on('get-boards', async (event, arg) => {
 

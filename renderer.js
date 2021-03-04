@@ -180,7 +180,7 @@ function getHistory() {
           var d = new Date(transactions[i].transactions[0].timestamp * 1000);
           var liClass = "unknown";
           var sign = "";
-          var thisAmount = Math.abs(parseFloat(transactions[i].transactions[0].transfers[0].amount) / 100);
+          var thisAmount = Math.abs(parseFloat(transactions[i].transactions[0].transfers[0].amount) / 100000);
 
           if ($.inArray(thisAddr, allAddresses) != -1) {
             // If payment is incoming, i.e. a recieved transaction
@@ -192,7 +192,7 @@ function getHistory() {
             sign = "-";
           }
           // Print html to app
-          $('#history_list').append( "<li class='" + liClass + "'><span class='txAmnt'>" + sign + thisAmount + " KKR</span><span class='txTime'>" + d.toString() +"</span><br><span class='txAddr'><b style='display:none'>To: </b>" + thisAddr + "</span></li>");
+          $('#recent_transactions').append( "<li class='" + liClass + "'><span class='txAmnt'>" + sign + thisAmount + " XKR</span><span class='txTime'>" + moment(d).fromNow() +"</span><br><span class='txAddr'><b style='display:none'>To: </b>" + thisAddr + "</span></li>");
       }
 
     })
@@ -217,6 +217,10 @@ function updateBalance(address) {
 
 
     $("#balancetext").text(thisBalance);
+
+    $('#profile_balance').text(thisBalance);
+
+    $('#profile_balance_calculation').text('or ' + (thisBalance/0.00011) + " messages");
 
     if (thisLockedAmount > 0) {
       $("#lockedBalanceText").text(" (+" + thisLockedAmount + ")");
@@ -285,6 +289,7 @@ ipcRenderer.on('got-login-complete', async () => {
     $("#currentAddrSpan").text(thisAddr);
 
     updateBalance(thisAddr);
+    getHistory();
 
   })
   .catch(err => {
