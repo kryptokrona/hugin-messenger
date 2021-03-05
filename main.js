@@ -462,7 +462,11 @@ function createWindow () {
           mainWindow.hide();
       } },
        { label: 'Quit', click:  function(){
+          try {
            js_wallet.stop();
+         } except (err) {
+           console.log(err);
+         }
            wallet.kill('SIGINT');
            app.exit(0);
        } }
