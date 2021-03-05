@@ -464,7 +464,7 @@ function createWindow () {
        { label: 'Quit', click:  function(){
           try {
            js_wallet.stop();
-         } except (err) {
+         } catch (err) {
            console.log(err);
          }
            wallet.kill('SIGINT');
