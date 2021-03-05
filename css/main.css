@@ -3238,6 +3238,7 @@ right: 15px;
   font-size: 19px;
   padding: 10px;
   font-family: "Major Mono Display";
+  font-size: 1.5vw;
 
 }
 
@@ -3256,4 +3257,14 @@ right: 15px;
     right: 5px;
     max-width: 44%;
 
+}
+
+#recent_private_message {
+  
+  display: inline-block;
+}
+
+#recent_board_messages {
+
+  display: inline-block;
 }
