@@ -3194,3 +3194,66 @@ top: 15px;
 right: 15px;
 
 }
+
+#board_title {
+
+  text-align: center;
+  height: 44px;
+  color: white;
+  font-size: 17px;
+  padding-left: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  position: absolute;
+  width: 15%;
+  font-family: Montserrat;
+  right: 3%;
+  font-weight: 700;
+}
+
+#profile img {
+
+  width: 10%;
+
+}
+
+#profile_address {
+
+    font-family: "Montserrat";
+    font-weight: 500;
+}
+
+#profile_message_key {
+
+  font-size: 17px;
+}
+
+#profile_balance_calculation {
+
+  font-size: 15px;
+}
+
+#profile_balance {
+
+  font-size: 19px;
+  padding: 10px;
+  font-family: "Major Mono Display";
+
+}
+
+#profile {
+  display: inline-block;
+  border-radius: 5px;
+  background-color: rgba(0,0,0,0.1);
+  width: 50%;
+
+}
+
+#message-balance {
+
+    display: inline-block;
+    background-color: rgba(0,0,0,0.1);
+    right: 5px;
+    max-width: 44%;
+
+}

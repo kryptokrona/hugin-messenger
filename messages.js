@@ -117,7 +117,7 @@ let print_boards = async () => {
 		   $('.board_icon').click(function() {
 
 
-
+         let board_title = $(this).attr('title');
 		     let this_board = $(this).attr('id');
 
 		     if ($(this).hasClass('current')) {
@@ -127,10 +127,11 @@ let print_boards = async () => {
 		     current_board = this_board;
 		     if (this_board == "home_board") {
 		       this_board = 'SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc';
+           $('#board_title').text('Home');
 		     }
 
 
-
+         $('#board_title').text(board_title);
 		     ipcRenderer.send('get-boards', this_board);
 		     $('.current').removeClass('current');
 		     $(this).addClass('current');
@@ -824,6 +825,7 @@ contextMenu({
 												}
 												e.innerHTML = r.substring(0, 1) + '<i class="fa fa-lock"></i>';
 												e.setAttribute('title', r);
+                        $('#board_title').text(r);
 
 											});
 							    }
@@ -3421,6 +3423,7 @@ $('#boards_icon').click(function(){
  } else {
    // $('#avatar').attr('src', 'data:image/svg+xml;base64,' + get_avatar(signingPublicKey));
     ipcRenderer.send('get-boards', 'SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc');
+    $('#board_title').text('Home');
  }
 
 

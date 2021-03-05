@@ -219,8 +219,7 @@ function updateBalance(address) {
     $("#balancetext").text(thisBalance);
 
     $('#profile_balance').text(thisBalance);
-
-    $('#profile_balance_calculation').text('or ' + (thisBalance/0.00011) + " messages");
+    $('#profile_balance_calculation').text('or ' + parseInt(thisBalance/0.00011) + " messages");
 
     if (thisLockedAmount > 0) {
       $("#lockedBalanceText").text(" (+" + thisLockedAmount + ")");
