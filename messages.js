@@ -2733,16 +2733,18 @@ all_transactions = all_transactions.filter(function (el) {
       continue;
     }
 
-    if (tx.key && tx.t) {
+    if (tx.key && tx.t && tx.key != Buffer.from(keyPair.publicKey).toString('hex')) {
 
 				console.log('Found new conversation!');
+
+        console.log(tx);
 
         let senderKey = tx.key;
 
         let box = tx.box;
 
         let timestamp = tx.t;
-
+        console.log(keyPair.secretKey);
 	        let decryptBox = nacl.box.open(hexToUint(box), nonceFromTimestamp(timestamp), hexToUint(senderKey), keyPair.secretKey);
 
         if (!decryptBox) {
@@ -2770,7 +2772,7 @@ all_transactions = all_transactions.filter(function (el) {
         save_message(payload_json);
 
     } else {
-
+        console.log('Found old (?) conversation!', tx);
         if (tx.m || tx.b) {
           continue;
         }
@@ -2785,8 +2787,10 @@ all_transactions = all_transactions.filter(function (el) {
         let decryptBox = false;
 
         while (i < known_keys.length && !decryptBox) {
+          console.log('Decrypting..');
 
           let possibleKey = known_keys[i].key;
+          console.log('Trying key:', possibleKey);
           i = i+1;
           try {
            decryptBox = nacl.box.open(hexToUint(box),
@@ -2795,14 +2799,16 @@ all_transactions = all_transactions.filter(function (el) {
            keyPair.secretKey);
          } catch (err) {
            // console.log('timestamp', timestamp);
-           // console.log(err);
+           console.log(err);
            continue;
          }
+         console.log('Decrypted:', decryptBox);
 
 
           }
 
           if (!decryptBox) {
+            console.log('Cannot decrypt..');
             continue;
           }
 
@@ -3276,7 +3282,7 @@ ipcRenderer.on('wallet-started', async () => {
 						);
 
 
-              let messages = await find_messages({}, 0, 5);
+              let messages = await find_messages({'type': 'received'}, 0, 5);
 
               for (n in messages) {
             		console.log(messages[n]);
@@ -3293,8 +3299,8 @@ ipcRenderer.on('wallet-started', async () => {
                   continue;
                 }
                 console.log( parseCall(messages[n].message, false, false) );
-                $('#recent_private_messages').append('<li id="' + messages[n].timestamp + '" timestamp="' + messages[n].timestamp + '" class="' + messages[n].type + '_message"><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_msg + '"><p>' + parseCall(messages[n].message, false, false) + '</p><span class="time">' + moment(messages[n].timestamp).fromNow() + '</span></li>');
-
+                $('#recent_private_messages .inner').append('<li id="' + messages[n].timestamp + '" timestamp="' + messages[n].timestamp + '" class="' + messages[n].type + '_message"><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_msg + '"><p>' + parseCall(messages[n].message, false, false) + '</p><span class="time">' + moment(messages[n].timestamp).fromNow() + '</span></li>');
+                $('#recent_private_messages  .default').remove();
 
                   let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(messages[n].message);
                   if (magnetLinks) {
@@ -3687,9 +3693,8 @@ let global_nonce;
 
 ipcRenderer.on('got-profile', async (event, json) => {
 
-  console.log('got-profile yall');
-
   for (tx in json) {
+    $('#recent_board_messages .default').remove();
     let hash = json[tx].hash;
     console.log();
     let this_json_tx = json[tx];
@@ -3788,15 +3793,15 @@ ipcRenderer.on('got-profile', async (event, json) => {
 
 
         if (message.length < 1 && youtube_links.length > 0) {
-          $('#recent_board_messages').append('<li class="board_message this_board_message" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div>'+ image_attached + youtube_links +'<span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
+          $('#recent_board_messages .inner').append('<li class="board_message this_board_message" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div>'+ image_attached + youtube_links +'<span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
 
         } else if (image_attached > 0 && youtube_links.length > 0) {
 
-          $('#recent_board_messages').append('<li class="board_message this_board_message" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
+          $('#recent_board_messages .inner').append('<li class="board_message this_board_message" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
 
 
         } else  {
-          $('#recent_board_messages').append('<li class="board_message this_board_message" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
+          $('#recent_board_messages .inner').append('<li class="board_message this_board_message" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
        }
 
        if (hex_json.n) {

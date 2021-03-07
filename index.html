@@ -400,30 +400,58 @@
           margin-left: -20px;
           ">
 
-          <h1>Welcome back!</h1>
+        <h1>Welcome back!</h1>
 
-          <h3>Profile</h3>
-          <div id="profile">
-            <img id="profile_avatar" />
-            <div id="nickname"> Nickname   </div>
-            </br>
-            <span id="profile_address"></span>
-            <span id="profile_message_key"></span>
-            <button id="profile_copy_address">Copy both</button>
+
+        <div id="profile">
+          <h2>Profile</h2>
+          <div class="inner">
+            <img id="profile_avatar" /> <button id="profile_copy_address">Copy both</button>
+            <table style="width:100%">
+              <tr>
+                <td><b>Address</b></td>
+                <td id="profile_address">Loading..</td>
+              </tr>
+              <tr>
+                <td><b>Msg key</b></td>
+                <td id="profile_message_key">Loading..</td>
+              </tr>
+            </table>
+
           </div>
+        </div>
+
               <div id="message-balance">
+                <h2>Balance</h2>
+                <div class="inner">
             <span id="profile_balance"></span>
           </br>
             <span id="profile_balance_calculation"></span>
           </div>
+          </div>
 
-          <h3>Recent DMs</h3>
-          <div id="recent_private_messages">No messages yet</div>
-          <h3>Recent board activity</h3>
-          <div id="recent_board_messages">No messages yet</div>
 
-          <h3>Transactions</h3>
-          <div id="recent_transactions">No transactions yet</div>
+          <div id="recent_private_messages">
+            <h2>Recent DMs</h2>
+            <div class="inner">
+              <p class="default">No messages yet</p>
+            </div>
+          </div>
+
+          <div id="recent_board_messages">
+            <h2>Recent board activity</h2>
+            <div class="inner">
+              <p class="default">No messages yet</p>
+            </div>
+          </div>
+
+
+          <div id="recent_transactions">
+            <h2>Transactions</h2>
+            <div class="inner">
+            <p class="default">No transactions yet</p>
+          </div>
+        </div>
 
 
 

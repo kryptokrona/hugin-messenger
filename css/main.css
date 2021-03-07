@@ -3212,7 +3212,7 @@ right: 15px;
   text-overflow: ellipsis;
   overflow: hidden;
 }
-
+/*
 #profile img {
 
   width: 17%;
@@ -3278,13 +3278,14 @@ right: 15px;
 #recent_board_messages {
 
   display: inline-block;
-}
+} */
 
 #recent_board_messages img {
 
   max-width: 64px;
 }
 
+/*
 
 #recent_board_messages .board_message_pubkey {
 
@@ -3299,4 +3300,32 @@ right: 15px;
   line-height: 3;
   vertical-align: bottom;
   font-family: montserrat;
+} */
+
+#welcome_alpha .inner {
+  background: rgba(0,0,0,0.25);
+  border-radius: 25px;
+  padding: 15px;
+}
+
+#welcome_alpha #profile img {
+  width: 64px;
+}
+
+#welcome_alpha #profile, #welcome_alpha #message-balance {
+  display: inline-block;
+  width: 49%;
+  vertical-align: top;
+}
+
+#profile_address, #profile_message_key {
+  width: 17em;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  height: 1em;
+}
+
+#profile_copy_address {
+  vertical-align: 25px;
 }
