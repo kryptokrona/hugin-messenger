@@ -2630,7 +2630,7 @@ let check_counter = 0;
 async function get_new_conversations(unconfirmed) {
 
   console.log('Getting new convos..');
-
+  apply_conversation_clicks();
   known_keys = await find(keychain, {});
 
   let unconfirmed_transactions = [];
@@ -2939,7 +2939,7 @@ all_transactions = all_transactions.filter(function (el) {
       }
 
   }
-	apply_conversation_clicks();
+
   await sleep(500);
   if (check_counter % 16) {
     get_new_conversations(false);
