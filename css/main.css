@@ -3329,3 +3329,51 @@ right: 15px;
 #profile_copy_address {
   vertical-align: 25px;
 }
+
+#profile_balance::before {
+    font-family: 'XKR';
+    content: "\e900";
+    font-weight: lighter;
+    font-size: 78px;
+    position: relative;
+    /* margin-top: -15px; */
+    color: rgba(0, 0, 0, 0.7);
+    text-align: center;
+    width: 100%;
+    color: #f1f2f3;
+    line-height: 29px;
+    vertical-align: middle;
+    margin-left: 10px;
+    margin-right: 18px;
+    -webkit-animation: rgb_color 10s ease infinite;
+    -moz-animation: rgb_color 10s ease infinite;
+    animation: rgb_color 10s ease infinite;
+    color: #5f86f2;
+}
+
+@keyframes rgb_color {
+  0%, 100% {
+    color: #5f86f2;
+  }
+  12.5% {
+    color: #a65ff2;
+  }
+  25% {
+    color: #f25fd0;
+  }
+  37.5% {
+    color: #f25f61;
+  }
+  50% {
+    color: #f2cb5f;
+  }
+  62.5% {
+    color: #abf25f;
+  }
+  75% {
+    color: #5ff281;
+  }
+  87.5% {
+    color: 5ff2f0;
+  }
+}

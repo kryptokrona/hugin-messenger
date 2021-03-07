@@ -2626,6 +2626,8 @@ let apply_conversation_clicks = () => {
 
 async function get_new_conversations(unconfirmed) {
 
+  console.log('Getting new convos..');
+
   known_keys = await find(keychain, {});
 
   let unconfirmed_transactions = [];
@@ -2689,6 +2691,7 @@ async function get_new_conversations(unconfirmed) {
       last_block_checked = check_block;
 
 
+
 } else {
 
     unconfirmed_transactions = await get_unconfirmed_messages();
@@ -2708,6 +2711,8 @@ async function get_new_conversations(unconfirmed) {
 
 
   all_transactions = unconfirmed_transactions;
+  console.log('all_transactions', all_transactions);
+
 }
   latest_transaction = await find_messages({}, 0, 1);
   let latest_transaction_time = 0;
@@ -2817,6 +2822,7 @@ all_transactions = all_transactions.filter(function (el) {
 
           payload_json = JSON.parse(message_dec);
           payload_json.t = timestamp;
+          console.log(payload_json);
           save_message(payload_json);
 
     }

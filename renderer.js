@@ -183,7 +183,7 @@ function sendTransaction() {
 
 }
 
-function getHistory() {
+async function getHistory() {
 
   blockCount = 0;
 
