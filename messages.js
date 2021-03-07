@@ -1344,6 +1344,7 @@ let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json
           if (resp.body.error) {
               if (resp.body.error.message == "Wrong amount") {
                 alert("Sorry, you don't have enough XKR to send this message.");
+                $('#message_form').attr('disabled',false);
               } else {
                   alert(resp.body.error.message);
                 }
@@ -2624,6 +2625,8 @@ let apply_conversation_clicks = () => {
 
 }
 
+let check_counter = 0;
+
 async function get_new_conversations(unconfirmed) {
 
   console.log('Getting new convos..');
@@ -2672,7 +2675,7 @@ async function get_new_conversations(unconfirmed) {
 
       for (tx in unconfirmed_transactions) {
 
-        // console.log(unconfirmed_transactions[tx]);
+        console.log(unconfirmed_transactions[tx]);
 
         if (!known_txs.includes(unconfirmed_transactions[tx])) {
           known_txs.push(unconfirmed_transactions[tx]);
@@ -2696,8 +2699,6 @@ async function get_new_conversations(unconfirmed) {
 
     unconfirmed_transactions = await get_unconfirmed_messages();
 
-		// console.log('unconfirmed', unconfirmed_transactions);
-
     for (tx in unconfirmed_transactions) {
 
       if (!known_txs.includes(unconfirmed_transactions[tx])) {
@@ -2711,7 +2712,6 @@ async function get_new_conversations(unconfirmed) {
 
 
   all_transactions = unconfirmed_transactions;
-  console.log('all_transactions', all_transactions);
 
 }
   latest_transaction = await find_messages({}, 0, 1);
@@ -2740,16 +2740,12 @@ all_transactions = all_transactions.filter(function (el) {
 
     if (tx.key && tx.t && tx.key != Buffer.from(keyPair.publicKey).toString('hex')) {
 
-				console.log('Found new conversation!');
-
-        console.log(tx);
-
         let senderKey = tx.key;
 
         let box = tx.box;
 
         let timestamp = tx.t;
-        console.log(keyPair.secretKey);
+
 	        let decryptBox = nacl.box.open(hexToUint(box), nonceFromTimestamp(timestamp), hexToUint(senderKey), keyPair.secretKey);
 
         if (!decryptBox) {
@@ -2777,7 +2773,7 @@ all_transactions = all_transactions.filter(function (el) {
         save_message(payload_json);
 
     } else {
-        console.log('Found old (?) conversation!', tx);
+
         if (tx.m || tx.b) {
           continue;
         }
@@ -2944,7 +2940,12 @@ all_transactions = all_transactions.filter(function (el) {
 
   }
 	apply_conversation_clicks();
-  getting_new_conversations = false;
+  await sleep(500);
+  if (check_counter % 16) {
+    get_new_conversations(false);
+  } else {
+    get_new_conversations(true);
+  }
 }
 
 async function send_message(message, silent=false) {
@@ -3319,23 +3320,23 @@ ipcRenderer.on('wallet-started', async () => {
               ipcRenderer.send('get-profile');
 
 
-						window.setInterval(function(){
+						// window.setInterval(function(){
 
 						  get_new_conversations(true);
 
-
-						},1000);
-
-						let getting_new_conversations = false;
-
-
-						window.setInterval(function(){
-
-						  if (!getting_new_conversations) {
-						    get_new_conversations(false);
-						  }
-
-						},10333);
+            //
+						// },1000);
+            //
+						// let getting_new_conversations = false;
+            //
+            //
+						// window.setInterval(function(){
+            //
+						//   if (!getting_new_conversations) {
+						//     get_new_conversations(false);
+						//   }
+            //
+						// },10333);
 
 
 
