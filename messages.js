@@ -3293,33 +3293,33 @@ ipcRenderer.on('wallet-started', async () => {
 						);
 
 
-              let messages = await find_messages({'type': 'received'}, 0, 5);
-
-              for (n in messages) {
-            		console.log(messages[n]);
-                let hash = '';
-
-                if (messages[n].type == 'received') {
-                  hash = messages[n].conversation;
-                } else {
-                  continue;
-                }
-                let avatar_msg = get_avatar(hash);
-
-                if (parseCall(messages[n].message, false, false).length == 0) {
-                  continue;
-                }
-                console.log( parseCall(messages[n].message, false, false) );
-                $('#recent_private_messages .inner').append('<li id="' + messages[n].timestamp + '" timestamp="' + messages[n].timestamp + '" class="' + messages[n].type + '_message"><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_msg + '"><p>' + parseCall(messages[n].message, false, false) + '</p><span class="time">' + moment(messages[n].timestamp).fromNow() + '</span></li>');
-                $('#recent_private_messages  .default').remove();
-
-                  let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(messages[n].message);
-                  if (magnetLinks) {
-                    handleMagnetLink(magnetLinks, messages[n].timestamp);
-                  }
-
-
-              }
+              // let messages = await find_messages({'type': 'received'}, 0, 5);
+              //
+              // for (n in messages.reverse()) {
+            	// 	console.log(messages[n]);
+              //   let hash = '';
+              //
+              //   if (messages[n].type == 'received') {
+              //     hash = messages[n].conversation;
+              //   } else {
+              //     continue;
+              //   }
+              //   let avatar_msg = get_avatar(hash);
+              //
+              //   if (parseCall(messages[n].message, false, false).length == 0) {
+              //     continue;
+              //   }
+              //   console.log( parseCall(messages[n].message, false, false) );
+              //   $('#recent_private_messages .inner').append('<li id="' + messages[n].timestamp + '" timestamp="' + messages[n].timestamp + '" class="' + messages[n].type + '_message"><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_msg + '"><p>' + parseCall(messages[n].message, false, false) + '</p><span class="time">' + moment(messages[n].timestamp).fromNow() + '</span></li>');
+              //   $('#recent_private_messages  .default').remove();
+              //
+              //     let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(messages[n].message);
+              //     if (magnetLinks) {
+              //       handleMagnetLink(magnetLinks, messages[n].timestamp);
+              //     }
+              //
+              //
+              // }
 
               ipcRenderer.send('get-profile');
 
