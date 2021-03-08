@@ -3328,10 +3328,14 @@ right: 15px;
   width: 64px;
 }
 
-#welcome_alpha #profile, #welcome_alpha #message-balance, #recent_board_messages, #recent_private_messages {
+#welcome_alpha #profile, #welcome_alpha #message-balance, #recent_private_messages {
   display: inline-block;
   width: 49%;
   vertical-align: top;
+}
+
+#recent_board_messages {
+  width: 100%;
 }
 
 #profile_address, #profile_message_key {
