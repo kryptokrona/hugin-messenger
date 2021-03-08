@@ -3195,6 +3195,10 @@ $("document").ready(function(){
     copy($('#currentAddrSpan').text() + $('#currentPubKey').text() );
   });
 
+  $('#profile_copy_address').click(function(){
+    $('#copyBoth').click();
+  });
+
   lastMessage =  Date.now();
 
   $('#new_chat').click(function(){

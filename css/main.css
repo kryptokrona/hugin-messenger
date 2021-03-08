@@ -1346,7 +1346,7 @@ overlay #hugin-background img {
 }
 
 #login-screen {
-  right: 75px;
+  right: 77px;
 }
 
 overlay h1 {
@@ -1911,6 +1911,12 @@ overlay #login img {
 
 }
 
+.inner b {
+  font-family: "montserrat";
+  font-size: 12px;
+
+}
+
 
 @media (prefers-color-scheme: light) {
 
@@ -1964,6 +1970,13 @@ overlay #login img {
       color: black;
     }
 
+#welcome_alpha .inner {
+      background: #f9fafc !important;
+}
+
+#profile_copy_address {
+  color: #53565c !important;
+}
 
 .lds-ripple-small div {
     color: #53565c !important;
@@ -2873,7 +2886,7 @@ button:hover {
 
    }
 
-   #nodeConnect:hover {
+   #nodeConnect:hover, #modal button:hover {
 
       background-color: rgba(77, 210, 106, 0.75);
       color: white;
@@ -3281,8 +3294,10 @@ right: 15px;
 } */
 
 #recent_board_messages img {
-
-  max-width: 64px;
+  max-width: 28px;
+  height: 28px;
+  position: relative;
+  top: -15px;
 }
 
 /*
@@ -3303,16 +3318,17 @@ right: 15px;
 } */
 
 #welcome_alpha .inner {
-  background: rgba(0,0,0,0.25);
-  border-radius: 25px;
+  background: rgba(0,0,0,0.1);
+  border-radius: 10px;
   padding: 15px;
+  white-space: nowrap;
 }
 
 #welcome_alpha #profile img {
   width: 64px;
 }
 
-#welcome_alpha #profile, #welcome_alpha #message-balance {
+#welcome_alpha #profile, #welcome_alpha #message-balance, #recent_board_messages, #recent_private_messages {
   display: inline-block;
   width: 49%;
   vertical-align: top;
@@ -3376,4 +3392,47 @@ right: 15px;
   87.5% {
     color: 5ff2f0;
   }
+}
+
+#recent_board_messages .board_message_pubkey {
+  height: 5px;
+}
+#recent_board_messages .board_message {
+  list-style: none;
+  max-width: 100%;
+  margin-bottom: 10px;
+  border-radius: 15px;
+  position: relative;
+  white-space: nowrap;
+  font-size: 15px;
+  margin: 0;
+  background: transparent;
+}
+
+#recent_board_messages .board_message p {
+  font-size: 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 90%;
+  text-overflow: ellipsis;
+}
+
+#recent_board_messages .board_avatar_reply {
+
+  top: -10px;
+}
+
+#recent_board_messages .board_message_reply p {
+
+  font-size: 11px;
+  width: 70%;
+  line-height: 0.01em;
+  }
+
+#profile_balance_calculation {
+
+  font-style: italic;
+text-align: right;
+width: 100%;
+font-size: 17px;
 }
