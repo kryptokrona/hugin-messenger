@@ -1617,7 +1617,7 @@ overlay #login img {
 
  }
 
- .board_message_pubkey {vertical-align: 255%;font-family: monospace;max-width: 77px;display: inline-block;overflow: hidden;text-overflow: ellipsis;border-radius: 10px;background: rgba(255,255,255,0.05);padding: 5px;padding-left: 7px;padding-right: 7px;font-size: 7pt;}
+ .board_message_pubkey {vertical-align: 230%;font-family: monospace;max-width: 77px;display: inline-block;overflow: hidden;text-overflow: ellipsis;border-radius: 10px;background: rgba(255,255,255,0.05);padding: 5px;padding-left: 7px;padding-right: 7px;font-size: 7pt; cursor: pointer;}
 
 
  .board_avatar {
@@ -2977,7 +2977,7 @@ li .gradient {
 
 .boards_nickname {
 
-  vertical-align: 26px;
+  vertical-align: 28px;
       font-family: monospace;
       /* max-width: 105px; */
       display: inline-block;
@@ -3220,7 +3220,7 @@ right: 15px;
   position: absolute;
   width: 15%;
   font-family: Montserrat;
-  right: 3%;
+  right: 4%;
   font-weight: 700;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -3294,8 +3294,8 @@ right: 15px;
 } */
 
 #recent_board_messages img {
-  max-width: 28px;
-  height: 28px;
+  max-width: 55px;
+  height: 55px;
   position: relative;
   top: -15px;
 }
@@ -3401,6 +3401,7 @@ right: 15px;
 
 #recent_board_messages .board_message_pubkey {
   height: 5px;
+  vertical-align: top;
 }
 #recent_board_messages .board_message {
   list-style: none;
@@ -3415,11 +3416,12 @@ right: 15px;
 }
 
 #recent_board_messages .board_message p {
-  font-size: 15px;
+  font-size: 17px;
   white-space: nowrap;
   overflow: hidden;
   width: 90%;
   text-overflow: ellipsis;
+  font-weight: 400;
 }
 
 #recent_board_messages .board_avatar_reply {
@@ -3434,10 +3436,22 @@ right: 15px;
   line-height: 0.01em;
   }
 
+  #recent_board_messages .boards_nickname {
+
+  vertical-align: 36px;
+  }
+
+
 #profile_balance_calculation {
 
   font-style: italic;
 text-align: right;
 width: 100%;
 font-size: 17px;
+}
+
+.in_board {
+vertical-align: top;
+font-weight: 400;
+font-family: "montserrat";
 }

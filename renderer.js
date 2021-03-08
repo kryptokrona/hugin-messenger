@@ -444,7 +444,7 @@ $("document").ready(async function(){
                 position: "absolute",
                 width: 500,
                 top: "28%",
-                right: 75
+                right: 77
               })
 
             }

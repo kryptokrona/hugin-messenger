@@ -3844,7 +3844,7 @@ ipcRenderer.on('got-profile', async (event, json) => {
            }
 
 
-        $('#recent_board_messages .inner').append('<li class="board_message this_board_message" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span><span> in ' + to_board + ' </span></div><p class="' + addClasses + '">' + message +'</p><span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
+        $('#recent_board_messages .inner').append('<li class="board_message this_board_message" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span><span class="in_board"> in ' + to_board + ' </span></div><p class="' + addClasses + '">' + message +'</p><span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
        // }
 
        if (hex_json.n) {
