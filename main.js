@@ -438,6 +438,17 @@ function createWindow () {
   })
 
 
+  mainWindow.on('focus', (e) => {
+    console.log('Focused');
+    mainWindow.webContents.send('focused');
+  })
+  mainWindow.on('blur', (e) => {
+    console.log('Blured');
+    mainWindow.webContents.send('blurred');
+
+  });
+
+
       ipcMain.on('show-window', async (event) => {
 
 
@@ -508,7 +519,6 @@ Menu.setApplicationMenu(Menu.buildFromTemplate(template));
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', createWindow)
-
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {

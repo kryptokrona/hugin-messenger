@@ -2627,6 +2627,8 @@ let apply_conversation_clicks = () => {
 
 let check_counter = 0;
 
+let sleepAmount = 1000;
+
 async function get_new_conversations(unconfirmed) {
 
   console.log('Getting new convos..');
@@ -2940,7 +2942,7 @@ all_transactions = all_transactions.filter(function (el) {
 
   }
 
-  await sleep(500);
+  await sleep(sleepAmount);
   if (check_counter % 16) {
     get_new_conversations(false);
   } else {
@@ -3266,6 +3268,16 @@ $('#create_priv_board_button').click(async function(){
 
 });
 
+ipcRenderer.on('blurred', async (event) => {
+  console.log('blur');
+  sleepAmount = 10000;
+})
+
+ipcRenderer.on('focused', async (event) => {
+  console.log('focus');
+  sleepAmount = 1000;
+
+})
 
 ipcRenderer.on('imported-view-subwallet', async (event, address) => {
 
@@ -3427,7 +3439,7 @@ $('#boards_icon').click(function(){
  $("#avatar_contact").hide();
  $("#context_menu").hide();
  $("#boards_picker").empty().toggleClass('hidden');
- $('.board_message').remove();
+ $('#boards .board_message').remove();
 
  print_boards();
 
@@ -3705,6 +3717,7 @@ let global_nonce;
 ipcRenderer.on('got-profile', async (event, json) => {
 
   for (tx in json) {
+    console.log(json[tx]);
     $('#recent_board_messages .default').remove();
     let hash = json[tx].hash;
     console.log();
@@ -3769,51 +3782,70 @@ ipcRenderer.on('got-profile', async (event, json) => {
                );
 
         // Instantiate attachments
-        let youtube_links = '';
-        let image_attached = '';
+        // let youtube_links = '';
+        // let image_attached = '';
 
         // Find links
-        let links_in_message = message.match(geturl);
+        // let links_in_message = message.match(geturl);
 
         // Supported image attachment filetypes
-        let imagetypes = ['.png','.jpg','.gif', '.webm', '.jpeg', '.webp'];
+        // let imagetypes = ['.png','.jpg','.gif', '.webm', '.jpeg', '.webp'];
 
         // Find magnet links
         //let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(message);
 
         //message = message.replace(magnetLinks[0], "");
 
-        if (links_in_message) {
+        // if (links_in_message) {
+        //
+        //   for (let j = 0; j < links_in_message.length; j++) {
+        //
+        //     if (links_in_message[j].match(/youtu/) || links_in_message[j].match(/y2u.be/)) { // Embeds YouTube links
+        //       message = message.replace(links_in_message[j],'');
+        //       embed_code = links_in_message[j].split('/').slice(-1)[0].split('=').slice(-1)[0];
+        //       youtube_links += '<div style="position:relative;height:0;padding-bottom:42.42%"><iframe src="https://www.youtube.com/embed/' + embed_code + '?modestbranding=1" style="position:absolute;width:80%;height:100%;left:10%" width="849" height="360" frameborder="0" allow="autoplay; encrypted-media"></iframe></div>';
+        //     } else if (imagetypes.indexOf(links_in_message[j].substr(-4)) > -1 ) { // Embeds image links
+        //       message = message.replace(links_in_message[j],'');
+        //       image_attached_url = links_in_message[j];
+        //       image_attached = '<img class="attachment" src="' + image_attached_url + '" />';
+        //     } else { // Embeds other links
+        //       message = message.replace(links_in_message[j],'<a target="_new" href="' + links_in_message[j] + '">' + links_in_message[j] + '</a>');
+        //     }
+        //   }
+        // }
 
-          for (let j = 0; j < links_in_message.length; j++) {
 
-            if (links_in_message[j].match(/youtu/) || links_in_message[j].match(/y2u.be/)) { // Embeds YouTube links
-              message = message.replace(links_in_message[j],'');
-              embed_code = links_in_message[j].split('/').slice(-1)[0].split('=').slice(-1)[0];
-              youtube_links += '<div style="position:relative;height:0;padding-bottom:42.42%"><iframe src="https://www.youtube.com/embed/' + embed_code + '?modestbranding=1" style="position:absolute;width:80%;height:100%;left:10%" width="849" height="360" frameborder="0" allow="autoplay; encrypted-media"></iframe></div>';
-            } else if (imagetypes.indexOf(links_in_message[j].substr(-4)) > -1 ) { // Embeds image links
-              message = message.replace(links_in_message[j],'');
-              image_attached_url = links_in_message[j];
-              image_attached = '<img class="attachment" src="' + image_attached_url + '" />';
-            } else { // Embeds other links
-              message = message.replace(links_in_message[j],'<a target="_new" href="' + links_in_message[j] + '">' + links_in_message[j] + '</a>');
-            }
-          }
+
+        // if (message.length < 1 && youtube_links.length > 0) {
+        //   $('#recent_board_messages .inner').append('<li class="board_message this_board_message" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div>'+ image_attached + youtube_links +'<span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
+        //
+        // } else if (image_attached > 0 && youtube_links.length > 0) {
+        //
+        //   $('#recent_board_messages .inner').append('<li class="board_message this_board_message" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
+        //
+        //
+        // } else  {
+        // console.log('bef', json[tx].transfers.get(0));
+        // console.log();
+        let to_board = '';
+        for (let [key, value] of json[tx].transfers.entries()) {
+          to_board = letter_from_spend_key(key);
         }
 
 
 
-        if (message.length < 1 && youtube_links.length > 0) {
-          $('#recent_board_messages .inner').append('<li class="board_message this_board_message" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div>'+ image_attached + youtube_links +'<span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
+        await dictionary.find({ original: to_board }, async function (err,docs){
 
-        } else if (image_attached > 0 && youtube_links.length > 0) {
+   			 console.log(docs)
 
-          $('#recent_board_messages .inner').append('<li class="board_message this_board_message" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
+   				 if (!docs.length == 0) {
+
+   					 to_board = docs[0].translation;
+           }
 
 
-        } else  {
-          $('#recent_board_messages .inner').append('<li class="board_message this_board_message" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
-       }
+        $('#recent_board_messages .inner').append('<li class="board_message this_board_message" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span><span> in ' + to_board + ' </span></div><p class="' + addClasses + '">' + message +'</p><span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
+       // }
 
        if (hex_json.n) {
          $('.this_board_message .board_message_pubkey').before('<span class="boards_nickname">' + escapeHtml(hex_json.n) + '</span>')
@@ -3852,14 +3884,14 @@ ipcRenderer.on('got-profile', async (event, json) => {
              // console.log(verified);
             // let verified_reply = nacl.sign.detached.verify(naclUtil.decodeUTF8(hex_json_reply.m), fromHexString(hex_json_reply.s), fromHexString(hex_json_reply.k));
 
-            if (!verified_reply) {
-              continue;
+            if (verified_reply) {
+
+              let avatar_base64_reply = get_avatar(hex_json_reply.k);
+              let message_reply = hex_json_reply.m;
+
+              $('.this_board_message img').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/svg+xml;base64,' + avatar_base64_reply + '"><p>' + message_reply.substring(0,55)  +'..</p></div>');
+
             }
-            let avatar_base64_reply = get_avatar(hex_json_reply.k);
-            let message_reply = hex_json_reply.m;
-
-            $('.this_board_message img').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/svg+xml;base64,' + avatar_base64_reply + '"><p>' + message_reply.substring(0,55)  +'..</p></div>');
-
 
 
 
@@ -3871,23 +3903,23 @@ ipcRenderer.on('got-profile', async (event, json) => {
 
 
         $('.this_board_message .board_message_pubkey').click(function(e){
-          e.preventDefault();
-
-          let address = $(this).text();
-          $('#payment_rec_addr').val(address);
-          $('#payment_id').val(hash);
-          $('#send_payment').removeClass('hidden');
+          // e.preventDefault();
+          //
+          // let address = $(this).text();
+          // $('#payment_rec_addr').val(address);
+          // $('#payment_id').val(hash);
+          // $('#send_payment').removeClass('hidden');
 
         })
 
        $('.this_board_message').addClass(hash).removeClass('this_board_message').click(function(){
-         reply(hash);
-         $(this).addClass('rgb');
-         $('#boards').scrollTop('0');
+         // reply(hash);
+         // $(this).addClass('rgb');
+         // $('#boards').scrollTop('0');
        });
 
 
-
+     });
      } catch (err) {
        console.log('Error:', err)
        continue;
