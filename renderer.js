@@ -471,11 +471,13 @@ $("document").ready(async function(){
 
 
                  $('#login_status span').text(rmt.getGlobal('node') + ' ✅');
+                 $('#login_button').prop('disabled',false);
 
                }).catch(err => {
                  console.log(err);
                  $('#login_swap_node').show();
                  $('#login_status span').text(rmt.getGlobal('node') + ' ❌');
+                 $('#login_button').prop('disabled',true);
 
 
 
@@ -508,8 +510,9 @@ $("document").ready(async function(){
                      $('#login_swap_node_modal').show();
 
                      $("#login_swap_node_modal #nodeConnect").click(function(){
+                       $('#login_button').prop('disabled',true);
                        let node = $('#login_swap_node_modal #nodeInput').val();
-                       ipcRenderer.send('change-node', node, false);
+                       ipcRenderer.send('change-node-offline', node);
                        $('#login_status span').text(node);
                        $('#login_swap_node_modal').hide();
 
@@ -525,6 +528,7 @@ $("document").ready(async function(){
 
 
                             $('#login_status span').text(node + ' ✅');
+                            $('#login_button').prop('disabled',false);
                             $('#login_swap_node_modal').hide();
 
                           }).catch(err => {

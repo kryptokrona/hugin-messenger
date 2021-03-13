@@ -26,19 +26,6 @@ global.appPath = appRootDir;
 
 global.downloadDir = app.getPath('downloads');
 
-var AutoLaunch = require('auto-launch');
-var autoLauncher = new AutoLaunch({
-    name: "Hugin Messenger",
-    isHidden: true
-});
-
-// Checking if autoLaunch is enabled, if not then enabling it.
-autoLauncher.isEnabled().then(function(isEnabled) {
-  if (isEnabled) return;
-   autoLauncher.enable();
-}).catch(function (err) {
-  throw err;
-});
 
 function getTrayIcon() {
   let isDark = nativeTheme.shouldUseDarkColors;
@@ -361,6 +348,18 @@ ipcMain.on('kill-wallet', async (event) => {
   }
 
 })
+
+ipcMain.on('change-node-offline', async (event, node, kill=true) => {
+
+  global.node = node;
+
+  db.update({setting : 'walletData'}, { $set: {node : node} } , {} , function (err, numReplaced){
+
+    console.log(numReplaced);
+
+  })
+
+});
 
 ipcMain.on('change-node', async (event, node, kill=true) => {
   console.log(node) // prints "ping"
@@ -698,6 +697,20 @@ let startWallet = async () => {
    } else {
      console.log('Running in production');
      autoUpdater.checkForUpdates();
+
+     var AutoLaunch = require('auto-launch');
+     var autoLauncher = new AutoLaunch({
+         name: "Hugin Messenger",
+         isHidden: true
+     });
+
+     // Checking if autoLaunch is enabled, if not then enabling it.
+     autoLauncher.isEnabled().then(function(isEnabled) {
+       if (isEnabled) return;
+        autoLauncher.enable();
+     }).catch(function (err) {
+       throw err;
+     });
    }
  });
 
