@@ -1385,7 +1385,7 @@ let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json
           // create a base64 encoded SVG
           avatar_base64 = get_avatar(sendAddr);
 
-          $('#welcome_alpha').remove();
+          $('#welcome_alpha').addClass('hidden');
 
           payload_json.msg = parseCall(payload_json.msg);
           // if (!silent) {
@@ -1973,7 +1973,8 @@ function printMessages(transactions, address) {
 
               sortedMessages = sortMessages(newMessages);
 
-              $('#messages').empty();
+              $('#messages .received_message, #messages .sent_message').remove();
+              $('#welcome_alpha').addClass('hidden');
 
               for (let i = 0; i < sortedMessages.length; i++) {
                   let hash = '';
@@ -3054,7 +3055,8 @@ async function print_conversation(conversation) {
 
   $('#recipient_form').val(conversation);
 
-  $("#messages").empty();
+  $('#messages .received_message, #messages .sent_message').remove();
+  $('#welcome_alpha').addClass('hidden');
 
   let messages = await find_messages({conversation: conversation}, 0, 100);
 
@@ -3207,7 +3209,8 @@ $("document").ready(function(){
     $('#currentchat_header_wrapper').addClass('toggled_addr');
     $('#currentchat_pubkey').hide();
     $('.checkmark').hide();
-    $('#messages').empty();
+    $('#messages .received_message, #messages .sent_message').remove();
+    $('#welcome_alpha').addClass('hidden');
     $('#boards').addClass('hidden');
     $('#messages_page').removeClass('hidden');
     $('#recipient_form').val('').focus();
