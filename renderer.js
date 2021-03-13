@@ -713,7 +713,7 @@ $("document").ready(async function(){
 $("#boards_picker").empty().addClass('hidden');
 $("#settings_page").fadeOut();
 $(".setting_page").fadeOut();
-if (!$('#boards').hasClass('hidden') || $('#flip-box-inner').hasClass('flip')) {
+if ($('#flip-box-inner').hasClass('flip')) {
 myFunction();
 }
 
