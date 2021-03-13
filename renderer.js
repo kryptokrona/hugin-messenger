@@ -706,11 +706,21 @@ $("document").ready(async function(){
 
   $('#avatar').click(function(){
 
-  $('header').toggleClass('toggled');
+  // $('header').toggleClass('toggled');
+  $('#messages .received_message, #messages .sent_message').remove();
+  $('#welcome_alpha').removeClass('hidden');
+  $("#new_board").addClass('hidden');
+$("#boards_picker").empty().addClass('hidden');
+$("#settings_page").fadeOut();
+$(".setting_page").fadeOut();
+if (!$('#boards').hasClass('hidden') || $('#flip-box-inner').hasClass('flip')) {
+myFunction();
+}
 
-  ipcRenderer.on('got-nodes', (event, json) => {
-    console.log(json) // prints "pong"
-  })
+$('#boards').addClass('hidden');
+$("#messages_page").removeClass('hidden');
+  $('#messages_pane').scrollTop(0);
+
 
 });
 
