@@ -3616,6 +3616,8 @@ let print_board_message = async (pubkey, message, timestamp, fetching_board, nic
 
 }
 
+let last_board_message = '';
+
 ipcRenderer.on('new-message', async (event, transaction) => {
 
 	console.log('new message triggered');
@@ -3690,7 +3692,10 @@ ipcRenderer.on('new-message', async (event, transaction) => {
 				 			name = 'Anonymous';
 				 		}
 
-				 		if (hex_json.k != currentAddr) {
+				 		if (hex_json.k != currentAddr && last_block_checked != transaction.hash) {
+
+              last_block_checked = transaction.hash;
+
 				      notifier.notify({
 				        title: name + " in " + to_board,
 				        message: message,
