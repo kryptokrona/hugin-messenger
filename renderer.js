@@ -82,6 +82,10 @@ const closeApp = document.getElementById('close-app');
 closeApp.addEventListener('click', () => {
     ipcRenderer.send('close-me')
 });
+const closeAppLogin = document.getElementById('close-app-login');
+closeAppLogin.addEventListener('click', () => {
+    ipcRenderer.send('close-me')
+});
 let walletd;
 
 // Open links in browser
