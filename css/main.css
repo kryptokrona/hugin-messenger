@@ -1939,6 +1939,11 @@ overlay #login img {
 
   }
 
+  #welcome_alpha .fa-plus {
+
+  color: black;
+  }
+
   #login_swap_node_modal #nodeInput {
     background: white !important;
   }
@@ -3490,4 +3495,12 @@ font-family: "montserrat";
 
   text-align: center;
   padding-top: 30px;
+}
+
+#welcome_alpha .fa-plus {
+position: relative;
+top: 10;
+right: 5;
+font-size: 20px;
+color: white;
 }
