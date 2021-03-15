@@ -3221,6 +3221,8 @@ $("document").ready(function(){
     $('#currentchat_header_wrapper').addClass('toggled_addr');
     $('#currentchat_pubkey').hide();
     $('.checkmark').hide();
+    $("#new_board").addClass('hidden');
+    $("#boards_picker").empty().addClass('hidden');
     $('#messages .received_message, #messages .sent_message').remove();
     $('#welcome_alpha').addClass('hidden');
     $('#boards').addClass('hidden');

@@ -429,7 +429,7 @@ margin: 0;
 .description {
   padding: 0;
   margin: 0;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   font-family: "montserrat";
   color: rgba(255,255,255,1);
@@ -1042,6 +1042,7 @@ h1, h2, h3, h4 {
 
 .txAmnt {
   font-weight: 700;
+  font-family: "montserrat";
 }
 
 .sent .txAmnt {
@@ -1054,13 +1055,13 @@ h1, h2, h3, h4 {
 
 .txAddr {
     opacity: 0.8;
-    font-size: 9.1pt;
+    font-size: 9.4pt;
 }
 
 .txTime {
     float: right;
     font-size: 9pt;
-    font-weight: 700;
+    font-weight: 400;
 }
 
 #history_list li {
@@ -1169,7 +1170,7 @@ h1, h2, h3, h4 {
     vertical-align: top;
     background: #3F3F3F !important;
     border-radius: 5px !important;
-    color: rgba(255,255,255,0.6) !important;
+    color: rgba(255,255,255,0.8) !important;
     display: inline-block !important;
     border: none;
     margin-bottom: 25px;
@@ -1842,7 +1843,19 @@ overlay #login img {
   content: " ";
 }
 
-.contact_address { display: block; white-space: nowrap; width: 74%; overflow: hidden; text-overflow: ellipsis; font-size: 11px; margin-top: -35px; font-weight: 400; margin-left: 5px; font-family: "Roboto"; color: rgba(255,255,255,0.8);}
+.contact_address {
+    display: block;
+    white-space: nowrap;
+    width: 74%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 14px;
+    margin-top: -35px;
+    font-weight: 700;
+    margin-left: 5px;
+    font-family: "montserrat";
+    color: rgba(255,255,255,0.8);
+  }
 .contact_avatar { border-radius: 50%; position: relative; left: -43px; top: 2px; }
 .listed_message { display: block; width: 90%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 11px; opacity: 0.7; margin-top: -10px; margin-left: 5px; }
 
@@ -3209,17 +3222,18 @@ right: 15px;
   text-align: center;
   height: 44px;
   color: white;
-  font-size: 17px;
+  font-size: 22px;
   padding-left: 10px;
-  padding: 10px;
+  padding: 15px;
   border-radius: 5px;
   position: absolute;
-  width: 15%;
+  width: 14%;
   font-family: Montserrat;
   right: 4%;
   font-weight: 700;
   text-overflow: ellipsis;
   overflow: hidden;
+  padding-bottom: 25px;
 }
 /*
 #profile img {
@@ -3337,10 +3351,6 @@ right: 15px;
   height: 1em;
 }
 
-#profile_copy_address {
-  vertical-align: 25px;
-  margin-left: 10px;
-}
 
 
 #profile_balance::before {
@@ -3448,7 +3458,9 @@ right: 15px;
   font-size: 20px;
   display: block;
   text-align: center;
-  margin-top: 5%;
+  margin-top: 7%;
+  font-family: "montserrat";
+  font-weight: 400;
 }
 
 #profile input {
@@ -3475,7 +3487,7 @@ right: 15px;
 #profile_copy_address {
 
   vertical-align: 98%;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .in_board {
@@ -3495,12 +3507,4 @@ font-family: "montserrat";
 
   text-align: center;
   padding-top: 30px;
-}
-
-#welcome_alpha .fa-plus {
-position: relative;
-top: 10;
-right: 5;
-font-size: 20px;
-color: white;
 }
