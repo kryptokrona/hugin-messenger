@@ -3320,6 +3320,7 @@ right: 15px;
 
 #recent_board_messages .inner {
   background: transparent !important;
+  padding: 0px;
   width: 100%;
 }
 
@@ -3333,7 +3334,7 @@ right: 15px;
 
 #profile_copy_address {
   vertical-align: 25px;
-  padding-left: 20px;
+  margin-left: 10px;
 }
 
 
@@ -3391,7 +3392,7 @@ right: 15px;
 }
 #recent_board_messages .board_message {
   list-style: none;
-  max-width: 90%;
+  max-width: 95%;
   margin-bottom: 10px;
   border-radius: 15px;
   position: relative;
@@ -3400,6 +3401,7 @@ right: 15px;
   margin: 10px;
   background: rgba(0,0,0,0.1);
   padding: 15px;
+  margin-left: 5px;
 }
 
 #recent_board_messages .board_message p {
@@ -3486,5 +3488,6 @@ font-family: "montserrat";
 
 #message-balance .inner {
 
+  text-align: center;
   padding-top: 30px;
 }

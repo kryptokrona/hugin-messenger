@@ -3192,10 +3192,6 @@ $("document").ready(function(){
     }
     $('.boards_nickname_form').change(function(){
       let nickname = $(this).val();
-      console.log(nickname);
-      console.log(nickname);
-      console.log(nickname);
-      console.log(nickname);
       misc.update({}, {nickname: nickname});
 
 
