@@ -405,7 +405,7 @@ header > * {
 
 #headerText {
   display: inline-block;
-  width: 350px;
+  width: 330px;
   vertical-align: top;
   font-size: 10pt;
   border-radius: 5px;
@@ -417,12 +417,7 @@ padding: 0;
 margin: 0;
 }
 #balance {
-  padding: 0;
-    margin: 0;
-    margin-top: -29px;
-    position: absolute;
-    top: 32px;
-    right: 21px;
+
 }
 #xkr-logo {
   height: 48px;
@@ -1164,7 +1159,7 @@ h1, h2, h3, h4 {
 }
 
 
-#boards_nickname_form {
+.boards_nickname_form {
     font-size: 12pt;
     height: 64px !important;
     border-radius: 0 !important;
@@ -1489,8 +1484,6 @@ overlay #login img {
 #currentAddr {
 
   width: calc(100% - 96px);
-  padding: 10px;
-  padding-top: 10px;
   border-radius: 4px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1507,15 +1500,13 @@ overlay #login img {
 
 #balance-box {
   font-family: 'Major Mono Display';
-  font-size: 29pt;
+  font-size: 27pt;
   letter-spacing: -3px;
-  background: rgba(0,0,0,0.4);
   border-radius: 5px;
   padding-left: 20px;
   padding-right: 20px;
   width: fit-content;
   color: rgba(255,255,255,0.9);
-  box-shadow: inset 3px 3px 5px rgba(0,0,0,0.5);
   height: 72px;
 
 }
@@ -2040,7 +2031,7 @@ header  {
     color: black;
   }
 
-  #boards_nickname_form {
+  .boards_nickname_form {
 
     background: rgba(0,0,0,0.1) !important;
     color:black !important;
@@ -3257,14 +3248,6 @@ right: 15px;
   }
 
 
-#profile_balance {
-
-  font-size: 19px;
-  padding: 10px;
-  font-family: "Major Mono Display";
-  font-size: 1.5vw;
-
-}
 
 #profile {
   display: inline-block;
@@ -3320,9 +3303,9 @@ right: 15px;
 #welcome_alpha .inner {
   background: rgba(0,0,0,0.1);
   border-radius: 10px;
-  padding: 15px;
+  padding: 20px;
   white-space: nowrap;
-  min-height: 107px;
+  min-height: 137px;
 }
 
 #welcome_alpha #profile img {
@@ -3335,7 +3318,8 @@ right: 15px;
   vertical-align: top;
 }
 
-#recent_board_messages {
+#recent_board_messages .inner {
+  background: transparent !important;
   width: 100%;
 }
 
@@ -3349,13 +3333,15 @@ right: 15px;
 
 #profile_copy_address {
   vertical-align: 25px;
+  padding-left: 20px;
 }
+
 
 #profile_balance::before {
     font-family: 'XKR';
     content: "\e900";
     font-weight: lighter;
-    font-size: 78px;
+    font-size: 44px;
     position: relative;
     /* margin-top: -15px; */
     color: rgba(0, 0, 0, 0.7);
@@ -3405,14 +3391,15 @@ right: 15px;
 }
 #recent_board_messages .board_message {
   list-style: none;
-  max-width: 100%;
+  max-width: 90%;
   margin-bottom: 10px;
   border-radius: 15px;
   position: relative;
   white-space: nowrap;
   font-size: 15px;
-  margin: 0;
-  background: transparent;
+  margin: 10px;
+  background: rgba(0,0,0,0.1);
+  padding: 15px;
 }
 
 #recent_board_messages .board_message p {
@@ -3441,17 +3428,63 @@ right: 15px;
   vertical-align: 36px;
   }
 
+  #recent_board_messages .board_message_user {
+
+    padding-top: 15px;
+  }
+
 
 #profile_balance_calculation {
 
   font-style: italic;
-text-align: right;
-width: 100%;
-font-size: 17px;
+  width: 100%;
+  font-size: 20px;
+  display: block;
+  text-align: center;
+  margin-top: 5%;
+}
+
+#profile input {
+
+  font-size: 11pt;
+    height: 58px !important;
+    padding: 0 !important;
+    padding-left: 10px !important;
+    line-height: 100%;
+    vertical-align: top;
+    border-radius: 5px !important;
+    color: rgba(255,255,255,0.8) !important;
+    display: inline-block !important;
+    border: none;
+    margin-right: 1.5%;
+    width: 75%;
+    font-family: 'Montserrat';
+    font-weight: 700;
+    margin-bottom: 0px;
+    background-color: rgba(0,0,0,0.1) !important;
+}
+
+
+#profile_copy_address {
+
+  vertical-align: 98%;
+  font-size: 12px;
 }
 
 .in_board {
 vertical-align: top;
 font-weight: 400;
 font-family: "montserrat";
+}
+
+
+#profile_balance {
+
+  padding: 10px;
+  font-family: "Major Mono Display";
+}
+
+#message-balance .inner {
+
+  padding-top: 30px;
 }

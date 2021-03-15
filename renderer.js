@@ -36,7 +36,7 @@ var currentAddr = "";
 var allAddresses = [];
 $.fn.resizeText = function (options) {
 
-    var settings = $.extend({ maxfont: 40, minfont: 4 }, options);
+    var settings = $.extend({ maxfont: 30, minfont: 4 }, options);
 
     var style = $('<style>').html('.nodelays ' +
     '{ ' +
@@ -209,7 +209,7 @@ async function getHistory() {
 
       // Iterate through transactions
       var txsLength = transactions.length;
-      for (var i = 0; i < txsLength; i++) {
+      for (var i = 0; i < 15; i++) {
           var thisAddr = transactions[i].transactions[0].transfers[0].address;
           var d = new Date(transactions[i].transactions[0].timestamp * 1000);
           var liClass = "unknown";

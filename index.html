@@ -90,20 +90,7 @@
 
     <header>
 
-      <div id="headerText" class="inline">
-        <div id="currentAddr" class="inline">
 
-
-          <span class="description">Payment address</span>&nbsp;
-          <span id="currentAddrSpan">Loading..</span>
-        <br>
-
-          <span class="description">Message key</span>&nbsp;
-          <span id="currentPubKey">Loading..</span>
-
-        </div>
-        <button class="inline" id="copyBoth">COPY</button>
-      </div>
 
       <i class="fa fa-phone"
       style="
@@ -123,16 +110,8 @@
       "
       ></i>
 
-      <div id="balance" class="inline">
-        <span class="description" style="padding-left: 25px;">Balance</span><br>
-        <div id="balance-box">
-          <span id="balancetext">Loading..</span>
-          <span id="lockedBalanceText" style="font-size: 50%"></span>
-          <span id='balancelogo'></span>
-        </div>
-      </div>
 
-      </div>
+
     </header>
 
 <div id="left_panel">
@@ -199,7 +178,7 @@
 
       <div id="boards" class="hidden">
 
-            <input id="boards_nickname_form" type="text" placeholder="Anonymous">
+            <input class="boards_nickname_form" type="text" placeholder="Anonymous">
           </input>
           <span id="replyto" class="hidden rgb">Replying to anonymous</span><span class="hidden" id="replyto_exit">+</span>
         <input id="boards_message_form" type="text" placeholder="Message">
@@ -406,16 +385,27 @@
         <div id="profile">
           <h2>Profile</h2>
           <div class="inner">
-            <img id="profile_avatar" /> <button id="profile_copy_address">Copy both</button>
+            <img id="profile_avatar" /><input class="boards_nickname_form" type="text" placeholder="Anonymous">
+          </input>
             <table style="width:100%">
-              <tr>
-                <td><b>Address</b></td>
-                <td id="profile_address">Loading..</td>
-              </tr>
-              <tr>
-                <td><b>Msg key</b></td>
-                <td id="profile_message_key">Loading..</td>
-              </tr>
+              <br>
+                <div id="headerText" class="inline">
+                  <div id="currentAddr" class="inline">
+
+
+
+                    <span class="description">Payment address</span>&nbsp;
+                    <br>
+                    <span id="currentAddrSpan">Loading..</span>
+                  <br>
+
+                    <span class="description">Message key</span>&nbsp;
+                    <br>
+                    <span id="currentPubKey">Loading..</span>
+
+                  </div>
+                  <button id="profile_copy_address">Copy both</button>
+                </div>
             </table>
 
           </div>
@@ -425,6 +415,8 @@
                 <h2>Balance</h2>
                 <div class="inner">
             <span id="profile_balance"></span>
+          </br>
+          </br>
           </br>
             <span id="profile_balance_calculation"></span>
           </div>

@@ -1636,8 +1636,8 @@ async function sendBoardMessage(message) {
       // Convert message data to json
       payload_json = {"m":message_to_send, "k":currentAddr, "s": signature};
 
-      if ($('#boards_nickname_form').val().length) {
-        payload_json.n = $('#boards_nickname_form').val();
+      if ($('').val().length) {
+        payload_json.n = $('.boards_nickname_form').val();
 
         misc.update({}, {nickname: payload_json.n});
 
@@ -3186,6 +3186,22 @@ function avatarLoop(i, element, faces) {
 $("document").ready(function(){
 
 	changing_faces('#login_avatar');
+  misc.find({}, function (err,docs){
+    if (docs[0]) {
+      $('.boards_nickname_form').val(docs[0].nickname);
+    }
+    $('.boards_nickname_form').change(function(){
+      let nickname = $(this).val();
+      console.log(nickname);
+      console.log(nickname);
+      console.log(nickname);
+      console.log(nickname);
+      misc.update({}, {nickname: nickname});
+
+
+    });
+  });
+
 
 	$('#login_button').click(function(){
 
@@ -3431,7 +3447,7 @@ $('#join_board_button').click(function(){});
 $('#boards_icon').click(function(){
   misc.find({}, function (err,docs){
     if (docs[0]) {
-      $('#boards_nickname_form').val(docs[0].nickname);
+      $('.boards_nickname_form').val(docs[0].nickname);
     }
 
   });
