@@ -763,6 +763,11 @@ $("#modal > i").click(function(){
 $("#modal").toggleClass("hidden");
 });
 
+$('.closed').click(function(){
+$("#welcome_alpha").addClass("hidden");
+
+});
+
 $("#status_icon").click(function(){
   myFunction(); $('#settings_page').fadeIn();
   $("#connectionSettings").click();
