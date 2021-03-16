@@ -718,6 +718,8 @@ $("document").ready(async function(){
   $('#currentchat_header_wrapper').removeClass('toggled_addr');
 $("#boards_picker").empty().addClass('hidden');
 $("#settings_page").fadeOut();
+$("#recipient_form").val('');
+$("#recipient_pubkey_form").val('');
 $(".setting_page").fadeOut();
 if ($('#flip-box-inner').hasClass('flip')) {
 myFunction();
