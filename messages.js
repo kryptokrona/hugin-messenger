@@ -3212,13 +3212,10 @@ $("document").ready(function(){
 
 	});
 
-  $('#copyBoth').click(function(){
+  $('#profile_copy_address').click(function(){
     copy($('#currentAddrSpan').text() + $('#currentPubKey').text() );
   });
 
-  $('#profile_copy_address').click(function(){
-    $('#copyBoth').click();
-  });
 
   lastMessage =  Date.now();
 
