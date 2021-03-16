@@ -3508,3 +3508,8 @@ font-family: "montserrat";
   text-align: center;
   padding-top: 30px;
 }
+
+#message-balance span {
+    font-size: 18px;
+    display: block;
+}
