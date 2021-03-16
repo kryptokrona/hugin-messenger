@@ -1648,7 +1648,7 @@ async function sendBoardMessage(message) {
         $('#replyto_exit').click();
       }
 
-      print_board_message(payload_json.k, payload_json.m, Date.now()/1000, $('.current').attr('id'), payload_json.n, payload_json.r);
+      print_board_message(payload_json.k, payload_json.m, Date.now()/1000, $('.current').attr('id'), payload_json.n, payload_json.r, false);
 
 
       //payload_json_decoded = naclUtil.decodeUTF8(JSON.stringify(payload_json));
@@ -3527,7 +3527,7 @@ let reply = (hash) => {
 
 }
 
-let print_board_message = async (pubkey, message, timestamp, fetching_board, nickname=false, reply=false) => {
+let print_board_message = async (pubkey, message, timestamp, fetching_board, nickname=false, reply=false, append=true) => {
 
   let avatar_base64 = get_avatar(pubkey);
 
@@ -3583,7 +3583,7 @@ let print_board_message = async (pubkey, message, timestamp, fetching_board, nic
 
 
 
-
+   if (append) {
    if (message.length < 1 && youtube_links.length > 0) {
      $('#boards_messages').append('<li class="board_message ' + timestamp*1000 + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + pubkey  + '</span></div>'+ image_attached + youtube_links +'<span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
 
@@ -3595,6 +3595,20 @@ let print_board_message = async (pubkey, message, timestamp, fetching_board, nic
    } else  {
      $('#boards_messages').append('<li class="board_message ' + timestamp*1000 + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + pubkey  + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
   }
+
+} else {
+  if (message.length < 1 && youtube_links.length > 0) {
+    $('#boards_messages').prepend('<li class="board_message ' + timestamp*1000 + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + pubkey  + '</span></div>'+ image_attached + youtube_links +'<span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
+
+  } else if (image_attached > 0 && youtube_links.length > 0) {
+
+    $('#boards_messages').prepend('<li class="board_message ' + timestamp*1000 + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + pubkey  + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
+
+
+  } else  {
+    $('#boards_messages').prepend('<li class="board_message ' + timestamp*1000 + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + pubkey  + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
+ }
+}
 
   if (nickname) {
     $('.' + timestamp*1000 + ' .board_message_pubkey').before('<span class="boards_nickname">' + nickname + '</span>')
