@@ -2639,7 +2639,12 @@ async function get_new_conversations(unconfirmed) {
   let unconfirmed_transactions = [];
   let confirmed_transactions = [];
 
+try {
   block_height = await get_block_height();
+} catch (err){
+sleep(1000);
+get_new_conversations(unconfirmed);
+}
   let check_block = last_block_checked;
 
   if (!unconfirmed) {

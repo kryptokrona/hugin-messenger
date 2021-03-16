@@ -1522,7 +1522,7 @@ overlay #login img {
 #messages_pane img {
   width: 100%;
 }
-#close-app-login, #close-app {
+#close-app {
     border-radius: 50%;
     width: 20px;
     height: 20px;
@@ -1538,7 +1538,7 @@ overlay #login img {
 
 }
 
-#close-app-login:hover, #close-app:hover {
+#close-app:hover {
 
    background: #FF7773;
 }
@@ -2141,12 +2141,12 @@ header  {
 
  }
 
- #close-app-login:hover, #close-app:hover {
+ #close-app:hover {
 
     background: #FF7773;
  }
 
-  #close-app-login, #close-app {
+  #close-app {
 
     box-shadow: none;
 
@@ -2620,7 +2620,7 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
   display: none;
   transition: all 0.5s;
   position: absolute;
-  border-bottom-left-radius: 10px;
+  border-bottom-left-radius: 0px;
   border-bottom-right-radius: 10px;
   color: black;
     width: 92%;
@@ -3220,9 +3220,9 @@ right: 15px;
 #board_title {
 
   text-align: center;
-  height: 44px;
+  height: 38px;
   color: white;
-  font-size: 22px;
+  font-size: 18px;
   padding-left: 10px;
   padding: 15px;
   border-radius: 5px;
