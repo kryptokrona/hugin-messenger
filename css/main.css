@@ -1326,7 +1326,7 @@ overlay .wrapper {
 }
 
 overlay #welcome {
-  margin-top: 177px;
+  margin-top: 200px;
 }
 
 overlay #hugin-background img {
@@ -1522,7 +1522,7 @@ overlay #login img {
 #messages_pane img {
   width: 100%;
 }
-#close-app {
+#close-app, #close-app-login {
     border-radius: 50%;
     width: 20px;
     height: 20px;
@@ -1538,7 +1538,7 @@ overlay #login img {
 
 }
 
-#close-app:hover {
+#close-app:hover, #close-app-login:hover {
 
    background: #FF7773;
 }
@@ -2146,12 +2146,12 @@ header  {
 
  }
 
- #close-app:hover {
+ #close-app:hover, #close-app-login:hover {
 
     background: #FF7773;
  }
 
-  #close-app {
+  #close-app, #close-app-login {
 
     box-shadow: none;
 
