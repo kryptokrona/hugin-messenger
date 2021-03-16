@@ -1636,7 +1636,7 @@ async function sendBoardMessage(message) {
       // Convert message data to json
       payload_json = {"m":message_to_send, "k":currentAddr, "s": signature};
 
-      if ($('').val().length) {
+      if ($('.boards_nickname_form').val().length) {
         payload_json.n = $('.boards_nickname_form').val();
 
         misc.update({}, {nickname: payload_json.n});
