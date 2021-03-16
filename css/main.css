@@ -3320,7 +3320,7 @@ right: 15px;
   border-radius: 10px;
   padding: 20px;
   white-space: nowrap;
-  min-height: 137px;
+  min-height: 144px;
 }
 
 #welcome_alpha #profile img {
@@ -3454,7 +3454,6 @@ right: 15px;
   font-size: 20px;
   display: block;
   text-align: center;
-  margin-top: 7%;
   font-family: "montserrat";
   font-weight: 400;
 }
@@ -3502,7 +3501,12 @@ font-family: "montserrat";
 #message-balance .inner {
 
   text-align: center;
-  padding-top: 30px;
+}
+
+#profile_balance span {
+    font-size: 18px;
+    display: block;
+    opacity: 0.5;
 }
 
 #boards_messages {

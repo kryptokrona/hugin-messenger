@@ -260,11 +260,12 @@ function updateBalance(address) {
     $('#profile_balance').text(thisBalance).resizeText();
 
     $('#profile_balance_calculation').text('or ' + parseInt(thisBalance/0.00011) + " messages");
-
+    console.log(thisLockedAmount);
     if (thisLockedAmount > 0) {
-      $("#lockedBalanceText").text(" (+" + thisLockedAmount + ")");
+      $("#profile_balance span").remove();
+      $('#profile_balance').append('<span>+ ' + thisLockedAmount + '</span>');
     } else {
-      $("#lockedBalanceText").text("");
+      $("#profile_balance span").remove();
     }
 
     })
