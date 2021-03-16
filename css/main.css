@@ -1326,7 +1326,7 @@ overlay .wrapper {
 }
 
 overlay #welcome {
-  margin-top: 200px;
+  margin-top: 177px;
 }
 
 overlay #hugin-background img {
@@ -1859,22 +1859,22 @@ overlay #login img {
 .contact_avatar { border-radius: 50%; position: relative; left: -43px; top: 2px; }
 .listed_message { display: block; width: 90%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 11px; opacity: 0.7; margin-top: -10px; margin-left: 5px; }
 
-#messages_contacts {
+#messages_contacts, #boards_messages {
   --scrollbarBG: transparent;
-  --thumbBG: rgba(0,0,0,0.1);
+  --thumbBG: rgba(0,0,0,0.2);
 
 }
-#messages_contacts::-webkit-scrollbar {
+#messages_contacts::-webkit-scrollbar, #boards_messages::-webkit-scrollbar {
   width: 8px;
 }
-#messages_contacts  {
+#messages_contacts, #boards_messages {
   scrollbar-width: thin;
   scrollbar-color: var(--thumbBG) var(--scrollbarBG);
 }
-#messages_contacts::-webkit-scrollbar-track {
+#messages_contacts::-webkit-scrollbar-track, #boards_messages::-webkit-scrollbar-track {
   background: var(--scrollbarBG);
 }
-#messages_contacts::-webkit-scrollbar-thumb {
+#messages_contacts::-webkit-scrollbar-thumb, #boards_messages::-webkit-scrollbar-thumb {
   background-color: var(--thumbBG) ;
   border-radius: 3px;
   border: 3px solid var(--scrollbarBG);
@@ -2010,6 +2010,11 @@ header  {
 
    background: white !important;
 
+ }
+
+#profile input {
+
+  color: #53565c;
  }
 
  #boards_message_form {
@@ -2372,15 +2377,6 @@ color: white;
 #message_form {
 
   color: #53565c !important;
-}
-
-
-#headerText {
- margin-left: 25px;
- background: white;
- border: none;
- border-color: rgba(0,0,0,0.1)
-
 }
 
 
@@ -3472,7 +3468,7 @@ right: 15px;
     line-height: 100%;
     vertical-align: top;
     border-radius: 5px !important;
-    color: rgba(255,255,255,0.8) !important;
+    color: rgba(255,255,255,0.8);
     display: inline-block !important;
     border: none;
     margin-right: 1.5%;
@@ -3507,4 +3503,15 @@ font-family: "montserrat";
 
   text-align: center;
   padding-top: 30px;
+}
+
+#boards_messages {
+  width: 100%;
+  padding: 0;
+  padding-top: 0;
+  margin: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 85%;
+  transition: 1s padding-top;
 }

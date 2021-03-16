@@ -714,7 +714,7 @@ $("document").ready(async function(){
   $('#messages .received_message, #messages .sent_message').remove();
   $('#welcome_alpha').removeClass('hidden');
   $("#new_board").addClass('hidden');
-  $('#currentchat_header_wrapper').toggleClass('toggled_addr');
+  $('#currentchat_header_wrapper').removeClass('toggled_addr');
 $("#boards_picker").empty().addClass('hidden');
 $("#settings_page").fadeOut();
 $(".setting_page").fadeOut();
