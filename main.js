@@ -477,7 +477,11 @@ function createWindow () {
          } catch (err) {
            console.log(err);
          }
+            try {
            wallet.kill('SIGINT');
+         } catch (err) {
+
+           }
            app.exit(0);
        } }
       ])
