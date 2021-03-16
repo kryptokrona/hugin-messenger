@@ -2622,6 +2622,7 @@ let apply_conversation_clicks = () => {
 	    $(this).removeClass('unread_message');
 	    print_conversation($(this).attr('address'));
 			$('#settings_page').fadeOut();
+      $('#currentchat_footer').removeClass('hidden');
 	});
 
 }
@@ -3228,6 +3229,7 @@ $("document").ready(function(){
     $('#messages .received_message, #messages .sent_message').remove();
     $('#welcome_alpha').addClass('hidden');
     $('#boards').addClass('hidden');
+    $('#currentchat_footer').removeClass('hidden');
     $('#messages_page').removeClass('hidden');
     $('#recipient_form').val('').focus();
     $('#settings_page').hide();

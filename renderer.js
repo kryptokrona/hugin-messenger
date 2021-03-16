@@ -726,7 +726,7 @@ myFunction();
 $('#boards').addClass('hidden');
 $("#messages_page").removeClass('hidden');
   $('#messages_pane').scrollTop(0);
-
+$('#currentchat_footer').addClass('hidden');
 
 });
 
