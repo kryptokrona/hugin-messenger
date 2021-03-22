@@ -761,7 +761,7 @@ var awaiting_callback = false;
 
  let handleMagnetLink = (magnetLinks, element, calls=false, sender=false) => {
 
-        $('#' + element).find('p').addClass('gradient').text($('#' + element).find('p').text().replace(magnetLinks[0], magnetLinks[0].split('=')[2]));
+        $('#' + element).find('p').addClass('rgb').text($('#' + element).find('p').text().replace(magnetLinks[0], magnetLinks[0].split('=')[2]));
         let magnet_class = magnetLinks[0].split("&")[0].split(":")[3];
         $('#' + element).addClass(magnet_class);
         $('#' + element).find('p').append('<button class="download-button">Download</button>').click(function(){ downloadMagnet(magnetLinks[0], element); $(this).unbind('click');  $(':focus').blur(); });
@@ -3215,6 +3215,14 @@ $("document").ready(function(){
 
   $('#profile_copy_address').click(function(){
     copy($('#currentAddrSpan').text() + $('#currentPubKey').text() );
+  });
+
+  $('#currentAddrSpan').click(function(){
+    copy($('#currentAddrSpan').text());
+  });
+
+  $('#currentPubKey').click(function(){
+    copy($('#currentPubKey').text());
   });
 
 

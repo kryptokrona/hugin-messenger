@@ -1454,9 +1454,6 @@ overlay #login img {
   }
 }
 
-.
-
-
 #currentAddrSpan, #currentPubKey {
   font-family: monospace;
   font-weight: 200;
@@ -1465,17 +1462,7 @@ overlay #login img {
   text-overflow: ellipsis;
   overflow: hidden;
   vertical-align: bottom;
-  /* background: rgba(0,0,0,0.5);
-  padding: 3px;
-  border-radius: 15px;
-  max-width: 100%;
-  display: block;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  padding-left: 10px;
-  padding-right: 8px;
-  box-shadow: inset 5px 5px 5px black;
-  opacity: 0.9; */
+  cursor: pointer;
 }
 
 .inline {
@@ -2855,6 +2842,12 @@ button:hover {
 
 }
 
+button:focus {
+
+  box-shadow: none;
+  border: none;
+}
+
 #nodeInput {
 
   background: rgba(0,0,0,0.1);
@@ -3027,12 +3020,21 @@ li .gradient {
 }
 
 
-.rgb, .gradient {
+.rgb {
 
   background: #5f86f2;
   -webkit-animation: rgb 30s ease infinite;
   -moz-animation: rgb 30s ease infinite;
   animation: rgb 30s ease infinite;
+}
+
+.flash {
+
+  background: #5f86f2;
+  -webkit-animation: rgb 1s ease 1;
+  -moz-animation: rgb 1s ease 1;
+  animation: rgb 1s ease 1;
+  color: #272527;
 }
 
 .board_avatar_reply {
@@ -3480,9 +3482,13 @@ right: 15px;
 
 
 #profile_copy_address {
-
+  text-align: center;
   vertical-align: 98%;
-  font-size: 14px;
+  font-size: 12px;
+  width: 92px;
+  font-weight: 800;
+  font-family: "Montserrat";
+  margin-left: 5px;
 }
 
 .in_board {

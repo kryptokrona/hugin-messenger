@@ -422,6 +422,14 @@ $('#create_account_button').click(function(){
 
 $("document").ready(async function(){
 
+  $('#currentAddrSpan, #profile_copy_address, #currentPubKey').click(async function() {
+      $('#profile_copy_address').removeClass('flash').addClass('flash').text('Copied!');
+        await sleep(1000);
+        $('#profile_copy_address').removeClass('flash').text('Copy both');
+
+  });
+
+
             $('#send_payment .fa-plus').click(function(){
               $('#send_payment').addClass('hidden');
               $('#payment_sent').addClass('hidden');
