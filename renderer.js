@@ -166,6 +166,7 @@ function sendTransaction() {
     // NEW MESSAGE PAYMENT style
     $('#payment_form').toggleClass('hidden');
     $('#payment_sent').toggleClass('hidden');
+    $("#payment_amount").val('');
     // $('#payment_message').click(function(){
     //   $('#payment_form').toggleClass('hidden');
     //   $('#payment_sent').toggleClass('hidden');
@@ -259,7 +260,7 @@ function updateBalance(address) {
 
     $('#profile_balance').text(thisBalance).resizeText();
 
-    $('#profile_balance_calculation').text('or ' + parseInt(thisBalance/0.00011) + " messages");
+    $('#profile_balance_calculation').text(parseInt(thisBalance/0.00011));
     console.log(thisLockedAmount);
     if (thisLockedAmount > 0) {
       $("#profile_balance span").remove();
@@ -625,6 +626,7 @@ $("document").ready(async function(){
   $("#sendbutton_sendpage").click(function(){
 
     sendTransaction();
+
 
   });
 

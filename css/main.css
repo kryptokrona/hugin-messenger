@@ -324,19 +324,19 @@
 
 
 #boards_message_form {
-    font-size: 12pt;
-    height: 64px !important;
-    width: 83%;
-    padding: 0;
-    padding-left: 10px;
-    line-height: 100%;
-    vertical-align: top;
-    background: #3F3F3F !important;
-    border-radius: 5px !important;
-    color: rgba(255,255,255,0.6) !important;
-    display: inline-block !important;
-    border: none;
-    font-family: monospace;
+  font-size: 14pt;
+  height: 60px !important;
+  width: 83%;
+  padding: 0;
+  padding-left: 15px;
+  line-height: 100%;
+  vertical-align: top;
+  background: #3F3F3F !important;
+  border-radius: 5px !important;
+  color: rgba(255,255,255,0.9) !important;
+  display: inline-block !important;
+  border: none;
+  font-family: "Montserrat";
 }
 
 #balancelogo::before {
@@ -405,7 +405,7 @@ header > * {
 
 #headerText {
   display: inline-block;
-  width: 330px;
+  width: 320px;
   vertical-align: top;
   font-size: 10pt;
   border-radius: 5px;
@@ -1161,14 +1161,14 @@ h1, h2, h3, h4 {
 
 
 .boards_nickname_form {
-    font-size: 12pt;
-    height: 64px !important;
+    font-size: 13pt;
+    height: 60px !important;
     border-radius: 0 !important;
     padding: 0 !important;
     padding-left: 10px !important;
     line-height: 100%;
     vertical-align: top;
-    background: #3F3F3F !important;
+    background: transparent;
     border-radius: 5px !important;
     color: rgba(255,255,255,0.8) !important;
     display: inline-block !important;
@@ -1178,6 +1178,7 @@ h1, h2, h3, h4 {
     width: 11%;
     font-family: 'Montserrat';
     font-weight: 700;
+    background: rgba(0,0,0,0.1);
 
 }
 
@@ -1457,7 +1458,7 @@ overlay #login img {
 #currentAddrSpan, #currentPubKey {
   font-family: monospace;
   font-weight: 200;
-  width: 250px;
+  width: 229px;
   display: inline-block;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -1650,7 +1651,7 @@ overlay #login img {
   background: none;
   border: none;
   width: 90%;
-  color: rgba(255,255,255,0.5);
+  color: rgba(255,255,255,0.8);
   padding-left: 5px;
 }
 #recipient_pubkey_form {
@@ -1996,11 +1997,15 @@ header  {
  #boards {
 
    background: white !important;
+ }
 
+ #board_title {
+
+   color: #53565c !important;
  }
 
 #profile input {
-
+  background: rgba(255,255,255,1) !important;
   color: #53565c;
  }
 
@@ -2043,20 +2048,25 @@ header  {
 
   .boards_nickname_form {
 
-    background: rgba(0,0,0,0.1) !important;
-    color:black !important;
+    background: #f5f6f7 !important;
+    color:#53565c !important;
+  }
+
+  #profile .boards_nickname_form {
+
+    background: white !important;
   }
 
   #modal {
 
       background: #f1f2f3 !important;
-      color: black;
+      color: #53565c;
 
   }
 
   #modal input {
 
-    color: black !important;
+    color: #53565c !important;
     background: white !important;
 
 
@@ -2167,31 +2177,26 @@ header  {
     color: #53565c;
   }
 
-  #importMnemonic , #privatekeybox , #mnemonicbox {
-
-    background: #F5F6F7 !important;
-    color: black !important;
-   }
 
   #getPrivatekey, #getMnemonic, #import {
-
-     background: #F5F6F7 !important;
-     color: black;
-     text-align: center;
-     text-decoration: none;
-     display: inline-block;
-     font-size: 17px;
-     margin: 5px;
-     cursor: pointer;
-     font-family: "Montserrat";
+    background: rgba(0,0,0,0.05);
+    color: black !important;
+    font-size: 17px;
+    padding: 15px;
+    margin-left: 12px;
 
    }
 
    #getPrivatekey:hover, #getMnemonic:hover, #import:hover {
 
-
      color: black;
      background-color: rgba(222,222,222,0.1) !important;
+
+   }
+
+   #privatekeybox, #mnemonicbox, #importMnemonic {
+     background: rgba(0,0,0,0.01) !important;
+     color: black !important;
 
    }
 
@@ -2367,7 +2372,7 @@ color: white;
 }
 
 
-#balance-box {
+#message-box {
 
   background: white !important;
   color: #53565c !important;
@@ -2739,25 +2744,16 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
 
 #getPrivatekey, #getMnemonic, #import {
 
-   background-color: white;
-   border: none;
-   color: black;
-   text-align: center;
-   text-decoration: none;
-   display: inline-block;
-   font-size: 17px;
-   cursor: pointer;
-   margin-left: 5px;
-   margin: 10px;
-   padding: 10px;
-   font-family: "Montserrat";
-
+  font-size: 17px;
+  padding: 15px;
+  margin-left: 12px;
  }
 
  #getPrivatekey:hover, #getMnemonic:hover, #import:hover {
 
-   background: #ddd;
-   color: black;
+
+   color: rgba(255,255,255,1);
+   background: rgba(50,50,50,0.8);
  }
 
 #left_panel .fa {
@@ -2837,7 +2833,7 @@ button {
 
 button:hover {
 
-  color: rgba(255,255,255,0.5);
+  color: rgba(255,255,255,1);
   background: rgba(50,50,50,0.1);
 
 }
@@ -2993,7 +2989,7 @@ li .gradient {
 
 #replyto {
   position: absolute;
-    height: 64px;
+    height: 60px;
     border-top-left-radius: 5px;
     border-bottom-left-radius: 5px;
     color: #292929;
@@ -3524,4 +3520,18 @@ font-family: "montserrat";
   overflow-x: hidden;
   height: 85%;
   transition: 1s padding-top;
+}
+
+#message-box {
+
+  font-size: 29pt;
+  letter-spacing: 2px;
+  padding-top: 10px;
+  background: rgba(0,0,0,0.2);
+  border-radius: 5px;
+  padding-left: 20px;
+  padding-right: 20px;
+  width: fit-content;
+  height: 35px;
+
 }
