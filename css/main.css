@@ -1560,7 +1560,7 @@ overlay #login img {
   margin-right: 40px;
   word-wrap: break-word;
   border-top-right-radius: 0;
-  font-family: monospace;
+  font-family: "Montserrat";
   font-size: 17px;
 
 }
@@ -1576,7 +1576,7 @@ overlay #login img {
   word-wrap: break-word;
   border-top-left-radius: 0;
   margin-left: 15px;
-  font-family: monospace;
+  font-family: "Montserrat";
   font-size: 17px;
 
 
@@ -3015,6 +3015,12 @@ li .gradient {
 
 }
 
+#replyto_exit:hover {
+font-size: 25pt;
+top: 37px;
+color: white;
+}
+
 
 .rgb {
 
@@ -3025,7 +3031,7 @@ li .gradient {
 }
 
 .flash {
-
+  transition: 0.5s;
   background: #5f86f2;
   -webkit-animation: rgb 1s ease 1;
   -moz-animation: rgb 1s ease 1;
@@ -3228,6 +3234,7 @@ right: 15px;
   text-overflow: ellipsis;
   overflow: hidden;
   padding-bottom: 25px;
+  cursor: pointer;
 }
 /*
 #profile img {
@@ -3458,7 +3465,7 @@ right: 15px;
 
 #profile input {
 
-  font-size: 11pt;
+  font-size: 14pt;
     height: 58px !important;
     padding: 0 !important;
     padding-left: 10px !important;
