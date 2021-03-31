@@ -309,6 +309,8 @@
   padding: 12px 16px;
   text-decoration: none;
   display: block;
+  font-family: "Montserrat";
+  font-size: 12px;
 }
 
 /* Change color of dropdown links on hover */
@@ -1280,6 +1282,7 @@ overlay {
 
 #login button {
   font-family: "Montserrat";
+  font-size: 17px;
 }
 
 #login, #welcome {
@@ -1950,9 +1953,13 @@ overlay #login img {
   }
 
   #login button {
-    color: black;
+    color: #53565c;
   }
 
+  #login button:hover {
+    color: black;
+    background: rgba(0,0,0,0.1);
+  }
   #status_icon {
     background: url(../static/xkr-logo-mask-light.svg);
     box-shadow: inset 0px 0px 0px 1px #f5f6f7;
@@ -1973,6 +1980,12 @@ overlay #login img {
 
 #profile_copy_address {
   color: #53565c !important;
+  background: rgba(0,0,0,0.03);
+}
+
+#profile_copy_address:hover {
+  color: black !important;
+  background: rgba(0,0,0,0.02);
 }
 
 .lds-ripple-small div {
@@ -2180,17 +2193,18 @@ header  {
 
   #getPrivatekey, #getMnemonic, #import {
     background: rgba(0,0,0,0.05);
-    color: black !important;
+    color: #53565c !important;
     font-size: 17px;
     padding: 15px;
     margin-left: 12px;
+    font-weight: 500;
 
    }
 
    #getPrivatekey:hover, #getMnemonic:hover, #import:hover {
 
-     color: black;
-     background-color: rgba(222,222,222,0.1) !important;
+     color: black !important;
+     background-color: rgba(222,222,222,0.3) !important;
 
    }
 
@@ -2220,7 +2234,7 @@ header  {
 
  .dropbtn {
 
-   background: rgba(222,222,222,0.1) !important;
+   background: rgba(0,0,0,0.05) !important;
  }
 
 .dropbtn:hover {
@@ -2702,7 +2716,7 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
 #mnemonicbox {
 
   background: rgba(0,0,0,0.1);
-  color: white;
+  color: rgba(255,255,255,0.8);
   border-radius: 5px;
   border: none;
   width: 700px;
@@ -2716,6 +2730,8 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
   word-break: break-word;
   font-family: monospace;
   padding: 15px;
+  text-transform: uppercase;
+  font-weight: 500;
 }
 
 
@@ -2723,7 +2739,7 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
 #privatekeybox {
 
   background: rgba(0,0,0,0.1);
-  color: white;
+  color: rgba(255,255,255,0.8);
   border-radius: 5px;
   border: none;
   width: 700px;
@@ -2738,6 +2754,8 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
   padding-left: 10px;
   font-family: monospace;
   padding: 15px;
+  text-transform: uppercase;
+  font-weight: 500;
 
 }
 
@@ -2747,6 +2765,8 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
   font-size: 17px;
   padding: 15px;
   margin-left: 12px;
+  font-weight: 400;
+  font-family: "Montserrat";
  }
 
  #getPrivatekey:hover, #getMnemonic:hover, #import:hover {
@@ -2786,7 +2806,7 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
 #importMnemonic {
 
       background: rgba(0,0,0,0.1);
-      color: white;
+      color: rgba(255,255,255,0.8);
       border-radius: 5px;
       border: none;
       width: 700px;
@@ -2799,6 +2819,8 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
       padding-top: 15px;
       font-size: 11pt;
       margin-left: 10px;
+      text-transform: uppercase;
+      font-weight: 500;
 }
 
 input {
@@ -2833,7 +2855,7 @@ button {
 
 button:hover {
 
-  color: rgba(255,255,255,1);
+  color: black;
   background: rgba(50,50,50,0.1);
 
 }
@@ -2917,7 +2939,7 @@ li .gradient {
   width: 88px;
   text-transform: uppercase;
   font-weight: bold;
-  height: 25px;
+  height: 30px;
   font-size: 11px;
 }
 
@@ -2925,7 +2947,7 @@ li .gradient {
   height: 120%;
     width: 0px;
     background: black;
-    margin-top: -1px;
+    margin-top: 0px;
     margin-left: -10px;
 }
 
@@ -3009,7 +3031,6 @@ li .gradient {
   margin-left: 6px;
   cursor: pointer;
   font-family: 'Montserrat';
-  left: 172px;
   top: 39px;
   font-weight: 700;
 
@@ -3017,7 +3038,7 @@ li .gradient {
 
 #replyto_exit:hover {
 font-size: 25pt;
-top: 37px;
+top: 35px;
 color: white;
 }
 
@@ -3489,7 +3510,7 @@ right: 15px;
   vertical-align: 98%;
   font-size: 12px;
   width: 92px;
-  font-weight: 800;
+  font-weight: 600;
   font-family: "Montserrat";
   margin-left: 5px;
 }
@@ -3540,5 +3561,12 @@ font-family: "montserrat";
   padding-right: 20px;
   width: fit-content;
   height: 35px;
+
+}
+
+button:hover {
+
+  color: white;
+  background: rgba(50,50,50,0.3);
 
 }
