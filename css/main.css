@@ -828,7 +828,7 @@ a {
   padding: 0 !important;
   font-size: 12pt !important;
   border-radius: 2px !important;
-  background: #1c1c1c !important;
+  background: #1c1c1c;
   color: white;
   font-size:32pt !important;
   font-weight: 500;
@@ -1152,7 +1152,7 @@ h1, h2, h3, h4 {
   width: calc(100% - 75px) !important;
   border-radius: 0 !important;
   padding: 0 !important;
-  padding-left: 10px !important;
+  padding-left: 15px !important;
   line-height: 100%;
   vertical-align: top;
   background: #2b2727 !important;
@@ -2315,6 +2315,7 @@ ul {
 #payment_form input {
 
 color: #53565c !important;
+background: white;
 
 }
 
