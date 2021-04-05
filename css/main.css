@@ -1830,14 +1830,18 @@ overlay #login img {
 
 .unread_message::after {
   position: absolute;
-  height: 5px;
-  width: 5px;
+  height: 7px;
+  width: 7px;
   border-radius: 50%;
   background-color: #00CAFF;
   top: calc(50% - 4px);
   right: 15px;
   display: block;
   content: " ";
+  background: #5f86f2;
+  -webkit-animation: rgb 10s ease infinite;
+  -moz-animation: rgb 10s ease infinite;
+  animation: rgb 10s ease infinite;
 }
 
 .contact_address {
