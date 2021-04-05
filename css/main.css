@@ -1,4 +1,4 @@
- /**
+/**
  * @Author: Harry
  * @Date:   2018-02-24T11:59:36+01:00
  * @Last modified by:   Harry
@@ -310,7 +310,8 @@
   text-decoration: none;
   display: block;
   font-family: "Montserrat";
-  font-size: 12px;
+  font-size: 14px;
+  font-weight: 300;
 }
 
 /* Change color of dropdown links on hover */
@@ -333,7 +334,7 @@
   padding-left: 15px;
   line-height: 100%;
   vertical-align: top;
-  background: #3F3F3F !important;
+  background: #2b2727 !important;
   border-radius: 5px !important;
   color: rgba(255,255,255,0.9) !important;
   display: inline-block !important;
@@ -742,7 +743,7 @@ a {
 #send_payment {
   position: absolute;
   top: auto !important;
-  bottom: 95px;
+  bottom: 2px;
   right:2px;
   border-radius: 5px;
   height: 50% !important;
@@ -789,7 +790,7 @@ a {
 #payment_form input, #currentchat_footer input {
   height: 25px;
   width: 95%;
-  font-size: 9.8pt;
+  font-size: 12pt;
   border: none;
   border-radius: 17px;
   font-family: "Roboto";
@@ -827,7 +828,7 @@ a {
   padding: 0 !important;
   font-size: 12pt !important;
   border-radius: 2px !important;
-  background: rgba(255,255,255,0.1) !important;
+  background: #1c1c1c !important;
   color: white;
   font-size:32pt !important;
   font-weight: 500;
@@ -1080,7 +1081,7 @@ h1, h2, h3, h4 {
 
     position: absolute;
     width: 25%;
-    background: #2b2b2b;
+    background: #181818;
     height: 100%;
     top:0;
     left:0;
@@ -1114,7 +1115,7 @@ h1, h2, h3, h4 {
     top:0;
     right: 0;
     width: 75%;
-    background: #292929;
+    background: #1b1b1b;
     height: 100%;
 
 
@@ -1154,7 +1155,7 @@ h1, h2, h3, h4 {
   padding-left: 10px !important;
   line-height: 100%;
   vertical-align: top;
-  background: #3F3F3F !important;
+  background: #2b2727 !important;
   border-radius: 5px !important;
   color: rgba(255,255,255,0.6) !important;
   display: inline-block !important;
@@ -1194,7 +1195,7 @@ h1, h2, h3, h4 {
     font-size: 12pt;
     line-height: 100%;
     vertical-align: top;
-    background: #3F3F3F !important;
+    background: #2b2727 !important;
     border-radius: 5px !important;
     color: rgba(255,255,255,0.6) !important;
       border: none;
@@ -1208,6 +1209,11 @@ h1, h2, h3, h4 {
 position: absolute;
 top: 5;
 right: 5;
+}
+
+#send_payment .fa-plus:hover, #modal .fa-plus:hover, #settings_page .close {
+  top: 8;
+  font-size: 17px;
 }
 
 #payment_message {
@@ -1249,7 +1255,7 @@ display: inline-block;
 }
 
 #currentchat_header_wrapper {
-  background: #292929;
+  background: #1b1b1b;
   border-bottom: 1px solid rgba(255,255,255,0.1);
   height: 50px;
   margin-top: -50px;
@@ -1733,7 +1739,7 @@ overlay #login img {
   cursor: pointer;
   height: 45px;
   border-radius: 5px;
-  background-color: rgba(0,0,0,0.1);
+  background-color: rgba(0,0,0,0.2);
   overflow: hidden;
   margin: 7px;
   margin-left: 7px;
@@ -1893,7 +1899,7 @@ overlay #login img {
 
 #settings div:hover {
 
-  background-color: rgba(222,222,222,0.2) !important;
+  background-color: rgba(50,50,50,0.3) !important;
   border-radius: 5px;
 
 }
@@ -2035,6 +2041,12 @@ header  {
   color: black;
 
  }
+
+ a {
+
+  color: rgba(0,0,0,0.5);
+
+}
 
   #board_box {
     background: rgba(0,0,0,0.01) !important;
@@ -2702,7 +2714,7 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
 
 #settings_page {
   display: none;
-  background: #292929;
+  background: #1b1b1b;
 
                 width: 100%;
                 padding: 15px;
@@ -2773,7 +2785,7 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
 
 
    color: rgba(255,255,255,1);
-   background: rgba(50,50,50,0.8);
+   background: rgba(50,50,50,0.3);
  }
 
 #left_panel .fa {
@@ -2965,7 +2977,7 @@ li .gradient {
 }
 
 #boards {
-  background: #292929;
+  background: #1b1b1b;
   width: 100% !important;
   height: 100% !important;
   padding: 25px;
@@ -3014,7 +3026,7 @@ li .gradient {
     height: 60px;
     border-top-left-radius: 5px;
     border-bottom-left-radius: 5px;
-    color: #292929;
+    color: #1b1b1b;
     padding-left: 40px;
     padding-right: 20px;
     vertical-align: bottom;
@@ -3025,7 +3037,7 @@ li .gradient {
 
 #replyto_exit {
   font-size: 22pt;
-  color: #292929;
+  color: #1b1b1b;
   transform: rotate(45deg);
   position: absolute;
   margin-left: 6px;
@@ -3037,9 +3049,9 @@ li .gradient {
 }
 
 #replyto_exit:hover {
-font-size: 25pt;
-top: 35px;
-color: white;
+  font-size: 25pt;
+  top: 38px;
+  color: white;
 }
 
 
@@ -3144,7 +3156,7 @@ color: white;
 }
 #login-decoration {
 
-  background: rgba(255,255,255,0.05);
+  background: #1b1b1b;
   position: absolute;
   right: -120vh;
   height: 200vh;
