@@ -1211,7 +1211,7 @@ top: 5;
 right: 5;
 }
 
-#send_payment .fa-plus:hover, #modal .fa-plus:hover, #settings_page .close {
+#send_payment .fa-plus:hover, #modal .fa-plus:hover, #settings_page .close:hover {
   top: 8;
   font-size: 17px;
 }
@@ -1562,7 +1562,7 @@ overlay #login img {
 .sent_message p {
   padding: 15px;
   border-radius: 5px;
-  background: rgba(77, 210, 106, 0.65);
+  background: #006AA7;
   width: max-content;
   max-width: 40%;
   margin-left: auto;
@@ -1579,7 +1579,7 @@ overlay #login img {
 .received_message p, .recieved_message p {
   padding: 15px;
   border-radius: 5px;
-  background: rgba(57, 76, 145, 0.3);
+  background: #2c2c2c;
   width: max-content;
   max-width: 40%;
   word-wrap: break-word;
@@ -1903,7 +1903,7 @@ overlay #login img {
 
 #settings div:hover {
 
-  background-color: rgba(50,50,50,0.3) !important;
+  background-color: rgba(50,50,50,0.3);
   border-radius: 5px;
 
 }
@@ -2124,13 +2124,13 @@ header  {
 
 .received_message p {
 
-  background: rgba(57, 76, 145, 0.6) !important;
+  background: #53565c !important;
   color: white;
 }
 
 .sent_message p {
 
-  background: rgba(77, 210, 106, 0.88) !important;
+  background: #006AA7 !important;
 
 }
 
@@ -2204,6 +2204,13 @@ header  {
   #settings {
     background: #F5F6F7;
     color: #53565c;
+  }
+
+
+  #settings div:hover {
+
+    background-color: rgba(50,50,50,0.03);
+
   }
 
 
@@ -3585,4 +3592,11 @@ button:hover {
   color: white;
   background: rgba(50,50,50,0.3);
 
+}
+
+.magnet {
+
+  font-weight: 500;
+  color: #53565c !important;
+  cursor: pointer;
 }
