@@ -9,6 +9,6 @@ A messaging service powered by the kryptokrona blockchain
 Clone and npm install, then use electron . to start the app.
 
 
-You will also need to place the appropriate kryptokrona-service executable for your OS in the /bin/-folder of the project.
+You will also need to place the appropriate kryptokrona-service executable for your OS in the /bin/-folder of the project (Create a folder and name it "bin", then add the appropriate kryptokrona-service to it).
 
 
