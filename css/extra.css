@@ -2,6 +2,7 @@
 width: 100%;
 height: 100%;
 top: 0;
+overflow-y: scroll;
 }
 
 .board_icon {
@@ -21,6 +22,7 @@ top: 0;
   cursor: pointer;
   vertical-align: middle;
   margin-top: 16px;
+  position: relative;
 }
 
 #boards_picker {
@@ -108,4 +110,9 @@ display: none;
 
 .board_message_user > .board_message_reply:first-child {
   display: block;
+}
+
+#boards_picker::-webkit-scrollbar {
+  /* This is the magic bit */
+  display: none;
 }
