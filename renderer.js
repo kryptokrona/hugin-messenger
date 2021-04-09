@@ -784,7 +784,7 @@ $('.pub_board_error').removeClass('error').addClass('hidden');
 $('#create_pub_board_input').val('');
 $('.priv_board_error').removeClass('error').addClass('hidden');
 $('#join_priv_board_input').val('');
-$('.board_message').removeClass('menu');
+$('#boards_messages').removeClass('menu');
 });
 
 $('.closed').click(function(){

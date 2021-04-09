@@ -3590,14 +3590,12 @@ font-family: "montserrat";
 
 #boards_messages {
   width: 100%;
-  padding: 0;
-  padding-top: 0;
-  margin: 0;
   overflow-y: auto;
   overflow-x: hidden;
   height: 85%;
   transition: 0.1s;
   transition-timing-function: cubic-bezier(.17,.67,.25,.89);
+  margin-left: 0px;
 }
 
 #message-box {
@@ -3636,6 +3634,6 @@ button:hover {
 
 .menu {
   transition: 0.1s;
-  margin-left: 11%;
+  margin-left: -9% !important;
   transition-timing-function: cubic-bezier(.17,.67,.25,.89);
 }

@@ -3253,7 +3253,7 @@ $('#new_board').click(function(){
   $('#modal').toggleClass('hidden');
   $('#modal div').addClass('hidden');
   $('#new_board_modal').removeClass('hidden');
-  $('.board_message').toggleClass('menu');
+  $('#boards_messages').addClass('menu');
 })
 
 $('#create_pub_board_button').click(async function(){
@@ -3267,13 +3267,13 @@ $('#create_pub_board_button').click(async function(){
 
         $('#create_pub_board_input').val('');
           $('.pub_board_error').removeClass('hidden').addClass('error').text('Invalid board name!');
-          $('.board_message').addClass('menu');
+          $('#boards_messages').addClass('menu');
   }
 $('#create_pub_board_input').val('');
 });
 
 $('#join_priv_board_button').click(async function(){
-  $('.board_message').toggleClass('menu');
+  $('#boards_messages').toggleClass('menu');
 	let invite_code = $('#join_priv_board_input').val();
   if(await crypto.checkKey(invite_code)) {
 
@@ -3282,10 +3282,10 @@ $('#join_priv_board_button').click(async function(){
   } else {
     $('.priv_board_error').removeClass('hidden').addClass('error').text('Invalid board address!');
     $('#join_priv_board_input').val('');
-    $('.board_message').addClass('menu');
+    $('#boards_messages').addClass('menu');
 
   }
-  $('.board_message').addClass('menu');
+  $('#boards_messages').addClass('menu');
   $('#join_priv_board_input').val('');
 });
 
@@ -3301,7 +3301,7 @@ $('#create_priv_board_button').click(async function(){
   }
   $('.priv_board_error').removeClass('error');
   $('#join_priv_board_input').val('');
-  $('.board_message').removeClass('menu');
+  $('#boards_messages').removeClass('menu');
   $('#modal').addClass('hidden')
 
 });
