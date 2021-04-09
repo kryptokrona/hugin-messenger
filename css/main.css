@@ -328,7 +328,7 @@
 
 #boards_message_form {
   font-size: 12pt;
-  height: 60px !important;
+  height: 57px !important;
   width: 83%;
   padding: 0;
   padding-left: 15px;
@@ -1165,7 +1165,7 @@ h1, h2, h3, h4 {
 
 .boards_nickname_form {
     font-size: 13pt;
-    height: 60px !important;
+    height: 57px !important;
     border-radius: 0 !important;
     padding: 0 !important;
     padding-left: 10px !important;
@@ -1197,9 +1197,9 @@ h1, h2, h3, h4 {
     vertical-align: top;
     background: #2b2727 !important;
     border-radius: 5px !important;
-    color: rgba(255,255,255,0.6) !important;
+    color: rgba(255,255,255,0.8) !important;
       border: none;
-        height: 64px !important;
+        height: 44px !important;
         width: 94%;
           padding-left: 10px !important;
           margin-bottom: 20px;
@@ -1591,14 +1591,14 @@ overlay #login img {
 
 }
 
- .board_message p {padding: 10px;border-radius: 5px;width: max-content;max-width: 95%;word-wrap: break-word;border-top-left-radius: 0;font-size: 22px;font-family: "Montserrat";/* margin-left: 15px; */padding-top: 0;/* font-weight: normal; */margin: 0;padding-left: 21px;padding-bottom: 17px;}
+ .board_message p {padding: 10px;border-radius: 5px;width: max-content;max-width: 95%;word-wrap: break-word;border-top-left-radius: 0;font-size: 22px;font-family: "Montserrat";/* margin-left: 15px; */padding-top: 0;/* font-weight: normal; */margin: 0;padding-left: 25px;padding-bottom: 17px;}
 
 
  .board_message {
-   transition: 0.2s;
+   transition: 0.3s;
    list-style: none;
    max-width: 60%;
-   background: rgba(0,0,0,0.1);
+   background: rgba(0,0,0,0.2);
    margin-bottom: 10px;
    border-radius: 15px;
    margin-left: 20%;
@@ -1613,7 +1613,7 @@ overlay #login img {
      width: 64px;
      height: 64px;
      border-radius: 50%;
-     margin-left: -1px;
+     margin-left: 5px;
      padding-bottom: 7px;
      margin-top: -12px;
  }
@@ -1635,7 +1635,7 @@ overlay #login img {
   opacity: 0.4;
   font-size: 10px;
   display: block;
-  margin-left: 20px;
+  margin-left: 25px;
   padding-bottom: 10px;
 }
 .sent_message .time {
@@ -1862,7 +1862,7 @@ overlay #login img {
 
 #messages_contacts, #boards_messages {
   --scrollbarBG: transparent;
-  --thumbBG: rgba(0,0,0,0.2);
+  --thumbBG: #2c2c2c;
 
 }
 #messages_contacts::-webkit-scrollbar, #boards_messages::-webkit-scrollbar {
@@ -2097,10 +2097,13 @@ header  {
 
     color: #53565c !important;
     background: white !important;
-
-
   }
 
+  #messages_contacts, #boards_messages {
+    --scrollbarBG: transparent;
+    --thumbBG: rgba(0,0,0,0.2);
+
+  }
 
  #incomingCall {
 
@@ -2739,7 +2742,7 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
 
 #mnemonicbox {
 
-  background: rgba(0,0,0,0.1);
+  background: rgba(0,0,0,0.2);
   color: rgba(255,255,255,0.8);
   border-radius: 5px;
   border: none;
@@ -2762,7 +2765,7 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
 
 #privatekeybox {
 
-  background: rgba(0,0,0,0.1);
+  background: rgba(0,0,0,0.2);
   color: rgba(255,255,255,0.8);
   border-radius: 5px;
   border: none;
@@ -2829,7 +2832,7 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
 
 #importMnemonic {
 
-      background: rgba(0,0,0,0.1);
+      background: rgba(0,0,0,0.2);
       color: rgba(255,255,255,0.8);
       border-radius: 5px;
       border: none;
@@ -3035,7 +3038,7 @@ li .gradient {
 
 #replyto {
   position: absolute;
-    height: 60px;
+    height: 57px;
     border-top-left-radius: 5px;
     border-bottom-left-radius: 5px;
     color: #1b1b1b;
@@ -3044,7 +3047,7 @@ li .gradient {
     vertical-align: bottom;
     font-family: 'Montserrat';
     font-weight: 700;
-    line-height: 64px;
+    line-height: 59px;
 }
 
 #replyto_exit {
@@ -3052,17 +3055,17 @@ li .gradient {
   color: #1b1b1b;
   transform: rotate(45deg);
   position: absolute;
-  margin-left: 6px;
+  margin-left: 10px;
   cursor: pointer;
   font-family: 'Montserrat';
-  top: 39px;
+  top: 37px;
   font-weight: 700;
 
 }
 
 #replyto_exit:hover {
-  font-size: 25pt;
-  top: 38px;
+  font-size: 24pt;
+  top: 36px;
   color: white;
 }
 
@@ -3090,7 +3093,13 @@ li .gradient {
 }
 
 .board_message_reply {
-  margin-bottom: -18px;
+  height: 50px;
+  opacity: 0.6;
+}
+
+
+#recent_board_messages .board_message_reply {
+  margin-bottom: 15px;
   opacity: 0.6;
 }
 
@@ -3104,7 +3113,20 @@ li .gradient {
 }
 
 
-.board_message_reply::before {margin-bottom: 10px;content: "∟";display: inline-block;transform: rotate(90deg);font-weight: 700;font-size: 28pt;margin-left: 27px;}
+.board_message_reply::before {
+  margin-bottom: 25px;
+  content: "∟";
+  display: inline-block;
+  transform: rotate(90deg);
+  font-weight: 500;
+  font-size: 28pt;
+  margin-left: 35px;
+}
+
+#recent_board_messages .board_message_reply::before {
+
+  margin-left: 35px;
+}
 
 .removed {
   transition: 0.5s all;
@@ -3346,6 +3368,7 @@ right: 15px;
   height: 55px;
   position: relative;
   top: -15px;
+  margin-left: 10px;
 }
 
 /*
@@ -3466,7 +3489,7 @@ right: 15px;
 }
 
 #recent_board_messages .board_message p {
-  font-size: 17px;
+  font-size: 20px;
   white-space: nowrap;
   overflow: hidden;
   width: 90%;
@@ -3475,8 +3498,10 @@ right: 15px;
 }
 
 #recent_board_messages .board_avatar_reply {
-
-  top: -10px;
+  top: -5px;
+  max-width: 40px;
+  height: 40px;
+  margin-left: 5px;
 }
 
 #recent_board_messages .board_message_reply p {
@@ -3493,7 +3518,7 @@ right: 15px;
 
   #recent_board_messages .board_message_user {
 
-    padding-top: 15px;
+    padding-top: 10px;
   }
 
 
@@ -3571,7 +3596,8 @@ font-family: "montserrat";
   overflow-y: auto;
   overflow-x: hidden;
   height: 85%;
-  transition: 1s padding-top;
+  transition: 0.1s;
+  transition-timing-function: cubic-bezier(.17,.67,.25,.89);
 }
 
 #message-box {
@@ -3592,7 +3618,6 @@ button:hover {
 
   color: white;
   background: rgba(50,50,50,0.3);
-
 }
 
 .magnet {
@@ -3600,4 +3625,17 @@ button:hover {
   font-weight: 500;
   color: #181818 !important;
   cursor: pointer;
+}
+
+.error {
+  font-size: 10pt;
+  color: #cc4a4a;
+  display: inline-block;
+  font-weight: bold;
+}
+
+.menu {
+  transition: 0.1s;
+  margin-left: 11%;
+  transition-timing-function: cubic-bezier(.17,.67,.25,.89);
 }

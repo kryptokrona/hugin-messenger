@@ -458,7 +458,7 @@ $("document").ready(async function(){
                 position: "absolute",
                 width: 500,
                 top: "28%",
-                right: 77
+                right: 78
               })
 
             }
@@ -779,6 +779,11 @@ $('.close').click(function(){
 });
 $("#modal > i").click(function(){
 $("#modal").toggleClass("hidden");
+$('.pub_board_error').removeClass('error').addClass('hidden');
+$('#create_pub_board_input').val('');
+$('.priv_board_error').removeClass('error').addClass('hidden');
+$('#join_priv_board_input').val('');
+$('.board_message').removeClass('menu');
 });
 
 $('.closed').click(function(){

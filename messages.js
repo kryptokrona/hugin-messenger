@@ -335,7 +335,6 @@ if (!screenshare) {
     $('#caller_menu_contact').text(conversation_display);
     let avatar_base64 = get_avatar($('#recipient_form').val());
     $('#caller_menu img').attr('src',"data:image/svg+xml;base64," + avatar_base64);
-
     $('#caller_menu .fa-phone').click(function(){
       endCall(peer1, stream);
     })
@@ -3254,7 +3253,7 @@ $('#new_board').click(function(){
   $('#modal').toggleClass('hidden');
   $('#modal div').addClass('hidden');
   $('#new_board_modal').removeClass('hidden');
-
+  $('.board_message').toggleClass('menu');
 })
 
 $('#create_pub_board_button').click(async function(){
@@ -3265,22 +3264,29 @@ $('#create_pub_board_button').click(async function(){
     ipcRenderer.send('import-view-subwallet', invite_code);
 
   } else {
-    alert('Invalid board name, please try another!')
-  }
 
+        $('#create_pub_board_input').val('');
+          $('.pub_board_error').removeClass('hidden').addClass('error').text('Invalid board name!');
+          $('.board_message').addClass('menu');
+  }
+$('#create_pub_board_input').val('');
 });
 
 $('#join_priv_board_button').click(async function(){
-
+  $('.board_message').toggleClass('menu');
 	let invite_code = $('#join_priv_board_input').val();
   if(await crypto.checkKey(invite_code)) {
 
     ipcRenderer.send('import-view-subwallet', invite_code);
 
   } else {
-    alert('Invalid board name, please try another!')
-  }
+    $('.priv_board_error').removeClass('hidden').addClass('error').text('Invalid board address!');
+    $('#join_priv_board_input').val('');
+    $('.board_message').addClass('menu');
 
+  }
+  $('.board_message').addClass('menu');
+  $('#join_priv_board_input').val('');
 });
 
 $('#create_priv_board_button').click(async function(){
@@ -3293,7 +3299,10 @@ $('#create_priv_board_button').click(async function(){
   } else {
     $('#create_priv_board_button').click();
   }
-
+  $('.priv_board_error').removeClass('error');
+  $('#join_priv_board_input').val('');
+  $('.board_message').removeClass('menu');
+  $('#modal').addClass('hidden')
 
 });
 
@@ -3314,7 +3323,6 @@ ipcRenderer.on('imported-view-subwallet', async (event, address) => {
         alert('Invalid board address, please try again!');
         return;
       } else {
-        $('#new_board').click();
         print_boards();
       }
 

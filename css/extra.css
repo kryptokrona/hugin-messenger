@@ -77,10 +77,11 @@ top: 0;
 
 
 #modal {
+  transition: 0.2s;
   position: absolute;
   padding: 25px;
   padding-top: 0;
-  width: 500px;
+  width: 250px;
   background: #181818;
   border-radius: 20px;
   z-index: 999;
