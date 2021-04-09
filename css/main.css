@@ -765,7 +765,7 @@ a {
  }
 
 .hidden {
-  display: none;
+  display: none !important;
   transition: 0.2s all;
 }
 
@@ -3047,7 +3047,7 @@ li .gradient {
     vertical-align: bottom;
     font-family: 'Montserrat';
     font-weight: 700;
-    line-height: 59px;
+    line-height: 60px;
 }
 
 #replyto_exit {

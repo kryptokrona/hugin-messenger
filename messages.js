@@ -3232,6 +3232,8 @@ $("document").ready(function(){
     $('#currentchat_pubkey').hide();
     $('.checkmark').hide();
     $("#new_board").addClass('hidden');
+    $('#boards_messages').removeClass('menu');
+    $('#modal').addClass('hidden');
     $("#boards_picker").empty().addClass('hidden');
     $('#messages .received_message, #messages .sent_message').remove();
     $('#welcome_alpha').addClass('hidden');
@@ -3477,6 +3479,8 @@ $('#boards_icon').click(function(){
  $("#context_menu").hide();
  $("#boards_picker").empty().toggleClass('hidden');
  $('#boards .board_message').remove();
+ $('#boards_messages').removeClass('menu');
+ $('#modal').addClass('hidden');
 
  print_boards();
 

@@ -731,6 +731,8 @@ $("#boards_picker").empty().addClass('hidden');
 $("#settings_page").fadeOut();
 $("#recipient_form").val('');
 $("#recipient_pubkey_form").val('');
+$('#boards_messages').removeClass('menu');
+$("#modal").addClass('hidden');
 $(".setting_page").fadeOut();
 if ($('#flip-box-inner').hasClass('flip')) {
 myFunction();
@@ -759,6 +761,8 @@ $('#message_icon').click(function(){
 $("#boards_picker").empty().addClass('hidden');
 $("#settings_page").fadeOut();
 $(".setting_page").fadeOut();
+$('#boards_messages').removeClass('menu');
+$("#modal").addClass('hidden');
 if (!$('#boards').hasClass('hidden') || $('#flip-box-inner').hasClass('flip')) {
 myFunction();
 }
@@ -773,13 +777,15 @@ $('#boards').addClass('hidden');
 $("#messages_page").removeClass('hidden');
 $("#new_board").addClass('hidden');
 $("#boards_picker").empty().addClass('hidden');
+$('#boards_messages').removeClass('menu');
+$("#modal").addClass('hidden');
 });
 
 $('.close').click(function(){
   $(".settings_page").fadeOut(); $("#settings_page").fadeOut(); myFunction();
 });
 $("#modal > i").click(function(){
-$("#modal").toggleClass("hidden");
+$("#modal").addClass('hidden');
 $('.pub_board_error').removeClass('error').addClass('hidden');
 $('#create_pub_board_input').val('');
 $('.priv_board_error').removeClass('error').addClass('hidden');
@@ -798,6 +804,8 @@ $("#status_icon").click(function(){
   $('#boards').addClass('hidden');
   $("#messages_page").removeClass('hidden');
   $("#new_board").addClass('hidden');
+  $('#boards_messages').removeClass('menu');
+  $("#modal").addClass('hidden');
   $("#boards_picker").empty().addClass('hidden');
   $('#connection_settings_page #nodeInputStatus').text('');
   $('.setting_page').hide();
