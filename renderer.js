@@ -318,7 +318,8 @@ ipcRenderer.on('got-login-complete', async () => {
   walletd = new TurtleCoinWalletd(
     'http://127.0.0.1',
     8070,
-    remote.getGlobal('rpc_pw')
+    remote.getGlobal('rpc_pw'),
+    false
   )
 
 
