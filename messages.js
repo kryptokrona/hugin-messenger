@@ -3285,6 +3285,16 @@ $('#new_board').click(function(){
   $('#modal div').addClass('hidden');
   $('#new_board_modal').removeClass('hidden');
   $('#boards_messages').toggleClass('menu');
+
+  		     if (!$('#send_payment').hasClass('hidden')) {
+             $('#send_payment').addClass('hidden');
+             $('#payment_sent').addClass('hidden');
+             $('#payment_form').removeClass('hidden');
+             $('#payment_id').val('');
+             $('#payment_rec_addr').val('');
+             $('#replyto_exit').click();
+             $('#boards_messages').addClass('menu');
+  		     }
 })
 
 $('#create_pub_board_button').click(async function(){
@@ -4239,12 +4249,17 @@ ipcRenderer.on('got-boards', async (event, json) => {
 
 
         $('.this_board_message .board_message_pubkey').click(function(e){
+          $('#boards_messages').addClass('menu');
           e.preventDefault();
-
           let address = $(this).text();
           $('#payment_rec_addr').val(address);
           $('#payment_id').val(hash);
           $('#send_payment').removeClass('hidden');
+          if (!$('#modal').hasClass('hidden')) {
+            $('#modal').addClass('hidden');
+            $('#boards_messages').addClass('menu');
+          }
+
 
         })
 

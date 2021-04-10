@@ -632,11 +632,13 @@ border-radius: 5px;
 
 #container > div:not(#modal) {
 
-  width: 40%;
+  width: 28%;
   height: 100%;
   top: 0;
   padding-left: 20px;
   border-bottom-left-radius: 5px;
+  transition: 0.1s;
+  transition-timing-function: cubic-bezier(.17,.67,.25,.89);
 
 }
 
@@ -742,10 +744,9 @@ a {
 
 #send_payment {
   position: absolute;
-  top: auto !important;
-  bottom: 2px;
-  right:2px;
-  border-radius: 5px;
+  right: 11px;
+  border-radius: 10px;
+  top: 13% !important;
   height: 50% !important;
 
 }
@@ -753,7 +754,7 @@ a {
 #payment_container {
   padding: 20px;
   background: #181818;
-  border-radius: 5px;
+  border-radius: 10px;
   height: 75%;
 
 }
@@ -1037,6 +1038,7 @@ h1, h2, h3, h4 {
   width: 100%;
   text-align: center;
   display: block;
+  overflow: hidden;
 }
 
 .fadeIn {
@@ -2088,7 +2090,7 @@ header  {
 
   #modal {
 
-      background: #f1f2f3 !important;
+      background: #f5f6f7 !important;
       color: #53565c;
 
   }
@@ -2312,7 +2314,6 @@ ul {
 
   background: #f5f6f7 !important;
   opacity: 1;
-  box-shadow: 10px 10px 10px rgba(0,0,0,0.05)
 }
 
 #payment_form input {
@@ -2362,7 +2363,7 @@ color: black;
   transform: translate(0px, 2px);
   transition: transform 0.2s;
   transform: box-shadow 0.2s;
-  background: rgba(0,0,0,0.1);
+  background: rgba(0,0,0,0.01);
   color: white;
 
 }
@@ -3635,5 +3636,6 @@ button:hover {
 .menu {
   transition: 0.1s;
   margin-left: -10% !important;
+  padding-right: 10%;
   transition-timing-function: cubic-bezier(.17,.67,.25,.89);
 }
