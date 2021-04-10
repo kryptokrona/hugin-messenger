@@ -765,7 +765,7 @@ a {
  }
 
 .hidden {
-  display: none !important;
+  display: none;
   transition: 0.2s all;
 }
 
@@ -3634,6 +3634,6 @@ button:hover {
 
 .menu {
   transition: 0.1s;
-  margin-left: -9% !important;
+  margin-left: -10% !important;
   transition-timing-function: cubic-bezier(.17,.67,.25,.89);
 }
