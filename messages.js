@@ -772,6 +772,7 @@ let userDataDir = rmt.getGlobal('userDataDir');
 let appPath = rmt.getGlobal('appPath');
 
 let db = new Datastore({ filename: userDataDir+'/messages.db', autoload: true });
+let boards_db = new Datastore({ filename: userDataDir+'/boards.db', autoload: true });
 
 let misc = new Datastore({ filename: userDataDir+'/misc.db', autoload: true });
 
@@ -913,15 +914,17 @@ contextMenu({
 
 
 let last_block_checked = 1;
+let last_block_checked_boards = 1;
 
 misc.find({}, function (err,docs){
 
     if (docs.length == 0) {
 
-    misc.insert({"height": 1, "nickname": undefined});
+    misc.insert({"height": 1, "nickname": undefined, "boardsHeight": 1});
 
   } else {
     last_block_checked = docs[0].height;
+    last_block_checked_boards = docs[0].boardsHeight;
   }
 
 });
@@ -2351,6 +2354,32 @@ function save_message(message_json) {
 
 }
 
+function save_boards_message(message_json) {
+
+  console.log(message_json);
+  // {m: "Hello team", k: "SEKReXWuLaFTmnExMExaPqHCBAZ97srHWVMFxjRRQKGXP6ihXvXwwtuVgwjm24Arnb18GuzbZEWLxUoC1Ca7Pbs29fNabAYGtAy", s: "1530f4c577e6340538871c98ea416cc7c6d5132feee0f3729b…00e2605062e63dd20e4ba248a77f25c0dc801b6aacaf8e90a", n: "nils"}
+  let hash =  message_json.h;
+  let board = message_json.brd;
+  let sender = message_json.k;
+  let message = message_json.m;
+  let timestamp = message_json.timestamp;
+  let nickname = message_json.n;
+  let reply = message_json.r;
+
+  boards_db.find({hash : hash}, function (err,docs){
+
+      if (docs.length == 0) {
+
+      message_db = {"hash": hash, "board": board, "sender": sender, "message":message, "timestamp": timestamp, "nickname": nickname, "reply": reply};-
+
+      boards_db.insert(message_db);
+
+      }
+
+});
+
+}
+
 function find(db, opt) {
   return new Promise(function(resolve, reject) {
     db.find(opt, function(err, doc) {
@@ -3700,6 +3729,10 @@ ipcRenderer.on('new-message', async (event, transaction) => {
 		 }
 
 		 console.log('Debug me', hex_json);
+     hex_json.h = transaction.hash;
+     hex_json.brd = transaction.transfers[0].publicKey;
+     hex_json.timestamp = resp.result.block.timestamp;
+     save_boards_message(hex_json);
      console.log(hex_json);
      let this_addr = await Address.fromAddress(hex_json.k);
      console.log(this_addr);
