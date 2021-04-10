@@ -3255,14 +3255,16 @@ $('#new_board').click(function(){
   $('#modal').toggleClass('hidden');
   $('#modal div').addClass('hidden');
   $('#new_board_modal').removeClass('hidden');
-  $('#boards_messages').addClass('menu');
+  $('#boards_messages').toggleClass('menu');
 })
 
 $('#create_pub_board_button').click(async function(){
 
   let invite_code = invite_code_from_ascii($('#create_pub_board_input').val());
   if(await crypto.checkKey(invite_code)) {
-
+    $('#create_pub_board_input').val('');
+    $('#boards_messages').removeClass('menu');
+    $('#modal').addClass('hidden')
     ipcRenderer.send('import-view-subwallet', invite_code);
 
   } else {
@@ -3271,14 +3273,16 @@ $('#create_pub_board_button').click(async function(){
           $('.pub_board_error').removeClass('hidden').addClass('error').text('Invalid board name!');
           $('#boards_messages').addClass('menu');
   }
-$('#create_pub_board_input').val('');
+
 });
 
 $('#join_priv_board_button').click(async function(){
   $('#boards_messages').toggleClass('menu');
 	let invite_code = $('#join_priv_board_input').val();
   if(await crypto.checkKey(invite_code)) {
-
+    $('#boards_messages').removeClass('menu');
+    $('#modal').addClass('hidden')
+    $('#join_priv_board_input').val('');
     ipcRenderer.send('import-view-subwallet', invite_code);
 
   } else {
@@ -3287,24 +3291,22 @@ $('#join_priv_board_button').click(async function(){
     $('#boards_messages').addClass('menu');
 
   }
-  $('#boards_messages').addClass('menu');
-  $('#join_priv_board_input').val('');
 });
 
 $('#create_priv_board_button').click(async function(){
 
 	let invite_code = generatePrivateBoard();
   if(await crypto.checkKey(invite_code)) {
-
+    $('.priv_board_error').removeClass('error');
+    $('#join_priv_board_input').val('');
+    $('#boards_messages').removeClass('menu');
+    $('#modal').addClass('hidden')
     ipcRenderer.send('import-view-subwallet', invite_code);
 
   } else {
     $('#create_priv_board_button').click();
   }
-  $('.priv_board_error').removeClass('error');
-  $('#join_priv_board_input').val('');
-  $('#boards_messages').removeClass('menu');
-  $('#modal').addClass('hidden')
+
 
 });
 
