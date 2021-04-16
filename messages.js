@@ -3544,6 +3544,197 @@ $('#boards_icon').click(function(){
 
 let current_reply_to = '';
 
+let print_single_board_message = async (hash) => {
+
+  if (!hash) {
+    return;
+  }
+
+  let tx_data = await fetch('http://' + rmt.getGlobal('node') + '/json_rpc', {
+       method: 'POST',
+       body: JSON.stringify({
+         jsonrpc: '2.0',
+         method: 'f_transaction_json',
+         params: {hash: hash}
+       })
+     })
+
+     const resp = await tx_data.json();
+     let timestamp = resp.result.block.timestamp;
+     try {
+     result = resp.result.tx.extra.substring(66);
+     // console.log(result);
+     let hex_json = JSON.parse(fromHex(result));
+     if (hex_json.b) {
+       let key = $('.current').attr('inviteKey');
+       let secretKey = naclUtil.decodeUTF8(key.substring(1, 33));
+
+       let this_keyPair = nacl.box.keyPair.fromSecretKey(secretKey);
+       // console.log(this_keyPair);
+        hex_json = JSON.parse(naclUtil.encodeUTF8(nacl.box.open(fromHexString(hex_json.b), nonceFromTimestamp(hex_json.t), this_keyPair.publicKey, this_keyPair.secretKey)));
+     }
+     // console.log(hex_json);
+     let this_addr = await Address.fromAddress(hex_json.k);
+     let tips = 0;
+
+     // console.log(this_addr);
+     let verified = await xkrUtils.verifyMessageSignature(hex_json.m, this_addr.spend.publicKey, hex_json.s);
+     // console.log(verified);
+     //let verified = nacl.sign.detached.verify(naclUtil.decodeUTF8(hex_json.m), fromHexString(hex_json.s), fromHexString(hex_json.k));
+
+     if (!verified) {
+       return;
+     }
+     let avatar_base64 = get_avatar(hex_json.k);
+
+      let addClasses = '';
+      if (containsOnlyEmojis(hex_json.m)) {
+        addClasses = 'emoji-message';
+      }
+
+      let message = escapeHtml(hex_json.m);
+
+      if (message.length < 1) {
+        return;
+      }
+
+        geturl = new RegExp(
+                "(^|[ \t\r\n])((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&~=-])|%[A-Fa-f0-9]{2}){3,}(#([a-zA-Z0-9][a-zA-Z0-9$_.+!*(),;/?:@&~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))"
+               ,"g"
+             );
+
+      // Instantiate attachments
+      let youtube_links = '';
+      let image_attached = '';
+
+      // Find links
+      let links_in_message = message.match(geturl);
+
+      // Supported image attachment filetypes
+      let imagetypes = ['.png','.jpg','.gif', '.webm', '.jpeg', '.webp'];
+
+      // Find magnet links
+      //let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(message);
+
+      //message = message.replace(magnetLinks[0], "");
+
+      if (links_in_message) {
+
+        for (let j = 0; j < links_in_message.length; j++) {
+
+          if (links_in_message[j].match(/youtu/) || links_in_message[j].match(/y2u.be/)) { // Embeds YouTube links
+            message = message.replace(links_in_message[j],'');
+            embed_code = links_in_message[j].split('/').slice(-1)[0].split('=').slice(-1)[0];
+            youtube_links += '<div style="position:relative;height:0;padding-bottom:42.42%"><iframe src="https://www.youtube.com/embed/' + embed_code + '?modestbranding=1" style="position:absolute;width:80%;height:100%;left:10%" width="849" height="360" frameborder="0" allow="autoplay; encrypted-media"></iframe></div>';
+          } else if (imagetypes.indexOf(links_in_message[j].substr(-4)) > -1 ) { // Embeds image links
+            message = message.replace(links_in_message[j],'');
+            image_attached_url = links_in_message[j];
+            image_attached = '<img class="attachment" src="' + image_attached_url + '" />';
+          } else { // Embeds other links
+            message = message.replace(links_in_message[j],'<a target="_new" href="' + links_in_message[j] + '">' + links_in_message[j] + '</a>');
+          }
+        }
+      }
+
+
+
+      if (message.length < 1 && youtube_links.length > 0) {
+        $('#boards_messages').prepend('<li class="board_message this_board_message" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div>'+ image_attached + youtube_links +'<span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
+
+      } else if (image_attached > 0 && youtube_links.length > 0) {
+
+        $('#boards_messages').prepend('<li class="board_message this_board_message" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
+
+
+      } else  {
+        $('#boards_messages').prepend('<li class="board_message this_board_message" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
+     }
+
+     if (hex_json.n) {
+       $('.this_board_message .board_message_pubkey').before('<span class="boards_nickname">' + escapeHtml(hex_json.n) + '</span>')
+     }
+
+     if (hex_json.r) {
+       // $('.this_board_message .board_message_pubkey').before('<span class="boards_nickname">' + hex_json.n + '</span>')
+       let tx_data_reply = await fetch('http://' + rmt.getGlobal('node') + '/json_rpc', {
+            method: 'POST',
+            body: JSON.stringify({
+              jsonrpc: '2.0',
+              method: 'f_transaction_json',
+              params: {hash: hex_json.r}
+            })
+          })
+
+          const resp_reply = await tx_data_reply.json();
+
+          let result_reply = resp_reply.result.tx.extra.substring(66);
+          let hex_json_reply = JSON.parse(fromHex(result_reply));
+
+          // console.log(hex_json_reply);
+
+          if (hex_json_reply.b) {
+
+           let key = $('.board_icon.current').attr('invitekey');
+           let secretKey = naclUtil.decodeUTF8(key.substring(1, 33));
+
+           let this_keyPair = nacl.box.keyPair.fromSecretKey(secretKey);
+           hex_json_reply = JSON.parse(naclUtil.encodeUTF8(nacl.box.open(fromHexString(hex_json_reply.b), nonceFromTimestamp(hex_json_reply.t), this_keyPair.publicKey, this_keyPair.secretKey)));
+
+         }
+           let this_addr = await Address.fromAddress(hex_json_reply.k);
+           // console.log(this_addr);
+           let verified_reply = await xkrUtils.verifyMessageSignature(hex_json_reply.m, this_addr.spend.publicKey, hex_json_reply.s);
+           // console.log(verified);
+          // let verified_reply = nacl.sign.detached.verify(naclUtil.decodeUTF8(hex_json_reply.m), fromHexString(hex_json_reply.s), fromHexString(hex_json_reply.k));
+
+          if (!verified_reply) {
+            return;
+          }
+          let avatar_base64_reply = get_avatar(hex_json_reply.k);
+          let message_reply = hex_json_reply.m;
+
+          $('.this_board_message img').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/svg+xml;base64,' + avatar_base64_reply + '"><p>' + message_reply.substring(0,55)  +'..</p></div>');
+
+
+
+
+     }
+
+        if (tips) {
+            $('.this_board_message').append('<span class="tips">' + parseFloat(tips/100000).toFixed(5) + ' XKR</span>');
+        }
+
+
+      $('.this_board_message .board_message_pubkey').click(function(e){
+        $('#boards_messages').addClass('menu');
+        e.preventDefault();
+        let address = $(this).text();
+        $('#payment_rec_addr').val(address);
+        $('#payment_id').val(hash);
+        $('#send_payment').removeClass('hidden');
+        if (!$('#modal').hasClass('hidden')) {
+          $('#modal').addClass('hidden');
+          $('#boards_messages').addClass('menu');
+        }
+
+
+      })
+
+     $('.this_board_message').addClass(hash).removeClass('this_board_message').click(function(){
+       reply(hash);
+       $(this).addClass('rgb');
+       $('#boards').scrollTop('0');
+     });
+
+
+
+   } catch (err) {
+     console.log('Error:', err)
+     return;
+   }
+
+}
+
 $('#replyto_exit').click(function(){
 
     $('#replyto').hide();
@@ -3808,6 +3999,12 @@ ipcRenderer.on('new-message', async (event, transaction) => {
 
 
 				    });
+
+            if ($('.board_icon.current').attr('invitekey') == transaction.transfers[0].publicKey) {
+
+              print_single_board_message(transaction.hash);
+
+            }
 
 				 }
 
