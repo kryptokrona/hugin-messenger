@@ -3271,6 +3271,7 @@ $("document").ready(function(){
     $('#messages_page').removeClass('hidden');
     $('#recipient_form').val('').focus();
     $('#settings_page').hide();
+    $('#send_payment').addClass('hidden');
     if (!$('#boards').hasClass('hidden') || $('#flip-box-inner').hasClass('flip')) {
     myFunction();
     }
@@ -3753,7 +3754,7 @@ let reply = (hash) => {
   let nickname = false;
 
   try {
-      nickname = $('.' + hash + ' .boards_nickname').text();
+      nickname = $('#boards .' + hash + ' .boards_nickname').text();
   } catch (err) {
 
   }
@@ -3775,7 +3776,7 @@ let reply = (hash) => {
 
   $('#boards_message_form').css('padding-left',amount);
 
-  $('#boards_message_form').css('width','calc(83% - ' + amount + 'px)');
+  $('#boards_message_form').css('width','calc(80% - ' + ( amount - 15 ) + 'px)');
 
 }
 
