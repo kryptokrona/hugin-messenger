@@ -3271,6 +3271,7 @@ $("document").ready(function(){
     $('#messages_page').removeClass('hidden');
     $('#recipient_form').val('').focus();
     $('#settings_page').hide();
+    $('#send_payment').addClass('hidden');
     if (!$('#boards').hasClass('hidden') || $('#flip-box-inner').hasClass('flip')) {
     myFunction();
     }
