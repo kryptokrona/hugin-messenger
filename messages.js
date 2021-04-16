@@ -3584,7 +3584,7 @@ let reply = (hash) => {
 
   $('#boards_message_form').css('padding-left',amount);
 
-  $('#boards_message_form').css('width','calc(80% - ' + amount + 'px)');
+  $('#boards_message_form').css('width','calc(80% - ' + ( amount - 15 ) + 'px)');
 
 }
 
