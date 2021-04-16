@@ -763,7 +763,7 @@ $("#settings_page").fadeOut();
 $(".setting_page").fadeOut();
 $('#boards_messages').removeClass('menu');
 $('#modal').addClass('hidden');
-if (!$('#boards').hasClass('hidden') || $('#flip-box-inner').hasClass('flip')) {
+if ($('#boards').hasClass('hidden') && $('#flip-box-inner').hasClass('flip')) {
 myFunction();
 }
 
