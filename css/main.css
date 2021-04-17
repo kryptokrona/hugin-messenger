@@ -2220,6 +2220,15 @@ header  {
 
   }
 
+  .dropdown-content a {
+
+    color: #53565c;
+  }
+
+  .dropdown-content a:hover {
+      color: black;
+    }
+
 
   #getPrivatekey, #getMnemonic, #import {
     background: rgba(0,0,0,0.05);
