@@ -3640,19 +3640,19 @@ let print_single_board_message = async (hash, selector) => {
 
 
       if (message.length < 1 && youtube_links.length > 0) {
-        $(selector).prepend('<li class="board_message this_board_message" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div>'+ image_attached + youtube_links +'<span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
+        $(selector).prepend('<li class="board_message ' + hash + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div>'+ image_attached + youtube_links +'<span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
 
       } else if (image_attached > 0 && youtube_links.length > 0) {
 
-        $(selector).prepend('<li class="board_message this_board_message" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
+        $(selector).prepend('<li class="board_message ' + hash + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
 
 
       } else  {
-        $(selector).prepend('<li class="board_message this_board_message" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
+        $(selector).prepend('<li class="board_message ' + hash + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
      }
 
      if (hex_json.n) {
-       $('.this_board_message .board_message_pubkey').before('<span class="boards_nickname">' + escapeHtml(hex_json.n) + '</span>')
+       $(selector + ' .' + hash + ' .board_message_pubkey').before('<span class="boards_nickname">' + escapeHtml(hex_json.n) + '</span>')
      }
 
      if (hex_json.r) {
@@ -3694,7 +3694,7 @@ let print_single_board_message = async (hash, selector) => {
           let avatar_base64_reply = get_avatar(hex_json_reply.k);
           let message_reply = hex_json_reply.m;
 
-          $('.this_board_message img').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/svg+xml;base64,' + avatar_base64_reply + '"><p>' + message_reply.substring(0,55)  +'..</p></div>');
+          $('.' + hash + ' img').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/svg+xml;base64,' + avatar_base64_reply + '"><p>' + message_reply.substring(0,55)  +'..</p></div>');
 
 
 
@@ -3702,11 +3702,11 @@ let print_single_board_message = async (hash, selector) => {
      }
 
         if (tips) {
-            $('.this_board_message').append('<span class="tips">' + parseFloat(tips/100000).toFixed(5) + ' XKR</span>');
+            $('.' + hash).append('<span class="tips">' + parseFloat(tips/100000).toFixed(5) + ' XKR</span>');
         }
 
 
-      $('.this_board_message .board_message_pubkey').click(function(e){
+      $('.' + hash + ' .board_message_pubkey').click(function(e){
         $('#boards_messages').addClass('menu');
         e.preventDefault();
         let address = $(this).text();
@@ -3721,7 +3721,7 @@ let print_single_board_message = async (hash, selector) => {
 
       })
 
-     $('.this_board_message').addClass(hash).removeClass('this_board_message').click(function(){
+     $('.' + hash).click(function(){
        reply(hash);
        $(this).addClass('rgb');
        $('#boards').scrollTop('0');
@@ -3868,7 +3868,7 @@ let print_board_message = async (pubkey, message, timestamp, fetching_board, nic
   }
 
   if (reply) {
-    // $('.this_board_message .board_message_pubkey').before('<span class="boards_nickname">' + hex_json.n + '</span>')
+    // $('.' + hash + ' .board_message_pubkey').before('<span class="boards_nickname">' + hex_json.n + '</span>')
     let tx_data_reply = await fetch('http://' + rmt.getGlobal('node') + '/json_rpc', {
          method: 'POST',
          body: JSON.stringify({
@@ -4007,9 +4007,9 @@ ipcRenderer.on('new-message', async (event, transaction) => {
 
             }
 
+            print_single_board_message(transaction.hash, '#recent_board_messages .inner');
 				 }
 
-         print_single_board_message(transaction.hash, '#recent_transactions');
 
 			 })
 
@@ -4122,11 +4122,11 @@ ipcRenderer.on('got-profile', async (event, json) => {
 
 
         // if (message.length < 1 && youtube_links.length > 0) {
-        //   $('#recent_board_messages .inner').append('<li class="board_message this_board_message" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div>'+ image_attached + youtube_links +'<span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
+        //   $('#recent_board_messages .inner').append('<li class="board_message ' + hash + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div>'+ image_attached + youtube_links +'<span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
         //
         // } else if (image_attached > 0 && youtube_links.length > 0) {
         //
-        //   $('#recent_board_messages .inner').append('<li class="board_message this_board_message" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
+        //   $('#recent_board_messages .inner').append('<li class="board_message ' + hash + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
         //
         //
         // } else  {
@@ -4149,15 +4149,15 @@ ipcRenderer.on('got-profile', async (event, json) => {
            }
 
 
-        $('#recent_board_messages .inner').append('<li class="board_message this_board_message" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span><span class="in_board"> in ' + to_board + ' </span></div><p class="' + addClasses + '">' + message +'</p><span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
+        $('#recent_board_messages .inner').append('<li class="board_message ' + hash + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span><span class="in_board"> in ' + to_board + ' </span></div><p class="' + addClasses + '">' + message +'</p><span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
        // }
 
        if (hex_json.n) {
-         $('.this_board_message .board_message_pubkey').before('<span class="boards_nickname">' + escapeHtml(hex_json.n) + '</span>')
+         $('#recent_board_messages .' + hash + ' .board_message_pubkey').before('<span class="boards_nickname">' + escapeHtml(hex_json.n) + '</span>')
        }
 
        if (hex_json.r) {
-         // $('.this_board_message .board_message_pubkey').before('<span class="boards_nickname">' + hex_json.n + '</span>')
+         // $('.' + hash + ' .board_message_pubkey').before('<span class="boards_nickname">' + hex_json.n + '</span>')
          let tx_data_reply = await fetch('http://' + rmt.getGlobal('node') + '/json_rpc', {
               method: 'POST',
               body: JSON.stringify({
@@ -4194,7 +4194,7 @@ ipcRenderer.on('got-profile', async (event, json) => {
               let avatar_base64_reply = get_avatar(hex_json_reply.k);
               let message_reply = hex_json_reply.m;
 
-              $('.this_board_message img').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/svg+xml;base64,' + avatar_base64_reply + '"><p>' + message_reply.substring(0,55)  +'..</p></div>');
+              $('#recent_board_messages .' + hash + ' img').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/svg+xml;base64,' + avatar_base64_reply + '"><p>' + message_reply.substring(0,55)  +'..</p></div>');
 
             }
 
@@ -4203,11 +4203,11 @@ ipcRenderer.on('got-profile', async (event, json) => {
        }
 
           if (tips) {
-              $('.this_board_message').append('<span class="tips">' + parseFloat(tips/100000).toFixed(5) + ' XKR</span>');
+              $('#recent_board_messages .' + hash + '').append('<span class="tips">' + parseFloat(tips/100000).toFixed(5) + ' XKR</span>');
           }
 
 
-        $('.this_board_message .board_message_pubkey').click(function(e){
+        $('#recent_board_messages .' + hash + ' .board_message_pubkey').click(function(e){
           // e.preventDefault();
           //
           // let address = $(this).text();
@@ -4217,7 +4217,7 @@ ipcRenderer.on('got-profile', async (event, json) => {
 
         })
 
-       $('.this_board_message').addClass(hash).removeClass('this_board_message').click(function(){
+       $('#recent_board_messages .' + hash + '').click(function(){
          // reply(hash);
          // $(this).addClass('rgb');
          // $('#boards').scrollTop('0');
@@ -4382,19 +4382,19 @@ ipcRenderer.on('got-boards', async (event, json) => {
 
 
         if (message.length < 1 && youtube_links.length > 0) {
-          $('#boards_messages').append('<li class="board_message this_board_message" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div>'+ image_attached + youtube_links +'<span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
+          $('#boards_messages').append('<li class="board_message ' + hash + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div>'+ image_attached + youtube_links +'<span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
 
         } else if (image_attached > 0 && youtube_links.length > 0) {
 
-          $('#boards_messages').append('<li class="board_message this_board_message" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
+          $('#boards_messages').append('<li class="board_message ' + hash + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
 
 
         } else  {
-          $('#boards_messages').append('<li class="board_message this_board_message" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
+          $('#boards_messages').append('<li class="board_message ' + hash + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
        }
 
        if (hex_json.n) {
-         $('.this_board_message .board_message_pubkey').before('<span class="boards_nickname">' + escapeHtml(hex_json.n) + '</span>')
+         $('#boards .' + hash + ' .board_message_pubkey').before('<span class="boards_nickname">' + escapeHtml(hex_json.n) + '</span>')
        }
 
        if (hex_json.r) {
@@ -4436,7 +4436,7 @@ ipcRenderer.on('got-boards', async (event, json) => {
             let avatar_base64_reply = get_avatar(hex_json_reply.k);
             let message_reply = hex_json_reply.m;
 
-            $('.this_board_message img').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/svg+xml;base64,' + avatar_base64_reply + '"><p>' + message_reply.substring(0,55)  +'..</p></div>');
+            $('#boards .' + hash + ' img').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/svg+xml;base64,' + avatar_base64_reply + '"><p>' + message_reply.substring(0,55)  +'..</p></div>');
 
 
 
@@ -4444,11 +4444,11 @@ ipcRenderer.on('got-boards', async (event, json) => {
        }
 
           if (tips) {
-              $('.this_board_message').append('<span class="tips">' + parseFloat(tips/100000).toFixed(5) + ' XKR</span>');
+              $('#boards .' + hash + '').append('<span class="tips">' + parseFloat(tips/100000).toFixed(5) + ' XKR</span>');
           }
 
 
-        $('.this_board_message .board_message_pubkey').click(function(e){
+        $('#boards .' + hash + ' .board_message_pubkey').click(function(e){
           $('#boards_messages').addClass('menu');
           e.preventDefault();
           let address = $(this).text();
@@ -4463,7 +4463,7 @@ ipcRenderer.on('got-boards', async (event, json) => {
 
         })
 
-       $('.this_board_message').addClass(hash).removeClass('this_board_message').click(function(){
+       $('#boards .' + hash).click(function(){
          reply(hash);
          $(this).addClass('rgb');
          $('#boards').scrollTop('0');
