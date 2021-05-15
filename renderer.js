@@ -208,6 +208,8 @@ async function getHistory() {
       [],
       '')
     .then(resp => {
+
+      $('#recent_transactions .inner').empty();
       // When historic data about transactions is recieved
       transactions = resp.body.result.items.reverse();
       $('#history_list').empty();
@@ -430,6 +432,10 @@ $("document").ready(async function(){
         $('#profile_copy_address').removeClass('flash').text('Copy both');
 
   });
+
+  $('#avatar').click(function(){
+    getHistory();
+  })
 
 
             $('#send_payment .fa-plus').click(function(){
