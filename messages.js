@@ -4006,7 +4006,7 @@ ipcRenderer.on('new-message', async (event, transaction) => {
 
 				    });
 
-            if ($('.board_icon.current').attr('invitekey') == transaction.transfers[0].publicKey) {
+            if ($('.board_icon.current').attr('invitekey') == transaction.transfers[0].publicKey || $('.board_icon.current').attr('id') == "home_board") {
 
               print_single_board_message(transaction.hash, '#boards_messages');
 
