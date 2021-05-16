@@ -331,7 +331,7 @@
 #boards_message_form {
   font-size: 12pt;
   height: 57px !important;
-  width: 80%;
+  width: 77%;
   padding: 0;
   padding-left: 15px;
   line-height: 100%;
@@ -342,6 +342,7 @@
   display: inline-block !important;
   border: none;
   font-family: "Montserrat";
+  padding-right: 41px;
 }
 
 #balancelogo::before {
