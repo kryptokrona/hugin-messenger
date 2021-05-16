@@ -3594,7 +3594,7 @@ font-family: "montserrat";
 
 
 #profile_balance {
-
+  position: relative;
   padding: 10px;
   font-family: "Major Mono Display";
 }
@@ -3605,11 +3605,12 @@ font-family: "montserrat";
 }
 
 #profile_balance span {
-  margin-left: 14%;
   font-size: 18px;
   display: block;
-  opacity: 0.5;
   position: absolute;
+  opacity: 0.5;
+  text-align: center;
+  width: 100%;
 }
 
 #boards_messages {
