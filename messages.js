@@ -4284,7 +4284,7 @@ ipcRenderer.on('got-boards', async (event, json) => {
 			 // console.log(hex_json);
        let this_addr = await Address.fromAddress(hex_json.k);
        let tips = 0;
-       if (hex_json.k == currentAddr) {
+
 
 
 
@@ -4300,22 +4300,20 @@ ipcRenderer.on('got-boards', async (event, json) => {
           hash);
 
 
-           let blocks = transactions.body.result.items;
+         let blocks = transactions.body.result.items;
 
-
+         console.log('transactions', transactions);
 
            for (block in blocks) {
              let block_txs = blocks[block].transactions;
              for (tx in block_txs) {
                let this_tx = block_txs[tx].amount;
-               if (this_tx) {
                   tips += this_tx;
-               }
 
              }
            }
 
-         }
+
 
        // console.log(this_addr);
        let verified = await xkrUtils.verifyMessageSignature(hex_json.m, this_addr.spend.publicKey, hex_json.s);
@@ -4444,7 +4442,7 @@ ipcRenderer.on('got-boards', async (event, json) => {
        }
 
           if (tips) {
-              $('#boards .' + hash + '').append('<span class="tips">' + parseFloat(tips/100000).toFixed(5) + ' XKR</span>');
+              $('#boards .' + hash + '').append('<span class="tips">💸 ' + parseFloat(tips/100000).toFixed(5) + ' XKR</span>');
           }
 
 
