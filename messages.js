@@ -1404,6 +1404,7 @@ let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json
           // });
 
           // Add message to contacts list and add class to tell updateMessages
+
           if ( $('.' + payload_json.to).width() > 0 ){
           let listed_msg = handleMagnetListed(payload_json.msg);
 					//
@@ -1411,9 +1412,7 @@ let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json
 					// 	return;
 					// }
 
-					 if ($('.' + payload_json.to).width() > 0 ) {
 	          	$('.' + payload_json.to).find('.listed_message').text(listed_msg).parent().detach().prependTo('#messages_contacts');
-						}
         } else {
 					// console.log(handleMagnetListed(payload_json.msg));
           $('#messages_contacts').prepend('<li class="active_contact ' + payload_json.to + '" address="' + payload_json.to + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + get_avatar(payload_json.to) + '" /><span class="contact_address">' + payload_json.to + '</span><br><span class="listed_message">'+handleMagnetListed(payload_json.msg)+'</li>');
@@ -2087,6 +2086,10 @@ var lastMessage = 0;
 
 function updateMessages() {
 
+console.log("HallåUPDATESMESAGES????");
+console.log("HallåUPDATESMESAGES????");
+console.log("HallåUPDATESMESAGES????");
+console.log("HallåUPDATESMESAGES????");
 
   // This function gets all conversations and prints them to the contacts list
 
@@ -2960,7 +2963,7 @@ all_transactions = all_transactions.filter(function (el) {
 
 
 
-        if ( $('.' + conversation_address).width() > 0 ){
+        if ( $('.' + conversation_address).attr("address") == conversation_address ) {
           // If there is a contact in the sidebar,
           // then we update it, and move it to the top.
 
@@ -2970,7 +2973,7 @@ all_transactions = all_transactions.filter(function (el) {
 
       } else {
         // If there isn't one, create one
-        $('#messages_contacts').prepend('<li class="active_contact unread_message ' + conversation_address + '" address="' + conversation_address + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + get_avatar(conversation_address) + '" /><span class="contact_address">' + conversation_address + '</span><br><span class="listed_message">'+handleMagnetListed(payload_json.msg)+'</li>');
+      $('#messages_contacts').prepend('<li class="active_contact unread_message ' + conversation_address + '" address="' + conversation_address + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + get_avatar(conversation_address) + '" /><span class="contact_address">' + conversation_address + '</span><br><span class="listed_message">'+handleMagnetListed(payload_json.msg)+'</li>');
       }
 
       }
@@ -3958,7 +3961,9 @@ ipcRenderer.on('new-message', async (event, transaction) => {
 
 					 to_board = docs[0].translation;
 
-				 } else {
+				 } else if (transaction.transfers[0].publicKey == "0b66b223812861ad15e5310b4387f475c414cd7bda76be80be6d3a55199652fc") {
+           to_board = "Home";
+           } else {
 					 to_board = letter_from_spend_key(transaction.transfers[0].publicKey);
 				 }
 
