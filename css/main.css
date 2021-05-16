@@ -3605,9 +3605,11 @@ font-family: "montserrat";
 }
 
 #profile_balance span {
-    font-size: 18px;
-    display: block;
-    opacity: 0.5;
+  margin-left: 14%;
+  font-size: 18px;
+  display: block;
+  opacity: 0.5;
+  position: absolute;
 }
 
 #boards_messages {
