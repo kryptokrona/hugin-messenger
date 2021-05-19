@@ -11,7 +11,7 @@ Hugin is a messaging service where messages are stored on the kryptokrona blockc
 
 Hugin also packs some powerful decentralized P2P encrypted features like **video, voice**, **screen sharing** and **filesharing**. This is possible because we've managed to compress the requests to establish a connection (called SDP) with WebRTC from over 2000 characters to less than 200 – which means that a connection through Hugin is possible!
 
-<img align="left" alt="Screen-Shot-2021-01-11-at-20 44 14" src="https://user-images.githubusercontent.com/36674091/113740100-ef3c7900-96ef-11eb-91c8-4381b69605d1.png"><br>
+<img align="left" alt="Screen-Shot-2021-01-11-at-20 44 14" src="https://user-images.githubusercontent.com/3246908/118410333-273fc000-b68f-11eb-8883-77f42f4c1558.png"><br>
 
 ## Usage
 
