@@ -6,15 +6,16 @@ overflow-y: scroll;
 }
 
 .board_icon {
-  border-radius: 50%;
+  border-radius: 40%;
   width: 50px;
   height: 50px;
   margin-left: 15px;
+  opacity: 0.9;
   margin-bottom: 8px;
   line-height: 50px;
   text-align: center;
   font-size: 17pt;
-  color: #ffffff;
+  color: #f1f2f3;
   font-weight: 700;
   text-transform: capitalize;
   text-align: center;
@@ -41,10 +42,10 @@ overflow-y: scroll;
 } */
 
 #boards_picker .board_icon:hover {
-
   border-radius: 33%;
   transition: all 0.3s;
-
+  opacity: 1;
+  color: white;
 }
 
 
@@ -69,13 +70,17 @@ overflow-y: scroll;
   margin: auto;
   margin-bottom: 9px;
   margin-top: 14px;
+  opacity: 0.9;
+  margin-top: 27px;
 }
 
 #new_board:hover {
-
   border-radius: 33%;
   transition: all 0.3s;
-}
+  opacity: 1;
+  color: white;
+  font-weight: bold;
+  }
 
 
 #modal {

@@ -1169,7 +1169,7 @@ h1, h2, h3, h4 {
 
 
 .boards_nickname_form {
-    font-size: 13pt;
+    font-size: 12pt;
     height: 57px !important;
     border-radius: 0 !important;
     padding: 0 !important;
@@ -2082,7 +2082,7 @@ header  {
 
   .boards_nickname_form {
 
-    background: #f5f6f7 !important;
+    background: #f9f9f9 !important;
     color:#53565c !important;
   }
 
@@ -2126,8 +2126,8 @@ header  {
  }
 
  #new_board {
-
-   background: #3a313133 !important;
+   background: #b99f9f33 !important;
+   color: #53565c !important;
  }
 
 .received_message p {
@@ -3640,7 +3640,7 @@ font-family: "montserrat";
 
 button:hover {
 
-  color: white;
+  color: white !important;
   background: rgba(50,50,50,0.3);
 }
 
