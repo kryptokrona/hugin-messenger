@@ -251,11 +251,11 @@ let startCall = (audio, video, screenshare=false) => {
 
   console.log('Starting call..');
 
-  $('#video-button').unbind('click');
-
-  $('#call-button').unbind('click');
-
-  $('#screen-button').unbind('click');
+  // $('#video-button').unbind('click');
+  //
+  // $('#call-button').unbind('click');
+  //
+  // $('#screen-button').unbind('click');
 
 if (!screenshare) {
   // get video/voice stream
@@ -321,7 +321,7 @@ if (!screenshare) {
 
 
 
-    var peer1 = new Peer({ initiator: true, stream: stream, trickle: false,
+    let peer1 = new Peer({ initiator: true, stream: stream, trickle: false,
     offerOptions: {offerToReceiveVideo: true, offerToReceiveAudio: true}
    })
     //var peer2 = new Peer()
@@ -363,6 +363,7 @@ if (!screenshare) {
     peer1.on('stream', stream => {
       // got remote video stream, now let's show it in a video tag
       var video_elem = document.querySelector('video')
+      $('body').prepend('<video style="position: absolute; top: 2px; right: 88px; height: 270px; z-index: 99999999999; display: none; border-radius: 5px;"></video>');
 
       if ('srcObject' in video_elem) {
         video_elem.srcObject = stream
@@ -403,6 +404,7 @@ if (!screenshare) {
 
     $('#otherid').change(function(){
       console.log('Got callback');
+      $('#otherid').unbind('change');
       peer1.signal( JSON.parse($('#otherid').val()) );
     })
 
