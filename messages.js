@@ -3907,11 +3907,10 @@ let print_board_message = async (pubkey, message, timestamp, fetching_board, nic
   } else  {
     $('#boards_messages').prepend('<li class="board_message ' + timestamp*1000 + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + pubkey  + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
  }
- $('#boards_messages').find("a").each(function(){
-   $(this).click(function(){
+
+   $('.' + timestamp*1000).click(function(){
      shell.openExternal($(this).attr('href'));
    })
- })
 }
 
   if (nickname) {
