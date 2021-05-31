@@ -1455,7 +1455,16 @@ function sendMessage(message, silent=false) {
     let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(message);
     if (!silent) {
       let id_elem = Date.now();
-    $('#messages').append('<li class="sent_message" id="' + id_elem +  '"><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + message + '</p><span class="time">right now</span></li>');
+
+             let links = handle_links(message);
+             let display_message = links[0];
+
+    $('#messages').append('<li class="sent_message" id="' + id_elem +  '"><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + display_message + '</p><span class="time">right now</span></li>');
+
+      $('#' + id_elem).click(function(){
+        shell.openExternal($(this).attr('href'));
+      })
+
     if (magnetLinks) {
       handleMagnetLink(magnetLinks, id_elem);
     }
@@ -2875,12 +2884,21 @@ all_transactions = all_transactions.filter(function (el) {
           // message function, not this one.
 
           avatar_base64 = get_avatar(payload_json.from);
-
           payload_json.msg = parseCall(payload_json.msg, payload_json.from);
+          let links = handle_links(payload_json.msg);
+          let display_message = links[0];
+
+
+
+
+
 
           if (payload_json.msg.length) {
-            $('#messages').append('<li class="received_message" id=' + payload_json.t + '><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + payload_json.msg + '</p><span class="time">' + moment(payload_json.t).fromNow() + '</span></li>');
+            $('#messages').append('<li class="received_message" id=' + payload_json.t + '><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + display_message + '</p><span class="time">' + moment(payload_json.t).fromNow() + '</span></li>');
           }
+          $('#'+ payload_json.t).click(function(){
+            shell.openExternal($(this).attr('href'));
+          })
           let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(payload_json.msg);
 
           if (magnetLinks) {
@@ -3127,10 +3145,8 @@ async function print_conversation(conversation) {
         handleMagnetLink(magnetLinks, messages[n].timestamp);
       }
 
-      $('#messages').find("a").each(function(){
-        $(this).click(function(){
-          shell.openExternal($(this).attr('href'));
-        })
+      $('#'+ messages[n].timestamp).click(function(){
+        shell.openExternal($(this).attr('href'));
       })
 
       // insert link shiz
