@@ -3112,6 +3112,13 @@ async function print_conversation(conversation) {
       continue;
     }
     console.log( parseCall(messages[n].message, false, false) );
+
+
+       let links = handle_links(messages[n].message);
+       messages[n].message = links[0];
+       let youtube_links = links[1];
+       let image_attached = links[2];
+
     $('#messages').append('<li id="' + messages[n].timestamp + '" timestamp="' + messages[n].timestamp + '" class="' + messages[n].type + '_message"><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + parseCall(messages[n].message, false, false) + '</p><span class="time">' + moment(messages[n].timestamp).fromNow() + '</span></li>');
 
 
@@ -3119,6 +3126,14 @@ async function print_conversation(conversation) {
       if (magnetLinks) {
         handleMagnetLink(magnetLinks, messages[n].timestamp);
       }
+
+      $('#messages').find("a").each(function(){
+        $(this).click(function(){
+          shell.openExternal($(this).attr('href'));
+        })
+      })
+
+      // insert link shiz
 
 
   }
@@ -3783,6 +3798,51 @@ let reply = (hash) => {
 
 }
 
+let handle_links = (message) => {
+  geturl = new RegExp(
+          "(^|[ \t\r\n])((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&~=-])|%[A-Fa-f0-9]{2}){3,}(#([a-zA-Z0-9][a-zA-Z0-9$_.+!*(),;/?:@&~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))"
+         ,"g"
+       );
+
+// Instantiate attachments
+let youtube_links = '';
+let image_attached = '';
+
+// Find links
+let links_in_message = message.match(geturl);
+
+// Supported image attachment filetypes
+let imagetypes = ['.png','.jpg','.gif', '.webm', '.jpeg', '.webp'];
+
+// Find magnet links
+//let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(message);
+
+//message = message.replace(magnetLinks[0], "");
+
+if (links_in_message) {
+
+  for (let j = 0; j < links_in_message.length; j++) {
+
+    if (links_in_message[j].match(/youtu/) || links_in_message[j].match(/y2u.be/)) { // Embeds YouTube links
+      message = message.replace(links_in_message[j],'');
+      embed_code = links_in_message[j].split('/').slice(-1)[0].split('=').slice(-1)[0];
+      youtube_links += '<div style="position:relative;height:0;padding-bottom:42.42%"><iframe src="https://www.youtube.com/embed/' + embed_code + '?modestbranding=1" style="position:absolute;width:80%;height:100%;left:10%" width="849" height="360" frameborder="0" allow="autoplay; encrypted-media"></iframe></div>';
+    } else if (imagetypes.indexOf(links_in_message[j].substr(-4)) > -1 ) { // Embeds image links
+      message = message.replace(links_in_message[j],'');
+      image_attached_url = links_in_message[j];
+      image_attached = '<img class="attachment" src="' + image_attached_url + '" />';
+    } else { // Embeds other links
+      message = message.replace(links_in_message[j],'<a target="_new" href="' + links_in_message[j] + '">' + links_in_message[j] + '</a>');
+    }
+  }
+  return [message, youtube_links, image_attached];
+} else {
+  return [message,'',''];
+}
+
+
+}
+
 let print_board_message = async (pubkey, message, timestamp, fetching_board, nickname=false, reply=false, append=true) => {
 
   let avatar_base64 = get_avatar(pubkey);
@@ -3799,44 +3859,11 @@ let print_board_message = async (pubkey, message, timestamp, fetching_board, nic
      return;
    }
 
-     geturl = new RegExp(
-             "(^|[ \t\r\n])((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&~=-])|%[A-Fa-f0-9]{2}){3,}(#([a-zA-Z0-9][a-zA-Z0-9$_.+!*(),;/?:@&~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))"
-            ,"g"
-          );
 
-   // Instantiate attachments
-   let youtube_links = '';
-   let image_attached = '';
-
-   // Find links
-   let links_in_message = message.match(geturl);
-
-   // Supported image attachment filetypes
-   let imagetypes = ['.png','.jpg','.gif', '.webm', '.jpeg', '.webp'];
-
-   // Find magnet links
-   //let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(message);
-
-   //message = message.replace(magnetLinks[0], "");
-
-   if (links_in_message) {
-
-     for (let j = 0; j < links_in_message.length; j++) {
-
-       if (links_in_message[j].match(/youtu/) || links_in_message[j].match(/y2u.be/)) { // Embeds YouTube links
-         message = message.replace(links_in_message[j],'');
-         embed_code = links_in_message[j].split('/').slice(-1)[0].split('=').slice(-1)[0];
-         youtube_links += '<div style="position:relative;height:0;padding-bottom:42.42%"><iframe src="https://www.youtube.com/embed/' + embed_code + '?modestbranding=1" style="position:absolute;width:80%;height:100%;left:10%" width="849" height="360" frameborder="0" allow="autoplay; encrypted-media"></iframe></div>';
-       } else if (imagetypes.indexOf(links_in_message[j].substr(-4)) > -1 ) { // Embeds image links
-         message = message.replace(links_in_message[j],'');
-         image_attached_url = links_in_message[j];
-         image_attached = '<img class="attachment" src="' + image_attached_url + '" />';
-       } else { // Embeds other links
-         message = message.replace(links_in_message[j],'<a target="_new" href="' + links_in_message[j] + '">' + links_in_message[j] + '</a>');
-       }
-     }
-   }
-
+   let links = handle_links(message);
+   message = links[0];
+   let youtube_links = links[1];
+   let image_attached = links[2];
 
 
    if (append) {
