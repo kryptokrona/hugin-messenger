@@ -2713,16 +2713,19 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
 #caller_menu_type {
   font-family: "Montserrat";
   font-size: 10pt;
+  font-style: italic;
 
 }
 
 #caller_menu_contact {
   white-space: nowrap;
-    width: 120px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: block;
-    font-size: 12px;
+  width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  font-size: 14px;
+  font-weight: 400;
+  font-family: "Montserrat";
 }
 
 #caller_menu .fa {
