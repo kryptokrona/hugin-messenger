@@ -420,11 +420,11 @@ if (!screenshare) {
 
 }
 
-let answerCall = (msg) => {
+let answerCall = (msg, contact_address) => {
 
     let video = msg.substring(0,1) == 'Δ';
-    $('#messages_contacts').addClass('in-call');
-    $('#settings').addClass('in-call');
+    // $('#messages_contacts').addClass('in-call');
+    // $('#settings').addClass('in-call');
 
   // get video/voice stream
   navigator.mediaDevices.getUserMedia({
@@ -445,12 +445,22 @@ let answerCall = (msg) => {
 
     var peer2 = new Peer({stream: stream, trickle: false})
 
-    $('#caller_menu .fa-phone').click(function(){
-      endCall(peer2, stream);
+    // $('#caller_menu .fa-phone').click(function(){
+    //   endCall(peer2, stream);
+    // })
+    //
+    //
+    // $('#caller_menu .fa-microphone').click( function() {
+    //   $(this).toggleClass('fa-microphone-slash').toggleClass('fa-microphone');
+    //   stream.getTracks().forEach(track => track.enabled = !track.enabled);
+    // });
+
+    $('.' + contact_address).addClass("rgb").addClass("in-call-contact").append('<div class="lds-ripple-small call-loader"><div></div><div></div></div>');
+    $('#caller_menu .fa-phone').clone().appendTo('.' + contact_address).click(function(){
+      endCall(peer2, stream, contact_address);
     })
 
-
-    $('#caller_menu .fa-microphone').click( function() {
+    $('#caller_menu .fa-microphone').clone().appendTo('.' + contact_address).click( function() {
       $(this).toggleClass('fa-microphone-slash').toggleClass('fa-microphone');
       stream.getTracks().forEach(track => track.enabled = !track.enabled);
     });
@@ -458,7 +468,7 @@ let answerCall = (msg) => {
     peer2.on('close', () => {
 
       console.log('Connection lost..')
-      endCall(peer2, stream);
+      endCall(peer2, stream, contact_address);
 
     })
 
@@ -466,7 +476,7 @@ let answerCall = (msg) => {
 
       console.log('Connection lost..')
 
-      endCall(peer2, stream);
+      endCall(peer2, stream, contact_address);
 
     })
 
@@ -498,12 +508,15 @@ let answerCall = (msg) => {
     peer2.on('connect', () => {
 
       $('#caller_menu_type').text(`${video ? 'Video' : 'Voice'}` + ' connected');
+      $('.' + contact_address + ' .call-loader').fadeOut().remove();
+      $('.' + contact_address).addClass('online');
       console.log('Connection established;')
 
     });
 
     peer2.on('stream', stream => {
       // got remote video stream, now let's show it in a video tag
+      $('body').prepend('<video style="position: absolute; top: 2px; right: 88px; height: 270px; z-index: 99999999999; display: none; border-radius: 5px;"></video>');
       var video = document.querySelector('video')
 
 
@@ -566,12 +579,12 @@ let parseCall = (msg, sender=false, emitCall=true) => {
               print_conversation(sender);
            }
 
-           answerCall(msg);
+           answerCall(msg, sender);
 
-           $('#messages_contacts').addClass('in-call');
-           $('#settings').addClass('in-call');
+           // $('#messages_contacts').addClass('in-call');
+           // $('#settings').addClass('in-call');
 
-           $('#caller_menu').fadeIn().css('top','0px');
+           // $('#caller_menu').fadeIn().css('top','0px');
            $('#caller_menu_type').text('Connecting..');
 					 let conversation_display = await get_translation($('#recipient_form').val());
 			     $('#caller_menu_contact').text(conversation_display);
