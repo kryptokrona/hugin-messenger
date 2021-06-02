@@ -1748,6 +1748,67 @@ overlay #login img {
   overflow: hidden;
   margin: 7px;
   margin-left: 7px;
+  position: relative;
+}
+
+#messages_contacts .fa {
+  position: absolute;
+
+text-align: center;
+width: 20px;
+font-size: 16pt;
+
+}
+
+#messages_contacts .fa-microphone {
+
+}
+#messages_contacts .fa-phone {
+
+
+  bottom: 21px;
+      right: 58px;
+      transform: rotate(135deg);
+
+}
+
+.in-call-contact .contact_address {
+  width: 59%;
+  color: black;
+}
+
+.in-call-contact {
+  color: black;
+}
+
+.in-call-contact img {
+  background: black;
+}
+
+ #messages_contacts .fa-check-circle-o {
+   bottom: 21px;
+   right: 10px;
+
+ }
+
+.call-loader {
+  display: inline-block;
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  top: 15px;
+  right: 1.5px;
+}
+
+.call-loader div {
+  border-color: black !important;
+}
+
+#messages_contacts .fa-microphone, #messages_contacts .fa-microphone-slash {
+
+right: 32px;
+bottom: 20px;
+
 }
 
 .flipswitch {
@@ -2955,6 +3016,32 @@ button:focus {
 
 .in-call {
   padding-top: 70px !important;
+}
+
+.in-call-contact.online::after {
+  position: absolute;
+  height: 7px;
+  width: 7px;
+  border-radius: 50%;
+  background-color: #00CAFF;
+  top: calc(50% - 4px);
+  right: 15px;
+  display: block;
+  content: " ";
+  background: black;
+  animation: pulse 10s ease infinite;
+}
+
+@keyframes pulse {
+
+  from {
+    opacity: 100%;
+  }
+
+  to {
+    opacity: 20%;
+  }
+
 }
 
 /* .gradient {

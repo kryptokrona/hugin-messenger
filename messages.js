@@ -52,7 +52,7 @@ function containsOnlyEmojis(text) {
 
 var Peer = require('simple-peer')
 let listener = () => {}
-let endCall = (peer, stream) => {
+let endCall = (peer, stream, contact_address) => {
   peer.destroy();
   stream.getTracks().forEach(function(track) {
     track.stop();
@@ -66,18 +66,22 @@ let endCall = (peer, stream) => {
   video_elem.srcObject = null;
   myvideo.srcObject = null;
   $('otherid').empty();
-  $('#caller_menu').css('top','-65px');
-  $('#messages_contacts').removeClass('in-call');
-  $('#settings').removeClass('in-call');
+  // $('#caller_menu').css('top','-65px');
+  // $('#messages_contacts').removeClass('in-call');
+  // $('#settings').removeClass('in-call');
   $('#otherid').unbind('change');
   awaiting_callback = false;
 
+  $('.' + contact_address).removeClass("rgb").removeClass('online').removeClass("in-call-contact").find('.fa').remove();
+  $('.' + contact_address + " .call-loader").remove();
 
-    $('#video-button').unbind('click').click(function() { startCall(true, true) });
-
-    $('#call-button').unbind('click').click(function() { startCall(true, false) });
-
-    $('#screen-button').unbind('click').click(function() { startCall(true, true, true) });
+    //
+    //
+    // $('#video-button').unbind('click').click(function() { startCall(true, true) });
+    //
+    // $('#call-button').unbind('click').click(function() { startCall(true, false) });
+    //
+    // $('#screen-button').unbind('click').click(function() { startCall(true, true, true) });
 }
 
 let print_boards = async () => {
@@ -326,20 +330,21 @@ if (!screenshare) {
    })
     //var peer2 = new Peer()
     let first = true;
-
-    $('#messages_contacts').addClass('in-call');
-    $('#settings').addClass('in-call');
-    $('#caller_menu').fadeIn().css('top','0px');
-    $('#caller_menu_type').text('Calling..');
+    let contact_address = $('#recipient_form').val();
+    $('.' + contact_address).addClass("rgb").addClass("in-call-contact").append('<div class="lds-ripple-small call-loader"><div></div><div></div></div>');
+    // $('#messages_contacts').addClass('in-call');
+    // $('#settings').addClass('in-call');
+    // $('#caller_menu').fadeIn().css('top','0px');
+    // $('#caller_menu_type').text('Calling..');
 		let conversation_display = await get_translation($('#recipient_form').val());
-    $('#caller_menu_contact').text(conversation_display);
-    let avatar_base64 = get_avatar($('#recipient_form').val());
-    $('#caller_menu img').attr('src',"data:image/svg+xml;base64," + avatar_base64);
-    $('#caller_menu .fa-phone').click(function(){
-      endCall(peer1, stream);
+    // $('#caller_menu_contact').text(conversation_display);
+    // let avatar_base64 = get_avatar($('#recipient_form').val());
+    // $('#caller_menu img').attr('src',"data:image/svg+xml;base64," + avatar_base64);
+    $('#caller_menu .fa-phone').clone().appendTo('.' + contact_address).click(function(){
+      endCall(peer1, stream, contact_address);
     })
 
-    $('#caller_menu .fa-microphone').click( function() {
+    $('#caller_menu .fa-microphone').clone().appendTo('.' + contact_address).click( function() {
       $(this).toggleClass('fa-microphone-slash').toggleClass('fa-microphone');
       stream.getTracks().forEach(track => track.enabled = !track.enabled);
     });
@@ -348,7 +353,7 @@ if (!screenshare) {
 
       console.log('Connection lost..')
 
-      endCall(peer1, stream);
+      endCall(peer1, stream, contact_address);
 
     })
 
@@ -356,7 +361,7 @@ if (!screenshare) {
 
       console.log('Connection lost..')
 
-      endCall(peer1, stream);
+      endCall(peer1, stream, contact_address);
 
     })
 
@@ -377,6 +382,8 @@ if (!screenshare) {
     peer1.on('connect', () => {
 
       $('#caller_menu_type').text(`${video ? 'Video' : 'Voice'}` + ' connected');
+      $('.' + contact_address + ' .call-loader').fadeOut().remove();
+      $('.' + contact_address).addClass('online');
       console.log('Connection established;')
 
     });
@@ -599,11 +606,11 @@ let parseCall = (msg, sender=false, emitCall=true) => {
 
 }
 
-$('#video-button').click(function() { startCall(true, true); $('#video-button').unbind('click'); });
+$('#video-button').click(function() { startCall(true, true)});
 
-$('#call-button').click(function() { startCall(true, false); $('#call-button').unbind('click'); });
+$('#call-button').click(function() { startCall(true, false)});
 
-$('#screen-button').click(function() { startCall(true, true, true); $('#screen-button').unbind('click'); });
+$('#screen-button').click(function() { startCall(true, true, true)});
 
 var holder = document.getElementById('messages_pane');
 
@@ -2989,8 +2996,12 @@ all_transactions = all_transactions.filter(function (el) {
 
           let listed_msg = handleMagnetListed(payload_json.msg);
 
-        $('.' + conversation_address).find('.listed_message').text(listed_msg).parent().detach().prependTo("#messages_contacts").addClass('unread_message');
-
+        if (listed_msg) {
+        $('.' + conversation_address).find('.listed_message').text(listed_msg).parent().detach().prependTo("#messages_contacts");
+        if (payload_json.from != currentAddr) {
+          $('.' + conversation_address).addClass('unread_message');
+        }
+        }
       } else {
         // If there isn't one, create one
       $('#messages_contacts').prepend('<li class="active_contact unread_message ' + conversation_address + '" address="' + conversation_address + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + get_avatar(conversation_address) + '" /><span class="contact_address">' + conversation_address + '</span><br><span class="listed_message">'+handleMagnetListed(payload_json.msg)+'</li>');
