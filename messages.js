@@ -367,8 +367,9 @@ if (!screenshare) {
 
     peer1.on('stream', stream => {
       // got remote video stream, now let's show it in a video tag
-      var video_elem = document.querySelector('video')
       $('body').prepend('<video style="position: absolute; top: 2px; right: 88px; height: 270px; z-index: 99999999999; display: none; border-radius: 5px;"></video>');
+      var video_elem = document.querySelector('video');
+
 
       if ('srcObject' in video_elem) {
         video_elem.srcObject = stream
@@ -545,7 +546,7 @@ let parseCall = (msg, sender=false, emitCall=true) => {
       // Call offer
 
 
-      if (!awaiting_callback && emitCall) {
+      if (emitCall) {
 
         // Start ringing sequence
          $('#incomingCall').append('<audio autoplay><source src="static/ringtone.mp3" type="audio/mpeg"></audio>');
