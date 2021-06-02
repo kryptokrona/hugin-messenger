@@ -2632,10 +2632,15 @@ color: black;
 #incomingCall span {
 
   padding: 0 20px 0 20px;
-  word-break: break-all;
-  font-size: 16px;
-  display: block;
-  font-family: "Montserrat";
+    word-break: break-all;
+    font-size: 16px;
+    display: block;
+    font-family: "Montserrat";
+    height: 19px;
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: normal;
 }
 
 #declineCall, #answerCall {
