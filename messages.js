@@ -570,7 +570,7 @@ let parseCall = (msg, sender=false, emitCall=true) => {
 
 
          // Handle answer/decline
-         $('#answerCall').click(async function() {
+         $('#answerCall').unbind('click').click(async function() {
            $('#answerCall').unbind('click');
 					 $('#boards').addClass('hidden');
 					 $('#messages_page').removeClass('hidden');
@@ -1483,7 +1483,7 @@ function sendMessage(message, silent=false) {
              let display_message = links[0];
 
     $('#messages').append('<li class="sent_message" id="' + id_elem +  '"><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + display_message + '</p><span class="time">right now</span></li>');
-
+      console.log('debagg2', id_elem);
       $('#' + id_elem).click(function(){
         shell.openExternal($(this).attr('href'));
       })
@@ -2919,6 +2919,7 @@ all_transactions = all_transactions.filter(function (el) {
           if (payload_json.msg.length) {
             $('#messages').append('<li class="received_message" id=' + payload_json.t + '><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + display_message + '</p><span class="time">' + moment(payload_json.t).fromNow() + '</span></li>');
           }
+          console.log('debagg3', payload_json.t);
           $('#'+ payload_json.t).click(function(){
             shell.openExternal($(this).attr('href'));
           })
@@ -3171,7 +3172,7 @@ async function print_conversation(conversation) {
       if (magnetLinks) {
         handleMagnetLink(magnetLinks, messages[n].timestamp);
       }
-
+      console.log('debagg4', messages[n].timestamp);
       $('#'+ messages[n].timestamp).click(function(){
         shell.openExternal($(this).attr('href'));
       })
@@ -3934,7 +3935,7 @@ let print_board_message = async (pubkey, message, timestamp, fetching_board, nic
   } else  {
     $('#boards_messages').prepend('<li class="board_message ' + timestamp*1000 + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + pubkey  + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time">' + moment(timestamp*1000).fromNow() + '</span></li>');
  }
-
+  console.log('debagg', timestamp*1000);
    $('.' + timestamp*1000).click(function(){
      shell.openExternal($(this).attr('href'));
    })
