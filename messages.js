@@ -36,7 +36,7 @@ function dataURLtoFile(dataurl, filename) {
    }
 
 
-var sdp = require('./sdp');
+var sdp_parser = require('./sdp');
  let current_board = '';
 const Datastore = require('nedb');
 
@@ -322,12 +322,69 @@ if (!screenshare) {
 
   }
 
+    let peer1 = new Peer({
+      initiator: true,
+      stream: stream,
+      trickle: false,
+      offerOptions: {offerToReceiveVideo: true, offerToReceiveAudio: true},
+      sdpTransform: (sdp) => {
+        return sdp;
+          // console.log('lol, lmao', sdp);
+          //
+          // let sdp_object = {'sdp': sdp};
+          //
+          // let parsed_data = `${video ? "Δ" : "Λ"}` + parse_sdp(sdp_object);
+          // console.log(parsed_data);
+          // let recovered_data = sdp_parser.expand_sdp_offer(parsed_data);
+          // console.log(recovered_data);
+          // return recovered_data.sdp;
+         }
+  })
+
+  let video_codecs = window.RTCRtpSender.getCapabilities('video');
+
+  let custom_codecs = [];
+
+  for (codec in video_codecs.codecs) {
+    let this_codec = video_codecs.codecs[codec];
+    if (this_codec.mimeType == "video/H264" && this_codec.sdpFmtpLine.substring(0,5) == "level") {
+      custom_codecs.push(this_codec);
+    }
+
+  }
+
+  console.log('roflmao', custom_codecs);
+
+
+  let transceivers = peer1._pc.getTransceivers()
+
+  // select the desired transceiver
+   transceivers[1].setCodecPreferences(custom_codecs)
+
+  // let availSendCodecs = transceivers[0].sender.getCapabilities("video").codecs;
+  // let availReceiveCodecs = transceivers[0].receiver.getCapabilities("video").codecs;
+  //
+  // console.log(availSendCodecs,availReceiveCodecs);
+
+  // let peer1 = new Peer({
+  //     initiator: true,
+  //     stream: stream,
+  //     trickle: false,
+  //     sdpTransform: (sdp) => {
+  //       const sdp2 = sdp;
+  //       console.log(sdp2);
+  //       return sdp2;
+  //     },
+  //     // wrtc: {}, // RTCPeerConnection/RTCSessionDescription/RTCIceCandidate
+  //     reconnectTimer: 5000,
+  //     objectMode: false,
+  //   });
 
 
 
-    let peer1 = new Peer({ initiator: true, stream: stream, trickle: false,
-    offerOptions: {offerToReceiveVideo: true, offerToReceiveAudio: true}
-   })
+   //  // select the desired transceiver
+   //  console.log('transceivers', transceivers);
+   //  transceivers[1].setCodecPreferences(codecs);
     //var peer2 = new Peer()
     let first = true;
     let contact_address = $('#recipient_form').val();
@@ -389,13 +446,15 @@ if (!screenshare) {
 
     });
 
+
     peer1.on('signal', data => {
       console.log('real data:', data);
       let parsed_data = `${video ? "Δ" : "Λ"}` + parse_sdp(data);
       console.log('parsed data:', parsed_data);
-      let recovered_data = sdp.expand_sdp_offer(parsed_data);
+      let recovered_data = sdp_parser.expand_sdp_offer(parsed_data);
       console.log('recovered data:', recovered_data);
-
+      console.log('some other data:', {'type': 'offer', 'sdp':recovered_data});
+      // peer1._pc.setLocalDescription(recovered_data);
       data = recovered_data;
 
       if (!first) {
@@ -483,14 +542,16 @@ let answerCall = (msg, contact_address) => {
 
     let first = true;
 
+
+
     peer2.on('signal', data => {
       console.log('initial data:', data);
       let parsed_data = `${video ? 'δ' : 'λ'}` + parse_sdp(data);
       console.log('parsed data really cool sheet:', parsed_data);
-      let recovered_data = sdp.expand_sdp_answer(parsed_data);
+      let recovered_data = sdp_parser.expand_sdp_answer(parsed_data);
       data = recovered_data;
       console.log('recovered data:', recovered_data);
-
+      // peer2._pc.setLocalDescription(recovered_data);
       if (!first) {
         return
       }
@@ -499,8 +560,8 @@ let answerCall = (msg, contact_address) => {
       first = false;
 
     })
-    let signal = sdp.expand_sdp_offer(msg);
-    peer2.signal(sdp.expand_sdp_offer(msg));
+    let signal = sdp_parser.expand_sdp_offer(msg);
+    peer2.signal(sdp_parser.expand_sdp_offer(msg));
 
     peer2.on('track', (track, stream) => {
       $('#caller_menu_type').text('Setting up link..');
@@ -607,7 +668,7 @@ let parseCall = (msg, sender=false, emitCall=true) => {
     case "λ":
       // Answer
       if (emitCall) {
-      $('#otherid').val(JSON.stringify(sdp.expand_sdp_answer(msg)));
+      $('#otherid').val(JSON.stringify(sdp_parser.expand_sdp_answer(msg)));
       $('#otherid').change();
       }
       return "";
@@ -2696,7 +2757,7 @@ let sleepAmount = 1000;
 
 async function get_new_conversations(unconfirmed) {
 
-  console.log('Getting new convos..');
+  // console.log('Getting new convos..');
   apply_conversation_clicks();
   known_keys = await find(keychain, {});
 
@@ -2860,10 +2921,10 @@ all_transactions = all_transactions.filter(function (el) {
         let decryptBox = false;
 
         while (i < known_keys.length && !decryptBox) {
-          console.log('Decrypting..');
+          // console.log('Decrypting..');
 
           let possibleKey = known_keys[i].key;
-          console.log('Trying key:', possibleKey);
+          // console.log('Trying key:', possibleKey);
           i = i+1;
           try {
            decryptBox = nacl.box.open(hexToUint(box),
@@ -2875,13 +2936,13 @@ all_transactions = all_transactions.filter(function (el) {
            console.log(err);
            continue;
          }
-         console.log('Decrypted:', decryptBox);
+         // console.log('Decrypted:', decryptBox);
 
 
           }
 
           if (!decryptBox) {
-            console.log('Cannot decrypt..');
+            // console.log('Cannot decrypt..');
             continue;
           }
 
@@ -2890,7 +2951,7 @@ all_transactions = all_transactions.filter(function (el) {
 
           payload_json = JSON.parse(message_dec);
           payload_json.t = timestamp;
-          console.log(payload_json);
+          // console.log(payload_json);
           save_message(payload_json);
 
     }
@@ -3118,7 +3179,7 @@ async function print_conversation(conversation) {
 
     keychain.find({ address: conversation }, function (err, docs) {
 
-			console.log('found docs initial', docs);
+			// console.log('found docs initial', docs);
 
       if (docs.length > 0) {
 
@@ -3144,7 +3205,7 @@ async function print_conversation(conversation) {
   let messages = await find_messages({conversation: conversation}, 0, 100);
 
   for (n in messages) {
-		console.log(messages[n]);
+		// console.log(messages[n]);
     let hash = '';
 
     if (messages[n].type == 'received') {
@@ -3157,7 +3218,7 @@ async function print_conversation(conversation) {
     if (parseCall(messages[n].message, false, false).length == 0) {
       continue;
     }
-    console.log( parseCall(messages[n].message, false, false) );
+    // console.log( parseCall(messages[n].message, false, false) );
 
 
        let links = handle_links(messages[n].message);
@@ -3172,7 +3233,7 @@ async function print_conversation(conversation) {
       if (magnetLinks) {
         handleMagnetLink(magnetLinks, messages[n].timestamp);
       }
-      console.log('debagg4', messages[n].timestamp);
+      // console.log('debagg4', messages[n].timestamp);
       $('#'+ messages[n].timestamp).click(function(){
         shell.openExternal($(this).attr('href'));
       })
@@ -3413,12 +3474,12 @@ $('#create_priv_board_button').click(async function(){
 });
 
 ipcRenderer.on('blurred', async (event) => {
-  console.log('blur');
+  // console.log('blur');
   sleepAmount = 10000;
 })
 
 ipcRenderer.on('focused', async (event) => {
-  console.log('focus');
+  // console.log('focus');
   sleepAmount = 1000;
 
 })
@@ -4368,9 +4429,9 @@ ipcRenderer.on('got-boards', async (event, json) => {
 
 
 
-         console.log(thisBlockCount);
-         console.log(this_json_tx);
-         console.log(hash);
+         // console.log(thisBlockCount);
+         // console.log(this_json_tx);
+         // console.log(hash);
 
         let transactions = await walletd.getTransactions(
           thisBlockCount - this_json_tx.blockHeight,
@@ -4382,7 +4443,7 @@ ipcRenderer.on('got-boards', async (event, json) => {
 
          let blocks = transactions.body.result.items;
 
-         console.log('transactions', transactions);
+         // console.log('transactions', transactions);
 
            for (block in blocks) {
              let block_txs = blocks[block].transactions;
