@@ -505,6 +505,25 @@ let answerCall = (msg, contact_address) => {
 
     var peer2 = new Peer({stream: stream, trickle: false})
 
+
+      let video_codecs = window.RTCRtpSender.getCapabilities('video');
+
+      let custom_codecs = [];
+
+      for (codec in video_codecs.codecs) {
+        let this_codec = video_codecs.codecs[codec];
+        if (this_codec.mimeType == "video/H264" && this_codec.sdpFmtpLine.substring(0,5) == "level") {
+          custom_codecs.push(this_codec);
+        }
+
+      }
+
+
+      let transceivers = peer2._pc.getTransceivers()
+
+      // select the desired transceiver
+       transceivers[1].setCodecPreferences(custom_codecs)
+
     // $('#caller_menu .fa-phone').click(function(){
     //   endCall(peer2, stream);
     // })

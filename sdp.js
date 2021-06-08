@@ -19,6 +19,8 @@ expand_sdp_offer: function(compressed_string) {
     return en.decode(h);
   });
 
+  console.log(ssrc);
+
   let msid = split[6];
 
   let external_ip = '';
@@ -382,7 +384,7 @@ a=rtcp-fb:108 ccm fir
 a=rtcp-fb:108 nack
 a=rtcp-fb:108 nack pli
 a=fmtp:108 level-asymmetry-allowed=1;packetization-mode=0;profile-level-id=42e01f
-a=ssrc:1596446635 cname:XYatm9HV0RIPtL87
+a=ssrc:` + ssrc[1] + ` cname:0v7phLz3L82cIhVT
 m=application 9 UDP/DTLS/SCTP webrtc-datachannel
 c=IN IP4 0.0.0.0
 b=AS:30
