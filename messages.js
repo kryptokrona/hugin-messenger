@@ -359,7 +359,10 @@ if (!screenshare) {
   let transceivers = peer1._pc.getTransceivers()
 
   // select the desired transceiver
+  if (transceivers.length > 1 ) {
    transceivers[1].setCodecPreferences(custom_codecs)
+   }
+
 
   // let availSendCodecs = transceivers[0].sender.getCapabilities("video").codecs;
   // let availReceiveCodecs = transceivers[0].receiver.getCapabilities("video").codecs;
