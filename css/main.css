@@ -1203,11 +1203,12 @@ h1, h2, h3, h4 {
     background: #2b2727 !important;
     border-radius: 5px !important;
     color: rgba(255,255,255,0.8) !important;
-      border: none;
-        height: 44px !important;
-        width: 94%;
-          padding-left: 10px !important;
-          margin-bottom: 20px;
+    border: none;
+    height: 44px !important;
+    width: 94%;
+    padding-right: 10px;
+    padding-left: 10px !important;
+    margin-bottom: 20px;
 }
 
 #modal .fa-plus {
@@ -1624,9 +1625,9 @@ overlay #login img {
  }
 
 .message_avatar {
-  width:20px !important;
+  width:25px !important;
   border-radius: 50%;
-  margin-bottom: -15px;
+  margin-bottom: -20px;
 }
 
 .sent_message .message_avatar {
@@ -1742,7 +1743,7 @@ overlay #login img {
 
 #messages_contacts > li {
   cursor: pointer;
-  height: 45px;
+  height: 50px;
   border-radius: 5px;
   background-color: rgba(0,0,0,0.2);
   overflow: hidden;
@@ -1900,14 +1901,14 @@ bottom: 20px;
   width: 7px;
   border-radius: 50%;
   background-color: #00CAFF;
-  top: calc(50% - 4px);
-  right: 15px;
+  top: calc(50% - 2px);
+  right: 13px;
   display: block;
   content: " ";
   background: #5f86f2;
-  -webkit-animation: rgb 10s ease infinite;
-  -moz-animation: rgb 10s ease infinite;
-  animation: rgb 10s ease infinite;
+  -webkit-animation: hue 10s ease infinite;
+  -moz-animation: hue 10s ease infinite;
+  animation: hue 10s ease infinite;
 }
 
 .contact_address {
@@ -1923,6 +1924,12 @@ bottom: 20px;
     font-family: "montserrat";
     color: rgba(255,255,255,0.8);
   }
+
+#messages .contact_address {
+  display: inline-block;
+  vertical-align: -17px;
+}
+
 .contact_avatar { border-radius: 50%; position: relative; left: -43px; top: 2px; }
 .listed_message { display: block; width: 90%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 11px; opacity: 0.7; margin-top: -10px; margin-left: 5px; }
 
@@ -2032,8 +2039,8 @@ bottom: 20px;
     color: #53565c;
   }
 
-  #login button:hover {
-    color: black;
+  #login button:hover:not(#nodeConnect) {
+    color: black !important;
     background: rgba(0,0,0,0.1);
   }
   #status_icon {
@@ -2277,7 +2284,7 @@ header  {
 
 
   #settings div:hover {
-
+    color: black;
     background-color: rgba(50,50,50,0.03);
 
   }
@@ -2330,7 +2337,7 @@ header  {
  #nodeConnect:hover, #modal button:hover {
 
     background-color: rgba(77, 220, 106, 0.95) !important;
-    color: white;
+    color: white !important;
  }
 
  .dropbtn {
@@ -3211,6 +3218,22 @@ li .gradient {
   animation: rgb 30s ease infinite;
 }
 
+.hue {
+
+  animation: hue 30s ease infinite;
+}
+
+
+  @keyframes hue {
+    from {
+      filter: hue-rotate(0deg);
+    }
+    to {
+      filter: hue-rotate(360deg);
+    }
+
+  }
+
 .flash {
   transition: 0.5s;
   background: #5f86f2;
@@ -3415,6 +3438,25 @@ li .gradient {
 top: 15px;
 right: 15px;
 
+}
+
+.tips::before {
+    font-family: 'XKR';
+    content: "\e900";
+    font-weight: lighter;
+    font-size: 22px;
+    position: relative;
+    /* margin-top: -15px; */
+    color: rgba(0, 0, 0, 0.7);
+    text-align: center;
+    width: 100%;
+    color: #f1f2f3;
+    line-height: 19px;
+    vertical-align: middle;
+    margin-left: 10px;
+    margin-right: 5px;
+    animation: hue 30s ease infinite;
+    color: #5f86f2;
 }
 
 #board_title {
