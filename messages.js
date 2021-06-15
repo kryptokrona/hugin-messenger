@@ -1000,7 +1000,7 @@ contextMenu({
 													}
 
 													$('.' + contact + ' .contact_address').text(r);
-
+                          print_conversation(contact);
 												});
 								    }
 								})
@@ -1988,7 +1988,7 @@ function printMessages(transactions, address) {
 
     // Get list of wallets
     walletd.getAddresses()
-    .then(resp => {
+    .then(async resp => {
       currentAddr = resp.body.result.addresses[0];
       allAddresses = resp.body.result.addresses;
 
@@ -2097,9 +2097,14 @@ function printMessages(transactions, address) {
                     hash = address;
                   }
                   avatar_base64 = get_avatar(hash);
+                  let nickname = await get_translation(hash);
+                  let nickname_element = '';
 
+                  if (nickname != hash) {
+                    nickname_element = '<span class="contact_address">' + nickname + '</span>';
+                  }
 
-                  $('#messages').append('<li class="' + sortedMessages[i].type + '_message"><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + sortedMessages[i].message + '</p><span class="time">' + moment(sortedMessages[i].timestamp).fromNow() + '</span></li>');
+                  $('#messages').append('<li class="' + sortedMessages[i].type + '_message"><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '">' + nickname_element + '<p>' + sortedMessages[i].message + '</p><span class="time">' + moment(sortedMessages[i].timestamp).fromNow() + '</span></li>');
                   let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(sortedMessages[i].message);
                   if (magnetLinks) {
                     handleMagnetLink(magnetLinks, sortedMessages[i].timestamp);
@@ -2180,7 +2185,7 @@ function getConversation(address) {
               transactions.push({"transactions": [transaction]});
 
               if ( (txsLength - i) == 1) {
-                printMessages(transactions, address);
+               printMessages(transactions, address);
               }
             });
           }
@@ -2198,10 +2203,6 @@ var lastMessage = 0;
 
 function updateMessages() {
 
-console.log("HallåUPDATESMESAGES????");
-console.log("HallåUPDATESMESAGES????");
-console.log("HallåUPDATESMESAGES????");
-console.log("HallåUPDATESMESAGES????");
 
   // This function gets all conversations and prints them to the contacts list
 
@@ -3244,8 +3245,14 @@ async function print_conversation(conversation) {
        messages[n].message = links[0];
        let youtube_links = links[1];
        let image_attached = links[2];
+       let nickname = await get_translation(conversation);
+       let nickname_element = '';
 
-    $('#messages').append('<li id="' + messages[n].timestamp + '" timestamp="' + messages[n].timestamp + '" class="' + messages[n].type + '_message"><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + parseCall(messages[n].message, false, false) + '</p><span class="time">' + moment(messages[n].timestamp).fromNow() + '</span></li>');
+       if (nickname != conversation && messages[n].type == 'received') {
+         nickname_element = '<span class="contact_address">' + nickname + '</span>';
+       }
+
+    $('#messages').append('<li id="' + messages[n].timestamp + '" timestamp="' + messages[n].timestamp + '" class="' + messages[n].type + '_message"><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '">' + nickname_element + '<p>' + parseCall(messages[n].message, false, false) + '</p><span class="time">' + moment(messages[n].timestamp).fromNow() + '</span></li>');
 
 
       let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(messages[n].message);
@@ -3844,7 +3851,7 @@ let print_single_board_message = async (hash, selector) => {
      }
 
         if (tips) {
-            $('.' + hash).append('<span class="tips">' + parseFloat(tips/100000).toFixed(5) + ' XKR</span>');
+            $('.' + hash).append('<span class="tips">' + parseFloat(tips/100000).toFixed(5) + '</span>');
         }
 
 
@@ -4363,7 +4370,7 @@ ipcRenderer.on('got-profile', async (event, json) => {
        }
 
           if (tips) {
-              $('#recent_board_messages .' + hash + '').append('<span class="tips">' + parseFloat(tips/100000).toFixed(5) + ' XKR</span>');
+              $('#recent_board_messages .' + hash + '').append('<span class="tips">' + parseFloat(tips/100000).toFixed(2) + '</span>');
           }
 
 
@@ -4602,7 +4609,7 @@ ipcRenderer.on('got-boards', async (event, json) => {
        }
 
           if (tips) {
-              $('#boards .' + hash + '').append('<span class="tips">💸 ' + parseFloat(tips/100000).toFixed(5) + ' XKR</span>');
+              $('#boards .' + hash + '').append('<span class="tips">' + parseFloat(tips/100000).toFixed(5) + '</span>');
           }
 
 
