@@ -771,11 +771,12 @@ $(".setting_page").fadeOut();
 $('#boards_messages').removeClass('menu');
 $('#modal').addClass('hidden');
 $('#send_payment').addClass('hidden');
+$('#boards').addClass('hidden');
 if ($('#boards').hasClass('hidden') && $('#flip-box-inner').hasClass('flip')) {
 myFunction();
 }
 
-$('#boards').addClass('hidden');
+
 $("#messages_page").removeClass('hidden');
 });
 
@@ -788,6 +789,7 @@ $("#boards_picker").empty().addClass('hidden');
 $('#boards_messages').removeClass('menu');
 $('#modal').addClass('hidden');
 $('#send_payment').addClass('hidden');
+$('#currentchat_header_wrapper').removeClass('toggled_addr');
 });
 
 $('.close').click(function(){
