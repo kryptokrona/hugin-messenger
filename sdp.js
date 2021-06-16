@@ -19,8 +19,6 @@ expand_sdp_offer: function(compressed_string) {
     return en.decode(h);
   });
 
-  console.log(ssrc);
-
   let msid = split[6];
 
   let external_ip = '';
@@ -231,7 +229,12 @@ expand_sdp_answer: function(compressed_string) {
 
   let ssrc = split[5].split('&').map(function (h) {
     return en.decode(h);
-  });;
+  });
+
+
+  if (ssrc[1] == undefined) {
+    ssrc[1] = ssrc[0];
+  }
 
   let msid = split[6];
 
