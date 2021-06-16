@@ -359,7 +359,7 @@ if (!screenshare) {
   let transceivers = peer1._pc.getTransceivers()
 
   // select the desired transceiver
-  if (transceivers.length > 1 ) {
+  if (video) {
    transceivers[1].setCodecPreferences(custom_codecs)
    }
 
@@ -522,10 +522,13 @@ let answerCall = (msg, contact_address) => {
       }
 
 
-      let transceivers = peer2._pc.getTransceivers()
+      let transceivers = peer2._pc.getTransceivers();
 
       // select the desired transceiver
-       transceivers[1].setCodecPreferences(custom_codecs)
+    if (video) {
+       transceivers[1].setCodecPreferences(custom_codecs);
+    }
+
 
     // $('#caller_menu .fa-phone').click(function(){
     //   endCall(peer2, stream);
@@ -600,7 +603,7 @@ let answerCall = (msg, contact_address) => {
 
     peer2.on('stream', stream => {
       // got remote video stream, now let's show it in a video tag
-      $('body').prepend('<video style="position: absolute; top: 2px; right: 88px; height: 270px; z-index: 99999999999; display: none; border-radius: 5px;"></video>');
+      $('body').prepend('<video style="position: absolute; top: 2px; right: 88px; height: 270px; z-index: 99999999999; border-radius: 5px;"></video>');
       var video = document.querySelector('video')
 
 
