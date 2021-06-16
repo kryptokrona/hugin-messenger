@@ -427,7 +427,7 @@ if (!screenshare) {
 
     peer1.on('stream', stream => {
       // got remote video stream, now let's show it in a video tag
-      $('body').prepend('<video style="position: absolute; top: 2px; right: 88px; height: 270px; z-index: 99999999999; display: none; border-radius: 5px;"></video>');
+      $('body').prepend('<video style="position: absolute; top: 2px; right: 88px; height: 270px; z-index: 99999999999; border-radius: 5px;"></video>');
       var video_elem = document.querySelector('video');
 
 
