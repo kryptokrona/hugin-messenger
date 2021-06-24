@@ -1768,7 +1768,7 @@ font-size: 16pt;
 
 
   bottom: 21px;
-      right: 58px;
+      right: 60px;
       transform: rotate(135deg);
 
 }
@@ -1807,7 +1807,7 @@ font-size: 16pt;
 
 #messages_contacts .fa-microphone, #messages_contacts .fa-microphone-slash {
 
-right: 32px;
+right: 34px;
 bottom: 20px;
 
 }
@@ -3458,6 +3458,64 @@ right: 15px;
     animation: hue 30s ease infinite;
     color: #5f86f2;
 }
+
+.lds-ellipsis {
+  position: absolute;
+      width: 8px;
+      height: 8px;
+      right: 32px;
+      top: 43px;
+}
+.lds-ellipsis div {
+  position: absolute;
+  top: -13px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: black;
+  animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+.lds-ellipsis div:nth-child(1) {
+  left: 8px;
+  animation: lds-ellipsis1 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(2) {
+  left: 8px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(3) {
+  left: 18px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(4) {
+  left: 28px;
+  animation: lds-ellipsis3 0.6s infinite;
+}
+@keyframes lds-ellipsis1 {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes lds-ellipsis3 {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
+@keyframes lds-ellipsis2 {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(10px, 0);
+  }
+}
+
 
 #board_title {
 

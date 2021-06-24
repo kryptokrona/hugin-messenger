@@ -73,7 +73,7 @@ let endCall = (peer, stream, contact_address) => {
   awaiting_callback = false;
 
   $('.' + contact_address).removeClass("rgb").removeClass('online').removeClass("in-call-contact").find('.fa').remove();
-  $('.' + contact_address + " .call-loader").remove();
+  $('.' + contact_address + " .lds-ellipsis").remove();
 
     //
     //
@@ -391,7 +391,7 @@ if (!screenshare) {
     //var peer2 = new Peer()
     let first = true;
     let contact_address = $('#recipient_form').val();
-    $('.' + contact_address).addClass("rgb").addClass("in-call-contact").append('<div class="lds-ripple-small call-loader"><div></div><div></div></div>');
+    $('.' + contact_address).addClass("rgb").addClass("in-call-contact").append('<div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>');
     // $('#messages_contacts').addClass('in-call');
     // $('#settings').addClass('in-call');
     // $('#caller_menu').fadeIn().css('top','0px');
@@ -443,7 +443,7 @@ if (!screenshare) {
     peer1.on('connect', () => {
 
       $('#caller_menu_type').text(`${video ? 'Video' : 'Voice'}` + ' connected');
-      $('.' + contact_address + ' .call-loader').fadeOut().remove();
+      $('.' + contact_address + ' .lds-ellipsis').fadeOut().remove();
       $('.' + contact_address).addClass('online');
       console.log('Connection established;')
 
@@ -540,7 +540,7 @@ let answerCall = (msg, contact_address) => {
     //   stream.getTracks().forEach(track => track.enabled = !track.enabled);
     // });
 
-    $('.' + contact_address).addClass("rgb").addClass("in-call-contact").append('<div class="lds-ripple-small call-loader"><div></div><div></div></div>');
+    $('.' + contact_address).addClass("rgb").addClass("in-call-contact").append('<div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>');
     $('#caller_menu .fa-phone').clone().appendTo('.' + contact_address).click(function(){
       endCall(peer2, stream, contact_address);
     })
@@ -595,7 +595,7 @@ let answerCall = (msg, contact_address) => {
     peer2.on('connect', () => {
 
       $('#caller_menu_type').text(`${video ? 'Video' : 'Voice'}` + ' connected');
-      $('.' + contact_address + ' .call-loader').fadeOut().remove();
+      $('.' + contact_address + ' .lds-ellipsis').fadeOut().remove();
       $('.' + contact_address).addClass('online');
       console.log('Connection established;')
 
