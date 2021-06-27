@@ -1895,7 +1895,7 @@ bottom: 20px;
   position: relative;
 }
 
-.unread_message::after {
+.unread_message:not(.in-call-contact)::after {
   position: absolute;
   height: 7px;
   width: 7px;
@@ -3873,4 +3873,20 @@ button:hover {
   margin-left: -10% !important;
   padding-right: 10% !important;
   transition-timing-function: cubic-bezier(.17,.67,.25,.89);
+}
+
+.video-grid {
+  position: absolute;
+    height: 90%;
+    width: 420px;
+    right: 10%;
+    top: 5%;
+    z-index: 99999999999;
+    display: none;
+}
+
+.video-grid video {
+height: 270px; border-radius: 5px; margin-bottom: 5px;
+width: 400px;
+display: block;
 }

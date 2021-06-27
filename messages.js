@@ -57,14 +57,20 @@ let endCall = (peer, stream, contact_address) => {
   stream.getTracks().forEach(function(track) {
     track.stop();
   });
-  $('video').fadeOut();
   var myvideo = document.getElementById('myvideo');
-  myvideo.srcObject = stream;
-  myvideo.pause();
-  var video_elem = document.querySelector('video');
-  video_elem.pause();
-  video_elem.srcObject = null;
-  myvideo.srcObject = null;
+
+  try {
+  $('.video-grid .' + contact_address).remove();
+} catch (err) {
+
+}
+  if (!$('.video-grid video').length) {
+    $('.video-grid').hide();
+    myvideo.srcObject = stream;
+    myvideo.pause();
+    myvideo.srcObject = null;
+  }
+
   $('otherid').empty();
   // $('#caller_menu').css('top','-65px');
   // $('#messages_contacts').removeClass('in-call');
@@ -353,8 +359,7 @@ if (!screenshare) {
 
   }
 
-  console.log('roflmao', custom_codecs);
-
+  let contact_address = $('#recipient_form').val();
 
   let transceivers = peer1._pc.getTransceivers()
 
@@ -363,34 +368,8 @@ if (!screenshare) {
    transceivers[1].setCodecPreferences(custom_codecs)
    }
 
-
-  // let availSendCodecs = transceivers[0].sender.getCapabilities("video").codecs;
-  // let availReceiveCodecs = transceivers[0].receiver.getCapabilities("video").codecs;
-  //
-  // console.log(availSendCodecs,availReceiveCodecs);
-
-  // let peer1 = new Peer({
-  //     initiator: true,
-  //     stream: stream,
-  //     trickle: false,
-  //     sdpTransform: (sdp) => {
-  //       const sdp2 = sdp;
-  //       console.log(sdp2);
-  //       return sdp2;
-  //     },
-  //     // wrtc: {}, // RTCPeerConnection/RTCSessionDescription/RTCIceCandidate
-  //     reconnectTimer: 5000,
-  //     objectMode: false,
-  //   });
-
-
-
-   //  // select the desired transceiver
-   //  console.log('transceivers', transceivers);
-   //  transceivers[1].setCodecPreferences(codecs);
-    //var peer2 = new Peer()
     let first = true;
-    let contact_address = $('#recipient_form').val();
+
     $('.' + contact_address).addClass("rgb").addClass("in-call-contact").append('<div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>');
     // $('#messages_contacts').addClass('in-call');
     // $('#settings').addClass('in-call');
@@ -427,7 +406,7 @@ if (!screenshare) {
 
     peer1.on('stream', stream => {
       // got remote video stream, now let's show it in a video tag
-      $('body').prepend('<video style="position: absolute; top: 2px; right: 88px; height: 270px; z-index: 99999999999; border-radius: 5px;"></video>');
+      $('.video-grid').append('<video class="' + contact_address  + '"></video>').show();
       var video_elem = document.querySelector('video');
 
 
@@ -603,7 +582,7 @@ let answerCall = (msg, contact_address) => {
 
     peer2.on('stream', stream => {
       // got remote video stream, now let's show it in a video tag
-      $('body').prepend('<video style="position: absolute; top: 2px; right: 88px; height: 270px; z-index: 99999999999; border-radius: 5px;"></video>');
+      $('.video-grid').append('<video class="' + contact_address  + '"></video>').show();
       var video = document.querySelector('video')
 
 
