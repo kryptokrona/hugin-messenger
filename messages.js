@@ -2775,16 +2775,16 @@ let known_txs = [];
 
 let apply_conversation_clicks = () => {
 
-	$("#messages_contacts").unbind('click').on("click", "li", function(){
-			// console.log('Clicked:', $(this).find('.contact_address').text() );
-	    $('#message_form').focus();
-	    $('#recipient_form').val($(this).find('.contact_address').text());
-	    $(this).removeClass('unread_message');
-	    print_conversation($(this).attr('address'));
-			$('#settings_page').fadeOut();
+  $("#messages_contacts").unbind('click').on("click", "li", async function(){
+      // console.log('Clicked:', $(this).find('.contact_address').text() );
+      $('#message_form').focus();
+      $('#messages_pane').hide();
+      $('#recipient_form').val($(this).find('.contact_address').text());
+      $(this).removeClass('unread_message');
+     await print_conversation($(this).attr('address'));
+      $('#settings_page').fadeOut();
       $('#currentchat_footer').removeClass('hidden');
-	});
-
+  });
 }
 
 let check_counter = 0;
@@ -3301,6 +3301,7 @@ async function print_conversation(conversation) {
 
 
   // Scroll to bottom
+  $('#messages_pane').fadeIn();
   $('#messages_pane').scrollTop($('#messages').height());
 
   for (message in $('#messages').find('p')) {
