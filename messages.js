@@ -645,6 +645,7 @@ let parseCall = (msg, sender=false, emitCall=true) => {
 					 $('#boards_picker').addClass('hidden');
            if ($('#recipient_form').text() != sender) {
               print_conversation(sender);
+              $('#currentchat_footer').show();
            }
 
            answerCall(msg, sender);
@@ -1493,9 +1494,10 @@ let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json
 
 	          	$('.' + payload_json.to).find('.listed_message').text(listed_msg).parent().detach().prependTo('#messages_contacts');
         } else {
-					// console.log(handleMagnetListed(payload_json.msg));
+					if (handleMagnetListed(payload_json.msg).length) {
+            console.log('Prepending new contact..');
           $('#messages_contacts').prepend('<li class="active_contact ' + payload_json.to + '" address="' + payload_json.to + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + get_avatar(payload_json.to) + '" /><span class="contact_address">' + payload_json.to + '</span><br><span class="listed_message">'+handleMagnetListed(payload_json.msg)+'</li>');
-
+          }
         }
         }
         return JSON.parse(fromHex(payload_hex)).t;
@@ -2342,6 +2344,7 @@ function updateMessages() {
                   avatar_base64 = get_avatar(senderAddr);
                   let listed_msg = handleMagnetListed(message);
                   if (listed_msg.length > 0) {
+                    console.log('Printing new contact..');
                   $('#messages_contacts').prepend('<li class="active_contact ' + senderAddr + '" address="' + senderAddr + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '" /><span class="contact_address">' + senderAddr + '</span><br><span class="listed_message">'+listed_msg+'</li>');
                   }
                   messages.push(senderAddr);
@@ -2377,7 +2380,10 @@ function updateMessages() {
                 avatar_base64 = get_avatar(thisAddr);
                 let listed_msg = handleMagnetListed(message);
 								// console.log(listed_msg);
+                console.log('Printing new contact..');
+                if (listed_msg.length){
                 $('#messages_contacts').prepend('<li class="active_contact ' + thisAddr + '" address="' + thisAddr + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '" /><span class="contact_address">' + thisAddr + '</span><br><span class="listed_message">'+listed_msg+'</li>');
+                }
                 messages.push(thisAddr);
 
 
@@ -2742,8 +2748,11 @@ async function print_conversations() {
 
 							 let conversation_display = await get_translation(conversation);
 							 // console.log(handleMagnetListed(messages[m].message));
-						  	$('#messages_contacts').append('<li class="active_contact ' + conversation + '" address="' + conversation +  '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + get_avatar(conversation) + '" /><span class="contact_address">' + conversation_display + '</span><br><span class="listed_message">'+handleMagnetListed(messages[m].message)+'</li>');
 
+               if (handleMagnetListed(messages[m].message).length){
+                 console.log('Printing new contact..');
+						  	$('#messages_contacts').append('<li class="active_contact ' + conversation + '" address="' + conversation +  '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + get_avatar(conversation) + '" /><span class="contact_address">' + conversation_display + '</span><br><span class="listed_message">'+handleMagnetListed(messages[m].message)+'</li>');
+              }
       } catch (error) {
 
 			}
@@ -3115,8 +3124,10 @@ console.log(all_transactions);
         }
       } else {
         // If there isn't one, create one
-      $('#messages_contacts').prepend('<li class="active_contact unread_message ' + conversation_address + '" address="' + conversation_address + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + get_avatar(conversation_address) + '" /><span class="contact_address">' + conversation_address + '</span><br><span class="listed_message">'+handleMagnetListed(payload_json.msg)+'</li>');
-      }
+
+        if (!$('.' + conversation_address).width()) {
+          $('#messages_contacts').prepend('<li class="active_contact unread_message ' + conversation_address + '" address="' + conversation_address + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + get_avatar(conversation_address) + '" /><span class="contact_address">' + conversation_address + '</span><br><span class="listed_message">'+handleMagnetListed(payload_json.msg)+'</li>');
+      }}
 
       }
 
