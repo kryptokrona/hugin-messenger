@@ -259,6 +259,8 @@ function handleError (e) {
 
 let startCall = (audio, video, screenshare=false) => {
 
+  let contact_address = $('#recipient_form').val();
+
   console.log('Starting call..');
 
   // $('#video-button').unbind('click');
@@ -359,7 +361,7 @@ if (!screenshare) {
 
   }
 
-  let contact_address = $('#recipient_form').val();
+
 
   let transceivers = peer1._pc.getTransceivers()
 
@@ -407,15 +409,15 @@ if (!screenshare) {
     peer1.on('stream', stream => {
       // got remote video stream, now let's show it in a video tag
       $('.video-grid').append('<video class="' + contact_address  + '"></video>').show();
-      var video_elem = document.querySelector('video');
+      let video_element = document.querySelector('.'+contact_address);
 
 
-      if ('srcObject' in video_elem) {
-        video_elem.srcObject = stream
+      if ('srcObject' in video_element) {
+        video_element.srcObject = stream
       } else {
-        video_elem.src = window.URL.createObjectURL(stream) // for older browsers
+        video_element.src = window.URL.createObjectURL(stream) // for older browsers
       }
-      video_elem.play()
+      video_element.play()
 
     })
 
@@ -1004,18 +1006,7 @@ contextMenu({
 let last_block_checked = 1;
 let last_block_checked_boards = 1;
 
-misc.find({}, function (err,docs){
 
-    if (docs.length == 0) {
-
-    misc.insert({"height": 1, "nickname": undefined, "boardsHeight": 1});
-
-  } else {
-    last_block_checked = docs[0].height;
-    last_block_checked_boards = docs[0].boardsHeight;
-  }
-
-});
 
 $('#import').click(function(){
 
@@ -2346,7 +2337,9 @@ function updateMessages() {
 
                   avatar_base64 = get_avatar(senderAddr);
                   let listed_msg = handleMagnetListed(message);
+                  if (listed_msg.length > 0) {
                   $('#messages_contacts').prepend('<li class="active_contact ' + senderAddr + '" address="' + senderAddr + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '" /><span class="contact_address">' + senderAddr + '</span><br><span class="listed_message">'+listed_msg+'</li>');
+                  }
                   messages.push(senderAddr);
                 }
 
@@ -2762,7 +2755,8 @@ let sleepAmount = 1000;
 
 async function get_new_conversations(unconfirmed) {
 
-  // console.log('Getting new convos..');
+  console.log('Checking for unconfirmed:', unconfirmed);
+
   apply_conversation_clicks();
   known_keys = await find(keychain, {});
 
@@ -2772,9 +2766,12 @@ async function get_new_conversations(unconfirmed) {
 try {
   block_height = await get_block_height();
 } catch (err){
+  console.log(err);
 sleep(1000);
 get_new_conversations(unconfirmed);
 }
+
+
   let check_block = last_block_checked;
 
   if (!unconfirmed) {
@@ -2786,12 +2783,12 @@ get_new_conversations(unconfirmed);
       }
 
       try {
-				// console.log('heights:', last_block_checked, block_height);
+				console.log('heights:', last_block_checked, block_height);
       confirmed_transactions = await get_confirmed_messages(last_block_checked, block_height);
 			// console.log('confirmed txs:', confirmed_transactions);
       check_block = block_height;
     } catch (err) {
-
+      console.log(err);
       if (err == 'ETOOLARGE') {
 
         confirmed_transactions = [];
@@ -2828,12 +2825,14 @@ get_new_conversations(unconfirmed);
 
 
       all_transactions = unconfirmed_transactions.concat(confirmed_transactions) ;
-      misc.update({}, { $set: {height: check_block} });
+      misc.update({}, {height: check_block});
       last_block_checked = check_block;
 
 
 
 } else {
+
+    console.log('Checking unconfirmed messages..');
 
     unconfirmed_transactions = await get_unconfirmed_messages();
 
@@ -2857,11 +2856,13 @@ get_new_conversations(unconfirmed);
 
     try {
   latest_transaction_time = latest_transaction[0].timestamp;
-} catch (e) {}
+} catch (e) {console.log(e);}
 
 all_transactions = all_transactions.filter(function (el) {
   return el != null;
 });
+
+console.log('Got all txs, lets read the messages', all_transactions.length);
 
 
   for (n in all_transactions) {
@@ -2872,7 +2873,7 @@ all_transactions = all_transactions.filter(function (el) {
       tx = JSON.parse(fromHex(all_transactions[n]));
 			// console.log('tx', tx);
     } catch (err) {
-
+      console.log(err);
       continue;
     }
 
@@ -2947,7 +2948,7 @@ all_transactions = all_transactions.filter(function (el) {
           }
 
           if (!decryptBox) {
-            // console.log('Cannot decrypt..');
+            console.log('Cannot decrypt..');
             continue;
           }
 
@@ -3093,11 +3094,15 @@ all_transactions = all_transactions.filter(function (el) {
   }
 
   await sleep(sleepAmount);
+  check_counter += 1;
   if (check_counter % 16) {
+    console.log('Getting new confirmed messages..');
     get_new_conversations(false);
   } else {
+    console.log('Getting new unconfirmed messages..');
     get_new_conversations(true);
   }
+
 }
 
 async function send_message(message, silent=false) {
@@ -3489,9 +3494,40 @@ ipcRenderer.on('blurred', async (event) => {
   sleepAmount = 10000;
 })
 
+let last_checked_counter = 0;
+let last_checked_warnings = 0;
+
+let check_protection = async () => {
+
+  try {
+    console.log('last_checked_counter', last_checked_counter);
+    console.log('check_counter', check_counter);
+    console.log('last_checked_warnings', last_checked_warnings);
+    if (last_checked_warnings > 0 && last_checked_counter == check_counter) {
+      console.log('No checks for 120s, restarting service.');
+      get_new_conversations(true);
+      last_checked_warnings = 0;
+    } else if (last_checked_counter == check_counter && last_checked_warnings == 0) {
+      last_checked_warnings += 1;
+      console.log('No checks for 60s, giving warning.');
+    }  else {
+      console.log('No issues with checking messages.');
+      last_checked_warnings = 0;
+    }
+
+  } catch (err) {
+    console.log(err);
+  }
+  last_checked_counter = check_counter;
+  await sleep(60000);
+  check_protection();
+
+}
+
 ipcRenderer.on('focused', async (event) => {
   // console.log('focus');
   sleepAmount = 1000;
+
 
 })
 
@@ -3518,6 +3554,23 @@ ipcRenderer.on('wallet-started', async () => {
 							remote.getGlobal('rpc_pw'),
 							0
 						);
+
+            misc.find({}, async function (err,docs){
+
+                if (docs.length == 0) {
+
+                misc.insert({"height": 1, "nickname": undefined, "boardsHeight": 1});
+
+              } else {
+                last_block_checked = docs[0].height;
+                last_block_checked_boards = docs[0].boardsHeight;
+                if (!last_block_checked) {
+                  block_height = await get_block_height();
+                  last_block_checked = block_height - 1000;
+                }
+              }
+
+            });
 
 
               // let messages = await find_messages({'type': 'received'}, 0, 5);
@@ -3633,6 +3686,7 @@ ipcRenderer.on('wallet-started', async () => {
 
 			      });
 
+            check_protection();
 
 });
 
