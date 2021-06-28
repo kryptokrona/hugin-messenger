@@ -1728,7 +1728,11 @@ async function sendBoardMessage(message) {
       if ($('.boards_nickname_form').val().length) {
         payload_json.n = $('.boards_nickname_form').val();
 
-        misc.update({}, {nickname: payload_json.n});
+        // misc.update({}, {nickname: payload_json.n});
+
+        misc.update({}, { $set: {nickname : payload_json.n} } , {} , function (err, numReplaced){
+          console.log(err);
+        });
 
       }
 
@@ -2620,7 +2624,10 @@ async function get_confirmed_messages(from, to) {
       if (txsLength) {
         // New last checked block in db if we found new txs
         console.log('Updating last checked block to ' + to);
-        misc.update({}, {height: to});
+        // misc.update({}, {height: to});
+        misc.update({}, { $set: {height : to} } , {} , function (err, numReplaced){
+          console.log(err);
+        });
         last_block_checked = to;
       }
 
@@ -3387,7 +3394,10 @@ $("document").ready(function(){
     }
     $('.boards_nickname_form').change(function(){
       let nickname = $(this).val();
-      misc.update({}, {nickname: nickname});
+      // misc.update({}, {nickname: nickname});
+      misc.update({}, { $set: {nickname : nickname} } , {} , function (err, numReplaced){
+        console.log(err);
+      });
 
 
     });
@@ -3589,7 +3599,10 @@ ipcRenderer.on('wallet-started', async () => {
                 if (last_block_checked == undefined) {
                   let block_height = await get_block_height();
                   last_block_checked = block_height - 1000;
-                  misc.update({}, {height: last_block_checked});
+                  // misc.update({}, {height: last_block_checked});
+                  misc.update({}, { $set: {height : last_block_checked} } , {} , function (err, numReplaced){
+                    console.log(err);
+                  });
                 }
               }
 
