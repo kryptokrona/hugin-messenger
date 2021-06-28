@@ -3555,7 +3555,7 @@ ipcRenderer.on('wallet-started', async () => {
 							0
 						);
 
-            misc.find({}, function (err,docs){
+            misc.find({}, async function (err,docs){
 
                 if (docs.length == 0) {
 
@@ -3565,7 +3565,7 @@ ipcRenderer.on('wallet-started', async () => {
                 last_block_checked = docs[0].height;
                 last_block_checked_boards = docs[0].boardsHeight;
                 if (last_block_checked == undefined) {
-                  block_height = await get_block_height();
+                  let block_height = await get_block_height();
                   last_block_checked = block_height - 1000;
                   misc.update({}, {height: last_block_checked});
                 }
