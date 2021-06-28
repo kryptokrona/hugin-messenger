@@ -3567,6 +3567,7 @@ ipcRenderer.on('wallet-started', async () => {
                 if (last_block_checked == undefined) {
                   block_height = await get_block_height();
                   last_block_checked = block_height - 1000;
+                  misc.update({}, {height: last_block_checked});
                 }
               }
 
