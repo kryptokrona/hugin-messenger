@@ -2579,9 +2579,7 @@ async function get_confirmed_messages(from, to) {
   //   return;
   // }
   return new Promise(function(resolve, reject) {
-
-    console.log('BlockCount',  to - from);
-    console.log('BlockHeightToStartFrom', from);
+    let these_transactions;
 
     if (from == to) {
       console.log('No new blocks, returning..');
@@ -2593,7 +2591,7 @@ async function get_confirmed_messages(from, to) {
       to - from,
       from,
       '',
-      [],
+      [currentAddr],
       '').then(resp => {
 
         let arr = [];
@@ -2608,32 +2606,43 @@ async function get_confirmed_messages(from, to) {
 
       if (resp.body) {
         try {
-      let transactions = resp.body.result.items;
-      console.log('Found ', transactions.length, ' transactions.');
+      these_transactions = resp.body.result.items;
+      console.log('Found ', these_transactions.length, ' new confirmed transactions.');
     } catch (err) {
       console.log(resp);
       console.log(err);
-      return [];
+      resolve([]);
+      return;
     }
 
-      let txsLength = transactions.length;
+      let txsLength = these_transactions.length;
 
+      if (txsLength) {
+        // New last checked block in db if we found new txs
+        console.log('Updating last checked block to ' + to);
+        misc.update({}, {height: to});
+        last_block_checked = to;
+      }
 
 
       for (let i = 0; i < txsLength; i++) {
-
-          let txsInTx = transactions[i].transactions.length;
-
+        console.log('i = ', i);
+          let txsInTx = these_transactions[i].transactions.length;
+          console.log('txsInTx = ', txsInTx);
           for (let j = 0; j < txsInTx; j++) {
-
+            console.log('j = ', j);
             try{
+              console.log();
+              let extra = these_transactions[i].transactions[j].extra.substring(66);
+              console.log('found extra', extra);
             if (!arr.includes(extra)) {
-              let extra = transactions[i].transactions[j].extra.substring(66);
+                arr.push(extra);
             }
-            arr.push(extra);
+
 
 
           } catch (e) {
+            console.log(e);
 
           }
 
@@ -2838,9 +2847,7 @@ get_new_conversations(unconfirmed);
 
 
 
-      all_transactions = unconfirmed_transactions.concat(confirmed_transactions) ;
-      misc.update({}, {height: check_block});
-      last_block_checked = check_block;
+      all_transactions = unconfirmed_transactions.concat(confirmed_transactions);
 
 
 
