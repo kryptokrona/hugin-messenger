@@ -2580,8 +2580,17 @@ async function get_confirmed_messages(from, to) {
   // }
   return new Promise(function(resolve, reject) {
 
+    console.log('BlockCount',  to - from);
+    console.log('BlockHeightToStartFrom', from);
+
+    if (from == to) {
+      console.log('No new blocks, returning..');
+      resolve([]);
+      return;
+    }
+
     walletd.getTransactions(
-      to,
+      to - from,
       from,
       '',
       [],
@@ -2600,8 +2609,11 @@ async function get_confirmed_messages(from, to) {
       if (resp.body) {
         try {
       let transactions = resp.body.result.items;
+      console.log('Found ', transactions.length, ' transactions.');
     } catch (err) {
-      return;
+      console.log(resp);
+      console.log(err);
+      return [];
     }
 
       let txsLength = transactions.length;
@@ -2615,8 +2627,9 @@ async function get_confirmed_messages(from, to) {
           for (let j = 0; j < txsInTx; j++) {
 
             try{
-
-            let extra = transactions[i].transactions[j].extra.substring(66);
+            if (!arr.includes(extra)) {
+              let extra = transactions[i].transactions[j].extra.substring(66);
+            }
             arr.push(extra);
 
 
@@ -2755,6 +2768,10 @@ let sleepAmount = 1000;
 
 async function get_new_conversations(unconfirmed) {
 
+  if (check_counter == 0) {
+    await sleep(1000);
+  }
+
   console.log('Checking for unconfirmed:', unconfirmed);
 
   apply_conversation_clicks();
@@ -2785,7 +2802,7 @@ get_new_conversations(unconfirmed);
       try {
 				console.log('heights:', last_block_checked, block_height);
       confirmed_transactions = await get_confirmed_messages(last_block_checked, block_height);
-			// console.log('confirmed txs:', confirmed_transactions);
+			console.log('confirmed txs:', confirmed_transactions);
       check_block = block_height;
     } catch (err) {
       console.log(err);
@@ -2801,11 +2818,8 @@ get_new_conversations(unconfirmed);
         }
       }
 
-
-
-
-
     }
+      console.log('Getting unconfirmed transactions..');
       unconfirmed_transactions = await get_unconfirmed_messages();
 
       for (tx in unconfirmed_transactions) {
@@ -2863,6 +2877,7 @@ all_transactions = all_transactions.filter(function (el) {
 });
 
 console.log('Got all txs, lets read the messages', all_transactions.length);
+console.log(all_transactions);
 
 
   for (n in all_transactions) {
