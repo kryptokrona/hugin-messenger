@@ -3905,7 +3905,7 @@ let print_single_board_message = async (hash, selector) => {
           let avatar_base64_reply = get_avatar(hex_json_reply.k);
           let message_reply = hex_json_reply.m;
 
-          $('.' + hash + ' img').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/svg+xml;base64,' + avatar_base64_reply + '"><p>' + message_reply.substring(0,55)  +'..</p></div>');
+          $('#boards .' + hash + ' img').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/svg+xml;base64,' + avatar_base64_reply + '"><p>' + message_reply.substring(0,55)  +'..</p></div>');
 
 
 
@@ -3913,11 +3913,11 @@ let print_single_board_message = async (hash, selector) => {
      }
 
         if (tips) {
-            $('.' + hash).append('<span class="tips">' + parseFloat(tips/100000).toFixed(5) + '</span>');
+            $('#boards .' + hash).append('<span class="tips">' + parseFloat(tips/100000).toFixed(5) + '</span>');
         }
 
 
-      $('.' + hash + ' .board_message_pubkey').click(function(e){
+      $('#boards .' + hash + ' .board_message_pubkey').click(function(e){
         $('#boards_messages').addClass('menu');
         e.preventDefault();
         let address = $(this).text();
@@ -3932,7 +3932,7 @@ let print_single_board_message = async (hash, selector) => {
 
       })
 
-     $('.' + hash).click(function(){
+     $('#boards .' + hash).click(function(){
        reply(hash);
        $(this).addClass('rgb');
        $('#boards').scrollTop('0');
