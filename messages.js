@@ -69,6 +69,7 @@ let endCall = (peer, stream, contact_address) => {
     myvideo.srcObject = stream;
     myvideo.pause();
     myvideo.srcObject = null;
+    $('#myvideo').hide();
   }
 
   $('otherid').empty();
@@ -1887,7 +1888,7 @@ $('#recipient_pubkey_form').on('input', function() {
 
 $('#message_form').keypress(function (e) {
 
-  if (e.which == 13) {
+  if (e.which == 13  && !e.shiftKey) {
     message = $('#message_form').val();
     sendMessage(escapeHtml(message));
     return false;    //<---- Add this line
@@ -1897,7 +1898,7 @@ $('#message_form').keypress(function (e) {
 
 $('#boards_message_form').keypress(function (e) {
 
-  if (e.which == 13) {
+  if (e.which == 13 && !e.shiftKey) {
     message = $('#boards_message_form').val();
     sendBoardMessage(escapeHtml(message));
     return false;    //<---- Add this line
