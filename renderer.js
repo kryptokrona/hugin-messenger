@@ -433,7 +433,7 @@ $("document").ready(async function(){
 
   });
 
-  $('#avatar').click(function(){
+  $('#avatar, #myvideo').click(function(){
     getHistory();
   })
 
