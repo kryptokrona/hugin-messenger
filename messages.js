@@ -482,8 +482,9 @@ let answerCall = (msg, contact_address) => {
   }).then(gotMedia).catch(() => {})
 
   function gotMedia (stream) {
-
+    let extra_class = '';
     if (video) {
+      extra_class = ' video'
       var myvideo = document.getElementById('myvideo')
       myvideo.srcObject = stream;
 
@@ -589,11 +590,8 @@ let answerCall = (msg, contact_address) => {
 
     peer2.on('stream', stream => {
       // got remote video stream, now let's show it in a video tag
-      let extra_class = "";
-      if (video) {
-        extra_class = " video"
-      }
-      $('.video-grid').append('<video class="' + contact_address  + extra_class +'"></video>').show();
+      console.log('x-class:', extra_class);
+      $('.video-grid').append('<video class="' + contact_address  + extra_class + '"></video>').show();
       let video = document.querySelector('.video-grid .'+contact_address);
 
 
