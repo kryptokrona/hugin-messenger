@@ -488,7 +488,7 @@ let answerCall = (msg, contact_address) => {
 
     }
 
-    var peer2 = new Peer({stream: stream, trickle: false})
+    let peer2 = new Peer({stream: stream, trickle: false})
 
 
       let video_codecs = window.RTCRtpSender.getCapabilities('video');
@@ -586,7 +586,7 @@ let answerCall = (msg, contact_address) => {
     peer2.on('stream', stream => {
       // got remote video stream, now let's show it in a video tag
       $('.video-grid').append('<video class="' + contact_address  + '"></video>').show();
-      var video = document.querySelector('video')
+      let video = document.querySelector('.video-grid .'+contact_address);
 
 
 
