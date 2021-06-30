@@ -409,7 +409,11 @@ if (!screenshare) {
 
     peer1.on('stream', stream => {
       // got remote video stream, now let's show it in a video tag
-      $('.video-grid').append('<video class="' + contact_address  + '"></video>').show();
+      let extra_class = "";
+      if (video) {
+        extra_class = " video"
+      }
+      $('.video-grid').append('<video class="' + contact_address  + extra_class + '"></video>').show();
       let video_element = document.querySelector('.'+contact_address);
 
 
@@ -585,7 +589,11 @@ let answerCall = (msg, contact_address) => {
 
     peer2.on('stream', stream => {
       // got remote video stream, now let's show it in a video tag
-      $('.video-grid').append('<video class="' + contact_address  + '"></video>').show();
+      let extra_class = "";
+      if (video) {
+        extra_class = " video"
+      }
+      $('.video-grid').append('<video class="' + contact_address  + extra_class +'"></video>').show();
       let video = document.querySelector('.video-grid .'+contact_address);
 
 

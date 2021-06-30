@@ -3883,7 +3883,6 @@ button:hover {
 
 .video-grid {
   position: absolute;
-    height: 90%;
     width: 420px;
     right: 10%;
     top: 5%;
@@ -3892,7 +3891,12 @@ button:hover {
 }
 
 .video-grid video {
-height: 270px; border-radius: 5px; margin-bottom: 5px;
+max-height: 270px; border-radius: 5px; margin-bottom: 5px;
 width: 400px;
 display: block;
+height: 0;
+}
+
+.video-grid video.video {
+  height: auto;
 }
