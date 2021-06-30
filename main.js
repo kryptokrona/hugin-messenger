@@ -22,9 +22,14 @@ let userDataDir = app.getPath('userData');
 
 global.userDataDir = userDataDir;
 
+global.port = 8000 + parseInt(Math.random()*100);
+
+
 global.appPath = appRootDir;
 
 global.downloadDir = app.getPath('downloads');
+
+
 
 
 function getTrayIcon() {
@@ -175,7 +180,7 @@ ipcMain.on('create-account', async (event) => {
 
       // Generate wallet with settings from above
 
-      let gen_wallet = spawn(appPath + 'kryptokrona-service', ['-l', userDataDir+"/walletd.log",'-g','-w', userDataDir+'/'+new_wallet_name, '-p', new_wallet_password, '--rpc-password', new_rpc_pw]);
+      let gen_wallet = spawn(appPath + 'kryptokrona-service', ['--bind-port', 1337, '-l', userDataDir+"/walletd.log",'-g','-w', userDataDir+'/'+new_wallet_name, '-p', new_wallet_password, '--rpc-password', new_rpc_pw]);
 
        gen_wallet.stdout.on('data', (data) => { });
 
@@ -350,7 +355,6 @@ ipcMain.on('kill-wallet', async (event) => {
 })
 
 ipcMain.on('change-node-offline', async (event, node, kill=true) => {
-
   global.node = node;
 
   db.update({setting : 'walletData'}, { $set: {node : node} } , {} , function (err, numReplaced){
@@ -362,6 +366,8 @@ ipcMain.on('change-node-offline', async (event, node, kill=true) => {
 });
 
 ipcMain.on('change-node', async (event, node, kill=true) => {
+
+  global.port = 8000 + parseInt(Math.random()*100);
   console.log(node) // prints "ping"
 
   global.node = node;
@@ -374,10 +380,13 @@ ipcMain.on('change-node', async (event, node, kill=true) => {
     if (kill) {
       try {
       wallet.kill('SIGINT');
-    } catch (err) {}
+    } catch (err) {
+      console.log('err');
+    }
       wallet.on('close', () => {
         console.log('Wallet is closed..');
         startWallet();
+        event.reply('changed-node');
 
 
       } );
@@ -559,7 +568,7 @@ ipcMain.on('import_wallet', (evt, arg) => {
       let new_wallet_password = randomString() + randomString() + randomString();
       let new_rpc_pw = global.rpc_pw;
 
-    let gen_wallet = spawn(appPath + 'kryptokrona-service', ['-l', userDataDir+"/walletd.log",'-g','--mnemonic-seed', arg,'-w', userDataDir+'/'+new_wallet_name, '-p', new_wallet_password, '--rpc-password', new_rpc_pw]);
+    let gen_wallet = spawn(appPath + 'kryptokrona-service', ['--bind-port', global.port, '-l', userDataDir+"/walletd.log",'-g','--mnemonic-seed', arg,'-w', userDataDir+'/'+new_wallet_name, '-p', new_wallet_password, '--rpc-password', new_rpc_pw]);
 
      gen_wallet.stdout.on('data', (data) => {
 
@@ -588,7 +597,7 @@ ipcMain.on('import_wallet', (evt, arg) => {
 
                  let walletd = new TurtleCoinWalletd(
                    'http://127.0.0.1',
-                   8070,
+                   global.port,
                    rpc_pw,
                    false
                  )
@@ -666,7 +675,7 @@ let startWallet = async () => {
       return;
     }
 
-     wallet = spawn(appPath+'kryptokrona-service', ['-l', userDataDir+"/walletd.log",'-w', userDataDir+'/'+wallet_file, '-p', wallet_pw, '--rpc-password', global.rpc_pw, '--daemon-address', global.node.split(':')[0], '--daemon-port', global.node.split(':')[1]]); //, '--daemon-address', 'localhost'
+     wallet = spawn(appPath+'kryptokrona-service', ['--bind-port', global.port, '-l', userDataDir+"/walletd.log",'-w', userDataDir+'/'+wallet_file, '-p', wallet_pw, '--rpc-password', global.rpc_pw, '--daemon-address', global.node.split(':')[0], '--daemon-port', global.node.split(':')[1]]); //, '--daemon-address', 'localhost'
 
      wallet.stdout.on('data', (data) => {
 

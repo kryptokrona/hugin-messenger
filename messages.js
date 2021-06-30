@@ -3600,6 +3600,17 @@ ipcRenderer.on('imported-view-subwallet', async (event, address) => {
 
 });
 
+ipcRenderer.on('changed-node', function() {
+
+  walletd = new TurtleCoinWalletd(
+    'http://127.0.0.1',
+    rmt.getGlobal('port'),
+    remote.getGlobal('rpc_pw'),
+    0
+  );
+
+})
+
 ipcRenderer.on('wallet-started', async () => {
 
 						console.log('started-wallet');
@@ -3608,7 +3619,7 @@ ipcRenderer.on('wallet-started', async () => {
 
 						walletd = new TurtleCoinWalletd(
 							'http://127.0.0.1',
-							8070,
+							rmt.getGlobal('port'),
 							remote.getGlobal('rpc_pw'),
 							0
 						);

@@ -313,13 +313,24 @@ function updateStatus() {
 
 }
 
+ipcRenderer.on('changed-node', function() {
+
+  walletd = new TurtleCoinWalletd(
+    'http://127.0.0.1',
+    remote.getGlobal('port'),
+    remote.getGlobal('rpc_pw'),
+    0
+  );
+
+})
+
 ipcRenderer.on('got-login-complete', async () => {
 
   console.log('Wallet started!');
 
   walletd = new TurtleCoinWalletd(
     'http://127.0.0.1',
-    8070,
+    remote.getGlobal('port'),
     remote.getGlobal('rpc_pw'),
     false
   )
