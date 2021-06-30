@@ -3897,6 +3897,6 @@ display: block;
 height: 0;
 }
 
-.video-grid video.video {
+.video-grid video.video.online {
   height: auto;
 }
