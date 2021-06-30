@@ -955,7 +955,10 @@ contextMenu({
 
 								console.log('Renaming');
 								let e = document.elementFromPoint(params.x, params.y);
-								let contact = e.parentNode.className.replace('active_contact ', '');
+								let contact = e.parentNode.classList[1];
+                let hashy = nacl.hash(naclUtil.decodeUTF8(contact));
+
+                let hashy_hex = Buffer.from(hashy).toString('hex');
 
 								prompt({
 								    title: 'Rename contact',
@@ -989,6 +992,7 @@ contextMenu({
 													}
 
 													$('.' + contact + ' .contact_address').text(r);
+                          console.log('Whos dat fokin contact:', contact, hashy_hex);
                           print_conversation(contact);
 												});
 								    }
@@ -2750,7 +2754,7 @@ async function print_conversations() {
 							 let conversation_display = await get_translation(conversation);
 							 // console.log(handleMagnetListed(messages[m].message));
 
-               if (handleMagnetListed(messages[m].message).length){
+               if (handleMagnetListed(messages[m].message).length || !$('.active_contact .' + conversation).width() ){
                  console.log('Printing new contact..');
 						  	$('#messages_contacts').append('<li class="active_contact ' + conversation + '" address="' + conversation +  '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + get_avatar(conversation) + '" /><span class="contact_address">' + conversation_display + '</span><br><span class="listed_message">'+handleMagnetListed(messages[m].message)+'</li>');
               }
