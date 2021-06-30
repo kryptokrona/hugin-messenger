@@ -89,7 +89,7 @@ closeAppLogin.addEventListener('click', () => {
 let walletd;
 
 // Open links in browser
-$(document).on('click', 'a[href^="http"]', function(event) {
+$(document).on('click', 'a', function(event) {
     event.preventDefault();
     shell.openExternal(this.href);
 });
