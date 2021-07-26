@@ -146,6 +146,8 @@ let print_boards = async () => {
 		     ipcRenderer.send('get-boards', this_board);
 		     $('.current').removeClass('current');
 		     $(this).addClass('current');
+         $('#replyto_exit').click();
+         $('#send_payment').addClass('hidden');
 
 
 		   });
@@ -1811,6 +1813,17 @@ async function sendBoardMessage(message) {
 
       }
 
+$('#contact_copy_address').click(function(){
+  copy($('#recipient_form').val() + $('#recipient_pubkey_form').val());
+});
+
+$('#recipient_form').click(function(){
+  copy($('#recipient_form').val());
+});
+
+$('#recipient_pubkey_form').click(function(){
+  copy($('#recipient_pubkey_form').val());
+});
 // Detect valid address input into recipient forms
 
 $('#recipient_form').on('input', function() {
@@ -1838,6 +1851,10 @@ $('#recipient_form').on('input', function() {
             $('#recipient_pubkey_form').val(pubkey);
             $('#recipient_pubkey_span').find('.checkmark').fadeIn();
             $('#recipient_span').find('.checkmark').fadeIn();
+            avatar = get_avatar(addr);
+            $('#avatar_contact').attr('src','data:image/svg+xml;base64,' + avatar).fadeIn();
+            $('#context_menu').fadeIn();
+            $('#contact_copy_address').fadeIn();
             // $('#message_form').attr('disabled',false);
           } else {
             $('#recipient_form').val(open_alias_address);
@@ -1863,13 +1880,24 @@ $('#recipient_form').on('input', function() {
       $('#recipient_pubkey_form').val(pubkey);
       $('#recipient_pubkey_span').find('.checkmark').fadeIn();
       $('#recipient_span').find('.checkmark').fadeIn();
+      avatar = get_avatar(addr);
+      $('#avatar_contact').attr('src','data:image/svg+xml;base64,' + avatar).fadeIn();
+      $('#context_menu').fadeIn();
+      $('#contact_copy_address').fadeIn();
+      $('#message_form').attr('disabled',false);
+      $('#message_form').val('');
       // $('#message_form').attr('disabled',false);
     }
     if (text.length == 99) {
       // If only addr is put in
       $('#currentchat_pubkey').show();
+      addr = $('#recipient_form').val();
+      avatar = get_avatar(addr);
+      $('#avatar_contact').attr('src','data:image/svg+xml;base64,' + avatar).fadeIn();
+      $('#context_menu').fadeIn();
+      $('#contact_copy_address').fadeIn();
       $('#recipient_span').find('.checkmark').fadeIn();
-      if ($('#recipient_pubkey_form').val().length != 63) {
+      if ($('#recipient_pubkey_form').val().length <= 63) {
         $('#message_form').attr('disabled',true);
         $('#message_form').val('Please enter the recipients message key in the form above. You can still send transactions.');
       } else {
@@ -3459,6 +3487,10 @@ $("document").ready(function(){
     copy($('#currentPubKey').text());
   });
 
+  function flip() {
+    document.getElementById("flip-box-inner").classList.toggle("flip");
+
+  };
 
   lastMessage =  Date.now();
 
@@ -3477,9 +3509,12 @@ $("document").ready(function(){
     $('#messages_page').removeClass('hidden');
     $('#recipient_form').val('').focus();
     $('#settings_page').hide();
+    $('#contact_copy_address').hide();
+    $('#avatar_contact').fadeOut();
+    $('#context_menu').fadeOut();
     $('#send_payment').addClass('hidden');
-    if (!$('#boards').hasClass('hidden') || $('#flip-box-inner').hasClass('flip')) {
-    myFunction();
+    if ($('#flip-box-inner').hasClass('flip')) {
+    flip();
     }
   })
 });
@@ -3492,6 +3527,7 @@ $('#new_board').click(function(){
   $('#modal div').addClass('hidden');
   $('#new_board_modal').removeClass('hidden');
   $('#boards_messages').toggleClass('menu');
+  $('#replyto_exit').click();
 
   		     if (!$('#send_payment').hasClass('hidden')) {
              $('#send_payment').addClass('hidden');
@@ -3802,6 +3838,8 @@ $('#boards_icon').click(function(){
  $('#boards .board_message').remove();
  $('#boards_messages').removeClass('menu');
  $('#modal').addClass('hidden');
+ $('#replyto_exit').click();
+ $('#send_payment').addClass('hidden');
 
  print_boards();
 

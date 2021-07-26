@@ -444,6 +444,12 @@ $("document").ready(async function(){
 
   });
 
+  $('#contact_copy_address, #currentchat_header input, #currentchat_pubkey input').click(async function(){
+    $('#contact_copy_address').removeClass('flash').addClass('flash').text('Copied!');
+      await sleep(1000);
+      $('#contact_copy_address').text('Copy both').removeClass('flash');
+  });
+
   $('#avatar, #myvideo').click(function(){
     getHistory();
   })
@@ -547,6 +553,7 @@ $("document").ready(async function(){
                        let node = $('#login_swap_node_modal #nodeInput').val();
                        ipcRenderer.send('change-node-offline', node);
                        $('#login_status span').text(node);
+                       $('#nodeStatus .node-status').text(node);
                        $('#login_swap_node_modal').hide();
 
 
@@ -744,21 +751,24 @@ $("document").ready(async function(){
   $('#welcome_alpha').removeClass('hidden');
   $("#new_board").addClass('hidden');
   $('#currentchat_header_wrapper').removeClass('toggled_addr');
-$("#boards_picker").empty().addClass('hidden');
-$("#settings_page").fadeOut();
-$("#recipient_form").val('');
-$("#recipient_pubkey_form").val('');
-$('#boards_messages').removeClass('menu');
-$('#modal').addClass('hidden');
-$(".setting_page").fadeOut();
+  $("#boards_picker").empty().addClass('hidden');
+  $("#settings_page").fadeOut();
+  $("#recipient_form").val('');
+  $("#recipient_pubkey_form").val('');
+  $('#boards_messages').removeClass('menu');
+  $('#modal').addClass('hidden');
+  $(".setting_page").fadeOut();
+  $('#avatar_contact').fadeOut();
+  $('#context_menu').fadeOut();
+
 $('#send_payment').addClass('hidden');
 if ($('#flip-box-inner').hasClass('flip')) {
-myFunction();
+flip();
 }
 
 $('#boards').addClass('hidden');
 $("#messages_page").removeClass('hidden');
-  $('#messages_pane').scrollTop(0);
+$('#messages_pane').scrollTop(0);
 $('#currentchat_footer').addClass('hidden');
 
 });
@@ -766,10 +776,11 @@ $('#currentchat_footer').addClass('hidden');
 $('#avatar_contact').click(function(){
 
 $('#currentchat_header_wrapper').toggleClass('toggled_addr');
+$('#contact_copy_address').fadeIn();
 
 });
 
-function myFunction() {
+function flip() {
   document.getElementById("flip-box-inner").classList.toggle("flip");
 
 };
@@ -783,8 +794,9 @@ $('#boards_messages').removeClass('menu');
 $('#modal').addClass('hidden');
 $('#send_payment').addClass('hidden');
 $('#boards').addClass('hidden');
+$('#replyto_exit').click();
 if ($('#boards').hasClass('hidden') && $('#flip-box-inner').hasClass('flip')) {
-myFunction();
+flip();
 }
 
 
@@ -792,7 +804,7 @@ $("#messages_page").removeClass('hidden');
 });
 
 $('#settings_icon').click(function(){
-myFunction(); $('#settings_page').fadeIn();
+flip(); $('#settings_page').fadeIn();
 $('#boards').addClass('hidden');
 $("#messages_page").removeClass('hidden');
 $("#new_board").addClass('hidden');
@@ -801,10 +813,16 @@ $('#boards_messages').removeClass('menu');
 $('#modal').addClass('hidden');
 $('#send_payment').addClass('hidden');
 $('#currentchat_header_wrapper').removeClass('toggled_addr');
+$('#avatar_contact').fadeOut();
+$('#context_menu').fadeOut();
+$('#replyto_exit').click();
+if (!$('#flip-box-inner').hasClass('flip')) {
+flip();
+}
 });
 
 $('.close').click(function(){
-  $(".settings_page").fadeOut(); $("#settings_page").fadeOut(); myFunction();
+  $(".settings_page").fadeOut(); $("#settings_page").fadeOut(); flip();
 });
 $("#modal > i").click(function(){
 $('#modal').addClass('hidden');
@@ -821,7 +839,7 @@ $("#welcome_alpha").addClass("hidden");
 });
 
 $("#status_icon").click(function(){
-  myFunction(); $('#settings_page').fadeIn();
+  flip(); $('#settings_page').fadeIn();
   $("#connectionSettings").click();
   $('#boards').addClass('hidden');
   $("#messages_page").removeClass('hidden');
@@ -834,4 +852,8 @@ $("#status_icon").click(function(){
   $('#settings_page').fadeIn();
   $('#connection_settings_page').fadeIn();
   $('#send_payment').addClass('hidden');
+  $('#send_payment').addClass('hidden');
+  if (!$('#flip-box-inner').hasClass('flip')) {
+  flip();
+  }
   });
