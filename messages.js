@@ -252,7 +252,29 @@ let parse_sdp = (sdp) => {
 
 }
 
+function fromHex(hex,str){
+  try{
+    str = decodeURIComponent(hex.replace(/(..)/g,'%$1'))
+  }
+  catch(e){
+    str = hex
+    // console.log('invalid hex input: ' + hex)
+  }
+  return str
+}
 
+function trimExtra (extra) {
+
+try {
+  let payload = fromHex(extra.substring(66));
+
+  let payload_json = JSON.parse(payload);
+  return fromHex(extra.substring(66))
+}catch (e) {
+  console.log('BÖFFER', fromHex(Buffer.from(extra.substring(78)).toString()));
+  return fromHex(Buffer.from(extra.substring(78)).toString())
+}
+}
 
 function handleError (e) {
   console.log(e)
@@ -1169,17 +1191,6 @@ function toHex(str,hex){
   return hex
 }
 
-function fromHex(hex,str){
-  try{
-    str = decodeURIComponent(hex.replace(/(..)/g,'%$1'))
-  }
-  catch(e){
-    str = hex
-    // console.log('invalid hex input: ' + hex)
-  }
-  return str
-}
-
 
 var rpc_pw;
 
@@ -1272,8 +1283,7 @@ function save_messages(transactions) {
 
         lasttx = transactions[i];
         try {
-
-          payload = fromHex(transactions[i].transactions[j].extra.substring(66));
+          payload = trimExtra(transactions[i].transactions[j].extra);
 
           payload_json = JSON.parse(payload);
 
@@ -2008,8 +2018,7 @@ function printMessages(transactions, address) {
 
                   lasttx = transactions[i];
                   try {
-
-                    payload = fromHex(transactions[i].transactions[j].extra.substring(66));
+                    payload = trimExtra(transactions[i].transactions[j].extra);
 
                     payload_json = JSON.parse(payload);
 
@@ -2263,8 +2272,7 @@ function updateMessages() {
           var thisAmount = Math.abs(parseFloat(transactions[i].transactions[0].transfers[0].amount) / 100000);
 
           // Try to read messages from transaction, txs without messages are ignored
-
-          payload = fromHex(transactions[i].transactions[0].extra.substring(66));
+          payload = trimExtra(transactions[i].transactions[0].extra);
           payload_json = JSON.parse(payload);
 
           if (payload_json.box) {
@@ -2657,7 +2665,7 @@ async function get_confirmed_messages(from, to) {
             console.log('j = ', j);
             try{
               console.log();
-              let extra = these_transactions[i].transactions[j].extra.substring(66);
+              let extra = trimExtra(these_transactions[i].transactions[j].extra);
               console.log('found extra', extra);
             if (!arr.includes(extra)) {
                 arr.push(extra);
@@ -2723,8 +2731,8 @@ function get_unconfirmed_messages() {
       .then(resp => {
         try {
         transaction = resp.body.result.transaction;
-
-        transactions[i] = transaction.extra.substring(66);
+        console.log('TRANSAKTIONER', transaction);
+        transactions[i] = trimExtra(transaction.extra);
         if ( (txsLength - i) == 1) {
           resolve(transactions);
         }
@@ -2857,7 +2865,7 @@ get_new_conversations(unconfirmed);
     }
       console.log('Getting unconfirmed transactions..');
       unconfirmed_transactions = await get_unconfirmed_messages();
-
+      console.log('unconfirmed!!!!!', unconfirmed_transactions);
       for (tx in unconfirmed_transactions) {
 
         console.log(unconfirmed_transactions[tx]);
@@ -2919,7 +2927,8 @@ console.log(all_transactions);
 
 
     try {
-      tx = JSON.parse(fromHex(all_transactions[n]));
+      console.log(all_transactions[n]);
+      tx = JSON.parse(all_transactions[n]);
 			// console.log('tx', tx);
     } catch (err) {
       console.log(err);
@@ -2968,6 +2977,9 @@ console.log(all_transactions);
 
         // If no key is appended to message we need to try the keys in our payload_keychain
         let box = tx.box;
+        console.log('box', box);
+        console.log('tx', tx);
+        console.log('tx', tx);
 
         let timestamp = tx.t;
 
@@ -2991,7 +3003,7 @@ console.log(all_transactions);
            console.log(err);
            continue;
          }
-         // console.log('Decrypted:', decryptBox);
+         console.log('Decrypted:', decryptBox);
 
 
           }
@@ -3830,7 +3842,7 @@ let print_single_board_message = async (hash, selector) => {
      const resp = await tx_data.json();
      let timestamp = resp.result.block.timestamp;
      try {
-     result = resp.result.tx.extra.substring(66);
+     result = trimExtra(resp.result.tx.extra);
      // console.log(result);
      let hex_json = JSON.parse(fromHex(result));
      if (hex_json.b) {
@@ -3934,8 +3946,7 @@ let print_single_board_message = async (hash, selector) => {
           })
 
           const resp_reply = await tx_data_reply.json();
-
-          let result_reply = resp_reply.result.tx.extra.substring(66);
+          let result_reply = trimExtra(resp_reply.result.tx.extra);
           let hex_json_reply = JSON.parse(fromHex(result_reply));
 
           // console.log(hex_json_reply);
@@ -4162,9 +4173,7 @@ let print_board_message = async (pubkey, message, timestamp, fetching_board, nic
        })
 
        const resp_reply = await tx_data_reply.json();
-
-       let result_reply = resp_reply.result.tx.extra.substring(66);
-       let hex_json_reply = JSON.parse(fromHex(result_reply));
+       let hex_json_reply = trimExtra(resp_reply.result.tx.extra);
        // const addr = await Address.fromAddress(currentAddr);
        let this_addr = await Address.fromAddress(hex_json_reply.k);
        console.log(this_addr);
@@ -4201,8 +4210,7 @@ ipcRenderer.on('new-message', async (event, transaction) => {
 
 		 const resp = await tx_data.json();
 		 let timestamp = resp.result.block.timestamp;
-
-		 result = resp.result.tx.extra.substring(66);
+     result = trimExtra(resp.result.tx.extra);
 		 let hex_json = JSON.parse(fromHex(result));
 
 		 if (hex_json.b) {
@@ -4328,7 +4336,7 @@ ipcRenderer.on('got-profile', async (event, json) => {
        const resp = await tx_data.json();
        let timestamp = resp.result.block.timestamp;
        try {
-       result = resp.result.tx.extra.substring(66);
+       result = trimExtra(resp.result.tx.extra);
 			 // console.log(result);
        let hex_json = JSON.parse(fromHex(result));
 			 if (hex_json.b) {
@@ -4453,8 +4461,7 @@ ipcRenderer.on('got-profile', async (event, json) => {
             })
 
             const resp_reply = await tx_data_reply.json();
-
-            let result_reply = resp_reply.result.tx.extra.substring(66);
+            let result_reply = trimExtra(resp_reply.result.tx.extra);
             let hex_json_reply = JSON.parse(fromHex(result_reply));
 
 						// console.log(hex_json_reply);
@@ -4555,7 +4562,7 @@ ipcRenderer.on('got-boards', async (event, json) => {
        const resp = await tx_data.json();
        let timestamp = resp.result.block.timestamp;
        try {
-       result = resp.result.tx.extra.substring(66);
+       result = trimExtra(resp.result.tx.extra);
 			 // console.log(result);
        let hex_json = JSON.parse(fromHex(result));
 			 if (hex_json.b) {
@@ -4692,8 +4699,7 @@ ipcRenderer.on('got-boards', async (event, json) => {
             })
 
             const resp_reply = await tx_data_reply.json();
-
-            let result_reply = resp_reply.result.tx.extra.substring(66);
+            let result_reply = trimExtra(resp_reply.result.tx.extra);
             let hex_json_reply = JSON.parse(fromHex(result_reply));
 
 						// console.log(hex_json_reply);
