@@ -79,6 +79,7 @@ overflow-y: scroll;
   transition: all 0.3s;
   opacity: 1;
   color: white;
+  animation: rgb 7s ease infinite;
   font-weight: bold;
   }
 
