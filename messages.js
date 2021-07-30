@@ -2831,6 +2831,7 @@ let apply_conversation_clicks = () => {
      await print_conversation($(this).attr('address'));
       $('#settings_page').fadeOut();
       $('#currentchat_footer').removeClass('hidden');
+      $('#send_payment').addClass('hidden');
   });
 }
 

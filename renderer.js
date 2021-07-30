@@ -795,6 +795,8 @@ $('#modal').addClass('hidden');
 $('#send_payment').addClass('hidden');
 $('#boards').addClass('hidden');
 $('#replyto_exit').click();
+$('#avatar_contact').fadeIn();
+$('#context_menu').fadeIn();
 if ($('#boards').hasClass('hidden') && $('#flip-box-inner').hasClass('flip')) {
 flip();
 }
@@ -853,6 +855,7 @@ $("#status_icon").click(function(){
   $('#connection_settings_page').fadeIn();
   $('#send_payment').addClass('hidden');
   $('#send_payment').addClass('hidden');
+  $('#currentchat_header_wrapper').removeClass('toggled_addr');
   if (!$('#flip-box-inner').hasClass('flip')) {
   flip();
   }
