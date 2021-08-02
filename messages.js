@@ -3503,7 +3503,7 @@ $("document").ready(function(){
     $('#boards_messages').removeClass('menu');
     $('#modal').addClass('hidden');
     $("#boards_picker").empty().addClass('hidden');
-    $('#messages .received_message, #messages .sent_message').remove();
+    $('#messages .received_message, #messages .sent_message').fadeOut();
     $('#welcome_alpha').addClass('hidden');
     $('#boards').addClass('hidden');
     $('#currentchat_footer').removeClass('hidden');

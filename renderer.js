@@ -747,7 +747,7 @@ $("document").ready(async function(){
   $('#avatar').click(function(){
 
   // $('header').toggleClass('toggled');
-  $('#messages .received_message, #messages .sent_message').remove();
+  $('#messages .received_message, #messages .sent_message').hide();
   $('#welcome_alpha').removeClass('hidden');
   $("#new_board").addClass('hidden');
   $('#currentchat_header_wrapper').removeClass('toggled_addr');
@@ -797,11 +797,23 @@ $('#boards').addClass('hidden');
 $('#replyto_exit').click();
 $('#avatar_contact').fadeIn();
 $('#context_menu').fadeIn();
+$('#welcome_alpha').addClass('hidden');
+$('#messages .received_message, #messages .sent_message').show();
+$('#messages_pane').scrollTop($('#messages').height());
+$('#currentchat_footer').removeClass('hidden');
+// If no conversation is active or if it is a new account, message icon will fall back to new_chat
+if ($('#avatar_contact').attr('src') == '') {
+  $("#new_chat").click();
+}
 if ($('#boards').hasClass('hidden') && $('#flip-box-inner').hasClass('flip')) {
 flip();
 }
 
-
+if ($('#currentchat_header_wrapper').hasClass('toggled_addr')) {
+  $('#messages .received_message, #messages .sent_message').fadeIn();
+  $('#currentchat_header_wrapper').removeClass('toggled_addr');
+  $('#messages_pane').scrollTop($('#messages').height());
+}
 $("#messages_page").removeClass('hidden');
 });
 
@@ -824,7 +836,11 @@ flip();
 });
 
 $('.close').click(function(){
-  $(".settings_page").fadeOut(); $("#settings_page").fadeOut(); flip();
+  $(".settings_page").fadeOut();
+  $("#settings_page").fadeOut();
+  flip();
+  $('#avatar_contact').fadeIn();
+  $('#context_menu').fadeIn();
 });
 $("#modal > i").click(function(){
 $('#modal').addClass('hidden');
@@ -855,6 +871,8 @@ $("#status_icon").click(function(){
   $('#connection_settings_page').fadeIn();
   $('#send_payment').addClass('hidden');
   $('#send_payment').addClass('hidden');
+  $('#avatar_contact').fadeOut();
+  $('#context_menu').fadeOut();
   $('#currentchat_header_wrapper').removeClass('toggled_addr');
   if (!$('#flip-box-inner').hasClass('flip')) {
   flip();
