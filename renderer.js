@@ -798,6 +798,7 @@ $('#replyto_exit').click();
 $('#avatar_contact').fadeIn();
 $('#context_menu').fadeIn();
 $('#welcome_alpha').addClass('hidden');
+$("#messages_page").removeClass('hidden');
 $('#messages .received_message, #messages .sent_message').show();
 $('#messages_pane').scrollTop($('#messages').height());
 $('#currentchat_footer').removeClass('hidden');
@@ -814,7 +815,6 @@ if ($('#currentchat_header_wrapper').hasClass('toggled_addr')) {
   $('#currentchat_header_wrapper').removeClass('toggled_addr');
   $('#messages_pane').scrollTop($('#messages').height());
 }
-$("#messages_page").removeClass('hidden');
 });
 
 $('#settings_icon').click(function(){
