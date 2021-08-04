@@ -2769,7 +2769,6 @@ function get_unconfirmed_messages() {
       }
       }).catch(err => {
         reject(err);
-        console.log('ERR', err);
       });
     }
 
@@ -3007,9 +3006,6 @@ console.log(all_transactions);
 
         // If no key is appended to message we need to try the keys in our payload_keychain
         let box = tx.box;
-        console.log('box', box);
-        console.log('tx', tx);
-        console.log('tx', tx);
 
         let timestamp = tx.t;
 

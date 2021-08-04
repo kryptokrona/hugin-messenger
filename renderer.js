@@ -802,10 +802,6 @@ $("#messages_page").removeClass('hidden');
 $('#messages .received_message, #messages .sent_message').show();
 $('#messages_pane').scrollTop($('#messages').height());
 $('#currentchat_footer').removeClass('hidden');
-// If no conversation is active or if it is a new account, message icon will fall back to new_chat
-if ($('#avatar_contact').attr('src') == '') {
-  $("#new_chat").click();
-}
 if ($('#boards').hasClass('hidden') && $('#flip-box-inner').hasClass('flip')) {
 flip();
 }
@@ -814,6 +810,10 @@ if ($('#currentchat_header_wrapper').hasClass('toggled_addr')) {
   $('#messages .received_message, #messages .sent_message').fadeIn();
   $('#currentchat_header_wrapper').removeClass('toggled_addr');
   $('#messages_pane').scrollTop($('#messages').height());
+}
+// If no conversation is active or if it is a new account, message icon will fall back to new_chat
+if ($('#avatar_contact').attr('src') == '') {
+  $("#new_chat").click();
 }
 });
 
