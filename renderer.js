@@ -753,8 +753,6 @@ $("document").ready(async function(){
   $('#currentchat_header_wrapper').removeClass('toggled_addr');
   $("#boards_picker").empty().addClass('hidden');
   $("#settings_page").fadeOut();
-  $("#recipient_form").val('');
-  $("#recipient_pubkey_form").val('');
   $('#boards_messages').removeClass('menu');
   $('#modal').addClass('hidden');
   $(".setting_page").fadeOut();
