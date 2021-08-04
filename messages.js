@@ -2769,6 +2769,7 @@ function get_unconfirmed_messages() {
       }
       }).catch(err => {
         reject(err);
+        console.log('ERR', err);
       });
     }
 
