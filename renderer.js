@@ -839,6 +839,10 @@ $('.close').click(function(){
   flip();
   $('#avatar_contact').fadeIn();
   $('#context_menu').fadeIn();
+  if (!$('#welcome_alpha').hasClass('hidden')) {
+      $('#context_menu').hide();
+      $('#avatar_contact').hide();
+  }
 });
 $("#modal > i").click(function(){
 $('#modal').addClass('hidden');
