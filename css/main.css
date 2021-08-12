@@ -1312,18 +1312,17 @@ overlay .wrapper {
 }
 
 #login_swap_node_modal {
-
-
     border-radius: 10px;
     padding: 30px;
     position: absolute;
+    height: 400px;
     width: 300px;
     padding: 30px;
     position: absolute;
-    background: #222021;
+    background: #1b1b1b;
     right: 150px;
-    top: 249px;
-    border-radius: 15px
+    top: 245px;
+    border-radius: 15px;
 
 }
 #login_swap_node_modal #nodeInput {
