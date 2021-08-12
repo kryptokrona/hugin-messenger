@@ -3269,6 +3269,7 @@ button.emoji-picker__category-button:hover {
 #recent_board_messages .board_message_reply {
   margin-bottom: 10px;
   opacity: 0.6;
+  margin-top: -15px;
 }
 
 .board_message_reply p {
@@ -3766,6 +3767,9 @@ right: 15px;
   vertical-align: 36px;
   }
 
+#recent_board_messages .board_message_user {
+  padding-top: 10px;
+}
 
 #profile_balance_calculation {
 
