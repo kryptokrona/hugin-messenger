@@ -1063,7 +1063,10 @@ h1, h2, h3, h4 {
 
 .txAddr {
     opacity: 0.8;
-    font-size: 9.4pt;
+    font-size: 9pt;
+    font-family: "Montserrat";
+    font-weight: 300;
+    width: 90%;
 }
 
 .txTime {
@@ -3264,7 +3267,7 @@ button.emoji-picker__category-button:hover {
 
 
 #recent_board_messages .board_message_reply {
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   opacity: 0.6;
 }
 
@@ -3761,11 +3764,6 @@ right: 15px;
   #recent_board_messages .boards_nickname {
 
   vertical-align: 36px;
-  }
-
-  #recent_board_messages .board_message_user {
-
-    padding-top: 10px;
   }
 
 
