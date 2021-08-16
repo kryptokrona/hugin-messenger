@@ -114,9 +114,9 @@ let start_js_wallet = async () => {
 
         console.log(`Incoming transaction of ${transaction.totalAmount()} received!`);
 
-        if (!syncing) {
+        // if (!syncing) {
           mainWindow.webContents.send('new-message', transaction.toJSON());
-        }
+        // }
 
     });
 

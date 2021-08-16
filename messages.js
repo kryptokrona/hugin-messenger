@@ -1721,6 +1721,8 @@ async function sendBoardMessage(message) {
 
     current_board = $('.current').attr('id');
 
+    let current_board_title = $('.current').attr('title');
+
     if (current_board == 'home_board' ) {
       receiver = 'SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc';
     } else {
@@ -1748,7 +1750,7 @@ async function sendBoardMessage(message) {
       // return;
 
       // Convert message data to json
-      payload_json = {"m":message_to_send, "k":currentAddr, "s": signature};
+      payload_json = {"m":message_to_send, "k":currentAddr, "s": signature, "brd": current_board_title};
 
       if ($('.boards_nickname_form').val().length) {
         payload_json.n = $('.boards_nickname_form').val();
@@ -2525,7 +2527,11 @@ function save_boards_message(message_json) {
 
       boards_db.insert(message_db);
 
-      }
+      return true;
+
+    } else {
+      return false;
+    }
 
 });
 
@@ -3191,6 +3197,8 @@ console.log(all_transactions);
     console.log('Getting new unconfirmed messages..');
     get_new_conversations(true);
   }
+
+  backgroundSyncBoardMessages();
 
 }
 
@@ -4263,7 +4271,9 @@ ipcRenderer.on('new-message', async (event, transaction) => {
      hex_json.h = transaction.hash;
      hex_json.brd = transaction.transfers[0].publicKey;
      hex_json.timestamp = resp.result.block.timestamp;
-     save_boards_message(hex_json);
+
+     // Save board message in db, returns false if message already existed in db
+     let message_was_unknown = save_boards_message(hex_json);
      console.log(hex_json);
      let this_addr = await Address.fromAddress(hex_json.k);
      console.log(this_addr);
@@ -4310,7 +4320,7 @@ ipcRenderer.on('new-message', async (event, transaction) => {
 				 			name = 'Anonymous';
 				 		}
 
-				 		if (hex_json.k != currentAddr && last_block_checked != transaction.hash) {
+				 		if (hex_json.k != currentAddr && message_was_unknown) {
 
               last_block_checked = transaction.hash;
 
@@ -4345,6 +4355,160 @@ ipcRenderer.on('new-message', async (event, transaction) => {
 
 
 })
+
+async function backgroundSyncBoardMessages() {
+
+
+      let json = await fetch('http://' + rmt.getGlobal('node') + '/get_pool_changes_lite', {
+           method: 'POST',
+           body: JSON.stringify({
+               knownTXs: {}
+           })
+         })
+
+         json = await json.json();
+
+        console.log(json);
+
+        json = JSON.stringify(json).replace('.txPrefix','');
+        json = json.replace('.txHash','txHash');
+
+        console.log('doc', json);
+
+        json = JSON.parse(json);
+
+        let transactions = json.addedTxs;
+
+        for (transaction in transactions) {
+
+          try {
+
+          console.log('transaction:', transactions[transaction]);
+
+          let thisExtra = transactions[transaction].transactionPrefixInfo.extra;
+          let thisHash = transactions[transaction].transactionPrefixInfotxHash;
+
+          console.log('Extra:', thisExtra);
+
+          if (thisExtra.length > 66) {
+
+            // thisExtra !!
+            console.log('thisExtra', thisExtra);
+          let result = trimExtra(thisExtra);
+          console.log('trimExtra', result);
+       		 let hex_json = JSON.parse(result);
+
+       		 if (hex_json.b) {
+
+       			 let key = invite_code_from_ascii(hex_json.brd);
+       			 let secretKey = naclUtil.decodeUTF8(key.substring(1, 33));
+
+       			 let this_keyPair = nacl.box.keyPair.fromSecretKey(secretKey);
+       			 hex_json = JSON.parse(naclUtil.encodeUTF8(nacl.box.open(fromHexString(hex_json.b), nonceFromTimestamp(hex_json.t), this_keyPair.publicKey, this_keyPair.secretKey)));
+
+       		 }
+
+       		 console.log('Debug me', hex_json);
+            hex_json.h = thisHash;
+            hex_json.brd = invite_code_from_ascii(hex_json.brd);
+            hex_json.timestamp = Date.now();
+
+            // Save board message in db, returns false if message already existed in db
+            let message_was_unknown = save_boards_message(hex_json);
+            console.log(hex_json);
+            let this_addr = await Address.fromAddress(hex_json.k);
+            console.log(this_addr);
+            let verified = await xkrUtils.verifyMessageSignature(hex_json.m, this_addr.spend.publicKey, hex_json.s);
+            console.log(verified);
+       		 // let verified = nacl.sign.detached.verify(naclUtil.decodeUTF8(hex_json.m), fromHexString(hex_json.s), fromHexString(hex_json.k));
+
+       		 if (!verified) {
+       			 return;
+       		 }
+
+       		 let to_board;
+
+       		 await dictionary.find({ original: hex_json.brd }, async function (err,docs){
+
+       			 console.log(docs)
+
+       				 if (!docs.length == 0) {
+
+       					 to_board = docs[0].translation;
+
+       				 } else if (invite_code_from_ascii(hex_json.brd) == "0b66b223812861ad15e5310b4387f475c414cd7bda76be80be6d3a55199652fc") {
+                  to_board = "Home";
+                  } else {
+       					 to_board = hex_json.brd;
+       				 }
+
+
+       				      await require("fs").writeFile(userDataDir + "/" +hex_json.k + ".png", get_avatar(hex_json.k, 'png'), 'base64', function(err) {
+       				        console.log(err);
+       				      });
+
+       				      let message = escapeHtml(hex_json.m);
+
+       				      if (message.length < 1) {
+                      console.log('Empty message, skipping');
+       				        return;
+       				      }
+
+       				 		 let name;
+
+       				     if (hex_json.n) {
+       				       name = hex_json.n;
+       				     } else {
+       				 			name = 'Anonymous';
+       				 		}
+
+       				 		if (hex_json.k != currentAddr && message_was_unknown) {
+
+                     last_block_checked = transaction.hash;
+
+       				      notifier.notify({
+       				        title: name + " in " + to_board,
+       				        message: message,
+       				        icon: userDataDir + "/" +hex_json.k + ".png",
+       				        wait: true // Wait with callback, until user action is taken against notification
+       				      },function (err, response, metadata) {
+       				 			 console.log(err, response, metadata);
+       				 		 });
+
+       				    notifier.on('click', function(notifierObject, options) {
+       				      // Triggers if `wait: true` and user clicks notification
+       				 			ipcRenderer.send('show-window');
+
+
+       				    });
+
+                   if ($('.board_icon.current').attr('invitekey') == transaction.transfers[0].publicKey || $('.board_icon.current').attr('id') == "home_board") {
+
+                     print_single_board_message(thisHash, '#boards_messages');
+
+                   }
+
+                   print_single_board_message(thisHash, '#recent_board_messages .inner');
+       				 } else {
+                 console.log('Already know about this message, skipping..');
+               }
+
+
+       			 })
+
+
+
+
+          }
+
+        } catch (err) {
+          continue;
+        }
+
+        }
+
+
+}
 
 let global_nonce;
 
