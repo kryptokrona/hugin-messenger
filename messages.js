@@ -91,6 +91,67 @@ let endCall = (peer, stream, contact_address) => {
     // $('#screen-button').unbind('click').click(function() { startCall(true, true, true) });
 }
 
+
+const {ipcRenderer} = require('electron');
+
+let reply_to_board_message = (hash) => {
+
+  current_reply_to = hash;
+  $('.board_message').removeClass('rgb');
+  let nickname = false;
+
+  try {
+      nickname = $('#boards .' + hash + ' .boards_nickname').text();
+  } catch (err) {
+
+  }
+
+  let replyto;
+
+  if (nickname) {
+
+    replyto = nickname;
+
+  } else {
+    replyto = "anonymous"
+  }
+
+  $('#replyto').text('Replying to ' + replyto).fadeIn();
+  $('#replyto_exit').fadeIn();
+
+  let amount = parseInt($('#replyto').width()) + 70;
+
+  $('#boards_message_form').css('padding-left',amount);
+
+  $('#boards_message_form').css('width','calc(80% - ' + ( amount + 17 ) + 'px)');
+
+}
+
+let print_board = (board) => {
+  console.log('Printing board', board);
+  $('#boards .board_message').remove();
+  boards_db.find({board : board}).sort({ timestamp: -1 }).exec(function (err,docs){
+
+    console.log(docs);
+
+    for (doc in docs) {
+      console.log(docs[doc]);
+      // continue;
+      let hash = docs[doc].hash;
+      let pubkey = docs[doc].sender;
+      let message = docs[doc].message;
+      let timestamp = docs[doc].timestamp;
+      let fetching_board = $('.current').attr('id');
+      let nickname = docs[doc].nickname;
+      let this_reply = docs[doc].reply;
+      print_board_message(hash, pubkey, message, timestamp, fetching_board, nickname, this_reply=false, append=true);
+
+    }
+
+  })
+
+}
+
 let print_boards = async () => {
 
   $('#boards_picker').empty();
@@ -143,11 +204,12 @@ let print_boards = async () => {
 
 
          $('#board_title').text(board_title);
-		     ipcRenderer.send('get-boards', this_board);
+		     // ipcRenderer.send('get-boards', this_board);
 		     $('.current').removeClass('current');
 		     $(this).addClass('current');
          $('#replyto_exit').click();
          $('#send_payment').addClass('hidden');
+         print_board($(this).attr('invitekey'));
 
 
 		   });
@@ -1216,7 +1278,6 @@ $('#getPrivatekey').click(function(){
 })
 
 
-const {ipcRenderer} = require('electron');
 
 
 ipcRenderer.on('gotNodes', (evt, json) => {
@@ -1733,7 +1794,7 @@ async function sendBoardMessage(message) {
       amount = 1;
       fee = 10;
       mixin = 5;
-      timestamp = Date.now();
+      timestamp = Date.now()/1000;
       //
       //let signature = nacl.sign.detached(naclUtil.decodeUTF8(message_to_send), signingKeyPair.secretKey);
       // console.log('getting private key for ', currentAddr);
@@ -1790,7 +1851,7 @@ async function sendBoardMessage(message) {
 
 				let this_keyPair = nacl.box.keyPair.fromSecretKey(secretKey);
 
-				let timestamp = Date.now();
+				let timestamp = Date.now()/1000;
 				payload_json_decoded = naclUtil.decodeUTF8(JSON.stringify(payload_json));
 
 				let box = nacl.box(payload_json_decoded, nonceFromTimestamp(timestamp), this_keyPair.publicKey, this_keyPair.secretKey);
@@ -2517,13 +2578,13 @@ function save_boards_message(message_json) {
   let message = message_json.m;
   let timestamp = message_json.timestamp;
   let nickname = message_json.n;
-  let reply = message_json.r;
+  let this_reply = message_json.r;
 
   boards_db.find({hash : hash}, function (err,docs){
 
       if (docs.length == 0) {
 
-      message_db = {"hash": hash, "board": board, "sender": sender, "message":message, "timestamp": timestamp, "nickname": nickname, "reply": reply};-
+      message_db = {"hash": hash, "board": board, "sender": sender, "message":message, "timestamp": timestamp, "nickname": nickname, "reply": this_reply};-
 
       boards_db.insert(message_db);
 
@@ -4069,38 +4130,7 @@ $('#replyto_exit').click(function(){
 })
 
 
-let reply = (hash) => {
 
-  current_reply_to = hash;
-  $('.board_message').removeClass('rgb');
-  let nickname = false;
-
-  try {
-      nickname = $('#boards .' + hash + ' .boards_nickname').text();
-  } catch (err) {
-
-  }
-
-  let replyto;
-
-  if (nickname) {
-
-    replyto = nickname;
-
-  } else {
-    replyto = "anonymous"
-  }
-
-  $('#replyto').text('Replying to ' + replyto).fadeIn();
-  $('#replyto_exit').fadeIn();
-
-  let amount = parseInt($('#replyto').width()) + 70;
-
-  $('#boards_message_form').css('padding-left',amount);
-
-  $('#boards_message_form').css('width','calc(80% - ' + ( amount + 17 ) + 'px)');
-
-}
 
 let handle_links = (message) => {
   geturl = new RegExp(
@@ -4147,13 +4177,41 @@ if (links_in_message) {
 
 }
 
-let print_board_message = async (pubkey, message, timestamp, fetching_board, nickname=false, reply=false, append=true) => {
+let print_board_message = async (hash, address, message, timestamp, fetching_board, nickname=false, reply=false, append=true) => {
 
-  let avatar_base64 = get_avatar(pubkey);
 
-   if (current_board != fetching_board) {
-     return;
-   }
+  try {
+    let tips = 0;
+
+
+
+
+      // console.log(thisBlockCount);
+      // console.log(this_json_tx);
+      // console.log(hash);
+     //
+     // let transactions = await walletd.getTransactions(
+     //   thisBlockCount - this_json_tx.blockHeight,
+     //   this_json_tx.blockHeight,
+     //   '',
+     //   [],
+     //   hash);
+     //
+     //
+     //  let blocks = transactions.body.result.items;
+     //
+     //  // console.log('transactions', transactions);
+     //
+     //    for (block in blocks) {
+     //      let block_txs = blocks[block].transactions;
+     //      for (tx in block_txs) {
+     //        let this_tx = block_txs[tx].amount;
+     //           tips += this_tx;
+     //
+     //      }
+     //    }
+  let avatar_base64 = get_avatar(address);
+
    let addClasses = '';
    if (containsOnlyEmojis(message)) {
      addClasses = 'emoji-message';
@@ -4163,66 +4221,93 @@ let print_board_message = async (pubkey, message, timestamp, fetching_board, nic
      return;
    }
 
+     geturl = new RegExp(
+             "(^|[ \t\r\n])((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&~=-])|%[A-Fa-f0-9]{2}){3,}(#([a-zA-Z0-9][a-zA-Z0-9$_.+!*(),;/?:@&~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))"
+            ,"g"
+          );
 
-   let links = handle_links(message);
-   message = links[0];
-   let youtube_links = links[1];
-   let image_attached = links[2];
+   // Instantiate attachments
+   let youtube_links = '';
+   let image_attached = '';
+
+   // Find links
+   let links_in_message = message.match(geturl);
+
+   // Supported image attachment filetypes
+   let imagetypes = ['.png','.jpg','.gif', '.webm', '.jpeg', '.webp'];
+
+   // Find magnet links
+   //let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(message);
+
+   //message = message.replace(magnetLinks[0], "");
+
+   if (links_in_message) {
+
+     for (let j = 0; j < links_in_message.length; j++) {
+
+       if (links_in_message[j].match(/youtu/) || links_in_message[j].match(/y2u.be/)) { // Embeds YouTube links
+         message = message.replace(links_in_message[j],'');
+         embed_code = links_in_message[j].split('/').slice(-1)[0].split('=').slice(-1)[0];
+         youtube_links += '<div style="position:relative;height:0;padding-bottom:42.42%"><iframe src="https://www.youtube.com/embed/' + embed_code + '?modestbranding=1" style="position:absolute;width:80%;height:100%;left:10%" width="849" height="360" frameborder="0" allow="autoplay; encrypted-media"></iframe></div>';
+       } else if (imagetypes.indexOf(links_in_message[j].substr(-4)) > -1 ) { // Embeds image links
+         message = message.replace(links_in_message[j],'');
+         image_attached_url = links_in_message[j];
+         image_attached = '<img class="attachment" src="' + image_attached_url + '" />';
+       } else { // Embeds other links
+         message = message.replace(links_in_message[j],'<a target="_new" href="' + links_in_message[j] + '">' + links_in_message[j] + '</a>');
+       }
+     }
+   }
 
 
-   if (append) {
+
    if (message.length < 1 && youtube_links.length > 0) {
-     $('#boards_messages').append('<li class="board_message ' + timestamp*1000 + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + pubkey  + '</span></div>'+ image_attached + youtube_links +'<span class="time" timestamp="'+ timestamp*1000 +'">' + moment(timestamp*1000).fromNow() + '</span></li>');
+     $('#boards_messages').append('<li class="board_message ' + hash + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + address + '</span></div>'+ image_attached + youtube_links +'<span class="time" timestamp="'+ timestamp*1000 +'">' + moment(timestamp*1000).fromNow() + '</span></li>');
 
    } else if (image_attached > 0 && youtube_links.length > 0) {
 
-     $('#boards_messages').append('<li class="board_message ' + timestamp*1000 + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + pubkey  + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time" timestamp="'+ timestamp*1000 +'">' + moment(timestamp*1000).fromNow() + '</span></li>');
+     $('#boards_messages').append('<li class="board_message ' + hash + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + address + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time" timestamp="'+ timestamp*1000 +'">' + moment(timestamp*1000).fromNow() + '</span></li>');
 
 
    } else  {
-     $('#boards_messages').append('<li class="board_message ' + timestamp*1000 + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + pubkey  + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time" timestamp="'+ timestamp*1000 +'">' + moment(timestamp*1000).fromNow() + '</span></li>');
+     $('#boards_messages').append('<li class="board_message ' + hash + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + address + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time" timestamp="'+ timestamp*1000 +'">' + moment(timestamp*1000).fromNow() + '</span></li>');
   }
 
-} else {
-  if (message.length < 1 && youtube_links.length > 0) {
-    $('#boards_messages').prepend('<li class="board_message ' + timestamp*1000 + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + pubkey  + '</span></div>'+ image_attached + youtube_links +'<span class="time" timestamp="'+ timestamp*1000 +'">' + moment(timestamp*1000).fromNow() + '</span></li>');
-
-  } else if (image_attached > 0 && youtube_links.length > 0) {
-
-    $('#boards_messages').prepend('<li class="board_message ' + timestamp*1000 + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + pubkey  + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time" timestamp="'+ timestamp*1000 +'">' + moment(timestamp*1000).fromNow() + '</span></li>');
-
-
-  } else  {
-    $('#boards_messages').prepend('<li class="board_message ' + timestamp*1000 + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + pubkey  + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time" timestamp="'+ timestamp*1000 +'">' + moment(timestamp*1000).fromNow() + '</span></li>');
- }
-  console.log('debagg', timestamp*1000);
-   $('.' + timestamp*1000).click(function(){
-     shell.openExternal($(this).attr('href'));
-   })
-}
-
   if (nickname) {
-    $('.' + timestamp*1000 + ' .board_message_pubkey').before('<span class="boards_nickname">' + nickname + '</span>')
+    $('#boards .' + hash + ' .board_message_pubkey').before('<span class="boards_nickname">' + escapeHtml(nickname) + '</span>')
   }
 
   if (reply) {
-    // $('.' + hash + ' .board_message_pubkey').before('<span class="boards_nickname">' + hex_json.n + '</span>')
+    // $('.this_board_message .board_message_pubkey').before('<span class="boards_nickname">' + hex_json.n + '</span>')
     let tx_data_reply = await fetch('http://' + rmt.getGlobal('node') + '/json_rpc', {
          method: 'POST',
          body: JSON.stringify({
            jsonrpc: '2.0',
            method: 'f_transaction_json',
-           params: {hash: reply}
+           params: {hash: hex_json.r}
          })
        })
 
        const resp_reply = await tx_data_reply.json();
-       let hex_json_reply = trimExtra(resp_reply.result.tx.extra);
-       // const addr = await Address.fromAddress(currentAddr);
-       let this_addr = await Address.fromAddress(hex_json_reply.k);
-       console.log(this_addr);
-       let verified_reply = await xkrUtils.verifyMessageSignature(hex_json_reply.m, this_addr.spend.publicKey, hex_json_reply.s);
-       console.log(verified);
+       let result_reply = trimExtra(resp_reply.result.tx.extra);
+       let hex_json_reply = JSON.parse(fromHex(result_reply));
+
+       // console.log(hex_json_reply);
+
+       if (hex_json_reply.b) {
+
+        let key = $('.board_icon.current').attr('invitekey');
+        let secretKey = naclUtil.decodeUTF8(key.substring(1, 33));
+
+        let this_keyPair = nacl.box.keyPair.fromSecretKey(secretKey);
+        hex_json_reply = JSON.parse(naclUtil.encodeUTF8(nacl.box.open(fromHexString(hex_json_reply.b), nonceFromTimestamp(hex_json_reply.t), this_keyPair.publicKey, this_keyPair.secretKey)));
+
+      }
+        let this_addr = await Address.fromAddress(hex_json_reply.k);
+        // console.log(this_addr);
+        let verified_reply = await xkrUtils.verifyMessageSignature(hex_json_reply.m, this_addr.spend.publicKey, hex_json_reply.s);
+        // console.log(verified);
+       // let verified_reply = nacl.sign.detached.verify(naclUtil.decodeUTF8(hex_json_reply.m), fromHexString(hex_json_reply.s), fromHexString(hex_json_reply.k));
 
        if (!verified_reply) {
          return;
@@ -4230,10 +4315,131 @@ let print_board_message = async (pubkey, message, timestamp, fetching_board, nic
        let avatar_base64_reply = get_avatar(hex_json_reply.k);
        let message_reply = hex_json_reply.m;
 
-       $('.' + toString(timestamp*1000) + ' img').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/svg+xml;base64,' + avatar_base64_reply + '"><p>' + message_reply.substring(0,55)  +'..</p></div>');
+       $('#boards .' + hash + ' img').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/svg+xml;base64,' + avatar_base64_reply + '"><p>' + message_reply.substring(0,55)  +'..</p></div>');
+
+
 
 
   }
+
+     if (tips) {
+         $('#boards .' + hash + '').append('<span class="tips">' + parseFloat(tips/100000).toFixed(5) + '</span>');
+     }
+
+
+   $('#boards .' + hash + ' .board_message_pubkey').click(function(e){
+     $('#boards_messages').addClass('menu');
+     e.preventDefault();
+     let address = $(this).text();
+     $('#payment_rec_addr').val(address);
+     $('#payment_id').val(hash);
+     $('#send_payment').removeClass('hidden');
+     if (!$('#modal').hasClass('hidden')) {
+       $('#modal').addClass('hidden');
+       $('#boards_messages').addClass('menu');
+     }
+
+
+   })
+
+  $('#boards .' + hash).click(function(){
+    reply_to_board_message(hash);
+    $(this).addClass('rgb');
+    $('#boards').scrollTop('0');
+  });
+
+
+
+} catch (err) {
+  console.log('Error:', err)
+  return;
+}
+//
+//   let avatar_base64 = get_avatar(pubkey);
+//
+//    if (current_board != fetching_board) {
+//      return;
+//    }
+//    let addClasses = '';
+//    if (containsOnlyEmojis(message)) {
+//      addClasses = 'emoji-message';
+//    }
+//
+//    if (message.length < 1) {
+//      return;
+//    }
+//
+//
+//    let links = handle_links(message);
+//    message = links[0];
+//    let youtube_links = links[1];
+//    let image_attached = links[2];
+//
+//
+//    if (append) {
+//    if (message.length < 1 && youtube_links.length > 0) {
+//      $('#boards_messages').append('<li class="board_message ' + timestamp*1000 + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + pubkey  + '</span></div>'+ image_attached + youtube_links +'<span class="time" timestamp="'+ timestamp*1000 +'">' + moment(timestamp*1000).fromNow() + '</span></li>');
+//
+//    } else if (image_attached > 0 && youtube_links.length > 0) {
+//
+//      $('#boards_messages').append('<li class="board_message ' + timestamp*1000 + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + pubkey  + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time" timestamp="'+ timestamp*1000 +'">' + moment(timestamp*1000).fromNow() + '</span></li>');
+//
+//
+//    } else  {
+//      $('#boards_messages').append('<li class="board_message ' + timestamp*1000 + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + pubkey  + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time" timestamp="'+ timestamp*1000 +'">' + moment(timestamp*1000).fromNow() + '</span></li>');
+//   }
+//
+// } else {
+//   if (message.length < 1 && youtube_links.length > 0) {
+//     $('#boards_messages').prepend('<li class="board_message ' + timestamp*1000 + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + pubkey  + '</span></div>'+ image_attached + youtube_links +'<span class="time" timestamp="'+ timestamp*1000 +'">' + moment(timestamp*1000).fromNow() + '</span></li>');
+//
+//   } else if (image_attached > 0 && youtube_links.length > 0) {
+//
+//     $('#boards_messages').prepend('<li class="board_message ' + timestamp*1000 + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + pubkey  + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time" timestamp="'+ timestamp*1000 +'">' + moment(timestamp*1000).fromNow() + '</span></li>');
+//
+//
+//   } else  {
+//     $('#boards_messages').prepend('<li class="board_message ' + timestamp*1000 + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + pubkey  + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time" timestamp="'+ timestamp*1000 +'">' + moment(timestamp*1000).fromNow() + '</span></li>');
+//  }
+//   console.log('debagg', timestamp*1000);
+//    $('.' + timestamp*1000).click(function(){
+//      shell.openExternal($(this).attr('href'));
+//    })
+// }
+//
+//   if (nickname) {
+//     $('.' + timestamp*1000 + ' .board_message_pubkey').before('<span class="boards_nickname">' + nickname + '</span>')
+//   }
+//
+//   if (reply) {
+//     // $('.' + hash + ' .board_message_pubkey').before('<span class="boards_nickname">' + hex_json.n + '</span>')
+//     let tx_data_reply = await fetch('http://' + rmt.getGlobal('node') + '/json_rpc', {
+//          method: 'POST',
+//          body: JSON.stringify({
+//            jsonrpc: '2.0',
+//            method: 'f_transaction_json',
+//            params: {hash: reply}
+//          })
+//        })
+//
+//        const resp_reply = await tx_data_reply.json();
+//        let hex_json_reply = trimExtra(resp_reply.result.tx.extra);
+//        // const addr = await Address.fromAddress(currentAddr);
+//        let this_addr = await Address.fromAddress(hex_json_reply.k);
+//        console.log(this_addr);
+//        let verified_reply = await xkrUtils.verifyMessageSignature(hex_json_reply.m, this_addr.spend.publicKey, hex_json_reply.s);
+//        console.log(verified);
+//
+//        if (!verified_reply) {
+//          return;
+//        }
+//        let avatar_base64_reply = get_avatar(hex_json_reply.k);
+//        let message_reply = hex_json_reply.m;
+//
+//        $('.' + toString(timestamp*1000) + ' img').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/svg+xml;base64,' + avatar_base64_reply + '"><p>' + message_reply.substring(0,55)  +'..</p></div>');
+//
+//
+//   }
 
 }
 
@@ -4370,8 +4576,7 @@ async function backgroundSyncBoardMessages() {
 
         console.log(json);
 
-        json = JSON.stringify(json).replace('.txPrefix','');
-        json = json.replace('.txHash','txHash');
+        json = JSON.stringify(json).replace('.txPrefix','').replace('transactionPrefixInfo.txHash','transactionPrefixInfotxHash');
 
         console.log('doc', json);
 
@@ -4414,7 +4619,23 @@ async function backgroundSyncBoardMessages() {
             hex_json.timestamp = Date.now();
 
             // Save board message in db, returns false if message already existed in db
-            let message_was_unknown = save_boards_message(hex_json);
+            let message_was_unknown = true;
+
+              await boards_db.find({hash : hex_json.h}, function (err,docs){
+
+                  if (docs.length == 0) {
+
+                  let message_db = {"hash": hex_json.h, "board": hex_json.brd, "sender": hex_json.k, "message":hex_json.m, "timestamp": hex_json.timestamp, "nickname": hex_json.n, "reply": hex_json.r};-
+
+                  boards_db.insert(message_db);
+
+                } else {
+                  message_was_unknown = false;
+                }
+
+            });
+
+            console.log('message_was_unknown', message_was_unknown);
             console.log(hex_json);
             let this_addr = await Address.fromAddress(hex_json.k);
             console.log(this_addr);
@@ -4439,7 +4660,7 @@ async function backgroundSyncBoardMessages() {
        				 } else if (invite_code_from_ascii(hex_json.brd) == "0b66b223812861ad15e5310b4387f475c414cd7bda76be80be6d3a55199652fc") {
                   to_board = "Home";
                   } else {
-       					 to_board = hex_json.brd;
+       					 to_board = letter_from_spend_key(hex_json.brd);
        				 }
 
 
