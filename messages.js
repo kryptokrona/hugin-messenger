@@ -171,7 +171,7 @@ let print_boards = async () => {
 
     let board_color = intToRGB(hashCode((this_address[1])));
     if (this_address[0] == "SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc") {
-      $('#boards_picker').append('<div class="board_icon rgb" id="home_board" style=""><i class="fa fa-home"></i></div>');
+      $('#boards_picker').append('<div class="board_icon rgb" id="home_board" title="Home" invitekey="0b66b223812861ad15e5310b4387f475c414cd7bda76be80be6d3a55199652fc" style=""><i class="fa fa-home"></i></div>');
     } else {
 			await dictionary.find({ original: this_address[1] }, function (err,docs){
 
@@ -1800,6 +1800,7 @@ async function sendBoardMessage(message) {
 
     if (current_board == 'home_board' ) {
       receiver = 'SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc';
+      current_board_title = 'Home';
     } else {
       receiver = current_board;
     }
@@ -2599,6 +2600,10 @@ function save_boards_message(message_json) {
 
       if (docs.length == 0) {
 
+        if (board == '756e646566696e65640000000000000000000000000000000000000000000000') {
+          board =  '0b66b223812861ad15e5310b4387f475c414cd7bda76be80be6d3a55199652fc';
+        }
+
       message_db = {"hash": hash, "board": board, "sender": sender, "message":message, "timestamp": timestamp, "nickname": nickname, "reply": this_reply};-
 
       boards_db.insert(message_db);
@@ -2955,9 +2960,9 @@ get_new_conversations(unconfirmed);
       }
 
       try {
-				console.log('heights:', last_block_checked, block_height);
+				// console.log('heights:', last_block_checked, block_height);
       confirmed_transactions = await get_confirmed_messages(last_block_checked, block_height);
-			console.log('confirmed txs:', confirmed_transactions);
+			// console.log('confirmed txs:', confirmed_transactions);
       check_block = block_height;
     } catch (err) {
       console.log(err);
@@ -3029,8 +3034,8 @@ all_transactions = all_transactions.filter(function (el) {
   return el != null;
 });
 
-console.log('Got all txs, lets read the messages', all_transactions.length);
-console.log(all_transactions);
+// console.log('Got all txs, lets read the messages', all_transactions.length);
+// console.log(all_transactions);
 
 
   for (n in all_transactions) {
@@ -3038,11 +3043,11 @@ console.log(all_transactions);
 
 
     try {
-      console.log(all_transactions[n]);
+      // console.log(all_transactions[n]);
       tx = JSON.parse(all_transactions[n]);
 			// console.log('tx', tx);
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       continue;
     }
 
@@ -4500,6 +4505,7 @@ ipcRenderer.on('new-message', async (event, transaction) => {
 
            if (docs.length == 0) {
 
+
            let message_db = {"hash": hex_json.h, "board": hex_json.brd, "sender": hex_json.k, "message":hex_json.m, "timestamp": hex_json.timestamp, "nickname": hex_json.n, "reply": hex_json.r};-
 
            boards_db.insert(message_db);
@@ -4509,11 +4515,11 @@ ipcRenderer.on('new-message', async (event, transaction) => {
          }
 
      });
-     console.log(hex_json);
+     // console.log(hex_json);
      let this_addr = await Address.fromAddress(hex_json.k);
-     console.log(this_addr);
+     // console.log(this_addr);
      let verified = await xkrUtils.verifyMessageSignature(hex_json.m, this_addr.spend.publicKey, hex_json.s);
-     console.log(verified);
+     // console.log(verified);
 		 // let verified = nacl.sign.detached.verify(naclUtil.decodeUTF8(hex_json.m), fromHexString(hex_json.s), fromHexString(hex_json.k));
 
 		 if (!verified) {
@@ -4603,11 +4609,11 @@ async function backgroundSyncBoardMessages() {
 
          json = await json.json();
 
-        console.log(json);
+        // console.log(json);
 
         json = JSON.stringify(json).replaceAll('.txPrefix','').replaceAll('transactionPrefixInfo.txHash','transactionPrefixInfotxHash');
 
-        console.log('doc', json);
+        // console.log('doc', json);
 
         json = JSON.parse(json);
 
@@ -4622,14 +4628,14 @@ async function backgroundSyncBoardMessages() {
           let thisExtra = transactions[transaction].transactionPrefixInfo.extra;
           let thisHash = transactions[transaction].transactionPrefixInfotxHash;
 
-          console.log('Extra:', thisExtra);
+          // console.log('Extra:', thisExtra);
 
           if (thisExtra.length > 64) {
 
             // thisExtra !!
-            console.log('thisExtra', thisExtra);
+            // console.log('thisExtra', thisExtra);
           let result = trimExtra(thisExtra);
-          console.log('trimExtra', result);
+          // console.log('trimExtra', result);
        		 let hex_json = JSON.parse(result);
 
        		 if (hex_json.b) {
@@ -4642,9 +4648,16 @@ async function backgroundSyncBoardMessages() {
 
        		 }
 
-       		 console.log('Debug me', hex_json);
+       		 // console.log('Debug me', hex_json);
             hex_json.h = thisHash;
             hex_json.brd = invite_code_from_ascii(hex_json.brd);
+
+
+
+           if (hex_json.brd == '486f6d6500000000000000000000000000000000000000000000000000000000') {
+             hex_json.brd =  '0b66b223812861ad15e5310b4387f475c414cd7bda76be80be6d3a55199652fc';
+           }
+
             hex_json.timestamp = Date.now() / 1000;
 
             // Save board message in db, returns false if message already existed in db
@@ -4664,12 +4677,12 @@ async function backgroundSyncBoardMessages() {
 
             });
 
-            console.log('message_was_unknown', message_was_unknown);
-            console.log(hex_json);
+            // console.log('message_was_unknown', message_was_unknown);
+            // console.log(hex_json);
             let this_addr = await Address.fromAddress(hex_json.k);
-            console.log(this_addr);
+            // console.log(this_addr);
             let verified = await xkrUtils.verifyMessageSignature(hex_json.m, this_addr.spend.publicKey, hex_json.s);
-            console.log(verified);
+            // console.log(verified);
        		 // let verified = nacl.sign.detached.verify(naclUtil.decodeUTF8(hex_json.m), fromHexString(hex_json.s), fromHexString(hex_json.k));
 
        		 if (!verified) {
@@ -4743,7 +4756,7 @@ async function backgroundSyncBoardMessages() {
                  print_board_message(thisHash, hex_json.k, hex_json.m, hex_json.timestamp, hex_json.brd, name, hex_json.r, false);
 
                } else {
-                 console.log('Already know about this message, skipping..');
+                 // console.log('Already know about this message, skipping..');
                }
 
 
