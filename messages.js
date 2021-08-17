@@ -20,6 +20,11 @@ const {
 const xkrUtils = new CryptoNote()
 const crypto = new Crypto()
 
+String.prototype.replaceAll = function(search, replacement) {
+    var target = this;
+    return target.split(search).join(replacement);
+};
+
 function dataURLtoFile(dataurl, filename) {
 
        var arr = dataurl.split(','),
@@ -128,9 +133,10 @@ let reply_to_board_message = (hash) => {
 }
 
 let print_board = (board) => {
+
   console.log('Printing board', board);
   $('#boards .board_message').remove();
-  boards_db.find({board : board}).sort({ timestamp: -1 }).exec(function (err,docs){
+  boards_db.find({board : board}).sort({ timestamp: 1 }).exec(function (err,docs){
 
     console.log(docs);
 
@@ -209,7 +215,15 @@ let print_boards = async () => {
 		     $(this).addClass('current');
          $('#replyto_exit').click();
          $('#send_payment').addClass('hidden');
-         print_board($(this).attr('invitekey'));
+         let this_invite_key = $(this).attr('invitekey');
+
+         if (this_invite_key) {
+           print_board(this_invite_key);
+         } else {
+           print_board("0b66b223812861ad15e5310b4387f475c414cd7bda76be80be6d3a55199652fc");
+         }
+
+
 
 
 		   });
@@ -1828,9 +1842,10 @@ async function sendBoardMessage(message) {
         payload_json.r = current_reply_to;
         $('#replyto_exit').click();
       }
-
-      print_board_message(payload_json.k, payload_json.m, Date.now()/1000, $('.current').attr('id'), payload_json.n, payload_json.r, false);
-
+      console.log('Printing sent message..');
+      console.log('Nick', payload_json.n);
+      console.log('Nick2', $('.boards_nickname_form').val());
+      print_board_message(Date.now(), payload_json.k, payload_json.m, Date.now()/1000, $('.current').attr('id'), payload_json.n, payload_json.r, false);
 
       //payload_json_decoded = naclUtil.decodeUTF8(JSON.stringify(payload_json));
 
@@ -2961,10 +2976,10 @@ get_new_conversations(unconfirmed);
     }
       console.log('Getting unconfirmed transactions..');
       unconfirmed_transactions = await get_unconfirmed_messages();
-      console.log('unconfirmed!!!!!', unconfirmed_transactions);
+      // console.log('unconfirmed!!!!!', unconfirmed_transactions);
       for (tx in unconfirmed_transactions) {
 
-        console.log(unconfirmed_transactions[tx]);
+        // console.log(unconfirmed_transactions[tx]);
 
         if (!known_txs.includes(unconfirmed_transactions[tx])) {
           known_txs.push(unconfirmed_transactions[tx]);
@@ -3918,7 +3933,7 @@ $('#boards_icon').click(function(){
 
  } else {
    // $('#avatar').attr('src', 'data:image/svg+xml;base64,' + get_avatar(signingPublicKey));
-    ipcRenderer.send('get-boards', 'SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc');
+    print_board('0b66b223812861ad15e5310b4387f475c414cd7bda76be80be6d3a55199652fc');
     $('#board_title').text('Home');
  }
 
@@ -4183,7 +4198,7 @@ let print_board_message = async (hash, address, message, timestamp, fetching_boa
   try {
     let tips = 0;
 
-
+    console.log('Nick', nickname);
 
 
       // console.log(thisBlockCount);
@@ -4262,15 +4277,15 @@ let print_board_message = async (hash, address, message, timestamp, fetching_boa
 
 
    if (message.length < 1 && youtube_links.length > 0) {
-     $('#boards_messages').append('<li class="board_message ' + hash + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + address + '</span></div>'+ image_attached + youtube_links +'<span class="time" timestamp="'+ timestamp*1000 +'">' + moment(timestamp*1000).fromNow() + '</span></li>');
+     $('#boards_messages').prepend('<li class="board_message ' + hash + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + address + '</span></div>'+ image_attached + youtube_links +'<span class="time" timestamp="'+ timestamp*1000 +'">' + moment(timestamp*1000).fromNow() + '</span></li>');
 
    } else if (image_attached > 0 && youtube_links.length > 0) {
 
-     $('#boards_messages').append('<li class="board_message ' + hash + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + address + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time" timestamp="'+ timestamp*1000 +'">' + moment(timestamp*1000).fromNow() + '</span></li>');
+     $('#boards_messages').prepend('<li class="board_message ' + hash + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + address + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time" timestamp="'+ timestamp*1000 +'">' + moment(timestamp*1000).fromNow() + '</span></li>');
 
 
    } else  {
-     $('#boards_messages').append('<li class="board_message ' + hash + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + address + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time" timestamp="'+ timestamp*1000 +'">' + moment(timestamp*1000).fromNow() + '</span></li>');
+     $('#boards_messages').prepend('<li class="board_message ' + hash + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + address + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time" timestamp="'+ timestamp*1000 +'">' + moment(timestamp*1000).fromNow() + '</span></li>');
   }
 
   if (nickname) {
@@ -4479,7 +4494,21 @@ ipcRenderer.on('new-message', async (event, transaction) => {
      hex_json.timestamp = resp.result.block.timestamp;
 
      // Save board message in db, returns false if message already existed in db
-     let message_was_unknown = save_boards_message(hex_json);
+     let message_was_unknown = true;
+
+       await boards_db.find({hash : hex_json.h}, function (err,docs){
+
+           if (docs.length == 0) {
+
+           let message_db = {"hash": hex_json.h, "board": hex_json.brd, "sender": hex_json.k, "message":hex_json.m, "timestamp": hex_json.timestamp, "nickname": hex_json.n, "reply": hex_json.r};-
+
+           boards_db.insert(message_db);
+
+         } else {
+           message_was_unknown = false;
+         }
+
+     });
      console.log(hex_json);
      let this_addr = await Address.fromAddress(hex_json.k);
      console.log(this_addr);
@@ -4576,7 +4605,7 @@ async function backgroundSyncBoardMessages() {
 
         console.log(json);
 
-        json = JSON.stringify(json).replace('.txPrefix','').replace('transactionPrefixInfo.txHash','transactionPrefixInfotxHash');
+        json = JSON.stringify(json).replaceAll('.txPrefix','').replaceAll('transactionPrefixInfo.txHash','transactionPrefixInfotxHash');
 
         console.log('doc', json);
 
@@ -4588,14 +4617,14 @@ async function backgroundSyncBoardMessages() {
 
           try {
 
-          console.log('transaction:', transactions[transaction]);
+          // console.log('transaction:', transactions[transaction]);
 
           let thisExtra = transactions[transaction].transactionPrefixInfo.extra;
           let thisHash = transactions[transaction].transactionPrefixInfotxHash;
 
           console.log('Extra:', thisExtra);
 
-          if (thisExtra.length > 66) {
+          if (thisExtra.length > 64) {
 
             // thisExtra !!
             console.log('thisExtra', thisExtra);
@@ -4616,7 +4645,7 @@ async function backgroundSyncBoardMessages() {
        		 console.log('Debug me', hex_json);
             hex_json.h = thisHash;
             hex_json.brd = invite_code_from_ascii(hex_json.brd);
-            hex_json.timestamp = Date.now();
+            hex_json.timestamp = Date.now() / 1000;
 
             // Save board message in db, returns false if message already existed in db
             let message_was_unknown = true;
@@ -4683,7 +4712,7 @@ async function backgroundSyncBoardMessages() {
        				 			name = 'Anonymous';
        				 		}
 
-       				 		if (hex_json.k != currentAddr && message_was_unknown) {
+       				 		if (hex_json.k != currentAddr && message_was_unknown && $('.board_icon.current').attr('invitekey') != hex_json.brd) {
 
                      last_block_checked = transaction.hash;
 
@@ -4703,14 +4732,17 @@ async function backgroundSyncBoardMessages() {
 
        				    });
 
-                   if ($('.board_icon.current').attr('invitekey') == transaction.transfers[0].publicKey || $('.board_icon.current').attr('id') == "home_board") {
+                   // if ($('.board_icon.current').attr('invitekey') == transaction.transfers[0].publicKey || $('.board_icon.current').attr('id') == "home_board") {
+                   //
+                   //   print_single_board_message(thisHash, '#boards_messages');
+                   //
+                   // }
 
-                     print_single_board_message(thisHash, '#boards_messages');
+                   // print_single_board_message(thisHash, '#recent_board_messages .inner');
+       				 } else if (hex_json.k != currentAddr && message_was_unknown) {
+                 print_board_message(thisHash, hex_json.k, hex_json.m, hex_json.timestamp, hex_json.brd, name, hex_json.r, false);
 
-                   }
-
-                   print_single_board_message(thisHash, '#recent_board_messages .inner');
-       				 } else {
+               } else {
                  console.log('Already know about this message, skipping..');
                }
 
@@ -4948,6 +4980,8 @@ ipcRenderer.on('got-profile', async (event, json) => {
 })
 
 ipcRenderer.on('got-boards', async (event, json) => {
+
+  console.log('got-boards triggerd');
 
   let fetching_board = current_board;
 
