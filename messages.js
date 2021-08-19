@@ -150,9 +150,20 @@ let print_board = (board) => {
       let fetching_board = $('.current').attr('id');
       let nickname = docs[doc].nickname;
       let this_reply = docs[doc].reply;
-      print_board_message(hash, pubkey, message, timestamp, fetching_board, nickname, this_reply=false, append=true);
+      print_board_message(hash, pubkey, message, timestamp, fetching_board, nickname, this_reply, append=true);
 
     }
+
+    $('#boards .board_message').each(function(index){
+      console.log( index + ": " + $( this ).text() );
+      $(this).delay(index*100).animate({
+        opacity: 1
+      }, 150, function() {
+        // Animation complete.
+      });
+
+    })
+
 
   })
 
@@ -1846,7 +1857,8 @@ async function sendBoardMessage(message) {
       console.log('Printing sent message..');
       console.log('Nick', payload_json.n);
       console.log('Nick2', $('.boards_nickname_form').val());
-      print_board_message(Date.now(), payload_json.k, payload_json.m, Date.now()/1000, $('.current').attr('id'), payload_json.n, payload_json.r, false);
+      let temp_hash = Date.now();
+      print_board_message(temp_hash, payload_json.k, payload_json.m, Date.now()/1000, $('.current').attr('id'), payload_json.n, payload_json.r, false);
 
       //payload_json_decoded = naclUtil.decodeUTF8(JSON.stringify(payload_json));
 
@@ -1867,7 +1879,7 @@ async function sendBoardMessage(message) {
 
 				let this_keyPair = nacl.box.keyPair.fromSecretKey(secretKey);
 
-				let timestamp = Date.now()/1000;
+				let timestamp = parseInt(Date.now()/1000);
 				payload_json_decoded = naclUtil.decodeUTF8(JSON.stringify(payload_json));
 
 				let box = nacl.box(payload_json_decoded, nonceFromTimestamp(timestamp), this_keyPair.publicKey, this_keyPair.secretKey);
@@ -1882,11 +1894,15 @@ async function sendBoardMessage(message) {
 
 				// Convert json to hex
 				payload_hex = toHex(JSON.stringify(this_payload_box));
+
 			}
 
 
       sendAddr = $("#currentAddrSpan").text();
       transfer = [ { 'amount':amount, 'address':receiver } ];
+
+      console.log('temp_hash', temp_hash);
+      $('.' + temp_hash).addClass('loading_message');
 
       return sendTransaction(mixin, transfer, fee, sendAddr, payload_hex, payload_json, true);
 
@@ -4197,6 +4213,56 @@ if (links_in_message) {
 
 }
 
+let get_tips = async (hash) => {
+
+  let tips = 0;
+
+   let status = await walletd.getStatus();
+
+   let blockCount = status.body.result.blockCount;
+
+   let tx_data_reply = await fetch('http://' + rmt.getGlobal('node') + '/json_rpc', {
+        method: 'POST',
+        body: JSON.stringify({
+          jsonrpc: '2.0',
+          method: 'f_transaction_json',
+          params: {hash: hash}
+        })
+      });
+
+      console.log(tx_data_reply);
+
+
+
+   console.log(transaction);
+
+  let transactions = await walletd.getTransactions(
+    blockCount,
+    1,
+    '',
+    [],
+    hash);
+
+    console.log('transactions', transactions);
+
+   let blocks = transactions.body.result.items;
+
+
+     for (block in blocks) {
+       let block_txs = blocks[block].transactions;
+       for (tx in block_txs) {
+         let this_tx = block_txs[tx].amount;
+            tips += this_tx;
+
+       }
+     }
+
+
+      if (tips) {
+          $('#boards .' + hash + '').append('<span class="tips">' + parseFloat(tips/100000).toFixed(5) + '</span>');
+      }
+}
+
 let print_board_message = async (hash, address, message, timestamp, fetching_board, nickname=false, reply=false, append=true) => {
 
 
@@ -4205,31 +4271,8 @@ let print_board_message = async (hash, address, message, timestamp, fetching_boa
 
     console.log('Nick', nickname);
 
+     get_tips(hash);
 
-      // console.log(thisBlockCount);
-      // console.log(this_json_tx);
-      // console.log(hash);
-     //
-     // let transactions = await walletd.getTransactions(
-     //   thisBlockCount - this_json_tx.blockHeight,
-     //   this_json_tx.blockHeight,
-     //   '',
-     //   [],
-     //   hash);
-     //
-     //
-     //  let blocks = transactions.body.result.items;
-     //
-     //  // console.log('transactions', transactions);
-     //
-     //    for (block in blocks) {
-     //      let block_txs = blocks[block].transactions;
-     //      for (tx in block_txs) {
-     //        let this_tx = block_txs[tx].amount;
-     //           tips += this_tx;
-     //
-     //      }
-     //    }
   let avatar_base64 = get_avatar(address);
 
    let addClasses = '';
@@ -4298,21 +4341,21 @@ let print_board_message = async (hash, address, message, timestamp, fetching_boa
   }
 
   if (reply) {
+    console.log('This is a reply');
     // $('.this_board_message .board_message_pubkey').before('<span class="boards_nickname">' + hex_json.n + '</span>')
     let tx_data_reply = await fetch('http://' + rmt.getGlobal('node') + '/json_rpc', {
          method: 'POST',
          body: JSON.stringify({
            jsonrpc: '2.0',
            method: 'f_transaction_json',
-           params: {hash: hex_json.r}
+           params: {hash: reply}
          })
        })
 
        const resp_reply = await tx_data_reply.json();
+
        let result_reply = trimExtra(resp_reply.result.tx.extra);
        let hex_json_reply = JSON.parse(fromHex(result_reply));
-
-       // console.log(hex_json_reply);
 
        if (hex_json_reply.b) {
 
@@ -4340,11 +4383,12 @@ let print_board_message = async (hash, address, message, timestamp, fetching_boa
 
 
 
+  } else {
+    console.log('This is not a reply');
   }
 
-     if (tips) {
-         $('#boards .' + hash + '').append('<span class="tips">' + parseFloat(tips/100000).toFixed(5) + '</span>');
-     }
+
+
 
 
    $('#boards .' + hash + ' .board_message_pubkey').click(function(e){
@@ -4640,17 +4684,31 @@ async function backgroundSyncBoardMessages() {
 
        		 if (hex_json.b) {
 
-       			 let key = invite_code_from_ascii(hex_json.brd);
-       			 let secretKey = naclUtil.decodeUTF8(key.substring(1, 33));
+             let known_keys = rmt.getGlobal('boards_addresses');
 
-       			 let this_keyPair = nacl.box.keyPair.fromSecretKey(secretKey);
-       			 hex_json = JSON.parse(naclUtil.encodeUTF8(nacl.box.open(fromHexString(hex_json.b), nonceFromTimestamp(hex_json.t), this_keyPair.publicKey, this_keyPair.secretKey)));
+             for (board in known_keys) {
 
-       		 }
+          			 let key = known_keys[board][1];
+                 console.log('Trying key ', key);
+                 try {
+          			 let secretKey = naclUtil.decodeUTF8(key.substring(1, 33));
+
+          			 let this_keyPair = nacl.box.keyPair.fromSecretKey(secretKey);
+          			 hex_json = JSON.parse(naclUtil.encodeUTF8(nacl.box.open(fromHexString(hex_json.b), nonceFromTimestamp(hex_json.t), this_keyPair.publicKey, this_keyPair.secretKey)));
+                 console.log('Decrypted:', hex_json);
+                 hex_json.brd = hex_json.brd;
+               } catch (err) {
+                 console.log('Couldnt encrypt..', err);
+               }
+             }
+
+       		 } else {
+             hex_json.brd = invite_code_from_ascii(hex_json.brd);
+           }
 
        		 // console.log('Debug me', hex_json);
             hex_json.h = thisHash;
-            hex_json.brd = invite_code_from_ascii(hex_json.brd);
+
 
 
 
@@ -4658,7 +4716,7 @@ async function backgroundSyncBoardMessages() {
              hex_json.brd =  '0b66b223812861ad15e5310b4387f475c414cd7bda76be80be6d3a55199652fc';
            }
 
-            hex_json.timestamp = Date.now() / 1000;
+            hex_json.timestamp = parseInt(Date.now() / 1000);
 
             // Save board message in db, returns false if message already existed in db
             let message_was_unknown = true;
@@ -4677,10 +4735,10 @@ async function backgroundSyncBoardMessages() {
 
             });
 
-            // console.log('message_was_unknown', message_was_unknown);
-            // console.log(hex_json);
+            console.log('message_was_unknown', message_was_unknown);
+            console.log(hex_json);
             let this_addr = await Address.fromAddress(hex_json.k);
-            // console.log(this_addr);
+            console.log(this_addr);
             let verified = await xkrUtils.verifyMessageSignature(hex_json.m, this_addr.spend.publicKey, hex_json.s);
             // console.log(verified);
        		 // let verified = nacl.sign.detached.verify(naclUtil.decodeUTF8(hex_json.m), fromHexString(hex_json.s), fromHexString(hex_json.k));
@@ -4756,7 +4814,7 @@ async function backgroundSyncBoardMessages() {
                  print_board_message(thisHash, hex_json.k, hex_json.m, hex_json.timestamp, hex_json.brd, name, hex_json.r, false);
 
                } else {
-                 // console.log('Already know about this message, skipping..');
+                 console.log('Already know about this message, skipping..');
                }
 
 
