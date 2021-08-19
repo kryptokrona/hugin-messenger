@@ -1837,6 +1837,9 @@ async function sendBoardMessage(message) {
       // return;
 
       // Convert message data to json
+      if ($('.board_icon.current').hasClass('private')) {
+        current_board_title = $('.current').attr('invitekey');
+      }
       payload_json = {"m":message_to_send, "k":currentAddr, "s": signature, "brd": current_board_title};
 
       if ($('.boards_nickname_form').val().length) {
@@ -4230,15 +4233,12 @@ let get_tips = async (hash) => {
         })
       });
 
-      console.log(tx_data_reply);
-
-
-
-   console.log(transaction);
+      let block_height = await tx_data_reply.json();
+      block_height = block_height.result.block.height;
 
   let transactions = await walletd.getTransactions(
-    blockCount,
-    1,
+    blockCount - block_height,
+    block_height,
     '',
     [],
     hash);
@@ -4257,6 +4257,7 @@ let get_tips = async (hash) => {
        }
      }
 
+     console.log('FOund tips:', tips);
 
       if (tips) {
           $('#boards .' + hash + '').append('<span class="tips">' + parseFloat(tips/100000).toFixed(5) + '</span>');
@@ -4354,6 +4355,8 @@ let print_board_message = async (hash, address, message, timestamp, fetching_boa
 
        const resp_reply = await tx_data_reply.json();
 
+       console.log('resp_reply',resp_reply);
+
        let result_reply = trimExtra(resp_reply.result.tx.extra);
        let hex_json_reply = JSON.parse(fromHex(result_reply));
 
@@ -4364,7 +4367,7 @@ let print_board_message = async (hash, address, message, timestamp, fetching_boa
 
         let this_keyPair = nacl.box.keyPair.fromSecretKey(secretKey);
         hex_json_reply = JSON.parse(naclUtil.encodeUTF8(nacl.box.open(fromHexString(hex_json_reply.b), nonceFromTimestamp(hex_json_reply.t), this_keyPair.publicKey, this_keyPair.secretKey)));
-
+        console.log('Decrypted:', hex_json_reply);
       }
         let this_addr = await Address.fromAddress(hex_json_reply.k);
         // console.log(this_addr);
@@ -4812,6 +4815,15 @@ async function backgroundSyncBoardMessages() {
                    // print_single_board_message(thisHash, '#recent_board_messages .inner');
        				 } else if (hex_json.k != currentAddr && message_was_unknown) {
                  print_board_message(thisHash, hex_json.k, hex_json.m, hex_json.timestamp, hex_json.brd, name, hex_json.r, false);
+                 $('#boards .board_message').each(function(index){
+                   console.log( index + ": " + $( this ).text() );
+                   $(this).delay(index*100).animate({
+                     opacity: 1
+                   }, 150, function() {
+                     // Animation complete.
+                   });
+
+                 })
 
                } else {
                  console.log('Already know about this message, skipping..');
