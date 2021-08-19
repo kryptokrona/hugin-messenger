@@ -136,11 +136,11 @@ let print_board = (board) => {
 
   console.log('Printing board', board);
   $('#boards .board_message').remove();
-  boards_db.find({board : board}).sort({ timestamp: 1 }).exec(function (err,docs){
+  boards_db.find({board : board}).sort({ timestamp: -1 }).limit(25).exec(function (err,docs){
 
     console.log(docs);
 
-    for (doc in docs) {
+    for (doc in docs.reverse()) {
       console.log(docs[doc]);
       // continue;
       let hash = docs[doc].hash;
@@ -1520,9 +1520,12 @@ let download_messages = (from, to) => {
 
 let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json, silent=false) => {
 
+        let global_mixin = `${blockCount > 799999 ? 3 : 7}`;
+
+        console.log(global_mixin);
 
         walletd.sendTransaction(
-          7,
+          parseInt(global_mixin),
           transfer,
           fee,
           [sendAddr],
@@ -2952,6 +2955,7 @@ async function get_new_conversations(unconfirmed) {
   }
 
   console.log('Checking for unconfirmed:', unconfirmed);
+  console.log('blockCount', blockCount);
 
   apply_conversation_clicks();
   known_keys = await find(keychain, {});
@@ -4419,6 +4423,12 @@ let print_board_message = async (hash, address, message, timestamp, fetching_boa
     $('#boards').scrollTop('0');
   });
 
+  $('#boards .' + hash).delay(100).animate({
+    opacity: 1
+  }, 150, function() {
+    // Animation complete.
+  });
+
 
 
 } catch (err) {
@@ -4616,21 +4626,21 @@ ipcRenderer.on('new-message', async (event, transaction) => {
 
               last_block_checked = transaction.hash;
 
-				      notifier.notify({
-				        title: name + " in " + to_board,
-				        message: message,
-				        icon: userDataDir + "/" +hex_json.k + ".png",
-				        wait: true // Wait with callback, until user action is taken against notification
-				      },function (err, response, metadata) {
-				 			 console.log(err, response, metadata);
-				 		 });
-
-				    notifier.on('click', function(notifierObject, options) {
-				      // Triggers if `wait: true` and user clicks notification
-				 			ipcRenderer.send('show-window');
-
-
-				    });
+				    //   notifier.notify({
+				    //     title: name + " in " + to_board,
+				    //     message: message,
+				    //     icon: userDataDir + "/" +hex_json.k + ".png",
+				    //     wait: true // Wait with callback, until user action is taken against notification
+				    //   },function (err, response, metadata) {
+				 		// 	 console.log(err, response, metadata);
+				 		//  });
+            //
+				    // notifier.on('click', function(notifierObject, options) {
+				    //   // Triggers if `wait: true` and user clicks notification
+				 		// 	ipcRenderer.send('show-window');
+            //
+            //
+				    // });
 
             if ($('.board_icon.current').attr('invitekey') == transaction.transfers[0].publicKey || $('.board_icon.current').attr('id') == "home_board") {
 

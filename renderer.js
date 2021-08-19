@@ -125,12 +125,16 @@ function sendTransaction() {
 
   // $("#payment_message").unbind('click');
 
+  let global_mixin = `${parseInt($('#blockcount').text().split(': ')[1]) > 799999 ? 3 : 7}`;
+
+  console.log(global_mixin);
+
   receiver = $('#payment_rec_addr').val();
   amount = parseInt( parseFloat( $('#payment_amount').val() ) * 100000 );
   pay_id = $('#payment_id').val();
   fee = parseInt( parseFloat( $('#myRange2').val() ) * 100000 );
   fee = 10;
-  mixin = 7;
+  mixin = parseInt(global_mixin);
   sendAddr = $("#currentAddrSpan").text();
 
   transfer = [ { 'amount':amount, 'address':receiver } ];
