@@ -4268,6 +4268,10 @@ let print_board_message = async (hash, address, message, timestamp, fetching_boa
 
 
   try {
+    if ($('.' + hash).length) {
+      return;
+    }
+
     let tips = 0;
 
     console.log('Nick', nickname);
