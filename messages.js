@@ -4658,6 +4658,8 @@ ipcRenderer.on('new-message', async (event, transaction) => {
 
 })
 
+let known_pool_txs = [];
+
 async function backgroundSyncBoardMessages() {
 
 
@@ -4684,19 +4686,20 @@ async function backgroundSyncBoardMessages() {
 
           try {
 
-          // console.log('transaction:', transactions[transaction]);
-
           let thisExtra = transactions[transaction].transactionPrefixInfo.extra;
           let thisHash = transactions[transaction].transactionPrefixInfotxHash;
 
-          // console.log('Extra:', thisExtra);
+          if (known_pool_txs.indexOf(thisHash) === -1) {
+             known_pool_txs.push(thisHash);
+           } else {
+             console.log("This transaction is already known");
+             continue;
+           }
 
           if (thisExtra.length > 64) {
 
-            // thisExtra !!
-            // console.log('thisExtra', thisExtra);
           let result = trimExtra(thisExtra);
-          // console.log('trimExtra', result);
+
        		 let hex_json = JSON.parse(result);
 
        		 if (hex_json.b) {
