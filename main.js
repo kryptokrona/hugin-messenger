@@ -110,6 +110,8 @@ let start_js_wallet = async () => {
     /* Start wallet sync process */
     await js_wallet.start();
 
+
+
     js_wallet.on('incomingtx', (transaction) => {
 
         console.log(`Incoming transaction of ${transaction.totalAmount()} received!`);
@@ -212,7 +214,11 @@ ipcMain.on('get-profile', async (event, arg) => {
 
   console.log('getting profile..');
 
-  event.reply('got-profile', await js_wallet.getTransactions(undefined, 5, true, arg));
+  while (!global.boards_addresses) {
+    await sleep(500);
+  }
+
+  event.reply('got-profile', false);
 
 })
 
