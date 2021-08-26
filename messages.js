@@ -1558,7 +1558,7 @@ let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json
 					return;
 
 				}
-          db_json = {"conversation": payload_json.to, "type":"sent","message":payload_json.msg,"timestamp":JSON.parse(fromHex(payload_hex)).t}
+          db_json = {"conversation": transfer[0].address, "type":"sent","message":payload_json.msg,"timestamp":JSON.parse(fromHex(payload_hex)).t}
 
           // Add message to datastore
           db.insert(db_json);
@@ -2097,161 +2097,161 @@ var blockCount = 0;
 
 var messages = [];
 
-function printMessages(transactions, address) {
-
-
-
-    // Get locally stored outgoing messages
-
-    let local_messages = [];
-
-    db.find({conversation : address}, function (err,docs){
-
-      for (msg in docs) {
-        if (docs[msg].msg ) {
-          message = docs[msg].msg;
-          local_messages.push(message);
-        }
-      }
-
-    });
-
-    // Get list of wallets
-    walletd.getAddresses()
-    .then(async resp => {
-      currentAddr = resp.body.result.addresses[0];
-      allAddresses = resp.body.result.addresses;
-
-            // Iterate through transactions
-            var txsLength = transactions.length;
-            // alert(txsLength);
-            let lasttx;
-
-            let newMessages = [];
-
-            for (let i = 0; i < txsLength; i++) {
-
-                let txsInTx = transactions[i].transactions.length;
-
-
-                for (let j = 0; j < txsInTx; j++) {
-                //   if ( i == 0) {
-                //   alert(JSON.stringify(transactions[i].transactions[j]));
-                // }
-
-                  var thisAddr = transactions[i].transactions[j].transfers[0].address;
-                  var d = new Date(transactions[i].transactions[j].timestamp * 1000);
-                  var thisAmount = Math.abs(parseFloat(transactions[i].transactions[j].transfers[0].amount) / 100000);
-
-                  lasttx = transactions[i];
-                  try {
-                    payload = trimExtra(transactions[i].transactions[j].extra);
-
-                    payload_json = JSON.parse(payload);
-
-                    let decryptBox = false;
-
-                    if (payload_json.box) {
-
-                      // If message is encrypted with NaCl box
-
-                      let box = fromHexString(payload_json.box);
-                      let nonce = nonceFromTimestamp(payload_json.t);
-
-                      try {
-                      decryptBox = nacl.box.open(box, nonceFromTimestamp(timestamp), hexToUint($('#recipient_pubkey_form').val()), keyPair.secretKey);
-                      } catch (err) {
-                        console.log(err);
-                      }
-
-                      if (!decryptBox && payload_json.key) {
-
-                        let senderKey = payload_json.key;
-                        // Try to decrypt incoming messages
-                        decryptBox = nacl.box.open(box, nonceFromTimestamp(payload_json.t), hexToUint(payload_json.key), keyPair.secretKey);
-
-                      }
-
-                      let message_dec = naclUtil.encodeUTF8(decryptBox);
-                      payload_json = JSON.parse(message_dec);
-                      //alert(JSON.stringify(payload_json));
-
-                    }
-
-                    message = payload_json.msg;
-
-                    if (message.substring(0, 22) == "data:image/jpeg;base64") {
-                      message = "<img src='" + message + "' />";
-                    }
-
-
-                    senderAddr = payload_json.from;
-                    receiverAddr = payload_json.to;
-                    timestamp = JSON.parse(payload).t;
-
-                    if ( message.length > 0 && (senderAddr == address || receiverAddr == address) ) {
-
-                      if ($.inArray(senderAddr, allAddresses) == -1) {
-                        // If message is incoming, i.e. a recieved message
-
-                        newMessages.push({"type":"recieved","message":message,"timestamp":timestamp});
-
-                      } else {
-
-                        // If it's a sent msg
-                        if (senderAddr != thisAddr) {
-                        }
-                        newMessages.push({"type":"sent","message":message,"timestamp":timestamp});
-                      }
-
-                    }
-                }
-                  catch(err){
-                  }
-
-                }
-
-              }
-
-              sortedMessages = sortMessages(newMessages);
-
-              $('#messages .received_message, #messages .sent_message').remove();
-              $('#welcome_alpha').addClass('hidden');
-
-              for (let i = 0; i < sortedMessages.length; i++) {
-                  let hash = '';
-                  if (sortedMessages[i].type == 'sent') {
-                    hash = currentAddr;
-                  } else {
-                    hash = address;
-                  }
-                  avatar_base64 = get_avatar(hash);
-                  let nickname = await get_translation(hash);
-                  let nickname_element = '';
-
-                  if (nickname != hash) {
-                    nickname_element = '<span class="contact_address">' + nickname + '</span>';
-                  }
-
-                  $('#messages').append('<li class="' + sortedMessages[i].type + '_message"><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '">' + nickname_element + '<p>' + sortedMessages[i].message + '</p><span class="time" timestamp="' + sortedMessages[i].timestamp + '">' + moment(sortedMessages[i].timestamp).fromNow() + '</span></li>');
-                  let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(sortedMessages[i].message);
-                  if (magnetLinks) {
-                    handleMagnetLink(magnetLinks, sortedMessages[i].timestamp);
-
-                  }
-
-
-
-              }
-
-
-                $('#messages_pane').scrollTop($('#messages').height());
-                $('#recipient_form').val(address);
-
-      });
-
-
-}
+// function printMessages(transactions, address) {
+//
+//
+//
+//     // Get locally stored outgoing messages
+//
+//     let local_messages = [];
+//
+//     db.find({conversation : address}, function (err,docs){
+//
+//       for (msg in docs) {
+//         if (docs[msg].msg ) {
+//           message = docs[msg].msg;
+//           local_messages.push(message);
+//         }
+//       }
+//
+//     });
+//
+//     // Get list of wallets
+//     walletd.getAddresses()
+//     .then(async resp => {
+//       currentAddr = resp.body.result.addresses[0];
+//       allAddresses = resp.body.result.addresses;
+//
+//             // Iterate through transactions
+//             var txsLength = transactions.length;
+//             // alert(txsLength);
+//             let lasttx;
+//
+//             let newMessages = [];
+//
+//             for (let i = 0; i < txsLength; i++) {
+//
+//                 let txsInTx = transactions[i].transactions.length;
+//
+//
+//                 for (let j = 0; j < txsInTx; j++) {
+//                 //   if ( i == 0) {
+//                 //   alert(JSON.stringify(transactions[i].transactions[j]));
+//                 // }
+//
+//                   var thisAddr = transactions[i].transactions[j].transfers[0].address;
+//                   var d = new Date(transactions[i].transactions[j].timestamp * 1000);
+//                   var thisAmount = Math.abs(parseFloat(transactions[i].transactions[j].transfers[0].amount) / 100000);
+//
+//                   lasttx = transactions[i];
+//                   try {
+//                     payload = trimExtra(transactions[i].transactions[j].extra);
+//
+//                     payload_json = JSON.parse(payload);
+//
+//                     let decryptBox = false;
+//
+//                     if (payload_json.box) {
+//
+//                       // If message is encrypted with NaCl box
+//
+//                       let box = fromHexString(payload_json.box);
+//                       let nonce = nonceFromTimestamp(payload_json.t);
+//
+//                       try {
+//                       decryptBox = nacl.box.open(box, nonceFromTimestamp(timestamp), hexToUint($('#recipient_pubkey_form').val()), keyPair.secretKey);
+//                       } catch (err) {
+//                         console.log(err);
+//                       }
+//
+//                       if (!decryptBox && payload_json.key) {
+//
+//                         let senderKey = payload_json.key;
+//                         // Try to decrypt incoming messages
+//                         decryptBox = nacl.box.open(box, nonceFromTimestamp(payload_json.t), hexToUint(payload_json.key), keyPair.secretKey);
+//
+//                       }
+//
+//                       let message_dec = naclUtil.encodeUTF8(decryptBox);
+//                       payload_json = JSON.parse(message_dec);
+//                       //alert(JSON.stringify(payload_json));
+//
+//                     }
+//
+//                     message = payload_json.msg;
+//
+//                     if (message.substring(0, 22) == "data:image/jpeg;base64") {
+//                       message = "<img src='" + message + "' />";
+//                     }
+//
+//
+//                     senderAddr = payload_json.from;
+//                     receiverAddr = payload_json.to;
+//                     timestamp = JSON.parse(payload).t;
+//
+//                     if ( message.length > 0 && (senderAddr == address || receiverAddr == address) ) {
+//
+//                       if ($.inArray(senderAddr, allAddresses) == -1) {
+//                         // If message is incoming, i.e. a recieved message
+//
+//                         newMessages.push({"type":"recieved","message":message,"timestamp":timestamp});
+//
+//                       } else {
+//
+//                         // If it's a sent msg
+//                         if (senderAddr != thisAddr) {
+//                         }
+//                         newMessages.push({"type":"sent","message":message,"timestamp":timestamp});
+//                       }
+//
+//                     }
+//                 }
+//                   catch(err){
+//                   }
+//
+//                 }
+//
+//               }
+//
+//               sortedMessages = sortMessages(newMessages);
+//
+//               $('#messages .received_message, #messages .sent_message').remove();
+//               $('#welcome_alpha').addClass('hidden');
+//
+//               for (let i = 0; i < sortedMessages.length; i++) {
+//                   let hash = '';
+//                   if (sortedMessages[i].type == 'sent') {
+//                     hash = currentAddr;
+//                   } else {
+//                     hash = address;
+//                   }
+//                   avatar_base64 = get_avatar(hash);
+//                   let nickname = await get_translation(hash);
+//                   let nickname_element = '';
+//
+//                   if (nickname != hash) {
+//                     nickname_element = '<span class="contact_address">' + nickname + '</span>';
+//                   }
+//
+//                   $('#messages').append('<li class="' + sortedMessages[i].type + '_message"><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '">' + nickname_element + '<p>' + sortedMessages[i].message + '</p><span class="time" timestamp="' + sortedMessages[i].timestamp + '">' + moment(sortedMessages[i].timestamp).fromNow() + '</span></li>');
+//                   let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(sortedMessages[i].message);
+//                   if (magnetLinks) {
+//                     handleMagnetLink(magnetLinks, sortedMessages[i].timestamp);
+//
+//                   }
+//
+//
+//
+//               }
+//
+//
+//                 $('#messages_pane').scrollTop($('#messages').height());
+//                 $('#recipient_form').val(address);
+//
+//       });
+//
+//
+// }
 //
 // function getConversation(address) {
 //
@@ -3291,7 +3291,7 @@ all_transactions = all_transactions.filter(function (el) {
 
         if ($('#currentAddrSpan').text() == payload_json.from) {
           // Sent message
-          conversation_address = payload_json.to;
+          conversation_address = $('#currentAddrSpan').text();
 
         } else {
           // Received message
