@@ -1638,6 +1638,20 @@ function sendMessage(message, silent=false) {
     if (message.length == 0) {
       return
     }
+    receiver = $('#recipient_form').val();
+    keychain.find({ "address": receiver }, function (err, docs) {
+
+      if (docs.length == 0) {
+
+        keychain.insert({key: $('#recipient_pubkey_form').val(), address: receiver});
+
+      } else {
+        has_history = true;
+      }
+
+
+
+    console.log('has_histry ? ', has_history);
 
     avatar_base64 = get_avatar(currentAddr);
     let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(message);
@@ -1664,76 +1678,57 @@ function sendMessage(message, silent=false) {
     $('#message_form').val('');
     $('#message_form').focus();
 
-    receiver = $('#recipient_form').val();
 
 
-      keychain.find({ "address": receiver }, function (err, docs) {
 
-        if (docs.length == 0) {
 
-          keychain.insert({key: $('#recipient_pubkey_form').val(), address: receiver});
-
+        if (!silent) {
+        // $('#loading_border').animate({width: '40%'},600);
+        // $('#message_form').prop('disabled',true);
         }
 
-      });
+        // Transaction details
+        amount = 1;
+        fee = 10;
+        mixin = 5;
+        sendAddr = $("#currentAddrSpan").text();
+        console.log(sendAddr);
+        timestamp = Date.now();
 
-      if (!silent) {
-      // $('#loading_border').animate({width: '40%'},600);
-      // $('#message_form').prop('disabled',true);
-      }
+        // Convert message data to json
+        payload_json = {"from":sendAddr, "k": $('#currentPubKey').text(), "msg":message};
 
-      // Transaction details
-      amount = 1;
-      fee = 10;
-      mixin = 5;
-      sendAddr = $("#currentAddrSpan").text();
-      console.log(sendAddr);
-      timestamp = Date.now();
+        payload_json_decoded = naclUtil.decodeUTF8(JSON.stringify(payload_json));
 
-      // Convert message data to json
-      payload_json = {"from":sendAddr, "k": $('#currentPubKey').text(), "msg":message};
+        let box;
 
-      payload_json_decoded = naclUtil.decodeUTF8(JSON.stringify(payload_json));
+        if (has_history) {
+          box = nacl.box(payload_json_decoded, nonceFromTimestamp(timestamp), hexToUint($('#recipient_pubkey_form').val()), keyPair.secretKey);
+        } else {
 
-      let box;
-
-      if (has_history) {
-        box = nacl.box(payload_json_decoded, nonceFromTimestamp(timestamp), hexToUint($('#recipient_pubkey_form').val()), keyPair.secretKey);
-      } else {
-
-        console.log("First message to sender, sending sealed box.");
-        box = naclSealed.sealedbox(payload_json_decoded, nonceFromTimestamp(timestamp), hexToUint($('#recipient_pubkey_form').val()));
-      }
+          console.log("First message to sender, sending sealed box.");
+          box = naclSealed.sealedbox(payload_json_decoded, nonceFromTimestamp(timestamp), hexToUint($('#recipient_pubkey_form').val()));
+        }
 
 
-      let payload_box;
-      let payment_id = '';
+        let payload_box;
+        let payment_id = '';
 
 
+        payload_box = {"box":Buffer.from(box).toString('hex'), "t":timestamp};
+        // History has been asserted, continue sending message
 
-      // Check whether this is the first outgoing transaction to the recipient
-
-      db.find({conversation : receiver}, function (err,docs){
-          console.log("Found ", docs.length, " previous messages.");
-          if (docs.length > 0) {
-            has_history = true;
-            console.log('has_history is ', has_history);
-          }
+        // Convert json to hex
+        let payload_hex = toHex(JSON.stringify(payload_box));
 
 
-      payload_box = {"box":Buffer.from(box).toString('hex'), "t":timestamp};
-      // History has been asserted, continue sending message
+        transfer = [ { 'amount':amount, 'address':receiver } ];
 
-      // Convert json to hex
-      let payload_hex = toHex(JSON.stringify(payload_box));
+        return sendTransaction(mixin, transfer, fee, sendAddr, payload_hex, payload_json, silent);
 
 
-      transfer = [ { 'amount':amount, 'address':receiver } ];
-
-      return sendTransaction(mixin, transfer, fee, sendAddr, payload_hex, payload_json, silent);
 
       });
-
 
 }
 
