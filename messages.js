@@ -1592,18 +1592,18 @@ let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json
 
           // Add message to contacts list and add class to tell updateMessages
 
-          if ( $('.' + payload_json.to).width() > 0 ){
+          if ( $('.' + transfer[0].address).width() > 0 ){
           let listed_msg = handleMagnetListed(payload_json.msg);
 					//
 					// if (listed_msg.length < 1) {
 					// 	return;
 					// }
 
-	          	$('.' + payload_json.to).find('.listed_message').text(listed_msg).parent().detach().prependTo('#messages_contacts');
+	          	$('.' + transfer[0].address).find('.listed_message').text(listed_msg).parent().detach().prependTo('#messages_contacts');
         } else {
 					if (handleMagnetListed(payload_json.msg).length) {
             console.log('Prepending new contact..');
-          $('#messages_contacts').prepend('<li class="active_contact ' + payload_json.to + '" address="' + payload_json.to + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + get_avatar(payload_json.to) + '" /><span class="contact_address">' + payload_json.to + '</span><br><span class="listed_message">'+handleMagnetListed(payload_json.msg)+'</li>');
+          $('#messages_contacts').prepend('<li class="active_contact ' + transfer[0].address + '" address="' + transfer[0].address + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + get_avatar(payload_json.to) + '" /><span class="contact_address">' + payload_json.to + '</span><br><span class="listed_message">'+handleMagnetListed(payload_json.msg)+'</li>');
           }
         }
         }
@@ -1691,7 +1691,7 @@ function sendMessage(message, silent=false) {
       timestamp = Date.now();
 
       // Convert message data to json
-      payload_json = {"from":sendAddr, "k": $('currentPubKey').text(), "msg":message};
+      payload_json = {"from":sendAddr, "k": $('#currentPubKey').text(), "msg":message};
 
       payload_json_decoded = naclUtil.decodeUTF8(JSON.stringify(payload_json));
 
@@ -3140,7 +3140,6 @@ all_transactions = all_transactions.filter(function (el) {
            // console.log('timestamp', timestamp);
            console.log(err);
          }
-        });
 
         while (i < known_keys.length && !decryptBox) {
           // console.log('Decrypting..');
@@ -3175,14 +3174,17 @@ all_transactions = all_transactions.filter(function (el) {
           payload_json.t = timestamp;
           // console.log(payload_json);
           if (payload_json.k) {
-            keychain.find({ "key": payload_json }, function (err, docs) {
+            console.log('Found key!', payload_json);
+            keychain.find({ "key": payload_json.k }, function (err, docs) {
 
               if (docs.length == 0) {
 
-                keychain.insert(payload_keychain);
+                keychain.insert({ "key": payload_json.k, "address": payload_json.from });
 
                 }
             });
+          } else {
+            console.log('No key :( ', payload_json);
           }
 
           save_message(payload_json);
@@ -3335,81 +3337,81 @@ all_transactions = all_transactions.filter(function (el) {
   backgroundSyncBoardMessages();
 
 }
-
-async function send_message(message, silent=false) {
-
-
-    let has_history = false;
-
-      if (message.length == 0) {
-        return
-      }
-
-      receiver = $('#recipient_form').val();
-
-
-        keychain.find({ "address": receiver }, function (err, docs) {
-
-          if (docs.length == 0) {
-
-            keychain.insert({key: $('#recipient_pubkey_form').val(), address: receiver});
-
-          }
-
-        });
-
-
-        // Check whether this is the first outgoing transaction to the recipient
-
-        db.find({conversation : receiver}, function (err,docs){
-            console.log("Found ", docs.length, " previous messages.");
-            if (docs.length > 0) {
-              has_history = true;
-              console.log('has_history is ', has_history);
-            }
-
-
-        if (!silent) {
-        // $('#loading_border').animate({width: '40%'},600);
-        // $('#message_form').prop('disabled',true);
-        }
-        // Transaction details
-        amount = 1;
-        fee = 10;
-        mixin = 5;
-        sendAddr = $("#currentAddrSpan").text();
-        timestamp = Date.now();
-
-        // Convert message data to json
-        payload_json = {"from":sendAddr, "to":receiver, "msg":message};
-
-        payload_json_decoded = naclUtil.decodeUTF8(JSON.stringify(payload_json));
-
-        let box = nacl.box(payload_json_decoded, nonceFromTimestamp(timestamp), hexToUint($('#recipient_pubkey_form').val()), keyPair.secretKey);
-
-        let payload_box;
-        let payment_id = '';
-
-
-
-
-
-              // History has been asserted, continue sending message
-        if (has_history) {
-          payload_box = {"box":Buffer.from(box).toString('hex'), "t":timestamp};
-        } else {
-          payload_box = {"box":Buffer.from(box).toString('hex'), "t":timestamp, "key":$('#currentPubKey').text()};
-          console.log("First message to sender, appending key.");
-        }
-        // Convert json to hex
-        let payload_hex = toHex(JSON.stringify(payload_box));
-
-        transfer = [ { 'amount':amount, 'address':receiver } ];
-
-        sendTransaction(mixin, transfer, fee, sendAddr, payload_hex, payload_json, silent);
-
-});
-}
+//
+// async function send_message(message, silent=false) {
+//
+//
+//     let has_history = false;
+//
+//       if (message.length == 0) {
+//         return
+//       }
+//
+//       receiver = $('#recipient_form').val();
+//
+//
+//         keychain.find({ "address": receiver }, function (err, docs) {
+//
+//           if (docs.length == 0) {
+//
+//             keychain.insert({key: $('#recipient_pubkey_form').val(), address: receiver});
+//
+//           }
+//
+//         });
+//
+//
+//         // Check whether this is the first outgoing transaction to the recipient
+//
+//         db.find({conversation : receiver}, function (err,docs){
+//             console.log("Found ", docs.length, " previous messages.");
+//             if (docs.length > 0) {
+//               has_history = true;
+//               console.log('has_history is ', has_history);
+//             }
+//
+//
+//         if (!silent) {
+//         // $('#loading_border').animate({width: '40%'},600);
+//         // $('#message_form').prop('disabled',true);
+//         }
+//         // Transaction details
+//         amount = 1;
+//         fee = 10;
+//         mixin = 5;
+//         sendAddr = $("#currentAddrSpan").text();
+//         timestamp = Date.now();
+//
+//         // Convert message data to json
+//         payload_json = {"from":sendAddr, "to":receiver, "msg":message};
+//
+//         payload_json_decoded = naclUtil.decodeUTF8(JSON.stringify(payload_json));
+//
+//         let box = nacl.box(payload_json_decoded, nonceFromTimestamp(timestamp), hexToUint($('#recipient_pubkey_form').val()), keyPair.secretKey);
+//
+//         let payload_box;
+//         let payment_id = '';
+//
+//
+//
+//
+//
+//               // History has been asserted, continue sending message
+//         if (has_history) {
+//           payload_box = {"box":Buffer.from(box).toString('hex'), "t":timestamp};
+//         } else {
+//           payload_box = {"box":Buffer.from(box).toString('hex'), "t":timestamp, "key":$('#currentPubKey').text()};
+//           console.log("First message to sender, appending key.");
+//         }
+//         // Convert json to hex
+//         let payload_hex = toHex(JSON.stringify(payload_box));
+//
+//         transfer = [ { 'amount':amount, 'address':receiver } ];
+//
+//         sendTransaction(mixin, transfer, fee, sendAddr, payload_hex, payload_json, silent);
+//
+// });
+// }
 
 async function print_conversation(conversation) {
 	avatar_base64 = get_avatar(conversation);
