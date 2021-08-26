@@ -1639,7 +1639,7 @@ function sendMessage(message, silent=false) {
       return
     }
     receiver = $('#recipient_form').val();
-    keychain.find({ "address": receiver }, function (err, docs) {
+    keychain.find({ "address": receiver }, async function (err, docs) {
 
       if (docs.length == 0) {
 
@@ -1696,17 +1696,27 @@ function sendMessage(message, silent=false) {
         timestamp = Date.now();
 
         // Convert message data to json
-        payload_json = {"from":sendAddr, "k": $('#currentPubKey').text(), "msg":message};
 
-        payload_json_decoded = naclUtil.decodeUTF8(JSON.stringify(payload_json));
 
         let box;
 
         if (has_history) {
+          payload_json = {"from":sendAddr, "k": $('#currentPubKey').text(), "msg":message};
+
+          payload_json_decoded = naclUtil.decodeUTF8(JSON.stringify(payload_json));
           box = nacl.box(payload_json_decoded, nonceFromTimestamp(timestamp), hexToUint($('#recipient_pubkey_form').val()), keyPair.secretKey);
         } else {
 
           console.log("First message to sender, sending sealed box.");
+          const addr = await Address.fromAddress(currentAddr);
+          // console.log(addr.spend.publicKey);
+          let xkr_private_key = await walletd.getSpendKeys($('#currentAddrSpan').text());
+          console.log(xkr_private_key);
+          let signature = await xkrUtils.signMessage(message, xkr_private_key.body.result.spendSecretKey);
+
+          payload_json = {"from":sendAddr, "k": $('#currentPubKey').text(), "msg":message, "s": signature};
+
+          payload_json_decoded = naclUtil.decodeUTF8(JSON.stringify(payload_json));
           box = naclSealed.sealedbox(payload_json_decoded, nonceFromTimestamp(timestamp), hexToUint($('#recipient_pubkey_form').val()));
         }
 
@@ -3168,6 +3178,19 @@ all_transactions = all_transactions.filter(function (el) {
           payload_json = JSON.parse(message_dec);
           payload_json.t = timestamp;
           // console.log(payload_json);
+          if (payload_json.s) {
+
+            let this_addr = await Address.fromAddress(hex_json.from);
+
+            let verified = await xkrUtils.verifyMessageSignature(hex_json.msg, this_addr.spend.publicKey, hex_json.s);
+            console.log(verified);
+            //let verified = nacl.sign.detached.verify(naclUtil.decodeUTF8(hex_json.m), fromHexString(hex_json.s), fromHexString(hex_json.k));
+
+            if (!verified) {
+              continue;
+            }
+
+          }
           if (payload_json.k) {
             console.log('Found key!', payload_json);
             keychain.find({ "key": payload_json.k }, function (err, docs) {
@@ -3181,6 +3204,8 @@ all_transactions = all_transactions.filter(function (el) {
           } else {
             console.log('No key :( ', payload_json);
           }
+
+
 
           save_message(payload_json);
 
@@ -3207,7 +3232,7 @@ all_transactions = all_transactions.filter(function (el) {
 
 
 
-          if (payload_json.msg.length) {
+          if (payload_json.msg.length && $('#welcome_alpha').hasClass('hidden')) {
             $('#messages').append('<li class="received_message" id=' + payload_json.t + '><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + display_message + '</p><span class="time" timestamp="' + payload_json.t + '">' + moment(payload_json.t).fromNow() + '</span></li>');
           }
           console.log('debagg3', payload_json.t);
@@ -4439,6 +4464,9 @@ let print_board_message = async (hash, address, message, timestamp, fetching_boa
       to_board = letter_from_spend_key(fetching_board);
       $('#recent_board_messages .inner .' + hash + " .board_message_pubkey" ).after('<span class="in_board"> in ' + to_board + ' </span>');
 
+    } else if (fetching_board == '0b66b223812861ad15e5310b4387f475c414cd7bda76be80be6d3a55199652fc') {
+      to_board = 'Home';
+      $('#recent_board_messages .inner .' + hash + " .board_message_pubkey" ).after('<span class="in_board"> in ' + to_board + ' </span>');
     } else {
 
 
@@ -4875,7 +4903,10 @@ async function backgroundSyncBoardMessages() {
        				     } else {
        				 			name = 'Anonymous';
        				 		}
-                  $('#recent_board_messages .inner .board_message')[$('#recent_board_messages .inner .board_message').length -1].remove();
+                  if ($('#recent_board_messages .inner .board_message').length > 4) {
+                    $('#recent_board_messages .inner .board_message')[$('#recent_board_messages .inner .board_message').length -1].remove();
+                  }
+
                   print_board_message(thisHash, hex_json.k, hex_json.m, hex_json.timestamp, hex_json.brd, name, hex_json.r, '#recent_board_messages .inner');
 
                         let boards_addresses = rmt.getGlobal('boards_addresses');
