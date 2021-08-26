@@ -3180,11 +3180,9 @@ all_transactions = all_transactions.filter(function (el) {
           // console.log(payload_json);
           if (payload_json.s) {
 
-            let this_addr = await Address.fromAddress(hex_json.from);
+            let this_addr = await Address.fromAddress(payload_json.from);
 
-            let verified = await xkrUtils.verifyMessageSignature(hex_json.msg, this_addr.spend.publicKey, hex_json.s);
-            console.log(verified);
-            //let verified = nacl.sign.detached.verify(naclUtil.decodeUTF8(hex_json.m), fromHexString(hex_json.s), fromHexString(hex_json.k));
+            let verified = await xkrUtils.verifyMessageSignature(payload_json.msg, this_addr.spend.publicKey, payload_json.s);
 
             if (!verified) {
               continue;
@@ -4767,7 +4765,7 @@ async function backgroundSyncBoardMessages() {
       let json = await fetch('http://' + rmt.getGlobal('node') + '/get_pool_changes_lite', {
            method: 'POST',
            body: JSON.stringify({
-               knownTXs: {}
+               knownTxsIds: known_pool_txs
            })
          })
 
