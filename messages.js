@@ -136,7 +136,7 @@ let print_board = (board) => {
 
   console.log('Printing board', board);
   $('#boards .board_message').remove();
-  boards_db.find({board : board}).sort({ timestamp: -1 }).limit(25).exec(function (err,docs){
+  boards_db.find({board : board}).sort({ timestamp: -1 }).limit(25).exec(async function (err,docs){
 
     console.log(docs);
 
@@ -151,7 +151,7 @@ let print_board = (board) => {
       let nickname = docs[doc].nickname;
       let this_reply = docs[doc].reply;
       console.log(docs[doc]);
-        print_board_message(hash, pubkey, message, timestamp, fetching_board, nickname, this_reply, '#boards_messages');
+      await print_board_message(hash, pubkey, message, timestamp, fetching_board, nickname, this_reply, '#boards_messages');
       // let print_board_message = async (hash, address, message, timestamp, fetching_board, nickname=false, reply=false, selector) => {
 
     }
@@ -4407,44 +4407,68 @@ let print_board_message = async (hash, address, message, timestamp, fetching_boa
   if (reply) {
     console.log('This is a reply');
     // $('.this_board_message .board_message_pubkey').before('<span class="boards_nickname">' + hex_json.n + '</span>')
-    let tx_data_reply = await fetch('http://' + rmt.getGlobal('node') + '/json_rpc', {
-         method: 'POST',
-         body: JSON.stringify({
-           jsonrpc: '2.0',
-           method: 'f_transaction_json',
-           params: {hash: reply}
-         })
-       })
 
-       const resp_reply = await tx_data_reply.json();
+    boards_db.find({hash : reply}, async function (err,docs){
 
-       console.log('resp_reply',resp_reply);
+      console.log(docs);
 
-       let result_reply = trimExtra(resp_reply.result.tx.extra);
-       let hex_json_reply = JSON.parse(fromHex(result_reply));
+      let hex_json_reply;
 
-       if (hex_json_reply.b) {
+        if (docs) {
 
-        let key = $('.board_icon.current').attr('invitekey');
-        let secretKey = naclUtil.decodeUTF8(key.substring(1, 33));
+           $(selector + ' .' + hash + ' img').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/svg+xml;base64,' + get_avatar(docs[0].sender) + '"><p>' + docs[0].message.substring(0,55)  +'..</p></div>');
 
-        let this_keyPair = nacl.box.keyPair.fromSecretKey(secretKey);
-        hex_json_reply = JSON.parse(naclUtil.encodeUTF8(nacl.box.open(fromHexString(hex_json_reply.b), nonceFromTimestamp(hex_json_reply.t), this_keyPair.publicKey, this_keyPair.secretKey)));
-        console.log('Decrypted:', hex_json_reply);
-      }
-        let this_addr = await Address.fromAddress(hex_json_reply.k);
-        // console.log(this_addr);
-        let verified_reply = await xkrUtils.verifyMessageSignature(hex_json_reply.m, this_addr.spend.publicKey, hex_json_reply.s);
-        // console.log(verified);
-       // let verified_reply = nacl.sign.detached.verify(naclUtil.decodeUTF8(hex_json_reply.m), fromHexString(hex_json_reply.s), fromHexString(hex_json_reply.k));
 
-       if (!verified_reply) {
-         return;
-       }
-       let avatar_base64_reply = get_avatar(hex_json_reply.k);
-       let message_reply = hex_json_reply.m;
+        } else {
 
-       $(selector + ' .' + hash + ' img').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/svg+xml;base64,' + avatar_base64_reply + '"><p>' + message_reply.substring(0,55)  +'..</p></div>');
+
+          let tx_data_reply = await fetch('http://' + rmt.getGlobal('node') + '/json_rpc', {
+               method: 'POST',
+               body: JSON.stringify({
+                 jsonrpc: '2.0',
+                 method: 'f_transaction_json',
+                 params: {hash: reply}
+               })
+             })
+
+             const resp_reply = await tx_data_reply.json();
+
+             console.log('resp_reply',resp_reply);
+
+             let result_reply = trimExtra(resp_reply.result.tx.extra);
+             hex_json_reply = JSON.parse(fromHex(result_reply));
+
+              if (hex_json_reply.b) {
+
+               let key = $('.board_icon.current').attr('invitekey');
+               let secretKey = naclUtil.decodeUTF8(key.substring(1, 33));
+
+               let this_keyPair = nacl.box.keyPair.fromSecretKey(secretKey);
+               hex_json_reply = JSON.parse(naclUtil.encodeUTF8(nacl.box.open(fromHexString(hex_json_reply.b), nonceFromTimestamp(hex_json_reply.t), this_keyPair.publicKey, this_keyPair.secretKey)));
+               console.log('Decrypted:', hex_json_reply);
+             }
+               let this_addr = await Address.fromAddress(hex_json_reply.k);
+               // console.log(this_addr);
+               let verified_reply = await xkrUtils.verifyMessageSignature(hex_json_reply.m, this_addr.spend.publicKey, hex_json_reply.s);
+               // console.log(verified);
+              // let verified_reply = nacl.sign.detached.verify(naclUtil.decodeUTF8(hex_json_reply.m), fromHexString(hex_json_reply.s), fromHexString(hex_json_reply.k));
+
+              if (!verified_reply) {
+                return;
+              }
+
+
+             let avatar_base64_reply = get_avatar(hex_json_reply.k);
+             let message_reply = hex_json_reply.m;
+
+             $(selector + ' .' + hash + ' img').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/svg+xml;base64,' + avatar_base64_reply + '"><p>' + message_reply.substring(0,55)  +'..</p></div>');
+
+
+
+        }
+
+      })
+
 
 
 
@@ -4460,11 +4484,11 @@ let print_board_message = async (hash, address, message, timestamp, fetching_boa
     if (fetching_board.substring(59,64) == '00000') {
       //public
       to_board = letter_from_spend_key(fetching_board);
-      $('#recent_board_messages .inner .' + hash + " .board_message_pubkey" ).after('<span class="in_board"> in ' + to_board + ' </span>');
+      $('#recent_board_messages .inner .' + hash + " .board_message_pubkey" ).after('<span class="in_board"> in ' + to_board.substring(0,44) + ' </span>');
 
     } else if (fetching_board == '0b66b223812861ad15e5310b4387f475c414cd7bda76be80be6d3a55199652fc') {
       to_board = 'Home';
-      $('#recent_board_messages .inner .' + hash + " .board_message_pubkey" ).after('<span class="in_board"> in ' + to_board + ' </span>');
+      $('#recent_board_messages .inner .' + hash + " .board_message_pubkey" ).after('<span class="in_board"> in ' + to_board.substring(0,44) + ' </span>');
     } else {
 
 
