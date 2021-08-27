@@ -2631,6 +2631,10 @@ function save_boards_message(message_json) {
   let nickname = message_json.n;
   let this_reply = message_json.r;
 
+  if (!message_json.m) {
+    return;
+  }
+
   boards_db.find({hash : hash}, function (err,docs){
 
       if (docs.length == 0) {
@@ -3350,6 +3354,10 @@ all_transactions = all_transactions.filter(function (el) {
   } else {
     console.log('Getting new unconfirmed messages..');
     get_new_conversations(true);
+  }
+
+  if (check_counter % 90) {
+    known_txs = [];
   }
 
   backgroundSyncBoardMessages();
