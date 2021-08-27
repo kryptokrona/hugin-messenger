@@ -4414,7 +4414,7 @@ let print_board_message = async (hash, address, message, timestamp, fetching_boa
 
       let hex_json_reply;
 
-        if (docs) {
+        if (docs.length) {
 
            $(selector + ' .' + hash + ' img').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/svg+xml;base64,' + get_avatar(docs[0].sender) + '"><p>' + docs[0].message.substring(0,55)  +'..</p></div>');
 
@@ -4779,11 +4779,6 @@ let known_pool_txs = [];
 
 async function backgroundSyncBoardMessages() {
 
-  if (known_pool_txs.length > 10) {
-
-    known_pool_txs = known_pool_txs.splice(10);
-
-  }
 
 
       let json = await fetch('http://' + rmt.getGlobal('node') + '/get_pool_changes_lite', {
@@ -4944,7 +4939,7 @@ async function backgroundSyncBoardMessages() {
        				      notifier.notify({
        				        title: name + " in " + to_board,
        				        message: message,
-       				        icon: userDataDir + "/" +hex_json.k + ".png",
+       				        icon: userDataDir + "/" + hex_json.k + ".png",
        				        wait: true // Wait with callback, until user action is taken against notification
        				      },function (err, response, metadata) {
        				 			 console.log(err, response, metadata);
