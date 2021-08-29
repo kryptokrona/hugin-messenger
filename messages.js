@@ -1601,7 +1601,7 @@ let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json
 
 	          	$('.' + transfer[0].address).find('.listed_message').text(listed_msg).parent().detach().prependTo('#messages_contacts');
         } else {
-					if (handleMagnetListed(payload_json.msg).length) {
+					if (handleMagnetListed(payload_json.msg).length && transfer[0].address != currentAddr) {
             console.log('Prepending new contact..');
           $('#messages_contacts').prepend('<li class="active_contact ' + transfer[0].address + '" address="' + transfer[0].address + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + get_avatar(transfer[0].address) + '" /><span class="contact_address">' + transfer[0].address + '</span><br><span class="listed_message">'+handleMagnetListed(payload_json.msg)+'</li>');
           }
@@ -2922,7 +2922,7 @@ async function print_conversations() {
 							 let conversation_display = await get_translation(conversation);
 							 // console.log(handleMagnetListed(messages[m].message));
 
-               if (handleMagnetListed(messages[m].message).length || !$('.active_contact .' + conversation).width() ){
+               if (handleMagnetListed(messages[m].message).length && !$('.active_contact .' + conversation).width() ){
                  console.log('Printing new contact..');
 						  	$('#messages_contacts').append('<li class="active_contact ' + conversation + '" address="' + conversation +  '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + get_avatar(conversation) + '" /><span class="contact_address">' + conversation_display + '</span><br><span class="listed_message">'+handleMagnetListed(messages[m].message)+'</li>');
               }
@@ -2965,7 +2965,7 @@ let check_counter = 0;
 
 let sleepAmount = 1000;
 
-async function get_new_conversations(unconfirmed) {
+async function sync_messages(unconfirmed) {
 
   if (check_counter == 0) {
     await sleep(1000);
@@ -2985,7 +2985,7 @@ try {
 } catch (err){
   console.log(err);
 sleep(1000);
-get_new_conversations(unconfirmed);
+sync_messages(unconfirmed);
 }
 
 
@@ -3335,10 +3335,11 @@ all_transactions = all_transactions.filter(function (el) {
           $('.' + conversation_address).addClass('unread_message');
         }
         }
-      } else {
+      } else if (conversation_address != currentAddr) {
         // If there isn't one, create one
 
-        if (!$('.' + conversation_address).width()) {
+        if (!$('.' + conversation_address).width() && !$('.active_contact .' + conversation_address).width()) {
+          console.log('conversation_address', conversation_address);
           $('#messages_contacts').prepend('<li class="active_contact unread_message ' + conversation_address + '" address="' + conversation_address + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + get_avatar(conversation_address) + '" /><span class="contact_address">' + conversation_address + '</span><br><span class="listed_message">'+handleMagnetListed(payload_json.msg)+'</li>');
       }}
 
@@ -3350,10 +3351,10 @@ all_transactions = all_transactions.filter(function (el) {
   check_counter += 1;
   if (check_counter % 16) {
     console.log('Getting new confirmed messages..');
-    get_new_conversations(false);
+    sync_messages(false);
   } else {
     console.log('Getting new unconfirmed messages..');
-    get_new_conversations(true);
+    sync_messages(true);
   }
 
   if (check_counter % 90) {
@@ -3776,7 +3777,7 @@ let check_protection = async () => {
     console.log('last_checked_warnings', last_checked_warnings);
     if (last_checked_warnings > 0 && last_checked_counter == check_counter) {
       console.log('No checks for 120s, restarting service.');
-      get_new_conversations(true);
+      sync_messages(true);
       last_checked_warnings = 0;
     } else if (last_checked_counter == check_counter && last_checked_warnings == 0) {
       last_checked_warnings += 1;
@@ -3901,7 +3902,7 @@ ipcRenderer.on('wallet-started', async () => {
 
 						// window.setInterval(function(){
 
-						  get_new_conversations(true);
+						  sync_messages(true);
 
             //
 						// },1000);
