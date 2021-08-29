@@ -1677,7 +1677,7 @@ function sendMessage(message, silent=false) {
 
     $('#message_form').val('');
     $('#message_form').focus();
-
+    $('#currentchat_header_wrapper').removeClass('toggled_addr');
 
 
 
@@ -3236,6 +3236,7 @@ all_transactions = all_transactions.filter(function (el) {
 
           if (payload_json.msg.length && $('#welcome_alpha').hasClass('hidden')) {
             $('#messages').append('<li class="received_message" id=' + payload_json.t + '><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + display_message + '</p><span class="time" timestamp="' + payload_json.t + '">' + moment(payload_json.t).fromNow() + '</span></li>');
+            $('#messages_pane').scrollTop($('#messages').height());
           }
           console.log('debagg3', payload_json.t);
           $('#'+ payload_json.t).click(function(){
@@ -3248,7 +3249,6 @@ all_transactions = all_transactions.filter(function (el) {
           }
 
           // Scroll to bottom
-          $('#messages_pane').scrollTop($('#messages').height());
           $('#messages_pane').find('audio').remove();
           $('#messages_pane').append('<audio autoplay><source src="static/message.mp3" type="audio/mpeg"></audio>');
 
