@@ -1592,7 +1592,7 @@ let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json
 
           // Add message to contacts list and add class to tell updateMessages
 
-          if ( $('.' + transfer[0].address).width() > 0 ){
+          if ( $('.' + transfer[0].address).width() > 0 && transfer[0].address != currentAddr){
           let listed_msg = handleMagnetListed(payload_json.msg);
 					//
 					// if (listed_msg.length < 1) {
@@ -3329,7 +3329,7 @@ all_transactions = all_transactions.filter(function (el) {
 
           let listed_msg = handleMagnetListed(payload_json.msg);
 
-        if (listed_msg) {
+        if (listed_msg && payload_json.from != currentAddr) {
         $('.' + conversation_address).find('.listed_message').text(listed_msg).parent().detach().prependTo("#messages_contacts");
         if (payload_json.from != currentAddr) {
           $('.' + conversation_address).addClass('unread_message');
@@ -4690,7 +4690,7 @@ ipcRenderer.on('new-message', async (event, transaction) => {
 
        await boards_db.find({hash : hex_json.h}, function (err,docs){
 
-           if (docs.length == 0) {
+           if (docs.length == 0 && hex_json.m) {
 
 
            let message_db = {"hash": hex_json.h, "board": hex_json.brd, "sender": hex_json.k, "message":hex_json.m, "timestamp": hex_json.timestamp, "nickname": hex_json.n, "reply": hex_json.r};-
