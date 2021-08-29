@@ -3731,6 +3731,7 @@ right: 15px;
 #recent_board_messages .board_message_pubkey {
   height: 5px;
   vertical-align: top;
+  cursor: unset;
 }
 #recent_board_messages .board_message {
   list-style: none;
