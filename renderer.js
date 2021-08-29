@@ -237,7 +237,7 @@ async function getHistory() {
             sign = "-";
           }
           // Print html to app
-          $('#recent_transactions .inner').append( "<li class='" + liClass + "'><span class='txAmnt'>" + sign + thisAmount + " XKR</span><span class='txTime'>" + moment(d).fromNow() +"</span><br><span class='txAddr'><b style='display:none'>To: </b>" + thisAddr + "</span></li>");
+          $('#recent_transactions .inner').append( "<li class='" + liClass + "'><span class='txAmnt'>" + sign + thisAmount + " XKR</span><span class='txTime'>" + moment(d).fromNow() +"</span><br><span class='txAddr'><b style='display:none'>To: </b>" + thisAddr.substring(0,77) + "...</span></li>");
           $('#recent_transactions .default').remove();
       }
 
