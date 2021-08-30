@@ -1364,7 +1364,7 @@ overlay #hugin-background img {
 }
 
 #login-screen {
-  position: relative; width: 500px; margin-top: 45%; left: 50px; display: block;
+  position: relative; width: 500px; margin-top: 45%; left: 50px;
 }
 
 .login-avatar-box {

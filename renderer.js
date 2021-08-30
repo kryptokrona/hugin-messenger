@@ -490,10 +490,8 @@ $("document").ready(async function(){
                 marginTop: "45%",
                 left: 50
               })
-              $('#login-screen').fadeIn();
-              sleep(500);
-              $('#login_button').fadeIn();
-              sleep(500);
+              $('#login-screen').delay(500).fadeIn();
+              $('#login_button').delay(500).fadeIn();
               $('#login_swap_node').fadeIn()
               $('.welcome').fadeIn();
 
