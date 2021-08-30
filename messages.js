@@ -4800,7 +4800,7 @@ ipcRenderer.on('new-message', async (event, transaction) => {
               print_single_board_message(transaction.hash, '#boards_messages');
 
             }
-
+            $('#recent_board_messages .default').remove();
             print_single_board_message(transaction.hash, '#recent_board_messages .inner');
 				 }
 
