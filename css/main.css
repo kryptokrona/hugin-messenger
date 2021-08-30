@@ -3827,9 +3827,13 @@ right: 15px;
 }
 
 .in_board {
-vertical-align: top;
-font-weight: 400;
-font-family: "montserrat";
+    vertical-align: top;
+    font-weight: 400;
+    font-family: "montserrat";
+    width: 250px;
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 
