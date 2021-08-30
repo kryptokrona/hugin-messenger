@@ -752,6 +752,10 @@ $("document").ready(async function(){
 
   $('#avatar').click(function(){
 
+
+  $('.sent_message').remove();
+  $('.recieved_message').remove();
+
   // $('header').toggleClass('toggled');
   $('#messages .received_message, #messages .sent_message').hide();
   $('#welcome_alpha').removeClass('hidden');
