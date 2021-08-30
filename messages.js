@@ -1131,7 +1131,7 @@ $('#import').click(function(){
 
   if ($('#importMnemonic').val().split(" ").length == 25) {
 
-  let r = confirm("Are you sure? If you have not backed up your mnemonic seed, you will loose all your data. This process may take a while, please be patient.");
+  let r = confirm("Are you sure? If you have not backed up your mnemonic seed, you will lose all your data. Hugin will restart and then synchronize your account. This process may take a while, please be patient.");
   if (r == true) {
     console.log('Importing: ' + $('#importMnemonic').val());
 
@@ -1141,7 +1141,7 @@ $('#import').click(function(){
     });
     keychain.remove({}, { multi: true }, function (err, numRemoved) {
     });
-    ipcRenderer.send('import_wallet',$('#importMnemonic').val());
+    ipcRenderer.send('import_wallet',$('#importMnemonic').val().toLocaleLowerCase());
 
     setTimeout(function(){ console.log('resetting..');walletd.reset() }, 330000);
 
@@ -1519,7 +1519,7 @@ ipcRenderer.on('removed-subwallet', (evt, addr) => {
 
 let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json, silent=false) => {
 
-        let global_mixin = `${blockCount > 799999 ? 3 : 7}`;
+        let global_mixin = `${blockCount > 799999 ? 3 : 3}`;
 
         console.log(global_mixin);
 
@@ -2641,7 +2641,7 @@ function save_boards_message(message_json) {
 
   boards_db.find({hash : hash}, function (err,docs){
 
-      if (docs.length == 0) {
+      if (docs.length == 0 && message) {
 
         if (board == '756e646566696e65640000000000000000000000000000000000000000000000') {
           board =  '0b66b223812861ad15e5310b4387f475c414cd7bda76be80be6d3a55199652fc';
@@ -4897,7 +4897,7 @@ async function backgroundSyncBoardMessages() {
 
               await boards_db.find({hash : hex_json.h}, function (err,docs){
 
-                  if (docs.length == 0) {
+                  if (docs.length == 0 && hex_json.m) {
 
                   let message_db = {"hash": hex_json.h, "board": hex_json.brd, "sender": hex_json.k, "message":hex_json.m, "timestamp": hex_json.timestamp, "nickname": hex_json.n, "reply": hex_json.r};-
 
