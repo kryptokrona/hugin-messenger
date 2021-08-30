@@ -4696,6 +4696,7 @@ ipcRenderer.on('new-message', async (event, transaction) => {
 		 let timestamp = resp.result.block.timestamp;
      result = trimExtra(resp.result.tx.extra);
 		 let hex_json = JSON.parse(fromHex(result));
+     console.log(hex_json);
 
 		 if (hex_json.b) {
 
@@ -4797,11 +4798,12 @@ ipcRenderer.on('new-message', async (event, transaction) => {
 
             if ($('.board_icon.current').attr('invitekey') == transaction.transfers[0].publicKey || $('.board_icon.current').attr('id') == "home_board") {
 
-              print_single_board_message(transaction.hash, '#boards_messages');
+
+              print_board_message(transaction.hash, hex_json.k, hex_json.m, parseInt(hex_json.timestamp), hex_json.brd, hex_json.n, hex_json.r, '#boards_messages');
 
             }
             $('#recent_board_messages .default').remove();
-            print_single_board_message(transaction.hash, '#recent_board_messages .inner');
+            print_board_message(transaction.hash, hex_json.k, hex_json.m, parseInt(hex_json.timestamp), hex_json.brd, hex_json.n, hex_json.r, '#recent_board_messages .inner');
 				 }
 
 
