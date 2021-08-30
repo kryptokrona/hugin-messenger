@@ -770,7 +770,6 @@ a {
 
 .hidden {
   display: none;
-  transition: 0.2s all;
 }
 
 #send_payment h1 {
@@ -1308,40 +1307,43 @@ overlay {
 }
 
 #login {
-  vertical-align: 20% !important;
+  vertical-align: 40% !important;
 }
 overlay .wrapper {
   width: 100%;
 }
 
 #login_swap_node_modal {
-    border-radius: 10px;
-    padding: 30px;
-    position: absolute;
-    height: 400px;
-    width: 300px;
-    padding: 30px;
-    position: absolute;
-    background: #1b1b1b;
-    right: 150px;
-    top: 245px;
-    border-radius: 15px;
+  border-radius: 10px;
+  padding: 30px;
+  position: absolute;
+  height: 500px;
+  width: 400px;
+  padding: 30px;
+  background: #1b1b1b;
+  right: 5%;
+  top: -10%;
+  border-radius: 15px;
 
 }
 #login_swap_node_modal #nodeInput {
   margin-left: 5px;
-  max-width: 95%;
+  text-align: center;
+  max-width: 85%;
 }
 #login_swap_node_modal .lds-ripple-small{
   right: 40px;
 
 }
-#login_swap_node_modal #nodeInputStatus, #nodeInputLoading {
+#login_swap_node_modal .nodeInputLoading {
+  position: absolute;
+  top: 2px;
+  margin-left: 160px !important;
+  font-size: 19pt;
+}
 
-    position: absolute;
-    top: 2px;
-    left: 265px;
-    font-size: 19pt;
+.startup {
+  display: inline-table;
 }
 
 overlay #welcome {
@@ -1349,19 +1351,20 @@ overlay #welcome {
 }
 
 overlay #hugin-background img {
-    position: absolute;
-    width: 440px;
-    top: 135px;
-    left: 88px;
-    margin-top: 10%;
+  position: absolute;
+  width: 440px;
+  top: -19%;
+  left: -5%;
+  margin-top: 10%;
 }
 
 #login-screen h1, #login-screen h2 {
   width: 100%;
 }
 
-#login-screen {
-  right: 77px;
+.login-avatar-box {
+
+  height: 124px;
 }
 
 overlay h1 {
@@ -1427,10 +1430,11 @@ overlay #login img {
   }
 }
 
-#nodeInputLoading {
-  display: none;
+.nodeInputLoading {
+  margin-left: 320px;
   position: absolute;
-    left: 320px;
+  top: 5px;
+  left: 0px;
 }
 
 #nodeInputStatus {
@@ -1999,7 +2003,7 @@ bottom: 20px;
 
 
 .show {
-
+  transition: 0.3s;
   display: block;
   position: absolute;
 
@@ -2059,6 +2063,12 @@ bottom: 20px;
     color: black !important;
     background: rgba(0,0,0,0.1);
   }
+
+  #create-account {
+
+    display: none;
+  }
+
   #status_icon {
     background: url(../static/xkr-logo-mask-light.svg);
     box-shadow: inset 0px 0px 0px 1px #f5f6f7;
@@ -2724,30 +2734,14 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
 }
 
 #hugin-background {
-  /* background: linear-gradient(270deg, #000000, #1b1836);
-background-size: 400% 400%;
+  width: 350px;
+  height: 350px;
+  display: inline-block;
+  border-radius: 50%;
+  position: absolute;
+  left: 10%;
+  margin-top: 2%;
 
-background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, #abf25f, #5ff281, #5ff2f0) !important;
-
-    background-size: 1000% 1000% !important;
-
-    -webkit-animation: AnimationName 60s ease infinite;
-    -moz-animation: AnimationName 60s ease infinite;
-    animation: AnimationName 60s ease infinite; */
-    width: 350px;
-    height: 350px;
-    display: inline-block;
-    border-radius: 50%;
-    margin-top: 2%;
-
-}
-
-#hugin-background img {
-    position: absolute;
-    width: 440px;
-    top: -97px;
-    left: 3px;
-    margin-top: 10%;
 }
 
 #welcome-text {
@@ -3383,7 +3377,7 @@ button.emoji-picker__category-button:hover {
 }
 
 #login_status {
-
+  margin-top: 20%;
   cursor: pointer;;
 }
 
@@ -3457,6 +3451,9 @@ button.emoji-picker__category-button:hover {
     animation-delay: .4s;
 }
 
+.saving, #saving {
+  margin-top: 10%;
+}
 
 .tips {
   position: absolute;

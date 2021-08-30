@@ -32,10 +32,14 @@
 
       <div class="wrapper">
 
-        <div id="welcome">
-          <h1>Welcome to Hugin Messenger!</h1>
-          <span id="hugin-background" class="rgb"><img src='static/hugin-neon.png' /></span>
+        <div id="welcome" class="hidden">
+          <div class="welcome">
 
+
+          <h1>Welcome to Hugin Messenger!</h1>
+
+          <span id="hugin-background" class="rgb"><img src='static/hugin-neon.png' /></span>
+            </div>
           <!-- <span id="creating-wallet">
 
             <div class="lds-ripple"><div></div><div></div></div>
@@ -49,37 +53,36 @@
         <div id="login">
 
           <span id="login-decoration"></span>
-          <span id="login-screen">
+          <div id="login-screen" class="hidden">
             <h2>Login</h2>
-
+            <div class="login-avatar-box">
             <img src="" id="login_avatar" /> <br>
-
+            </div>
             <input id="login_password" type="password" style="display: none;"></input>
 
-            <button id="login_button" disabled>Login</button>
+            <button id="login_button" class="hidden" disabled>Login</button>
 
             <br>
 
 
             <br>
-            <hr />
-          </span>
-          <span id="create-account">
-          <h2>Restore / Create</h2>
+          <div class="create-account">
+
+          <span id="create-account" class="hidden">
 
           <button id="create_account_button">Create new account</button><br><br>
 
           <!-- <button id="restore_account_button">Restore account</button> -->
 
-        </span>
+        </div>
 
         <p id="login_status"><b>Node:</b> <span>  </span> </p>
-        <button id="login_swap_node" style="display: none">Swap node</button>
+        <button id="login_swap_node">Swap node</button>
         <div id="login_swap_node_modal" class="hidden"></div>
 
         </div>
 
-
+      </div>
 
       </div>
 
@@ -352,7 +355,7 @@
                       <textarea id="nodeInput">127.0.0.1:11898 (Localhost)
 
                       </textarea>
-                      <span id="nodeInputLoading"><div class="lds-ripple-small"><div></div><div></div></div></span>
+                      <span class="nodeInputLoading"><div class="lds-ripple-small"><div></div><div></div></div></span>
                       <span id="nodeInputStatus"></span>
                       </div>
 

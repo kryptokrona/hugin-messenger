@@ -472,16 +472,17 @@ $("document").ready(async function(){
 
             if (rmt.getGlobal('first_start')) {
               console.log('First start!');
-              $('#login-screen').hide();
-              $('#create-account').css({
-                position: "absolute",
-                width: 500,
-                top: "40%",
-                right: 75
-              })
+
+              $('#create-account').fadeIn();
+              $('#login-screen').addClass('startup');
+                $('#login-screen').fadeIn();
+                $('#login_swap_node_modal').css({
+                right: "8%",
+                top: "17%"
+              });
             } else {
               console.log('Not! first start!');
-              $('#create-account').remove();
+
               $('body hr').remove();
               $('#login-screen').css({
                 position: "absolute",
@@ -489,6 +490,12 @@ $("document").ready(async function(){
                 top: "28%",
                 right: 78
               })
+              $('#login-screen').fadeIn();
+              sleep(500);
+              $('#login_button').fadeIn();
+              sleep(500);
+              $('#login_swap_node').fadeIn()
+              $('.welcome').fadeIn();
 
             }
 
@@ -518,13 +525,8 @@ $("document").ready(async function(){
 
                }).catch(err => {
                  console.log(err);
-                 $('#login_swap_node').show();
                  $('#login_status span').text(rmt.getGlobal('node') + ' ❌');
                  $('#login_button').prop('disabled',true);
-
-
-
-
 
                  }).finally(function() {
 
@@ -587,7 +589,7 @@ $("document").ready(async function(){
                      $('#login_swap_node_modal #nodeInput').blur(function(){
 
                          $('#login_swap_node_modal #nodeInputStatus').text('');
-                         $('#login_swap_node_modal #nodeInputLoading').show();
+                         $('#login_swap_node_modal .nodeInputLoading').show();
 
 
                            fetch('http://' + $('#login_swap_node_modal #nodeInput').val() + '/json_rpc', {
@@ -599,12 +601,12 @@ $("document").ready(async function(){
                                 })
                               }).then(json => {
                                 console.log(json);
-                                $('#login_swap_node_modal #nodeInputLoading').hide();
+                                $('#login_swap_node_modal .nodeInputLoading').hide();
                                 $('#login_swap_node_modal #nodeInputStatus').text('✅');
 
                               }).catch(err => {
                                 console.log(err);
-                                $('#login_swap_node_modal #nodeInputLoading').hide();
+                                $('#login_swap_node_modal .nodeInputLoading').hide();
                                 $('#login_swap_node_modal #nodeInputStatus').text('❌');
                               })
 
@@ -697,7 +699,7 @@ $("document").ready(async function(){
   $('#connection_settings_page #nodeInput').blur(function(){
 
       $('#connection_settings_page #nodeInputStatus').text('');
-      $('#connection_settings_page #nodeInputLoading').show();
+      $('#connection_settings_page .nodeInputLoading').show();
 
 
         fetch('http://' + $('#connection_settings_page #nodeInput').val() + '/json_rpc', {
@@ -709,12 +711,12 @@ $("document").ready(async function(){
              })
            }).then(json => {
              console.log(json);
-             $('#connection_settings_page #nodeInputLoading').hide();
+             $('#connection_settings_page .nodeInputLoading').hide();
              $('#connection_settings_page #nodeInputStatus').text('✅');
 
            }).catch(err => {
              console.log(err);
-             $('#connection_settings_page #nodeInputLoading').hide();
+             $('#connection_settings_page .nodeInputLoading').hide();
              $('#connection_settings_page #nodeInputStatus').text('❌');
            })
 
