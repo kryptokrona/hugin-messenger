@@ -477,18 +477,18 @@ $("document").ready(async function(){
               $('#login-screen').addClass('startup');
                 $('#login-screen').fadeIn();
                 $('#login_swap_node_modal').css({
-                right: "8%",
-                top: "17%"
+                right: "-80px",
+                top: "-300px"
               });
             } else {
               console.log('Not! first start!');
 
               $('body hr').remove();
               $('#login-screen').css({
-                position: "absolute",
+                position: "relative",
                 width: 500,
-                top: "28%",
-                right: 78
+                marginTop: "45%",
+                left: 50
               })
               $('#login-screen').fadeIn();
               sleep(500);
