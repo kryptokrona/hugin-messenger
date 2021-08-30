@@ -125,7 +125,7 @@ function sendTransaction() {
 
   // $("#payment_message").unbind('click');
 
-  let global_mixin = `${parseInt($('#blockcount').text().split(': ')[1]) > 799999 ? 3 : 7}`;
+  let global_mixin = `${parseInt($('#blockcount').text().split(': ')[1]) > 799999 ? 3 : 3}`;
 
   console.log(global_mixin);
 
