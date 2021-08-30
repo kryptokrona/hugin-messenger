@@ -42,6 +42,9 @@ function dataURLtoFile(dataurl, filename) {
 
 
 var sdp_parser = require('./sdp');
+
+const welcome_message = require('./welcome_message');
+
  let current_board = '';
 const Datastore = require('nedb');
 
@@ -1158,6 +1161,7 @@ $('#import').click(function(){
 const nacl = require('tweetnacl');
 const naclUtil = require('tweetnacl-util');
 const naclSealed = require('tweetnacl-sealed-box');
+const ed2curve = require('ed2curve');
 
 const generatePrivateBoard = () => {
 	return  Buffer.from(nacl.randomBytes(32)).toString('hex');
@@ -2941,6 +2945,7 @@ async function print_conversations() {
 
 }
 
+
 print_conversations();
 
 let known_txs = [];
@@ -3442,6 +3447,8 @@ all_transactions = all_transactions.filter(function (el) {
 
 async function print_conversation(conversation) {
 	avatar_base64 = get_avatar(conversation);
+  $('#messages .sent_message').remove();
+  $('#messages .recieved_message').remove();
   $('#avatar_contact').attr('src','data:image/svg+xml;base64,' + avatar_base64).fadeIn();
   $('#context_menu').fadeIn();
   $('#currentchat_header_wrapper').removeClass('toggled_addr');
@@ -3838,8 +3845,6 @@ ipcRenderer.on('wallet-started', async () => {
 
 						console.log('started-wallet');
 
-
-
 						walletd = new TurtleCoinWalletd(
 							'http://127.0.0.1',
 							rmt.getGlobal('port'),
@@ -3867,6 +3872,21 @@ ipcRenderer.on('wallet-started', async () => {
               }
 
             });
+
+
+            try {
+            if (rmt.getGlobal('first_start')) {
+
+              db_json = {"conversation": "Hugin the Raven", "type":"recieved","message": welcome_message.welcome_message(),"timestamp":(Date.now())};
+
+              // Add message to datastore
+              db.insert(db_json);
+
+              print_conversations();
+
+            }} catch (err){
+
+            }
 
 
               // let messages = await find_messages({'type': 'received'}, 0, 5);
@@ -3963,6 +3983,7 @@ ipcRenderer.on('wallet-started', async () => {
 						$('#login_avatar').attr('src','data:image/svg+xml;base64,' + avatar_base64).addClass('shiny');
 
 						await sleep(1000);
+
 
 						$('overlay > *').fadeOut();
 
@@ -4210,6 +4231,12 @@ let print_single_board_message = async (hash, selector) => {
        reply(hash);
        $(this).addClass('rgb');
        $('#boards').scrollTop('0');
+     });
+
+     $('#boards .' + hash).delay(100).animate({
+       opacity: 1
+     }, 150, function() {
+       // Animation complete.
      });
 
 
