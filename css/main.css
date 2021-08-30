@@ -1338,7 +1338,7 @@ overlay .wrapper {
 #login_swap_node_modal .nodeInputLoading {
   position: absolute;
   top: 2px;
-  margin-left: 160px !important;
+  left: 40px;
   font-size: 19pt;
 }
 
