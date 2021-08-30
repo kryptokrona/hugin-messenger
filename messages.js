@@ -240,7 +240,7 @@ let print_boards = async () => {
 
 
   }
-
+  return;
 
 
 }
@@ -3724,6 +3724,8 @@ $('#create_pub_board_button').click(async function(){
     $('#boards_messages').removeClass('menu');
     $('#modal').addClass('hidden')
     ipcRenderer.send('import-view-subwallet', invite_code);
+      print_board(invite_code);
+
 
   } else {
 
@@ -3742,6 +3744,7 @@ $('#join_priv_board_button').click(async function(){
     $('#modal').addClass('hidden')
     $('#join_priv_board_input').val('');
     ipcRenderer.send('import-view-subwallet', invite_code);
+      print_board(invite_code);
 
   } else {
     $('.priv_board_error').removeClass('hidden').addClass('error').text('Invalid board address!');
@@ -3825,7 +3828,25 @@ ipcRenderer.on('imported-view-subwallet', async (event, address) => {
         alert('Invalid board address, please try again!');
         return;
       } else {
-        print_boards();
+        await print_boards();
+        await sleep(1000);
+
+
+         current_board = $('#' + address).attr('invitekey');
+
+         console.log(current_board);
+         console.log(address);
+
+
+         $('#board_title').text(letter_from_spend_key(current_board));
+         // ipcRenderer.send('get-boards', this_board);
+         $('.current').removeClass('current');
+         $('#' + address).addClass('current');
+         $('#replyto_exit').click();
+         $('#send_payment').addClass('hidden');
+
+        print_board(current_board);
+
       }
 
 });
@@ -4997,7 +5018,7 @@ async function backgroundSyncBoardMessages() {
                    // }
 
                    // print_single_board_message(thisHash, '#recent_board_messages .inner');
-       				 } else if (hex_json.k != currentAddr && message_was_unknown) {
+       				 } else if (hex_json.k != currentAddr && message_was_unknown && hex_json.brd == $('.current').attr('invitekey')) {
                  print_board_message(thisHash, hex_json.k, hex_json.m, hex_json.timestamp, hex_json.brd, name, hex_json.r, '#boards_messages');
                  $('#boards .board_message').each(function(index){
                    console.log( index + ": " + $( this ).text() );
