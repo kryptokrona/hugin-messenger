@@ -371,6 +371,9 @@ let startCall = (audio, video, screenshare=false) => {
 
   console.log('Starting call..');
 
+  $('#messages_pane').find('audio').remove();
+  $('#messages_pane').append('<audio autoplay><source src="static/startcall.mp3" type="audio/mpeg"></audio>');
+
   // $('#video-button').unbind('click');
   //
   // $('#call-button').unbind('click');
@@ -504,6 +507,9 @@ if (!screenshare) {
 
       endCall(peer1, stream, contact_address);
 
+      $('#messages_pane').find('audio').remove();
+      $('#messages_pane').append('<audio autoplay><source src="static/endcall.mp3" type="audio/mpeg"></audio>');
+
     })
 
     peer1.on('error', () => {
@@ -511,6 +517,8 @@ if (!screenshare) {
       console.log('Connection lost..')
 
       endCall(peer1, stream, contact_address);
+      $('#messages_pane').find('audio').remove();
+      $('#messages_pane').append('<audio autoplay><source src="static/endcall.mp3" type="audio/mpeg"></audio>');
 
     })
 
@@ -648,6 +656,8 @@ let answerCall = (msg, contact_address) => {
 
       console.log('Connection lost..')
       endCall(peer2, stream, contact_address);
+      $('#messages_pane').find('audio').remove();
+      $('#messages_pane').append('<audio autoplay><source src="static/endcall.mp3" type="audio/mpeg"></audio>');
 
     })
 
@@ -656,6 +666,8 @@ let answerCall = (msg, contact_address) => {
       console.log('Connection lost..')
 
       endCall(peer2, stream, contact_address);
+      $('#messages_pane').find('audio').remove();
+      $('#messages_pane').append('<audio autoplay><source src="static/endcall.mp3" type="audio/mpeg"></audio>');
 
     })
 
@@ -730,7 +742,8 @@ let parseCall = (msg, sender=false, emitCall=true) => {
       if (emitCall) {
 
         // Start ringing sequence
-         $('#incomingCall').append('<audio autoplay><source src="static/ringtone.mp3" type="audio/mpeg"></audio>');
+         
+         $('#incomingCall').append('<audio autoplay loop><source src="static/ringtone.mp3" type="audio/mpeg"></audio>');
          $('#incomingCall').find('h1').text(`Incoming ${msg.substring(0,1) == "Δ" ? "video" : "audio"} call!`);
          $('#incomingCall').show();
          let avatar_base64 = get_avatar(sender);
@@ -4994,7 +5007,8 @@ async function backgroundSyncBoardMessages() {
        				 		if (hex_json.k != currentAddr && message_was_unknown && $('.board_icon.current').attr('invitekey') != hex_json.brd && boards_keys.indexOf(hex_json.brd) != -1) {
 
                      last_block_checked = transaction.hash;
-
+                     $('#messages_pane').find('audio').remove();
+                     $('#messages_pane').append('<audio autoplay><source src="static/boardmessage.mp3" type="audio/mpeg"></audio>');
        				      notifier.notify({
        				        title: name + " in " + to_board,
        				        message: message,
