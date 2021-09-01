@@ -4540,7 +4540,7 @@ let print_board_message = async (hash, address, message, timestamp, fetching_boa
              let avatar_base64_reply = get_avatar(hex_json_reply.k);
              let message_reply = hex_json_reply.m;
 
-             $(selector + ' .' + hash + ' img').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/svg+xml;base64,' + avatar_base64_reply + '"><p>' + message_reply.substring(0,55)  +'..</p></div>');
+             $(selector + ' .' + hash + ' img').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/svg+xml;base64,' + avatar_base64_reply + '"><p>' + escapeHtml(message_reply.substring(0,55))  +'..</p></div>');
 
 
 
