@@ -759,13 +759,14 @@ $("document").ready(async function(){
   $('#welcome_alpha').removeClass('hidden');
   $("#new_board").addClass('hidden');
   $('#currentchat_header_wrapper').removeClass('toggled_addr');
-  $("#boards_picker").empty().addClass('hidden');
+  $("#boards_picker").addClass('hidden');
   $("#settings_page").fadeOut();
   $('#boards_messages').removeClass('menu');
   $('#modal').addClass('hidden');
   $(".setting_page").fadeOut();
   $('#avatar_contact').fadeOut();
   $('#context_menu').fadeOut();
+  $('.board_icon').removeClass('current');
 
 $('#send_payment').addClass('hidden');
 if ($('#flip-box-inner').hasClass('flip')) {
@@ -793,7 +794,8 @@ function flip() {
 
 $('#message_icon').click(function(){
   $("#new_board").addClass('hidden');
-$("#boards_picker").empty().addClass('hidden');
+$('.board_icon').removeClass('current');
+$("#boards_picker").addClass('hidden');
 $("#settings_page").fadeOut();
 $(".setting_page").fadeOut();
 $('#boards_messages').removeClass('menu');
@@ -828,7 +830,7 @@ flip(); $('#settings_page').fadeIn();
 $('#boards').addClass('hidden');
 $("#messages_page").removeClass('hidden');
 $("#new_board").addClass('hidden');
-$("#boards_picker").empty().addClass('hidden');
+$("#boards_picker").addClass('hidden');
 $('#boards_messages').removeClass('menu');
 $('#modal').addClass('hidden');
 $('#send_payment').addClass('hidden');
@@ -836,6 +838,7 @@ $('#currentchat_header_wrapper').removeClass('toggled_addr');
 $('#avatar_contact').fadeOut();
 $('#context_menu').fadeOut();
 $('#replyto_exit').click();
+$('.board_icon').removeClass('current');
 if (!$('#flip-box-inner').hasClass('flip')) {
 flip();
 }
@@ -869,12 +872,13 @@ $("#welcome_alpha").addClass("hidden");
 $("#status_icon").click(function(){
   flip(); $('#settings_page').fadeIn();
   $("#connectionSettings").click();
+  $('.board_icon').removeClass('current');
   $('#boards').addClass('hidden');
   $("#messages_page").removeClass('hidden');
   $("#new_board").addClass('hidden');
   $('#boards_messages').removeClass('menu');
   $('#modal').addClass('hidden');
-  $("#boards_picker").empty().addClass('hidden');
+  $("#boards_picker").addClass('hidden');
   $('#connection_settings_page #nodeInputStatus').text('');
   $('.setting_page').hide();
   $('#settings_page').fadeIn();

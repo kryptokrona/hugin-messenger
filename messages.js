@@ -167,7 +167,6 @@ let print_board = (board) => {
 
 let print_boards = async () => {
 
-  $('#boards_picker').empty();
 
   let boards_addresses = rmt.getGlobal('boards_addresses');
   for (address in boards_addresses) {
@@ -215,7 +214,7 @@ let print_boards = async () => {
            $('#board_title').text('Home');
 		     }
 
-
+         $(this).removeClass('unread_board');
          $('#board_title').text(board_title);
 		     // ipcRenderer.send('get-boards', this_board);
 		     $('.current').removeClass('current');
@@ -3699,7 +3698,7 @@ $("document").ready(function(){
     $("#new_board").addClass('hidden');
     $('#boards_messages').removeClass('menu');
     $('#modal').addClass('hidden');
-    $("#boards_picker").empty().addClass('hidden');
+    $("#boards_picker").addClass('hidden');
     $('#messages .received_message, #messages .sent_message').fadeOut();
     $('#welcome_alpha').addClass('hidden');
     $('#boards').addClass('hidden');
@@ -3711,6 +3710,7 @@ $("document").ready(function(){
     $('#avatar_contact').fadeOut();
     $('#context_menu').fadeOut();
     $('#send_payment').addClass('hidden');
+    $('.board_icon').removeClass('current');
     if ($('#flip-box-inner').hasClass('flip')) {
     flip();
     }
@@ -3850,10 +3850,9 @@ ipcRenderer.on('imported-view-subwallet', async (event, address) => {
         alert('Invalid board address, please try again!');
         return;
       } else {
+        $('#boards_picker').empty();
         await print_boards();
         await sleep(1000);
-
-
          current_board = $('#' + address).attr('invitekey');
 
          console.log(current_board);
@@ -4061,35 +4060,28 @@ $('#boards_icon').click(function(){
     }
 
   });
+  if (!$('#boards').hasClass('hidden')) {
 
- $("#boards").toggleClass('hidden');
- $("#messages_page").toggleClass('hidden');
- $("#new_board").toggleClass('hidden');
+  return;
+  } else {
+
+     print_board('0b66b223812861ad15e5310b4387f475c414cd7bda76be80be6d3a55199652fc');
+     $('#board_title').text('Home');
+
+ $("#boards").removeClass('hidden');
+ $("#messages_page").addClass('hidden');
+ $("#new_board").removeClass('hidden');
  $("#avatar_contact").hide();
  $("#context_menu").hide();
- $("#boards_picker").empty().toggleClass('hidden');
+ $("#boards_picker").removeClass('hidden');
  $('#boards .board_message').remove();
  $('#boards_messages').removeClass('menu');
  $('#modal').addClass('hidden');
  $('#replyto_exit').click();
  $('#send_payment').addClass('hidden');
-
- print_boards();
-
  $('#home_board').addClass('current');
 
-
- if ($('#boards').hasClass('hidden')) {
-   // $('#avatar').attr('src', 'data:image/svg+xml;base64,' + get_avatar(currentAddr));
-
- } else {
-   // $('#avatar').attr('src', 'data:image/svg+xml;base64,' + get_avatar(signingPublicKey));
-    print_board('0b66b223812861ad15e5310b4387f475c414cd7bda76be80be6d3a55199652fc');
-    $('#board_title').text('Home');
- }
-
-
-
+}
 
 })
 
@@ -4845,6 +4837,7 @@ ipcRenderer.on('new-message', async (event, transaction) => {
               print_board_message(transaction.hash, hex_json.k, hex_json.m, parseInt(hex_json.timestamp), hex_json.brd, hex_json.n, hex_json.r, '#boards_messages');
 
             }
+            $('.board_icon[invitekey='+ hex_json.brd + ']').addClass('unread_board');
             $('#recent_board_messages .default').remove();
             print_board_message(transaction.hash, hex_json.k, hex_json.m, parseInt(hex_json.timestamp), hex_json.brd, hex_json.n, hex_json.r, '#recent_board_messages .inner');
 				 }
@@ -5018,6 +5011,8 @@ async function backgroundSyncBoardMessages() {
                      last_block_checked = transaction.hash;
                      $('#messages_pane').find('audio').remove();
                      $('#messages_pane').append('<audio autoplay><source src="static/boardmessage.mp3" type="audio/mpeg"></audio>');
+                     $('.board_icon[invitekey='+ hex_json.brd + ']').addClass('unread_board');
+
        				      notifier.notify({
        				        title: name + " in " + to_board,
        				        message: message,
@@ -5078,7 +5073,7 @@ let global_nonce;
 
 ipcRenderer.on('got-profile', async (event, json) => {
 
-
+  await print_boards();
     boards_db.find({}).sort({ timestamp: -1 }).limit(5).exec(function (err,docs){
 
       let boards_addresses = rmt.getGlobal('boards_addresses');
