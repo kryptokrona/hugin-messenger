@@ -3307,9 +3307,11 @@ all_transactions = all_transactions.filter(function (el) {
 					    // Response is response from notification
 					    // Metadata contains activationType, activationAt, deliveredAt
 							console.log(response, metadata.activationValue, err);
-							if (response != 'timeout') {
+
+							if (response == 'activate') {
 								ipcRenderer.send('show-window');
 		            print_conversation(payload_json.from);
+                $('#message_icon').click();
 							}
 							if(metadata.activationValue == "Answer" || metadata.button == "Answer" ) {
 
