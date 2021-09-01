@@ -3379,11 +3379,13 @@ all_transactions = all_transactions.filter(function (el) {
     sync_messages(true);
   }
 
-  if (check_counter % 90) {
+  if (check_counter % 90 == 89) {
+    console.log(known_unconfirmed_messages);
     known_txs = [];
     known_unconfirmed_messages = [];
-  }
 
+  }
+console.log(known_unconfirmed_messages);
   backgroundSyncBoardMessages();
 
 }
