@@ -742,7 +742,7 @@ let parseCall = (msg, sender=false, emitCall=true) => {
       if (emitCall) {
 
         // Start ringing sequence
-         
+
          $('#incomingCall').append('<audio autoplay loop><source src="static/ringtone.mp3" type="audio/mpeg"></audio>');
          $('#incomingCall').find('h1').text(`Incoming ${msg.substring(0,1) == "Δ" ? "video" : "audio"} call!`);
          $('#incomingCall').show();
@@ -2879,7 +2879,7 @@ function get_block_height() {
   });
 });
 }
-
+let known_unconfirmed_messages = [];
 function get_unconfirmed_messages() {
 
   return new Promise(function(resolve, reject){
@@ -2902,8 +2902,12 @@ function get_unconfirmed_messages() {
       .then(resp => {
         try {
         transaction = resp.body.result.transaction;
-        console.log('TRANSAKTIONER', transaction);
-        transactions[i] = trimExtra(transaction.extra);
+        if (!known_unconfirmed_messages.includes(transaction.transactionHash)) {
+          known_unconfirmed_messages.push(transaction.transactionHash);
+          transactions[i] = trimExtra(transaction.extra);
+        } else {
+
+        }
         if ( (txsLength - i) == 1) {
           resolve(transactions);
         }
@@ -3377,6 +3381,7 @@ all_transactions = all_transactions.filter(function (el) {
 
   if (check_counter % 90) {
     known_txs = [];
+    known_unconfirmed_messages = [];
   }
 
   backgroundSyncBoardMessages();
