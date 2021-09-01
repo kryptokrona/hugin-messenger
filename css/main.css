@@ -1938,7 +1938,7 @@ bottom: 20px;
 }
 
 .unread_board:not(.current)::after {
-    border-color: #161415;
+
     position: absolute;
     height: 10px;
     width: 10px;
@@ -1953,6 +1953,7 @@ bottom: 20px;
     -webkit-animation: hue 10s ease infinite;
     -moz-animation: hue 10s ease infinite;
     animation: hue 10s ease infinite;
+    border-color: #161415;
 }
 
 .contact_address {
