@@ -213,7 +213,7 @@ let print_boards = async () => {
 		       this_board = 'SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc';
            $('#board_title').text('Home');
 		     }
-
+         $('#boards_messages').show();
          $(this).removeClass('unread_board');
          $('#board_title').text(board_title);
 		     // ipcRenderer.send('get-boards', this_board);
@@ -3746,7 +3746,9 @@ $('#create_pub_board_button').click(async function(){
   if(await crypto.checkKey(invite_code)) {
     $('#create_pub_board_input').val('');
     $('#boards_messages').removeClass('menu');
-    $('#modal').addClass('hidden')
+    $('#modal').addClass('hidden');
+    $('#board_title').empty();
+    $('#boards_messages').fadeOut();
     ipcRenderer.send('import-view-subwallet', invite_code);
       print_board(invite_code);
 
@@ -3767,6 +3769,8 @@ $('#join_priv_board_button').click(async function(){
     $('#boards_messages').removeClass('menu');
     $('#modal').addClass('hidden')
     $('#join_priv_board_input').val('');
+    $('#board_title').empty();
+    $('#boards_messages').fadeOut();
     ipcRenderer.send('import-view-subwallet', invite_code);
       print_board(invite_code);
 
@@ -3785,7 +3789,9 @@ $('#create_priv_board_button').click(async function(){
     $('.priv_board_error').removeClass('error');
     $('#join_priv_board_input').val('');
     $('#boards_messages').removeClass('menu');
-    $('#modal').addClass('hidden')
+    $('#modal').addClass('hidden');
+    $('#board_title').empty();
+    $('#boards_messages').fadeOut();
     ipcRenderer.send('import-view-subwallet', invite_code);
 
   } else {
@@ -3853,6 +3859,7 @@ ipcRenderer.on('imported-view-subwallet', async (event, address) => {
         return;
       } else {
         $('#boards_picker').empty();
+        $('#boards_picker').fadeIn();
         await print_boards();
         await sleep(1000);
          current_board = $('#' + address).attr('invitekey');
@@ -3860,7 +3867,7 @@ ipcRenderer.on('imported-view-subwallet', async (event, address) => {
          console.log(current_board);
          console.log(address);
 
-
+         $('#boards_messages').fadeIn();
          $('#board_title').text(letter_from_spend_key(current_board));
          // ipcRenderer.send('get-boards', this_board);
          $('.current').removeClass('current');
@@ -4078,6 +4085,7 @@ $('#boards_icon').click(function(){
  $("#boards_picker").removeClass('hidden');
  $('#boards .board_message').remove();
  $('#boards_messages').removeClass('menu');
+
  $('#modal').addClass('hidden');
  $('#replyto_exit').click();
  $('#send_payment').addClass('hidden');
@@ -5136,7 +5144,7 @@ ipcRenderer.on('got-login-complete', async () => {
 });
 
 ipcRenderer.on('got-profile', async (event, json) => {
-
+  $('#boards_picker').empty();
   await print_boards();
 
 
