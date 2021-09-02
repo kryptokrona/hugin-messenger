@@ -5071,10 +5071,16 @@ async function backgroundSyncBoardMessages() {
 
 let global_nonce;
 
-ipcRenderer.on('got-profile', async (event, json) => {
+ipcRenderer.on('got-login-complete', async () => {
 
-  await print_boards();
-    boards_db.find({}).sort({ timestamp: -1 }).limit(5).exec(function (err,docs){
+  walletd.getAddresses()
+  .then(resp => {
+
+    let thisAddr = resp.body.result.addresses[0];
+
+  console.log($('#currentAddrSpan').text());
+    boards_db.find({sender: { $ne: $('#currentAddrSpan').text()}}).sort({ timestamp: -1 }).limit(5).exec(function (err,docs){
+
 
       let boards_addresses = rmt.getGlobal('boards_addresses');
       let boards_keys = [];
@@ -5122,6 +5128,15 @@ ipcRenderer.on('got-profile', async (event, json) => {
 
 
     })
+
+})
+
+});
+
+ipcRenderer.on('got-profile', async (event, json) => {
+
+  await print_boards();
+
 
 
 
