@@ -751,8 +751,8 @@ $("document").ready(async function(){
   $('#avatar').click(function(){
 
 
-  $('.sent_message').remove();
-  $('.recieved_message').remove();
+  $('.sent_message').fadeOut();
+  $('.recieved_message').fadeOut();
 
   // $('header').toggleClass('toggled');
   $('#messages .received_message, #messages .sent_message').hide();
