@@ -3702,6 +3702,7 @@ $("document").ready(function(){
     $('#modal').addClass('hidden');
     $("#boards_picker").addClass('hidden');
     $('#messages .received_message, #messages .sent_message').fadeOut();
+    $('#messages > li').fadeOut();
     $('#welcome_alpha').addClass('hidden');
     $('#boards').addClass('hidden');
     $('#currentchat_footer').removeClass('hidden');
