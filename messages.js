@@ -1321,7 +1321,9 @@ ipcRenderer.on('gotNodes', (evt, json) => {
 })
 
 
-ipcRenderer.on('removed-subwallet', (evt, addr) => {
+ipcRenderer.on('removed-subwallet', async (evt, addr) => {
+ $('#' + addr).addClass('remove');
+ await sleep(500);
  $('#' + addr).addClass('removed');
 
  if ($('#' + addr).hasClass('current')) {
@@ -4831,7 +4833,7 @@ ipcRenderer.on('new-message', async (event, transaction) => {
             //
 				    // });
 
-            if ($('.board_icon.current').attr('invitekey') == transaction.transfers[0].publicKey || $('.board_icon.current').attr('id') == "home_board") {
+            if ($('.board_icon.current').attr('invitekey') == transaction.transfers[0].publicKey) {
 
 
               print_board_message(transaction.hash, hex_json.k, hex_json.m, parseInt(hex_json.timestamp), hex_json.brd, hex_json.n, hex_json.r, '#boards_messages');
