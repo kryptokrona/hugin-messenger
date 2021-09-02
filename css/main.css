@@ -3328,9 +3328,17 @@ button.emoji-picker__category-button:hover {
   margin-left: 35px;
 }
 
-.removed {
+.remove {
   transition: 0.5s all;
   transform: scale(0);
+
+}
+
+.removed {
+  height: 0 !important;
+  margin-top: -9px !important;
+  transition: 0.5s all;
+  transition-timing-function: ease-in-out;
 }
 
 .shiny2 {
