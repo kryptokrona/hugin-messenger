@@ -50,46 +50,46 @@
 
 
 @font-face {
-  font-family: 'Roboto';
+  font-family: 'RobotoMono';
   font-style: normal;
   font-weight: 100;
-  src: url('../fonts/Roboto-Thin.ttf');
+  src: url('../fonts/RobotoMono-Thin.ttf');
   }
 
 @font-face {
-  font-family: 'Roboto';
+  font-family: 'RobotoMono';
   font-style: italic;
   font-weight: 100;
-  src: url('../fonts/Roboto-ThinItalic.ttf');
+  src: url('../fonts/RobotoMono-ThinItalic.ttf');
 }
 
 
 @font-face {
-  font-family: 'Roboto';
+  font-family: 'RobotoMono';
   font-style: italic;
   font-weight: 300;
-  src: url('../fonts/Roboto-LightItalic.ttf');
+  src: url('../fonts/RobotoMono-LightItalic.ttf');
 }
 
 @font-face {
-  font-family: 'Roboto';
+  font-family: 'RobotoMono';
   font-style: normal;
   font-weight: 300;
-  src: url('../fonts/Roboto-Light.ttf');
+  src: url('../fonts/RobotoMono-Light.ttf');
 }
 
 @font-face {
-  font-family: 'Roboto';
+  font-family: 'RobotoMono';
   font-style: normal;
   font-weight: 400;
-  src: url('../fonts/Roboto-Regular.ttf');
+  src: url('../fonts/RobotoMono-Regular.ttf');
 }
 
 @font-face {
-  font-family: 'Roboto';
+  font-family: 'RobotoMono';
   font-style: normal;
   font-weight: 700;
- src: url('../fonts/Roboto-Bold.ttf');
+ src: url('../fonts/RobotoMono-Bold.ttf');
 }
 
 /* montserrat-100 - latin */
@@ -295,12 +295,26 @@
 }
 
 /* Dropdown Content (Hidden by Default) */
-.dropdown-content {
+.dropdown-content, #status-content {
   width: 100%;
   position: relative;
   background-color: rgba(0,0,0,0.1)
   min-width: 160px;
   z-index: 1;
+}
+
+.node-height {
+  width: 70%;
+}
+
+.current-node-status {
+  width: 70%;
+}
+
+.current-node-status span {
+  text-align: center;
+  font-weight: 300 !important;
+
 }
 
 /* Links inside the dropdown */
@@ -400,7 +414,7 @@ header > * {
   /* border: 3px solid white; */
   cursor: pointer;
   -webkit-app-region:no-drag;
-
+  -webkit-user-select: none;
 
 }
 
@@ -442,7 +456,7 @@ margin: 0;
 }
 
 body {
-  font-family: monospace;
+  font-family: 'RobotoMono';
   color: white;
   overflow-x: hidden;
   overflow-y: hidden;
@@ -558,6 +572,7 @@ html, body {
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
     color: white;
+      -webkit-user-select: none;
 }
 
 #right_panel * {
@@ -578,6 +593,7 @@ html, body {
       cursor: pointer;
       display: inline-block;
       padding-top: 10px;
+        -webkit-user-select: none;
 
 }
 
@@ -736,7 +752,7 @@ li:hover {
 
   opacity: 0.8;
   transition: opacity 0.3s;
-  cursor: default;
+  cursor: default;''
 }
 
 a {
@@ -749,7 +765,7 @@ a {
   position: absolute;
   right: 11px;
   border-radius: 10px;
-  top: 13% !important;
+  top: 14% !important;
   height: 50% !important;
 
 }
@@ -796,7 +812,7 @@ a {
   font-size: 12pt;
   border: none;
   border-radius: 17px;
-  font-family: "Roboto";
+  font-family: "RobotoMono";
   padding: 3px;
 
 }
@@ -815,7 +831,7 @@ a {
   height: 25px;
   border: none;
   border-radius: 17px;
-  font-family: "Roboto";
+  font-family: "RobotoMono";
   padding: 5px;
 }
 
@@ -1110,6 +1126,7 @@ h1, h2, h3, h4 {
     color: white;
     display: inline-block;
     margin-top: 1px;
+    font-weight: 200;
 
 }
 
@@ -1166,7 +1183,7 @@ h1, h2, h3, h4 {
   border-radius: 5px !important;
   color: rgba(255,255,255,0.6) !important;
   display: inline-block !important;
-
+  font-family: "Montserrat" !important;
 }
 
 
@@ -1194,8 +1211,9 @@ h1, h2, h3, h4 {
 
 
 #modal p {
-  font-family: monospace;
+  font-family: 'RobotoMono';
   width: 94%;
+  font-size: 14px;
 }
 
 #modal input {
@@ -1236,7 +1254,7 @@ right: 5;
   cursor: pointer;
   padding-left: 16px;
   position: absolute;
-  font-family: "Roboto";
+  font-family: "RobotoMono";
   font-size: 17px;
 }
 
@@ -1251,7 +1269,7 @@ display: inline-block;
 #currentchat_header input,#currentchat_pubkey input {
   width: 60%;
   text-overflow: ellipsis;
-  font-family: monospace;
+  font-family: 'RobotoMono';
 }
 
 #currentchat_header, #currentchat_pubkey {
@@ -1322,14 +1340,14 @@ overlay .wrapper {
   padding: 30px;
   background: #1b1b1b;
   right: -20px;
-  top: -300px;
+  top: -370px;
   border-radius: 15px;
 
 }
 #login_swap_node_modal #nodeInput {
-  margin-left: 5px;
-  text-align: center;
   max-width: 85%;
+  left: 15px;
+  text-align: center;
 }
 #login_swap_node_modal .lds-ripple-small{
   right: 40px;
@@ -1340,6 +1358,7 @@ overlay .wrapper {
   top: 2px;
   left: 40px;
   font-size: 19pt;
+  display: none;
 }
 
 .startup {
@@ -1380,7 +1399,7 @@ overlay h1 {
 }
 
 overlay p {
-      font-family: monospace;
+      font-family: 'RobotoMono';
       font-size: 15px;
 }
 
@@ -1441,13 +1460,14 @@ overlay #login img {
   position: absolute;
   top: 5px;
   left: 0px;
+  display: none;
 }
 
 #nodeInputStatus {
   position: absolute;
-    top: 2px;
-    left: 320px;
-    font-size: 19pt;
+top: 11px;
+left: 333px;
+font-size: 14pt;
 }
 
 .lds-ripple-small {
@@ -1484,8 +1504,8 @@ overlay #login img {
 }
 
 #currentAddrSpan, #currentPubKey {
-  font-family: monospace;
-  font-weight: 200;
+  font-family: 'RobotoMono';
+  font-weight: 300;
   width: 229px;
   display: inline-block;
   text-overflow: ellipsis;
@@ -1610,20 +1630,38 @@ overlay #login img {
 
 }
 
- .board_message p {padding: 10px;border-radius: 5px;width: max-content;max-width: 95%;word-wrap: break-word;border-top-left-radius: 0;font-size: 22px;font-family: "Montserrat";/* margin-left: 15px; */padding-top: 0;/* font-weight: normal; */margin: 0;padding-left: 25px;padding-bottom: 17px;}
+ .board_message p {
+   border-radius: 5px;
+   width: max-content;
+   max-width: 95%;
+   display: inline;
+   line-height: 7px;
+   word-wrap: break-word;
+   border-top-left-radius: 0;
+   font-size: 15px;
+   font-family: "Montserrat";
+   margin: 0;
+   vertical-align: 20%;
+}
 
 
  .board_message {
    transition: 0.3s;
    list-style: none;
    max-width: 60%;
-   background: rgba(0,0,0,0.2);
-   margin-bottom: 10px;
+   margin-bottom: 2px;
    border-radius: 15px;
    margin-left: 20%;
    position: relative;
+   padding: 15px;
+   padding-left: 20px;
    opacity: 0;
+   -webkit-user-select:none;
 
+ }
+
+ .board_message:hover {
+   background: rgba(0,0,0,0.1);
  }
 
  .loading_message {
@@ -1632,37 +1670,56 @@ overlay #login img {
    opacity: 1;
  }
 
- .board_message_pubkey {vertical-align: 230%;font-family: monospace;max-width: 77px;display: inline-block;overflow: hidden;text-overflow: ellipsis;border-radius: 10px;background: rgba(255,255,255,0.05);padding: 5px;padding-left: 7px;padding-right: 7px;font-size: 7pt; cursor: pointer;}
+ .board_message_pubkey {
+    vertical-align: 230%;
+    font-family: montserrat;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    max-width: 60px;
+    left: 55px;
+    top: 20px;
+    position: absolute;
+    border-radius: 5px;
+    background: rgba(255,255,255,0.02);
+    padding: 5px;
+    padding-left: 7px;
+    padding-right: 7px;
+    font-size: 6.8pt;
+    cursor: pointer;
+  }
 
 
  .board_avatar {
-     width: 64px;
-     height: 64px;
-     border-radius: 50%;
-     margin-left: 5px;
-     padding-bottom: 7px;
-     margin-top: -12px;
- }
+   width: 48px;
+   height: 48px;
+   border-radius: 50%;
+   margin-left: -10px;
+     -webkit-user-select: none;
+   }
 
 .message_avatar {
   width:25px !important;
   border-radius: 50%;
   margin-bottom: -20px;
+    -webkit-user-select: none;
 }
 
 .sent_message .message_avatar {
   margin-left: calc(100% - 35px);
+    -webkit-user-select: none;
 }
 .recieved_message .message_avatar {
   margin-left: -5px;
+    -webkit-user-select: none;
 }
 
 .time {
   opacity: 0.4;
-  font-size: 10px;
+  font-size: 9.2px;
   display: block;
-  margin-left: 25px;
-  padding-bottom: 10px;
+  margin-left: 5px;
+  padding-top: 10px;
 }
 .sent_message .time {
   margin-left: auto;
@@ -1776,6 +1833,7 @@ overlay #login img {
   margin: 7px;
   margin-left: 7px;
   position: relative;
+  transition: 0.2s;
 }
 
 #messages_contacts .fa {
@@ -1937,6 +1995,65 @@ bottom: 20px;
   animation: hue 10s ease infinite;
 }
 
+
+
+#node_status {
+  width: 45%;
+  display: inline-block;
+  position: absolute;
+  right: 50px;
+}
+
+#node_list {
+  width: 45%;
+  display: inline-block;
+  position: absolute
+}
+
+#node_connect {
+  width: 45%;
+    align-self: baseline;
+    display: inline-block;
+    position: absolute;
+    margin-left: 10%;
+}
+
+.node-status {
+  width: 45%;
+ align-self: baseline;
+ display: inline-block;
+ position: absolute;
+ margin-left: 20px;
+}
+
+.status-content span {
+color: #f1f2f3;
+padding: 12px 16px;
+text-decoration: none;
+display: block;
+font-family: 'RobotoMono';
+font-size: 17px;
+font-weight: 300;
+border-radius: 5px;
+background: rgba(0,0,0,0.2);
+width: 75%;
+}
+
+.status-content a {
+  font-size: 10pt;
+  color: #f5f6f7;
+  font-family: montserrat;
+  font-weight: 300;
+}
+
+.current-node-status span {
+  color: white !important;
+}
+
+#login_swap_node_modal .status-content {
+  display: none;
+}
+
 .unread_board:not(.current)::after {
 
     position: absolute;
@@ -1959,15 +2076,16 @@ bottom: 20px;
 .contact_address {
     display: block;
     white-space: nowrap;
-    width: 74%;
+    width: 82%;
     overflow: hidden;
     text-overflow: ellipsis;
     font-size: 14px;
     margin-top: -35px;
-    font-weight: 700;
+    font-weight: 500;
     margin-left: 5px;
     font-family: "montserrat";
-    color: rgba(255,255,255,0.8);
+    color: rgba(255,255,255,0.9);
+      -webkit-user-select: none;
   }
 
 #messages .contact_address {
@@ -1975,8 +2093,8 @@ bottom: 20px;
   vertical-align: -17px;
 }
 
-.contact_avatar { border-radius: 50%; position: relative; left: -43px; top: 2px; }
-.listed_message { display: block; font-family: "Montserrat"; font-weight: 300; width: 90%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 11px; opacity: 0.7; margin-top: -10px; margin-left: 5px; }
+.contact_avatar { -webkit-user-select: none; border-radius: 50%; position: relative; left: -43px; top: 2px; }
+.listed_message { -webkit-user-select: none; display: block; font-family: "Montserrat"; font-weight: 300; width: 90%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 11px; opacity: 0.7; margin-top: -10px; margin-left: 5px; }
 
 #messages_contacts, #boards_messages {
   --scrollbarBG: transparent;
@@ -2176,15 +2294,26 @@ header  {
 
  .board_message {
 
-  background: rgba(0,0,0,0.01) !important;
   color: black;
 
+ }
+
+ .board_message:hover {
+   background: rgba(0,0,0,0.03)
  }
 
  a {
 
   color: rgba(0,0,0,0.5);
 
+}
+
+.status-content span {
+  background: rgba(0,0,0,0.03);
+}
+
+.status-content a {
+  color: #53565c;
 }
 
   #board_box {
@@ -2260,7 +2389,7 @@ header  {
    color: #53565c !important;
  }
 
-.received_message p {
+.received_message p, .recieved_message p {
 
   background: #9096a4 !important;
   color: white;
@@ -2331,7 +2460,12 @@ header  {
 
   #settings_page {
     background: #fff !important;
+    color: #53565c;
   }
+
+.status-content span, a {
+  color: black;
+}
 
   #boards_icon .fa:hover {
 
@@ -2392,7 +2526,7 @@ header  {
  }
 
  #nodeConnect, #modal button {
-   background-color: rgba(77, 220, 106, 0.75) !important;
+   background-color: rgba(77, 220, 106, 0.85) !important;
    color: white !important;
  }
 
@@ -2893,10 +3027,10 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
   padding-top: 10px;
   resize: none;
   word-break: break-word;
-  font-family: monospace;
+  font-family: 'RobotoMono';
   padding: 15px;
   text-transform: uppercase;
-  font-weight: 500;
+  font-weight: 300;
 }
 
 
@@ -2917,10 +3051,10 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
   resize: none;
   word-break: break-word;
   padding-left: 10px;
-  font-family: monospace;
+  font-family: 'RobotoMono';
   padding: 15px;
   text-transform: uppercase;
-  font-weight: 500;
+  font-weight: 300;
 
 }
 
@@ -2958,6 +3092,7 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
       margin-bottom: 10px;
       background-color: none;
       border-radius: 5px;
+        -webkit-user-select: none;
 }
 
 
@@ -2969,7 +3104,7 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
 }
 
 #importMnemonic {
-
+      font-family: "RobotoMono";
       background: rgba(0,0,0,0.2);
       color: rgba(255,255,255,0.8);
       border-radius: 5px;
@@ -2985,7 +3120,7 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
       font-size: 11pt;
       margin-left: 10px;
       text-transform: uppercase;
-      font-weight: 500;
+      font-weight: 300;
 }
 
 input {
@@ -3001,6 +3136,7 @@ input {
     word-break: break-word;
     resize: none;
     overflow: hidden;
+    font-family: "RobotoMono";
 
 }
 
@@ -3032,23 +3168,24 @@ button:focus {
 }
 
 #nodeInput {
-
-  background: rgba(0,0,0,0.1);
-    color: white;
-    border-radius: 5px;
-    border: none;
-    width: 344px;
-    height: 27px;
-    display: block;
-    margin-top: 20px;
-    margin-left: 2px;
-    padding-top: 10px;
-    padding-left: 9px;
-    font-size: 15px;
-    word-break: break-word;
-    resize: none;
-    overflow: hidden;
-    position: relative;
+  font-family: "RobotoMono";
+  background: rgba(0,0,0,0.2);
+  color: white;
+  border-radius: 5px;
+  border: none;
+  width: 344px;
+  height: 27px;
+  display: block;
+  margin-top: 20px;
+  margin-left: 2px;
+  padding-top: 15px;
+  padding-left: 15px;
+  font-size: 15px;
+  font-weight: 300;
+  word-break: break-word;
+  resize: none;
+  overflow: hidden;
+  position: relative;
 }
 
 #nodeConnect, #modal button {
@@ -3185,8 +3322,11 @@ li .gradient {
 }
 
 .emoji-message {
-  font-size: 27pt !important;
-  padding-top: 2px
+  font-size: 18pt !important;
+  padding-top: 2px;
+  line-height: 0px !important;
+  padding-left: 1px;
+  letter-spacing: 2px;
 }
 
 .emoji-picker__search-container, .emoji-picker__search {
@@ -3198,39 +3338,40 @@ button.emoji-picker__category-button:hover {
 }
 
 .attachment {
-  max-width: 100%;
+  display: block;
+  margin-left: 55px;
+  max-height: 80%;
+  max-width: 80%;
 }
 
 .boards_nickname {
-
-  vertical-align: 28px;
-      font-family: monospace;
-      /* max-width: 105px; */
-      display: inline-block;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      border-radius: 14px;
-      /* background: rgba(255,255,255,0.1); */
-      /* padding: 10px; */
-      padding-top: 0 !important;
-      padding-right: 12px;
-      font-family: "Montserrat";
-      font-weight: 700;
-
+  width: 25%;
+  overflow: hidden;
+  font-size: 14px;
+  position: absolute;
+  left: 58px;
+  top: 5px;
+  display: inline;
+  text-overflow: ellipsis;
+  padding-top: 20px;
+  font-family: Montserrat;
+  font-weight: 700;
+  cursor: pointer;
 }
 
 #replyto {
   position: absolute;
-    height: 57px;
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
-    color: #1b1b1b;
-    padding-left: 40px;
-    padding-right: 20px;
-    vertical-align: bottom;
-    font-family: 'Montserrat';
-    font-weight: 700;
-    line-height: 60px;
+  height: 57px;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+  color: #1b1b1b;
+  padding-left: 40px;
+  padding-right: 20px;
+  vertical-align: bottom;
+  font-family: 'Montserrat';
+  font-weight: 700;
+  line-height: 60px;
+  -webkit-user-select: none;
 }
 
 #replyto_exit {
@@ -3292,8 +3433,16 @@ button.emoji-picker__category-button:hover {
 }
 
 .board_message_reply {
+  display: block !important;
   height: 50px;
+  width: 100%;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
   opacity: 0.6;
+}
+
+.board_message_reply:hover {
+  opacity: 0.85;
 }
 
 
@@ -3318,9 +3467,9 @@ button.emoji-picker__category-button:hover {
   content: "∟";
   display: inline-block;
   transform: rotate(90deg);
-  font-weight: 500;
+  font-weight: 400;
   font-size: 28pt;
-  margin-left: 35px;
+  margin-left: 25px;
 }
 
 #recent_board_messages .board_message_reply::before {
@@ -3416,7 +3565,11 @@ button.emoji-picker__category-button:hover {
 }
 
 #login_status {
-  cursor: pointer;;
+  cursor: pointer;
+}
+
+#login_status b {
+  font-family: "Montserrat";
 }
 
 #create_account_button {
@@ -3491,6 +3644,7 @@ button.emoji-picker__category-button:hover {
 
 .saving, #saving {
   margin-top: 10%;
+  font-weight: 200;
 }
 
 .tips {
@@ -3578,24 +3732,34 @@ right: 15px;
 
 
 #board_title {
-
   text-align: center;
-  height: 38px;
+  height: 12px;
   color: white;
-  font-size: 18px;
-  padding-left: 10px;
-  padding: 15px;
-  border-radius: 5px;
+  font-size: 14px;
+  top: 82px;
   position: absolute;
-  width: 14%;
+  z-index: 9999;
+  width: 20%;
+  right: 5%;
+  padding-top: 8px;
   font-family: Montserrat;
-  right: 4%;
   font-weight: 700;
+  border-top-left-radius: 1px;
+  border-bottom-left-radius: 10px;
   text-overflow: ellipsis;
+  border-bottom-right-radius: 10px;
   overflow: hidden;
-  padding-bottom: 25px;
+  padding-bottom: 14px;
   cursor: pointer;
+  text-overflow: ellipsis;
 }
+
+
+#board_title text {
+  opacity: 0.8;
+}
+
+
 /*
 #profile img {
 
@@ -3657,11 +3821,11 @@ right: 15px;
 } */
 
 #recent_board_messages img {
-  max-width: 55px;
-  height: 55px;
-  position: relative;
-  top: -15px;
-  margin-left: 10px;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  margin-left: -10px;
+  -webkit-user-select: none;
 }
 
 /*
@@ -3769,27 +3933,31 @@ right: 15px;
   cursor: unset;
 }
 #recent_board_messages .board_message {
+  transition: 0.3s;
   list-style: none;
-  max-width: 95%;
-  margin-bottom: 10px;
+  max-width: 60%;
+  margin-bottom: 2px;
   border-radius: 15px;
+  margin-left: 20%;
   position: relative;
-  white-space: nowrap;
-  font-size: 15px;
-  margin: 10px;
-  background: rgba(0,0,0,0.1);
   padding: 15px;
-  margin-left: 5px;
-  opacity: 1 !important;
+  padding-left: 20px;
+  opacity: 0;
+  -webkit-user-select:none;
 }
 
 #recent_board_messages .board_message p {
-  font-size: 20px;
+  font-size: 14px;
   white-space: nowrap;
   overflow: hidden;
   width: 90%;
   text-overflow: ellipsis;
-  font-weight: 400;
+  font-weight: 400
+  border-radius: 5px;
+  width: max-content;
+  display: inline;
+  line-height: 7px;
+  vertical-align: 20%;
 }
 
 #recent_board_messages .board_avatar_reply {
@@ -3822,13 +3990,13 @@ right: 15px;
   font-size: 20px;
   display: block;
   text-align: center;
-  font-family: "montserrat";
+  font-family: "RobotoMono";
   font-weight: 400;
 }
 
 #profile input {
 
-  font-size: 14pt;
+  font-size: 13pt;
     height: 58px !important;
     padding: 0 !important;
     padding-left: 10px !important;
@@ -3941,8 +4109,8 @@ button:hover {
 
 .menu {
   transition: 0.1s;
-  margin-left: -10% !important;
-  padding-right: 10% !important;
+  margin-left: -15% !important;
+  padding-right: 15% !important;
   transition-timing-function: cubic-bezier(.17,.67,.25,.89);
 }
 
@@ -3964,4 +4132,8 @@ height: 0;
 
 .video-grid video.video.online {
   height: auto;
+}
+
+#boards_message .anon p {
+  line-height: 24px;
 }
