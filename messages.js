@@ -141,7 +141,7 @@ let print_board = (board) => {
   $('#boards .board_message').remove();
   boards_db.find({board : board}).sort({ timestamp: -1 }).limit(25).exec(async function (err,docs){
 
-    console.log(docs);
+
 
     for (doc in docs.reverse()) {
 
@@ -153,7 +153,6 @@ let print_board = (board) => {
       let fetching_board = $('.current').attr('invitekey');
       let nickname = docs[doc].nickname;
       let this_reply = docs[doc].reply;
-      console.log(docs[doc]);
       await print_board_message(hash, pubkey, message, timestamp, fetching_board, nickname, this_reply, '#boards_messages');
       // let print_board_message = async (hash, address, message, timestamp, fetching_board, nickname=false, reply=false, selector) => {
 
@@ -355,7 +354,6 @@ try {
   let payload_json = JSON.parse(payload);
   return fromHex(extra.substring(66))
 }catch (e) {
-  console.log('BÖFFER', fromHex(Buffer.from(extra.substring(78)).toString()));
   return fromHex(Buffer.from(extra.substring(78)).toString())
 }
 }
@@ -1004,12 +1002,12 @@ contextMenu({
 		{
 			label: 'Rename',
 			// Only show it when right-clicking images
-			visible: document.elementFromPoint(params.x, params.y).className.split(' ').includes('board_icon'),
+			visible: document.elementFromPoint(params.x, params.y).className.split(' ').includes('board_icon')  && document.elementFromPoint(params.x, params.y).className.split(' ').includes('private'),
       click: () => {
 
 							console.log('Renaming');
 							let e = document.elementFromPoint(params.x, params.y);
-							let board = e.getAttribute('inviteKey');
+							let board = e.getAttribute('invitekey');
 
 							prompt({
 							    title: 'Rename board',
@@ -1040,7 +1038,8 @@ contextMenu({
 														console.log(err);
 													});
 												}
-												e.innerHTML = r.substring(0, 1) + '<i class="fa fa-lock"></i>';
+
+                        e.innerHTML = r.substring(0, 1) + '<i class="fa fa-lock"></i>';
 												e.setAttribute('title', r);
                         $('#board_title').text(r);
 
@@ -1332,206 +1331,7 @@ ipcRenderer.on('removed-subwallet', async (evt, addr) => {
 })
 
 
-
-
-// let decrypt_message = (possibleKeys, box, timestamp) => {
-//
-//   let i = possibleKeys.length;
-//
-//   let decryptBox = false;
-//
-//   while (decryptBox == false) {
-//
-//
-//     try {
-//     let possibleKey = possibleKeys[i].key;
-//
-//      decryptBox = nacl.box.open(box, nonceFromTimestamp(timestamp), possibleKey, keyPair.secretKey);
-//      if (decryptBox) {
-//        return decryptBox;
-//      }
-//    } catch(e) {
-//
-//    }
-//
-//      i = i-1;
-//     }
-// }
-
-// function save_messages(transactions) {
-//
-//   let address = $('.currentAddrSpan').text();
-//
-//   // Iterate through transactions
-//   let txsLength = transactions.length;
-//
-//   console.log(txsLength + " txs found.");
-//
-//   let lasttx;
-//
-//   let newMessages = [];
-//
-//   for (let i = 0; i < txsLength; i++) {
-//
-//       let txsInTx = transactions[i].transactions.length;
-//
-//
-//       for (let j = 0; j < txsInTx; j++) {
-//
-//         let thisAddr = transactions[i].transactions[j].transfers[0].address;
-//         let d = new Date(transactions[i].transactions[j].timestamp * 1000);
-//         let thisAmount = Math.abs(parseFloat(transactions[i].transactions[j].transfers[0].amount) / 100000);
-//
-//         lasttx = transactions[i];
-//         try {
-//           payload = trimExtra(transactions[i].transactions[j].extra);
-//
-//           payload_json = JSON.parse(payload);
-//
-//           let decryptBox = false;
-//
-//           if (payload_json.box) {
-//
-//             // If message is encrypted with NaCl box
-//
-//             let box = fromHexString(payload_json.box);
-//             let nonce = nonceFromTimestamp(payload_json.t);
-//             try {
-//             if (!decryptBox && payload_json.key) {
-//
-//               let senderKey = payload_json.key;
-//               // Try to decrypt incoming messages
-//               decryptBox = nacl.box.open(box, nonceFromTimestamp(payload_json.t), hexToUint(payload_json.key), keyPair.secretKey);
-//             }
-//           } catch (e) {
-//             console.log();
-//           }
-//             try {
-//             if (!decryptBox) {
-//
-//               console.log("Trying to decrypt..");
-//
-//               let possibleKeys = [];
-//
-//               keychain.find({}, function (err, docs) {
-//
-//                 possibleKeys = docs;
-//                 try {
-//                 decryptBox = decrypt_message(possibleKeys, box, timestamp);
-//               } catch (err){
-//
-//               }
-//                 });
-//             }
-//
-//           } catch (e) {
-//
-//           }
-//
-//             let message_dec = naclUtil.encodeUTF8(decryptBox);
-//             payload_json = JSON.parse(message_dec);
-//
-//           }
-//
-//           message = payload_json.msg;
-//
-//
-//
-//           if (message.substring(0, 22) == "data:image/jpeg;base64") {
-//             message = "<img src='" + message + "' />";
-//           }
-//
-//           senderAddr = payload_json.from;
-//           receiverAddr = payload_json.to;
-//           timestamp = JSON.parse(payload).t;
-//
-//           if ( message.length > 0 && (senderAddr == address || receiverAddr == address) ) {
-//             // Transfer contains a message
-//
-//             if (senderAddr != address) {
-//               // If message is incoming, i.e. a recieved message
-//
-//               newMessages.push({"type":"recieved","message":message,"timestamp":timestamp});
-//
-//             } else {
-//
-//               newMessages.push({"type":"sent","message":message,"timestamp":timestamp});
-//
-//             }
-//
-//           }
-//       }
-//         catch(err){
-//
-//         }
-//
-//       }
-//
-//
-//
-//     }
-//
-//     sortedMessages = sortMessages(newMessages);
-//
-//
-// }
-
-
-// let download_messages = (from, to) => {
-//
-//
-//     // Get all transactions
-//     walletd.getTransactions(
-//       to,
-//       from,
-//       '',
-//       [],
-//       '')
-//     .then(resp => {
-//
-//       // Transaction data has been recieved
-//
-//       let transactions = resp.body.result.items;
-//
-//         // Append unconfirmed transactions while looking for messages
-//
-//         walletd.getUnconfirmedTransactionHashes()
-//         .then(response => {
-//
-//           // Number of unconfirmed transactions
-//           txsLength = response.body.result.transactionHashes.length;
-//
-//           //
-//           for (let i = 0; i < txsLength; i++) {
-//
-//           walletd.getTransaction(response.body.result.transactionHashes[i])
-//           .then(resp => {
-//
-//             transaction = resp.body.result.transaction;
-//             transactions.push({"transactions": [transaction]});
-//
-//             if (txsLength == i) {
-//               save_messages(transactions);
-//             }
-//
-//           });
-//         }
-//
-//         if (txsLength == 0) {
-//           save_messages(transactions);
-//         }
-//
-//
-//
-//
-//           });
-//
-//         });
-//
-//
-// }
-
-let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json, silent=false) => {
+let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json, silent=false, temp_hash) => {
 
         let global_mixin = `${blockCount > 799999 ? 3 : 3}`;
 
@@ -1547,7 +1347,19 @@ let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json
           '',
           sendAddr)
         .then(resp => {
+          console.log(resp);
+          console.log(payload_json);
+          if (payload_json.from || payload_json.k == currentAddr) {
+            let thisHash = resp.body.result.transactionHash;
+            known_pool_txs.push(thisHash);
+            console.log('keep pushin');
+          }
+          if (payload_json.brd) {
+          let time = parseInt(temp_hash / 1000);
+          let thisHash = resp.body.result.transactionHash;
+          save_boards_message(payload_json, time, thisHash);
 
+          }
           if (resp.body.error) {
               if (resp.body.error.message == "Wrong amount") {
                 alert("Sorry, you don't have enough XKR to send this message.");
@@ -1708,7 +1520,7 @@ function sendMessage(message, silent=false) {
         // Transaction details
         amount = 1;
         fee = 10;
-        mixin = 5;
+        mixin = 3;
         sendAddr = $("#currentAddrSpan").text();
         console.log(sendAddr);
         timestamp = Date.now();
@@ -1829,21 +1641,20 @@ async function sendBoardMessage(message) {
 
 
 
-    current_board = $('.current').attr('id');
+    let receiver = $('.current').attr('id');
 
-    let current_board_title = $('.current').attr('title');
-
-    if (current_board == 'home_board' ) {
+    if (receiver == 'home_board' ) {
       receiver = 'SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc';
-      current_board_title = 'Home';
+      current_board = 'Home';
     } else {
-      receiver = current_board;
+      receiver = $('.current').attr('id');
+      current_board = letter_from_spend_key($('.current').attr('invitekey'));
     }
 
       // Transaction details
       amount = 1;
       fee = 10;
-      mixin = 5;
+      mixin = 3;
       timestamp = Date.now()/1000;
       //
       //let signature = nacl.sign.detached(naclUtil.decodeUTF8(message_to_send), signingKeyPair.secretKey);
@@ -1862,9 +1673,9 @@ async function sendBoardMessage(message) {
 
       // Convert message data to json
       if ($('.board_icon.current').hasClass('private')) {
-        current_board_title = $('.current').attr('invitekey');
+        current_board = $('.current').attr('invitekey');
       }
-      payload_json = {"m":message_to_send, "k":currentAddr, "s": signature, "brd": current_board_title};
+      payload_json = {"m":message_to_send, "k":currentAddr, "s": signature, "brd": current_board};
 
       if ($('.boards_nickname_form').val().length) {
         payload_json.n = $('.boards_nickname_form').val();
@@ -1881,11 +1692,15 @@ async function sendBoardMessage(message) {
         payload_json.r = current_reply_to;
         $('#replyto_exit').click();
       }
+      address = $('.current').attr('id');
+      console.log(address);
       console.log('Printing sent message..');
-      console.log('Nick', payload_json.n);
-      console.log('Nick2', $('.boards_nickname_form').val());
       let temp_hash = Date.now();
-      print_board_message(temp_hash, payload_json.k, payload_json.m, Date.now()/1000, $('.current').attr('id'), payload_json.n, payload_json.r, '#boards_messages');
+      let time = parseInt(Date.now()/1000);
+      print_board_message(temp_hash, payload_json.k, payload_json.m, Date.now()/1000, address, payload_json.n, payload_json.r, '#boards_messages');
+
+
+
 
       //payload_json_decoded = naclUtil.decodeUTF8(JSON.stringify(payload_json));
 
@@ -1931,7 +1746,7 @@ async function sendBoardMessage(message) {
       console.log('temp_hash', temp_hash);
       $('.' + temp_hash).addClass('loading_message');
 
-      return sendTransaction(mixin, transfer, fee, sendAddr, payload_hex, payload_json, true);
+      return sendTransaction(mixin, transfer, fee, sendAddr, payload_hex, payload_json, true, temp_hash);
 
       }
 
@@ -2115,497 +1930,7 @@ function get_avatar(hash, format='svg') {
 
 }
 
-
 var blockCount = 0;
-
-var messages = [];
-
-// function printMessages(transactions, address) {
-//
-//
-//
-//     // Get locally stored outgoing messages
-//
-//     let local_messages = [];
-//
-//     db.find({conversation : address}, function (err,docs){
-//
-//       for (msg in docs) {
-//         if (docs[msg].msg ) {
-//           message = docs[msg].msg;
-//           local_messages.push(message);
-//         }
-//       }
-//
-//     });
-//
-//     // Get list of wallets
-//     walletd.getAddresses()
-//     .then(async resp => {
-//       currentAddr = resp.body.result.addresses[0];
-//       allAddresses = resp.body.result.addresses;
-//
-//             // Iterate through transactions
-//             var txsLength = transactions.length;
-//             // alert(txsLength);
-//             let lasttx;
-//
-//             let newMessages = [];
-//
-//             for (let i = 0; i < txsLength; i++) {
-//
-//                 let txsInTx = transactions[i].transactions.length;
-//
-//
-//                 for (let j = 0; j < txsInTx; j++) {
-//                 //   if ( i == 0) {
-//                 //   alert(JSON.stringify(transactions[i].transactions[j]));
-//                 // }
-//
-//                   var thisAddr = transactions[i].transactions[j].transfers[0].address;
-//                   var d = new Date(transactions[i].transactions[j].timestamp * 1000);
-//                   var thisAmount = Math.abs(parseFloat(transactions[i].transactions[j].transfers[0].amount) / 100000);
-//
-//                   lasttx = transactions[i];
-//                   try {
-//                     payload = trimExtra(transactions[i].transactions[j].extra);
-//
-//                     payload_json = JSON.parse(payload);
-//
-//                     let decryptBox = false;
-//
-//                     if (payload_json.box) {
-//
-//                       // If message is encrypted with NaCl box
-//
-//                       let box = fromHexString(payload_json.box);
-//                       let nonce = nonceFromTimestamp(payload_json.t);
-//
-//                       try {
-//                       decryptBox = nacl.box.open(box, nonceFromTimestamp(timestamp), hexToUint($('#recipient_pubkey_form').val()), keyPair.secretKey);
-//                       } catch (err) {
-//                         console.log(err);
-//                       }
-//
-//                       if (!decryptBox && payload_json.key) {
-//
-//                         let senderKey = payload_json.key;
-//                         // Try to decrypt incoming messages
-//                         decryptBox = nacl.box.open(box, nonceFromTimestamp(payload_json.t), hexToUint(payload_json.key), keyPair.secretKey);
-//
-//                       }
-//
-//                       let message_dec = naclUtil.encodeUTF8(decryptBox);
-//                       payload_json = JSON.parse(message_dec);
-//                       //alert(JSON.stringify(payload_json));
-//
-//                     }
-//
-//                     message = payload_json.msg;
-//
-//                     if (message.substring(0, 22) == "data:image/jpeg;base64") {
-//                       message = "<img src='" + message + "' />";
-//                     }
-//
-//
-//                     senderAddr = payload_json.from;
-//                     receiverAddr = payload_json.to;
-//                     timestamp = JSON.parse(payload).t;
-//
-//                     if ( message.length > 0 && (senderAddr == address || receiverAddr == address) ) {
-//
-//                       if ($.inArray(senderAddr, allAddresses) == -1) {
-//                         // If message is incoming, i.e. a recieved message
-//
-//                         newMessages.push({"type":"recieved","message":message,"timestamp":timestamp});
-//
-//                       } else {
-//
-//                         // If it's a sent msg
-//                         if (senderAddr != thisAddr) {
-//                         }
-//                         newMessages.push({"type":"sent","message":message,"timestamp":timestamp});
-//                       }
-//
-//                     }
-//                 }
-//                   catch(err){
-//                   }
-//
-//                 }
-//
-//               }
-//
-//               sortedMessages = sortMessages(newMessages);
-//
-//               $('#messages .received_message, #messages .sent_message').remove();
-//               $('#welcome_alpha').addClass('hidden');
-//
-//               for (let i = 0; i < sortedMessages.length; i++) {
-//                   let hash = '';
-//                   if (sortedMessages[i].type == 'sent') {
-//                     hash = currentAddr;
-//                   } else {
-//                     hash = address;
-//                   }
-//                   avatar_base64 = get_avatar(hash);
-//                   let nickname = await get_translation(hash);
-//                   let nickname_element = '';
-//
-//                   if (nickname != hash) {
-//                     nickname_element = '<span class="contact_address">' + nickname + '</span>';
-//                   }
-//
-//                   $('#messages').append('<li class="' + sortedMessages[i].type + '_message"><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '">' + nickname_element + '<p>' + sortedMessages[i].message + '</p><span class="time" timestamp="' + sortedMessages[i].timestamp + '">' + moment(sortedMessages[i].timestamp).fromNow() + '</span></li>');
-//                   let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(sortedMessages[i].message);
-//                   if (magnetLinks) {
-//                     handleMagnetLink(magnetLinks, sortedMessages[i].timestamp);
-//
-//                   }
-//
-//
-//
-//               }
-//
-//
-//                 $('#messages_pane').scrollTop($('#messages').height());
-//                 $('#recipient_form').val(address);
-//
-//       });
-//
-//
-// }
-//
-// function getConversation(address) {
-//
-//   let conversationPubKey = false;
-//
-//   keychain.find({ "address": address }, function (err, docs) {
-//
-//     if (docs.length > 0) {
-//
-//       conversationPubKey = docs[0].key;
-//
-//       $('#recipient_pubkey_form').val(conversationPubKey);
-//       $('#currentchat_pubkey').show();
-//
-//       $('#recipient_pubkey_span').find('.checkmark').fadeIn();
-//       $('#recipient_span').find('.checkmark').fadeIn();
-//
-//     }
-//
-//   });
-//
-//     // Get blockcount so as to view the entirety of the transactions
-//     walletd.getStatus()
-//     .then(resp => {
-//       blockCount = parseInt(resp.body.result.blockCount);
-//
-//       // Get all transactions
-//       walletd.getTransactions(
-//         blockCount,
-//         1,
-//         '',
-//         [],
-//         '')
-//       .then(resp => {
-//
-//         // Transaction data has been recieved
-//
-//         let transactions = resp.body.result.items;
-//
-//           // Append unconfirmed transactions while looking for messages
-//
-//           walletd.getUnconfirmedTransactionHashes()
-//           .then(response => {
-//
-//           	// alert(JSON.stringify(response.body.result.transactionHashes[0]));
-//
-//             txsLength = response.body.result.transactionHashes.length;
-//
-//             if (txsLength == 0) {
-//               // If no unconfirmed transactions, print the blockchain stored
-//               // transactions.
-//               printMessages(transactions, address);
-//             }
-//
-//             for (let i = 0; i < txsLength; i++) {
-//
-//             walletd.getTransaction(response.body.result.transactionHashes[i])
-//             .then(resp => {
-//               transaction = resp.body.result.transaction;
-//               transactions.push({"transactions": [transaction]});
-//
-//               if ( (txsLength - i) == 1) {
-//                printMessages(transactions, address);
-//               }
-//             });
-//           }
-//
-//             });
-//
-//           });
-//
-//
-//         });
-// }
-
-
-var lastMessage = 0;
-//
-// function updateMessages() {
-//
-//
-//   // This function gets all conversations and prints them to the contacts list
-//
-//
-//         // Get locally stored outgoing messages
-//
-//         let local_messages = [];
-//
-//         db.find({}, function (err,docs){
-//
-//           for (msg in docs) {
-//             if (docs[msg].msg ) {
-//               message = docs[msg];
-//               local_messages.push(message);
-//             }
-//           }
-//
-//           });
-//
-//
-//
-//
-//   // Get blockcount so as to view the entirety of the transactions
-//   walletd.getStatus()
-//   .then(resp => {
-//
-//     // Set blockCount value to current block count
-//     blockCount = parseInt(resp.body.result.blockCount);
-//
-//     // Code below retrievs all addresses in current wallet container
-//     var allAddresses = [];
-//
-//     walletd.getAddresses()
-//     .then(resp => {
-//
-//       currentAddr = resp.body.result.addresses[0];
-//       allAddresses = resp.body.result.addresses;
-//       var thisAddr = resp.body.result.addresses[0];
-//
-//
-//     // Get all transactions for all wallets
-//
-//       walletd.getTransactions(
-//         blockCount,
-//         1,
-//         '',
-//         [],
-//         '')
-//       .then(resp => {
-//
-//       transactions = resp.body.result.items;
-//
-//
-//       // Iterate through transactions
-//       var txsLength = transactions.length;
-//
-//       let last_messages = [];
-//
-//       for (var i = 0; i < (txsLength + local_messages.length); i++) {
-//           try {
-//           if (i < txsLength) {
-//
-//           var thisAddr = transactions[i].transactions[0].transfers[0].address;
-//           var d = new Date(transactions[i].transactions[0].timestamp * 1000);
-//           var thisAmount = Math.abs(parseFloat(transactions[i].transactions[0].transfers[0].amount) / 100000);
-//
-//           // Try to read messages from transaction, txs without messages are ignored
-//           payload = trimExtra(transactions[i].transactions[0].extra);
-//           payload_json = JSON.parse(payload);
-//
-//           if (payload_json.box) {
-//
-//             let box = fromHexString(payload_json.box);
-//
-//             let timestamp = payload_json.t;
-//
-//             // if (payload_json.key) {
-//             //
-//             //   let senderKey = payload_json.key;
-//             //
-//             //   let decryptBox = nacl.box.open(box, nonceFromTimestamp(timestamp), hexToUint(senderKey), keyPair.secretKey);
-//             //
-//             //   let message_dec = naclUtil.encodeUTF8(decryptBox);
-//             //
-//             //   payload_json = JSON.parse(message_dec);
-//             //
-//             //   payload_keychain = {"key": senderKey, "address": payload_json.from};
-//             //
-//             //   keychain.find({ "key": senderKey }, function (err, docs) {
-//             //
-//             //     if (docs.length == 0) {
-//             //
-//             //       keychain.insert(payload_keychain);
-//             //
-//             //     }
-//             //
-//             //   });
-//             //
-//             //
-//             // } else {
-//               // If message is encrypted with NaCl box, but public key is not provided
-//               let box = fromHexString(payload_json.box);
-//               let timestamp = payload_json.t;
-//
-//               let decryptBox = false;
-//
-//               // Try to decrypt a first message
-//               decryptBox = naclSealed.sealedbox.open(box, nonceFromTimestamp(timestamp), keyPair.secretKey);
-//
-//               if (!decryptBox) {
-//
-//               let possibleKeys = [];
-//
-//               keychain.find({}, function (err, docs) {
-//
-//                 possibleKeys = docs;
-//
-//                 });
-//
-//               let i = possibleKeys.length;
-//
-//
-//
-//               while (decryptBox == false) {
-//
-//                 let possibleKey = possibleKeys[i].key;
-//
-//                  decryptBox = nacl.box.open(box, nonceFromTimestamp(timestamp), possibleKey, keyPair.secretKey);
-//
-//                  i = i+1;
-//
-//                 }
-//
-//
-//
-//              // }
-//
-//
-//           }
-//
-//           let message_dec = naclUtil.encodeUTF8(decryptBox);
-//           payload_json = JSON.parse(message_dec);
-//
-//           message = payload_json.msg;
-//           senderAddr = payload_json.from;
-//           timestamp = payload_json.t;}
-//
-//
-//         } else {
-//           message = local_messages[i-txsLength].msg.message;
-//           //alert(message);
-//           senderAddr = $("#currentAddrSpan").text();
-//           timestamp = local_messages[i-txsLength].msg.timestamp;
-//           thisAddr = local_messages[i-txsLength].conversation;
-//
-//         }
-//
-//           if ( message.length > 0 && senderAddr != thisAddr) {
-//             // If there is a message to show. The other statement is wtf
-//             if ($.inArray(senderAddr, allAddresses) == -1) {
-//               // If message is incoming, i.e. a recieved message
-//
-//               if ( $.inArray(senderAddr, messages) == -1 ) {
-//               // If conversation doesn't exist
-//
-//                   avatar_base64 = get_avatar(senderAddr);
-//                   let listed_msg = handleMagnetListed(message);
-//                   if (listed_msg.length > 0) {
-//                     console.log('Printing new contact..');
-//                   $('#messages_contacts').prepend('<li class="active_contact ' + senderAddr + '" address="' + senderAddr + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '" /><span class="contact_address">' + senderAddr + '</span><br><span class="listed_message">'+listed_msg+'</li>');
-//                   }
-//                   messages.push(senderAddr);
-//                 }
-//
-//                 // Add message to conversations list
-//                 let listed_msg = handleMagnetListed(message);
-//                 $('.'+senderAddr).find('.listed_message').text(listed_msg);
-//
-//                 last_messages[senderAddr] = timestamp;
-//
-//                 if (timestamp > lastMessage) {
-//
-//                   lastMessage = timestamp;
-//
-//
-//                   if ($('#recipient_form').val() != senderAddr) {
-//
-//                   }
-//
-//
-//                 }
-//
-//
-//
-//             } else {
-//
-//               // If it's a sent msg
-//
-//               if ( $.inArray(thisAddr, messages) == -1 ) {
-//               // If conversation doesn't exist
-//
-//                 avatar_base64 = get_avatar(thisAddr);
-//                 let listed_msg = handleMagnetListed(message);
-// 								// console.log(listed_msg);
-//                 console.log('Printing new contact..');
-//                 if (listed_msg.length){
-//                 $('#messages_contacts').prepend('<li class="active_contact ' + thisAddr + '" address="' + thisAddr + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '" /><span class="contact_address">' + thisAddr + '</span><br><span class="listed_message">'+listed_msg+'</li>');
-//                 }
-//                 messages.push(thisAddr);
-//
-//
-//               }
-//
-//               if (timestamp > last_messages[thisAddr]) {
-//               last_messages[senderAddr] = timestamp;
-//               // Add message to conversations list
-//               let listed_msg = handleMagnetListed(message);
-//               // console.log(listed_msg);
-//               $('.'+thisAddr).find('.listed_message').text(listed_message);
-//             }
-//
-//
-//             }
-//
-//           }
-//         }
-//           catch(err) {
-//
-//           }
-//
-//   }
-//
-//     })
-//     .catch(err => {
-//       console.log(err)
-//     })
-//
-//         })
-//         .catch(err => {
-//           console.log(err)
-//         })
-//
-//   })
-//   .catch(err => {
-//     console.log(err)
-//   })
-//
-//
-//
-//
-// }
 
 
 function save_message(message_json) {
@@ -2637,41 +1962,55 @@ function save_message(message_json) {
 
 }
 
-function save_boards_message(message_json) {
+async function save_boards_message(message_json, time, thisHash) {
 
-  console.log(message_json);
-  // {m: "Hello team", k: "SEKReXWuLaFTmnExMExaPqHCBAZ97srHWVMFxjRRQKGXP6ihXvXwwtuVgwjm24Arnb18GuzbZEWLxUoC1Ca7Pbs29fNabAYGtAy", s: "1530f4c577e6340538871c98ea416cc7c6d5132feee0f3729b…00e2605062e63dd20e4ba248a77f25c0dc801b6aacaf8e90a", n: "nils"}
-  let hash =  message_json.h;
+  let hash =  thisHash;
   let board = message_json.brd;
   let sender = message_json.k;
   let message = message_json.m;
-  let timestamp = message_json.timestamp;
+  let timestamp = time
   let nickname = message_json.n;
   let this_reply = message_json.r;
-
   if (!message_json.m) {
     return;
   }
+    if (board == "Home") {
+    board = "0b66b223812861ad15e5310b4387f475c414cd7bda76be80be6d3a55199652fc";
+    console.log('HOME');
 
-  boards_db.find({hash : hash}, function (err,docs){
+  } else {
 
-      if (docs.length == 0 && message) {
+  if (board.substring(59,64) == "00000") {
+    board = letter_from_spend_key(board);
+    if (board == "") {
+    board = "0000000000000000000000000000000000000000000000000000000000000000";
+  } else {
+    console.log(board);
+  board = letter_from_spend_key(board);
+  console.log('pöblic!', board);
+  }
+} else {
+  board = board;
+  console.log('PRIVET', board);
+}
+}
 
-        if (board == '756e646566696e65640000000000000000000000000000000000000000000000') {
-          board =  '0b66b223812861ad15e5310b4387f475c414cd7bda76be80be6d3a55199652fc';
-        }
+  console.log(board);
+  let message_was_unknown = true;
 
-      message_db = {"hash": hash, "board": board, "sender": sender, "message":message, "timestamp": timestamp, "nickname": nickname, "reply": this_reply};-
+    await boards_db.find({hash : hash}, function (err,docs){
 
-      boards_db.insert(message_db);
+        if (docs.length == 0 && message) {
 
-      return true;
+        let message_db = {"hash": hash, "board": board, "sender": sender, "message": message, "timestamp": time, "nickname": nickname, "reply": this_reply};-
+        console.log('SAVING DIZ S');
+        boards_db.insert(message_db);
 
-    } else {
-      return false;
-    }
+      } else {
+        message_was_unknown = false;
+      }
 
-});
+  });
 
 }
 
@@ -2738,40 +2077,6 @@ function find_messages(opt, skip, limit, sort=-
     })
   })
 }
-
-// PROTOTYPE FOR AUTO READING OLD MESSAGES WHEN SCROLLING
-// $('#messages_pane').on('scroll', async function() {
-//
-//         let timestamp = $('#messages').find('li').first().attr('timestamp');
-//
-//         let conversation = $('#recipient_form').val();
-//
-//         if ( $('.message_avatar').first().offset().top > 0 ) {
-//
-//
-//           messages = await find_messages( {conversation: conversation }, 10*paginator);
-//           paginator++;
-//
-//           for (n in messages) {
-//
-//             let hash = '';
-//
-//             if (messages[n].type == 'sent') {
-//               hash = messages[n].conversation;
-//             } else {
-//               hash = $('#currentAddrSpan').text();
-//             }
-//             avatar_base64 = get_avatar(hash);
-//
-//             $('#messages').prepend('<li timestamp="' + messages[n].timestamp + '" class="' + messages[n].type + '_message"><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + messages[n].message + '</p><span class="time">' + moment(messages[n].timestamp).fromNow() + '</span></li>');
-//
-//
-//           }
-//
-//
-//         }
-//
-// });
 
 
 async function get_confirmed_messages(from, to) {
@@ -2869,7 +2174,7 @@ function get_block_height() {
     // Get blockcount
     walletd.getStatus()
     .then(resp => {
-
+      console.log(resp);
       // Set blockCount value to current block count
 			// console.log('bcc', resp.body.result);
       blockCount = parseInt(resp.body.result.blockCount);
@@ -2877,54 +2182,9 @@ function get_block_height() {
 
   }).catch(err => {
     reject(err);
+    console.log(err);
   });
 });
-}
-let known_unconfirmed_messages = [];
-function get_unconfirmed_messages() {
-
-  return new Promise(function(resolve, reject){
-
-    let transactions = [];
-
-    walletd.getUnconfirmedTransactionHashes()
-    .then(response => {
-
-      txsLength = response.body.result.transactionHashes.length;
-
-      if (txsLength == 0) {
-        // If no unconfirmed transactions, print the blockchain stored
-        // transactions.
-        resolve([]);
-      }
-
-      for (let i = 0; i < txsLength; i++) {
-      walletd.getTransaction(response.body.result.transactionHashes[i])
-      .then(resp => {
-        try {
-        transaction = resp.body.result.transaction;
-        if (!known_unconfirmed_messages.includes(transaction.transactionHash)) {
-          known_unconfirmed_messages.push(transaction.transactionHash);
-          transactions[i] = trimExtra(transaction.extra);
-        } else {
-
-        }
-        if ( (txsLength - i) == 1) {
-          resolve(transactions);
-        }
-      } catch (err) {
-        console.log(err);
-      }
-      }).catch(err => {
-        reject(err);
-      });
-    }
-
-  }).catch(err => {
-    reject(err);
-  });
-
-    });
 }
 
 async function print_conversations() {
@@ -2969,504 +2229,25 @@ print_conversations();
 let known_txs = [];
 
 
-let apply_conversation_clicks = () => {
-
   $("#messages_contacts").unbind('click').on("click", "li", async function(){
-      // console.log('Clicked:', $(this).find('.contact_address').text() );
+    console.log('clickkkk');
       $('#message_form').focus();
       $('#messages_pane').hide();
+      $('#messages_contacts > li').css('border-left', 'none');
       $('#recipient_form').val($(this).find('.contact_address').text());
       $(this).removeClass('unread_message');
      await print_conversation($(this).attr('address'));
+      $(this).css('border-left', 'ridge');
       $('#settings_page').fadeOut();
       $('#currentchat_footer').removeClass('hidden');
       $('#send_payment').addClass('hidden');
+
   });
-}
+
 
 let check_counter = 0;
 
 let sleepAmount = 1000;
-
-async function sync_messages(unconfirmed) {
-
-  if (check_counter == 0) {
-    await sleep(1000);
-  }
-
-  console.log('Checking for unconfirmed:', unconfirmed);
-  console.log('blockCount', blockCount);
-
-  apply_conversation_clicks();
-  known_keys = await find(keychain, {});
-
-  let unconfirmed_transactions = [];
-  let confirmed_transactions = [];
-
-try {
-  block_height = await get_block_height();
-} catch (err){
-  console.log(err);
-sleep(1000);
-sync_messages(unconfirmed);
-}
-
-
-  let check_block = last_block_checked;
-
-  if (!unconfirmed) {
-      getting_new_conversations = true;
-
-
-      if ( last_block_checked == block_height ) {
-        // return;
-      }
-
-      try {
-				// console.log('heights:', last_block_checked, block_height);
-      confirmed_transactions = await get_confirmed_messages(last_block_checked, block_height);
-			// console.log('confirmed txs:', confirmed_transactions);
-      check_block = block_height;
-    } catch (err) {
-      console.log(err);
-      if (err == 'ETOOLARGE') {
-
-        confirmed_transactions = [];
-        while (check_block+10000 < block_height) {
-          new_transactions = await get_confirmed_messages(check_block, 10000);
-
-          confirmed_transactions = confirmed_transactions.concat(new_transactions);
-
-          check_block = check_block + 10000;
-        }
-      }
-
-    }
-      console.log('Getting unconfirmed transactions..');
-      unconfirmed_transactions = await get_unconfirmed_messages();
-      // console.log('unconfirmed!!!!!', unconfirmed_transactions);
-      for (tx in unconfirmed_transactions) {
-
-        // console.log(unconfirmed_transactions[tx]);
-
-        if (!known_txs.includes(unconfirmed_transactions[tx])) {
-          known_txs.push(unconfirmed_transactions[tx]);
-        } else {
-          unconfirmed_transactions.splice(tx, 1);
-        }
-
-
-      }
-
-
-
-
-      all_transactions = unconfirmed_transactions.concat(confirmed_transactions);
-
-
-
-} else {
-
-    console.log('Checking unconfirmed messages..');
-
-    unconfirmed_transactions = await get_unconfirmed_messages();
-
-    for (tx in unconfirmed_transactions) {
-
-      if (!known_txs.includes(unconfirmed_transactions[tx])) {
-        known_txs.push(unconfirmed_transactions[tx]);
-      } else {
-        unconfirmed_transactions.splice(tx, 1);
-      }
-
-    }
-
-
-
-  all_transactions = unconfirmed_transactions;
-
-}
-  latest_transaction = await find_messages({}, 0, 1);
-  let latest_transaction_time = 0;
-
-    try {
-  latest_transaction_time = latest_transaction[0].timestamp;
-} catch (e) {console.log(e);}
-
-all_transactions = all_transactions.filter(function (el) {
-  return el != null;
-});
-
-// console.log('Got all txs, lets read the messages', all_transactions.length);
-// console.log(all_transactions);
-
-
-  for (n in all_transactions) {
-
-
-
-    try {
-      // console.log(all_transactions[n]);
-      tx = JSON.parse(all_transactions[n]);
-			// console.log('tx', tx);
-    } catch (err) {
-      // console.log(err);
-      continue;
-    }
-
-    if (tx.key && tx.t && tx.key != Buffer.from(keyPair.publicKey).toString('hex')) {
-
-        let senderKey = tx.key;
-
-        let box = tx.box;
-
-        let timestamp = tx.t;
-
-	        let decryptBox = nacl.box.open(hexToUint(box), nonceFromTimestamp(timestamp), hexToUint(senderKey), keyPair.secretKey);
-
-        if (!decryptBox) {
-					console.log('Cant decrypt new conversation');
-          continue;
-        }
-
-        let message_dec = naclUtil.encodeUTF8(decryptBox);
-
-        payload_json = JSON.parse(message_dec);
-
-
-        payload_json.t = timestamp;
-
-        payload_keychain = {"key": senderKey, "address": payload_json.from};
-
-        keychain.find({ "key": senderKey }, function (err, docs) {
-
-          if (docs.length == 0) {
-
-            keychain.insert(payload_keychain);
-
-          }
-        });
-        save_message(payload_json);
-
-    } else {
-
-        if (tx.m || tx.b) {
-          continue;
-        }
-
-        // If no key is appended to message we need to try the keys in our payload_keychain
-        let box = tx.box;
-
-        let timestamp = tx.t;
-
-        let i = 0;
-
-        let decryptBox = false;
-
-
-        try {
-         decryptBox = naclSealed.sealedbox.open(hexToUint(box),
-         nonceFromTimestamp(timestamp),
-         keyPair.secretKey);
-         } catch (err) {
-           // console.log('timestamp', timestamp);
-           console.log(err);
-         }
-
-        while (i < known_keys.length && !decryptBox) {
-          // console.log('Decrypting..');
-
-          let possibleKey = known_keys[i].key;
-          // console.log('Trying key:', possibleKey);
-          i = i+1;
-          try {
-           decryptBox = nacl.box.open(hexToUint(box),
-           nonceFromTimestamp(timestamp),
-           hexToUint(possibleKey),
-           keyPair.secretKey);
-         } catch (err) {
-           // console.log('timestamp', timestamp);
-           console.log(err);
-           continue;
-         }
-         console.log('Decrypted:', decryptBox);
-
-
-          }
-
-          if (!decryptBox) {
-            console.log('Cannot decrypt..');
-            continue;
-          }
-
-
-          let message_dec = naclUtil.encodeUTF8(decryptBox);
-
-          payload_json = JSON.parse(message_dec);
-          payload_json.t = timestamp;
-          // console.log(payload_json);
-          if (payload_json.s) {
-
-            let this_addr = await Address.fromAddress(payload_json.from);
-
-            let verified = await xkrUtils.verifyMessageSignature(payload_json.msg, this_addr.spend.publicKey, payload_json.s);
-
-            if (!verified) {
-              continue;
-            }
-
-          }
-          if (payload_json.k) {
-            console.log('Found key!', payload_json);
-            keychain.find({ "key": payload_json.k }, function (err, docs) {
-
-              if (docs.length == 0) {
-
-                keychain.insert({ "key": payload_json.k, "address": payload_json.from });
-
-                }
-            });
-          } else {
-            console.log('No key :( ', payload_json);
-          }
-
-
-
-          save_message(payload_json);
-
-    }
-
-      if (payload_json.t > latest_transaction_time) {
-
-
-        if ($('#recipient_form').val() == payload_json.from  && payload_json.from != $('#currentAddrSpan').text() ){
-
-          // If a new message is received, and it's from the active contacts
-          // this function will print the new message in the messages field.
-
-          // NOTE: Sent messages will be automatically printed by the send
-          // message function, not this one.
-
-          avatar_base64 = get_avatar(payload_json.from);
-          payload_json.msg = parseCall(payload_json.msg, payload_json.from);
-          let links = handle_links(payload_json.msg);
-          let display_message = links[0];
-
-
-
-
-
-
-          if (payload_json.msg.length && $('#welcome_alpha').hasClass('hidden')) {
-            $('#messages').append('<li class="received_message" id=' + payload_json.t + '><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + display_message + '</p><span class="time" timestamp="' + payload_json.t + '">' + moment(payload_json.t).fromNow() + '</span></li>');
-            $('#messages_pane').scrollTop($('#messages').height());
-          }
-          console.log('debagg3', payload_json.t);
-          $('#'+ payload_json.t).click(function(){
-            shell.openExternal($(this).attr('href'));
-          })
-          let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(payload_json.msg);
-
-          if (magnetLinks) {
-            handleMagnetLink(magnetLinks, payload_json.t, true, payload_json.from);
-          }
-
-          // Scroll to bottom
-          $('#messages_pane').find('audio').remove();
-          $('#messages_pane').append('<audio autoplay><source src="static/message.mp3" type="audio/mpeg"></audio>');
-
-        } else if (payload_json.from != $('#currentAddrSpan').text() ) {
-          $('#messages_pane').find('audio').remove();
-          $('#messages_pane').append('<audio autoplay><source src="static/message.mp3" type="audio/mpeg"></audio>');
-
-
-          let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(payload_json.msg);
-
-          if (magnetLinks) {
-            handleMagnetLink(magnetLinks, payload_json.t, true, payload_json.from);
-          }
-          if (handleMagnetListed(payload_json.msg)) {
-            // console.log('my-addr:', $('.currentAddr').text());
-            // console.log('their-addr:', payload_json.from);
-            //
-            // console.log( 'waddafakk', payload_json.from != $('.currentAddr').text() );
-
-            await require("fs").writeFile(userDataDir + "/" +payload_json.from + ".png", get_avatar(payload_json.from, 'png'), 'base64', function(err) {
-              // console.log(err);
-            });
-						let actions = [];
-						if (payload_json.msg.substring(0,1) == "Δ" || payload_json.msg.substring(0,1) == "Λ") {
-							actions = ["Answer", "Decline"];
-						}
-            notifier.notify({
-              title: await get_translation(payload_json.from),
-              message: handleMagnetListed(parseCall(payload_json.msg, payload_json.from)),
-              icon: userDataDir + "/" +payload_json.from + ".png",
-              wait: true, // Wait with callback, until user action is taken against notification,
-							actions: actions
-            },function (err, response, metadata) {
-					    // Response is response from notification
-					    // Metadata contains activationType, activationAt, deliveredAt
-							console.log(response, metadata.activationValue, err);
-
-							if (response == 'activate') {
-								ipcRenderer.send('show-window');
-		            print_conversation(payload_json.from);
-                $('#message_icon').click();
-							}
-							if(metadata.activationValue == "Answer" || metadata.button == "Answer" ) {
-
-								$('#answerCall').click();
-
-							}
-					  });
-          }
-          //
-          //
-          // let myNotification = new Notification(payload_json.from, {
-          //   body: payload_json.msg
-          // })
-          //
-          // myNotification.onclick = () => {
-          //   print_conversation(payload_json.from);
-          // }
-
-
-        }
-
-        let conversation_address = '';
-
-        if ($('#currentAddrSpan').text() == payload_json.from) {
-          // Sent message
-          conversation_address = $('#currentAddrSpan').text();
-
-        } else {
-          // Received message
-          conversation_address = payload_json.from;
-        }
-
-
-
-
-        if ( $('.' + conversation_address).attr("address") == conversation_address ) {
-          // If there is a contact in the sidebar,
-          // then we update it, and move it to the top.
-
-          let listed_msg = handleMagnetListed(payload_json.msg);
-
-        if (listed_msg && payload_json.from != currentAddr) {
-        $('.' + conversation_address).find('.listed_message').text(listed_msg).parent().detach().prependTo("#messages_contacts");
-        if (payload_json.from != currentAddr) {
-          $('.' + conversation_address).addClass('unread_message');
-        }
-        }
-      } else if (conversation_address != currentAddr) {
-        // If there isn't one, create one
-
-        if (!$('.' + conversation_address).width() && !$('.active_contact .' + conversation_address).width()) {
-          console.log('conversation_address', conversation_address);
-          $('#messages_contacts').prepend('<li class="active_contact unread_message ' + conversation_address + '" address="' + conversation_address + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + get_avatar(conversation_address) + '" /><span class="contact_address">' + conversation_address + '</span><br><span class="listed_message">'+handleMagnetListed(payload_json.msg)+'</li>');
-      }}
-
-      }
-
-  }
-
-  await sleep(sleepAmount);
-  check_counter += 1;
-  if (check_counter % 16) {
-    console.log('Getting new confirmed messages..');
-    sync_messages(false);
-  } else {
-    console.log('Getting new unconfirmed messages..');
-    sync_messages(true);
-  }
-
-  if (check_counter % 90 == 89) {
-    console.log(known_unconfirmed_messages);
-    known_txs = [];
-    known_unconfirmed_messages = [];
-
-  }
-console.log(known_unconfirmed_messages);
-  backgroundSyncBoardMessages();
-
-}
-//
-// async function send_message(message, silent=false) {
-//
-//
-//     let has_history = false;
-//
-//       if (message.length == 0) {
-//         return
-//       }
-//
-//       receiver = $('#recipient_form').val();
-//
-//
-//         keychain.find({ "address": receiver }, function (err, docs) {
-//
-//           if (docs.length == 0) {
-//
-//             keychain.insert({key: $('#recipient_pubkey_form').val(), address: receiver});
-//
-//           }
-//
-//         });
-//
-//
-//         // Check whether this is the first outgoing transaction to the recipient
-//
-//         db.find({conversation : receiver}, function (err,docs){
-//             console.log("Found ", docs.length, " previous messages.");
-//             if (docs.length > 0) {
-//               has_history = true;
-//               console.log('has_history is ', has_history);
-//             }
-//
-//
-//         if (!silent) {
-//         // $('#loading_border').animate({width: '40%'},600);
-//         // $('#message_form').prop('disabled',true);
-//         }
-//         // Transaction details
-//         amount = 1;
-//         fee = 10;
-//         mixin = 5;
-//         sendAddr = $("#currentAddrSpan").text();
-//         timestamp = Date.now();
-//
-//         // Convert message data to json
-//         payload_json = {"from":sendAddr, "to":receiver, "msg":message};
-//
-//         payload_json_decoded = naclUtil.decodeUTF8(JSON.stringify(payload_json));
-//
-//         let box = nacl.box(payload_json_decoded, nonceFromTimestamp(timestamp), hexToUint($('#recipient_pubkey_form').val()), keyPair.secretKey);
-//
-//         let payload_box;
-//         let payment_id = '';
-//
-//
-//
-//
-//
-//               // History has been asserted, continue sending message
-//         if (has_history) {
-//           payload_box = {"box":Buffer.from(box).toString('hex'), "t":timestamp};
-//         } else {
-//           payload_box = {"box":Buffer.from(box).toString('hex'), "t":timestamp, "key":$('#currentPubKey').text()};
-//           console.log("First message to sender, appending key.");
-//         }
-//         // Convert json to hex
-//         let payload_hex = toHex(JSON.stringify(payload_box));
-//
-//         transfer = [ { 'amount':amount, 'address':receiver } ];
-//
-//         sendTransaction(mixin, transfer, fee, sendAddr, payload_hex, payload_json, silent);
-//
-// });
-// }
 
 async function print_conversation(conversation) {
 	avatar_base64 = get_avatar(conversation);
@@ -3818,11 +2599,13 @@ let check_protection = async () => {
     console.log('last_checked_warnings', last_checked_warnings);
     if (last_checked_warnings > 0 && last_checked_counter == check_counter) {
       console.log('No checks for 120s, restarting service.');
-      sync_messages(true);
+        backgroundSyncMessages();
+
       last_checked_warnings = 0;
     } else if (last_checked_counter == check_counter && last_checked_warnings == 0) {
       last_checked_warnings += 1;
-      console.log('No checks for 60s, giving warning.');
+      console.log('No checks for 20s, syncing.');
+      backgroundSyncMessages();
     }  else {
       console.log('No issues with checking messages.');
       last_checked_warnings = 0;
@@ -3832,7 +2615,7 @@ let check_protection = async () => {
     console.log(err);
   }
   last_checked_counter = check_counter;
-  await sleep(60000);
+  await sleep(2000);
   check_protection();
   $('.time').each(function() {
 
@@ -3971,11 +2754,7 @@ ipcRenderer.on('wallet-started', async () => {
 
               ipcRenderer.send('get-profile');
 
-
 						// window.setInterval(function(){
-
-						  sync_messages(true);
-
             //
 						// },1000);
             //
@@ -4055,7 +2834,10 @@ ipcRenderer.on('wallet-started', async () => {
 
 			      });
 
+
             check_protection();
+            await sleep(1000);
+            backgroundSyncMessages();
 
 });
 
@@ -4098,201 +2880,204 @@ $('#boards_icon').click(function(){
 
 let current_reply_to = '';
 
-let print_single_board_message = async (hash, selector) => {
-
-  if (!hash) {
-    return;
-  }
-
-  let tx_data = await fetch('http://' + rmt.getGlobal('node') + '/json_rpc', {
-       method: 'POST',
-       body: JSON.stringify({
-         jsonrpc: '2.0',
-         method: 'f_transaction_json',
-         params: {hash: hash}
-       })
-     })
-
-     const resp = await tx_data.json();
-     let timestamp = resp.result.block.timestamp;
-     try {
-     result = trimExtra(resp.result.tx.extra);
-     // console.log(result);
-     let hex_json = JSON.parse(fromHex(result));
-     if (hex_json.b) {
-       let key = $('.current').attr('inviteKey');
-       let secretKey = naclUtil.decodeUTF8(key.substring(1, 33));
-
-       let this_keyPair = nacl.box.keyPair.fromSecretKey(secretKey);
-       // console.log(this_keyPair);
-        hex_json = JSON.parse(naclUtil.encodeUTF8(nacl.box.open(fromHexString(hex_json.b), nonceFromTimestamp(hex_json.t), this_keyPair.publicKey, this_keyPair.secretKey)));
-     }
-     // console.log(hex_json);
-     let this_addr = await Address.fromAddress(hex_json.k);
-     let tips = 0;
-
-     // console.log(this_addr);
-     let verified = await xkrUtils.verifyMessageSignature(hex_json.m, this_addr.spend.publicKey, hex_json.s);
-     // console.log(verified);
-     //let verified = nacl.sign.detached.verify(naclUtil.decodeUTF8(hex_json.m), fromHexString(hex_json.s), fromHexString(hex_json.k));
-
-     if (!verified) {
-       return;
-     }
-     let avatar_base64 = get_avatar(hex_json.k);
-
-      let addClasses = '';
-      if (containsOnlyEmojis(hex_json.m)) {
-        addClasses = 'emoji-message';
-      }
-
-      let message = escapeHtml(hex_json.m);
-
-      if (message.length < 1) {
-        return;
-      }
-
-        geturl = new RegExp(
-                "(^|[ \t\r\n])((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&~=-])|%[A-Fa-f0-9]{2}){3,}(#([a-zA-Z0-9][a-zA-Z0-9$_.+!*(),;/?:@&~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))"
-               ,"g"
-             );
-
-      // Instantiate attachments
-      let youtube_links = '';
-      let image_attached = '';
-
-      // Find links
-      let links_in_message = message.match(geturl);
-
-      // Supported image attachment filetypes
-      let imagetypes = ['.png','.jpg','.gif', '.webm', '.jpeg', '.webp'];
-
-      // Find magnet links
-      //let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(message);
-
-      //message = message.replace(magnetLinks[0], "");
-
-      if (links_in_message) {
-
-        for (let j = 0; j < links_in_message.length; j++) {
-
-          if (links_in_message[j].match(/youtu/) || links_in_message[j].match(/y2u.be/)) { // Embeds YouTube links
-            message = message.replace(links_in_message[j],'');
-            embed_code = links_in_message[j].split('/').slice(-1)[0].split('=').slice(-1)[0];
-            youtube_links += '<div style="position:relative;height:0;padding-bottom:42.42%"><iframe src="https://www.youtube.com/embed/' + embed_code + '?modestbranding=1" style="position:absolute;width:80%;height:100%;left:10%" width="849" height="360" frameborder="0" allow="autoplay; encrypted-media"></iframe></div>';
-          } else if (imagetypes.indexOf(links_in_message[j].substr(-4)) > -1 ) { // Embeds image links
-            message = message.replace(links_in_message[j],'');
-            image_attached_url = links_in_message[j];
-            image_attached = '<img class="attachment" src="' + image_attached_url + '" />';
-          } else { // Embeds other links
-            message = message.replace(links_in_message[j],'<a target="_new" href="' + links_in_message[j] + '">' + links_in_message[j] + '</a>');
-          }
-        }
-      }
-
-
-
-      if (message.length < 1 && youtube_links.length > 0) {
-        $(selector).prepend('<li class="board_message ' + hash + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div>'+ image_attached + youtube_links +'<span class="time" timestamp="'+ timestamp*1000 +'">' + moment(timestamp*1000).fromNow() + '</span></li>');
-
-      } else if (image_attached > 0 && youtube_links.length > 0) {
-
-        $(selector).prepend('<li class="board_message ' + hash + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time" timestamp="'+ timestamp*1000 +'">' + moment(timestamp*1000).fromNow() + '</span></li>');
-
-
-      } else  {
-        $(selector).prepend('<li class="board_message ' + hash + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time" timestamp="'+ timestamp*1000 +'">' + moment(timestamp*1000).fromNow() + '</span></li>');
-     }
-
-     if (hex_json.n) {
-       $(selector + ' .' + hash + ' .board_message_pubkey').before('<span class="boards_nickname">' + escapeHtml(hex_json.n) + '</span>')
-     }
-
-     if (hex_json.r) {
-       // $('.this_board_message .board_message_pubkey').before('<span class="boards_nickname">' + hex_json.n + '</span>')
-       let tx_data_reply = await fetch('http://' + rmt.getGlobal('node') + '/json_rpc', {
-            method: 'POST',
-            body: JSON.stringify({
-              jsonrpc: '2.0',
-              method: 'f_transaction_json',
-              params: {hash: hex_json.r}
-            })
-          })
-
-          const resp_reply = await tx_data_reply.json();
-          let result_reply = trimExtra(resp_reply.result.tx.extra);
-          let hex_json_reply = JSON.parse(fromHex(result_reply));
-
-          // console.log(hex_json_reply);
-
-          if (hex_json_reply.b) {
-
-           let key = $('.board_icon.current').attr('invitekey');
-           let secretKey = naclUtil.decodeUTF8(key.substring(1, 33));
-
-           let this_keyPair = nacl.box.keyPair.fromSecretKey(secretKey);
-           hex_json_reply = JSON.parse(naclUtil.encodeUTF8(nacl.box.open(fromHexString(hex_json_reply.b), nonceFromTimestamp(hex_json_reply.t), this_keyPair.publicKey, this_keyPair.secretKey)));
-
-         }
-           let this_addr = await Address.fromAddress(hex_json_reply.k);
-           // console.log(this_addr);
-           let verified_reply = await xkrUtils.verifyMessageSignature(hex_json_reply.m, this_addr.spend.publicKey, hex_json_reply.s);
-           // console.log(verified);
-          // let verified_reply = nacl.sign.detached.verify(naclUtil.decodeUTF8(hex_json_reply.m), fromHexString(hex_json_reply.s), fromHexString(hex_json_reply.k));
-
-          if (!verified_reply) {
-            return;
-          }
-          let avatar_base64_reply = get_avatar(hex_json_reply.k);
-          let message_reply = hex_json_reply.m;
-
-          $('#boards .' + hash + ' img').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/svg+xml;base64,' + avatar_base64_reply + '"><p>' + message_reply.substring(0,55)  +'..</p></div>');
-
-
-
-
-     }
-
-        if (tips) {
-            $('#boards .' + hash).append('<span class="tips">' + parseFloat(tips/100000).toFixed(5) + '</span>');
-        }
-
-
-      $('#boards .' + hash + ' .board_message_pubkey').click(function(e){
-        $('#boards_messages').addClass('menu');
-        e.preventDefault();
-        let address = $(this).text();
-        $('#payment_rec_addr').val(address);
-        $('#payment_id').val(hash);
-        $('#send_payment').removeClass('hidden');
-        if (!$('#modal').hasClass('hidden')) {
-          $('#modal').addClass('hidden');
-          $('#boards_messages').addClass('menu');
-        }
-
-
-      })
-
-     $('#boards .' + hash).click(function(){
-       reply(hash);
-       $(this).addClass('rgb');
-       $('#boards').scrollTop('0');
-     });
-
-     $('#boards .' + hash).delay(100).animate({
-       opacity: 1
-     }, 150, function() {
-       // Animation complete.
-     });
-
-
-
-   } catch (err) {
-     console.log('Error:', err)
-     return;
-   }
-
-}
+// let print_single_board_message = async (hash, selector) => {
+//
+//   if (!hash) {
+//     return;
+//   }
+//
+//   let tx_data = await fetch('http://' + rmt.getGlobal('node') + '/json_rpc', {
+//        method: 'POST',
+//        body: JSON.stringify({
+//          jsonrpc: '2.0',
+//          method: 'f_transaction_json',
+//          params: {hash: hash}
+//        })
+//      })
+//
+//      const resp = await tx_data.json();
+//      let timestamp = resp.result.block.timestamp;
+//      try {
+//      result = trimExtra(resp.result.tx.extra);
+//      // console.log(result);
+//      let hex_json = JSON.parse(fromHex(result));
+//      if (hex_json.b) {
+//        let key = $('.current').attr('inviteKey');
+//        let secretKey = naclUtil.decodeUTF8(key.substring(1, 33));
+//
+//        let this_keyPair = nacl.box.keyPair.fromSecretKey(secretKey);
+//        // console.log(this_keyPair);
+//         hex_json = JSON.parse(naclUtil.encodeUTF8(nacl.box.open(fromHexString(hex_json.b), nonceFromTimestamp(hex_json.t), this_keyPair.publicKey, this_keyPair.secretKey)));
+//      }
+//      // console.log(hex_json);
+//      let this_addr = await Address.fromAddress(hex_json.k);
+//      let tips = 0;
+//
+//      // console.log(this_addr);
+//      let verified = await xkrUtils.verifyMessageSignature(hex_json.m, this_addr.spend.publicKey, hex_json.s);
+//      // console.log(verified);
+//      //let verified = nacl.sign.detached.verify(naclUtil.decodeUTF8(hex_json.m), fromHexString(hex_json.s), fromHexString(hex_json.k));
+//
+//      if (!verified) {
+//        return;
+//      }
+//      let avatar_base64 = get_avatar(hex_json.k);
+//
+//       let addClasses = '';
+//       if (containsOnlyEmojis(hex_json.m)) {
+//         addClasses = 'emoji-message';
+//       }
+//
+//       let message = escapeHtml(hex_json.m);
+//
+//       if (message.length < 1) {
+//         return;
+//       }
+//
+//         geturl = new RegExp(
+//                 "(^|[ \t\r\n])((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&~=-])|%[A-Fa-f0-9]{2}){3,}(#([a-zA-Z0-9][a-zA-Z0-9$_.+!*(),;/?:@&~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))"
+//                ,"g"
+//              );
+//
+//       // Instantiate attachments
+//       let youtube_links = '';
+//       let image_attached = '';
+//
+//       // Find links
+//       let links_in_message = message.match(geturl);
+//
+//       // Supported image attachment filetypes
+//       let imagetypes = ['.png','.jpg','.gif', '.webm', '.jpeg', '.webp'];
+//
+//       // Find magnet links
+//       //let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(message);
+//
+//       //message = message.replace(magnetLinks[0], "");
+//
+//       if (links_in_message) {
+//
+//         for (let j = 0; j < links_in_message.length; j++) {
+//
+//           if (links_in_message[j].match(/youtu/) || links_in_message[j].match(/y2u.be/)) { // Embeds YouTube links
+//             message = message.replace(links_in_message[j],'');
+//             embed_code = links_in_message[j].split('/').slice(-1)[0].split('=').slice(-1)[0];
+//             youtube_links += '<div style="position:relative;height:0;padding-bottom:42.42%"><iframe src="https://www.youtube.com/embed/' + embed_code + '?modestbranding=1" style="position:absolute;width:80%;height:100%;left:10%" width="849" height="360" frameborder="0" allow="autoplay; encrypted-media"></iframe></div>';
+//           } else if (imagetypes.indexOf(links_in_message[j].substr(-4)) > -1 ) { // Embeds image links
+//             message = message.replace(links_in_message[j],'');
+//             image_attached_url = links_in_message[j];
+//             image_attached = '<img class="attachment" src="' + image_attached_url + '" />';
+//           } else { // Embeds other links
+//             message = message.replace(links_in_message[j],'<a target="_new" href="' + links_in_message[j] + '">' + links_in_message[j] + '</a>');
+//           }
+//         }
+//       }
+//
+//
+//
+//       if (message.length < 1 && youtube_links.length > 0) {
+//         $(selector).prepend('<li class="board_message ' + hash + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div>'+ image_attached + youtube_links +'<span class="time" timestamp="'+ timestamp*1000 +'">' + moment(timestamp*1000).fromNow() + '</span></li>');
+//
+//       } else if (image_attached > 0 && youtube_links.length > 0) {
+//
+//         $(selector).prepend('<li class="board_message ' + hash + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time" timestamp="'+ timestamp*1000 +'">' + moment(timestamp*1000).fromNow() + '</span></li>');
+//
+//
+//       } else  {
+//         $(selector).prepend('<li class="board_message ' + hash + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time" timestamp="'+ timestamp*1000 +'">' + moment(timestamp*1000).fromNow() + '</span></li>');
+//      }
+//
+//      if (hex_json.n) {
+//        $(selector + ' .' + hash + ' .board_message_pubkey').before('<span class="boards_nickname">' + escapeHtml(hex_json.n) + '</span>');
+//        $(selector + ' .' + hash + ' .board_message_pubkey').css('display','none');
+//      }
+//
+//
+//
+//      if (hex_json.r) {
+//        // $('.this_board_message .board_message_pubkey').before('<span class="boards_nickname">' + hex_json.n + '</span>')
+//        let tx_data_reply = await fetch('http://' + rmt.getGlobal('node') + '/json_rpc', {
+//             method: 'POST',
+//             body: JSON.stringify({
+//               jsonrpc: '2.0',
+//               method: 'f_transaction_json',
+//               params: {hash: hex_json.r}
+//             })
+//           })
+//
+//           const resp_reply = await tx_data_reply.json();
+//           let result_reply = trimExtra(resp_reply.result.tx.extra);
+//           let hex_json_reply = JSON.parse(fromHex(result_reply));
+//
+//           // console.log(hex_json_reply);
+//
+//           if (hex_json_reply.b) {
+//
+//            let key = $('.board_icon.current').attr('invitekey');
+//            let secretKey = naclUtil.decodeUTF8(key.substring(1, 33));
+//
+//            let this_keyPair = nacl.box.keyPair.fromSecretKey(secretKey);
+//            hex_json_reply = JSON.parse(naclUtil.encodeUTF8(nacl.box.open(fromHexString(hex_json_reply.b), nonceFromTimestamp(hex_json_reply.t), this_keyPair.publicKey, this_keyPair.secretKey)));
+//
+//          }
+//            let this_addr = await Address.fromAddress(hex_json_reply.k);
+//            // console.log(this_addr);
+//            let verified_reply = await xkrUtils.verifyMessageSignature(hex_json_reply.m, this_addr.spend.publicKey, hex_json_reply.s);
+//            // console.log(verified);
+//           // let verified_reply = nacl.sign.detached.verify(naclUtil.decodeUTF8(hex_json_reply.m), fromHexString(hex_json_reply.s), fromHexString(hex_json_reply.k));
+//
+//           if (!verified_reply) {
+//             return;
+//           }
+//           let avatar_base64_reply = get_avatar(hex_json_reply.k);
+//           let message_reply = hex_json_reply.m;
+//
+//           $('#boards .' + hash + ' img').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/svg+xml;base64,' + avatar_base64_reply + '"><p>' + message_reply.substring(0,55)  +'..</p></div>');
+//           $(selector + ' .' + hash + ' .boards_nickname').css('top','58px');
+//           $(selector + ' .' + hash + ' .board_message_pubkey').css('top','58px');
+//
+//
+//      }
+//
+//         if (tips) {
+//             $('#boards .' + hash).append('<span class="tips">' + parseFloat(tips/100000).toFixed(5) + '</span>');
+//         }
+//
+//
+//       $('#boards .' + hash + ' .board_message_pubkey').click(function(e){
+//         $('#boards_messages').addClass('menu');
+//         e.preventDefault();
+//         let address = $(this).text();
+//         $('#payment_rec_addr').val(address);
+//         $('#payment_id').val(hash);
+//         $('#send_payment').removeClass('hidden');
+//         if (!$('#modal').hasClass('hidden')) {
+//           $('#modal').addClass('hidden');
+//           $('#boards_messages').addClass('menu');
+//         }
+//
+//
+//       })
+//
+//      $('#boards .' + hash).click(function(){
+//        reply(hash);
+//        $(this).addClass('rgb');
+//        $('#boards').scrollTop('0');
+//      });
+//
+//      $('#boards .' + hash).delay(100).animate({
+//        opacity: 1
+//      }, 150, function() {
+//        // Animation complete.
+//      });
+//
+//
+//
+//    } catch (err) {
+//      console.log('Error:', err)
+//      return;
+//    }
+//
+// }
 
 $('#replyto_exit').click(function(){
 
@@ -4412,8 +3197,6 @@ let print_board_message = async (hash, address, message, timestamp, fetching_boa
 
     let tips = 0;
 
-    console.log('Nick', nickname);
-
      // get_tips(hash);
 
   let avatar_base64 = get_avatar(address);
@@ -4468,26 +3251,24 @@ let print_board_message = async (hash, address, message, timestamp, fetching_boa
 
 
    if (message.length < 1 && youtube_links.length > 0) {
-     $(selector).prepend('<li class="board_message ' + hash + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + address + '</span></div>'+ image_attached + youtube_links +'<span class="time" timestamp="'+ timestamp*1000 +'">' + moment(timestamp*1000).fromNow() + '</span></li>');
+     $(selector).prepend('<li class="board_message ' + hash + '" id=""><div class="board_message_user"><span class="board_message_pubkey">' + address + '</span></div><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '">'+ image_attached + youtube_links +'<span class="time" timestamp="'+ timestamp*1000 +'">' + moment(timestamp*1000).fromNow() + '</span></li>');
 
    } else if (image_attached > 0 && youtube_links.length > 0) {
 
-     $(selector).prepend('<li class="board_message ' + hash + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + address + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time" timestamp="'+ timestamp*1000 +'">' + moment(timestamp*1000).fromNow() + '</span></li>');
+     $(selector).prepend('<li class="board_message ' + hash + '" id=""><div class="board_message_user"><span class="board_message_pubkey">' + address + '</span></div><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time" timestamp="'+ timestamp*1000 +'">' + moment(timestamp*1000).fromNow() + '</span></li>');
 
 
    } else  {
-     $(selector).prepend('<li class="board_message ' + hash + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + address + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time" timestamp="'+ timestamp*1000 +'">' + moment(timestamp*1000).fromNow() + '</span></li>');
+     $(selector).prepend('<li class="board_message ' + hash + '" id=""><div class="board_message_user"><span class="board_message_pubkey">' + address + '</span></div><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time" timestamp="'+ timestamp*1000 +'">' + moment(timestamp*1000).fromNow() + '</span></li>');
   }
 
   if (nickname) {
 
-    $(selector + ' .' + hash + ' .board_message_pubkey').before('<span class="boards_nickname">' + escapeHtml(nickname) + '</span>')
+    $(selector + ' .' + hash + ' .board_message_pubkey').before('<span class="boards_nickname">' + escapeHtml(nickname) + '</span>');
+    $(selector + ' .' + hash + ' .board_message_pubkey').css('display','none');
 
-
-  }
-
+}
   if (reply) {
-    console.log('This is a reply');
     // $('.this_board_message .board_message_pubkey').before('<span class="boards_nickname">' + hex_json.n + '</span>')
 
     boards_db.find({hash : reply}, async function (err,docs){
@@ -4498,7 +3279,10 @@ let print_board_message = async (hash, address, message, timestamp, fetching_boa
 
         if (docs.length) {
 
-           $(selector + ' .' + hash + ' img').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/svg+xml;base64,' + get_avatar(docs[0].sender) + '"><p>' + docs[0].message.substring(0,55)  +'..</p></div>');
+           $(selector + ' .' + hash + ' .board_avatar').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/svg+xml;base64,' + get_avatar(docs[0].sender) + '"><p>' + docs[0].message.substring(0,55)  +'..</p></div>');
+
+           $(selector + ' .' + hash + ' .boards_nickname').css('top','55px');
+           $(selector + ' .' + hash + ' .board_message_pubkey').css('top','70px');
 
 
         } else {
@@ -4540,11 +3324,13 @@ let print_board_message = async (hash, address, message, timestamp, fetching_boa
               }
 
 
-             let avatar_base64_reply = get_avatar(hex_json_reply.k);
-             let message_reply = hex_json_reply.m;
+             let avatar_base64_reply = escapeHtml(get_avatar(hex_json_reply.k));
+             let message_reply = escapeHtml(hex_json_reply.m);
 
-             $(selector + ' .' + hash + ' img').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/svg+xml;base64,' + avatar_base64_reply + '"><p>' + escapeHtml(message_reply.substring(0,55))  +'..</p></div>');
+             $(selector + ' .' + hash + ' .board_avatar').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/svg+xml;base64,' + avatar_base64_reply + '"><p>' + escapeHtml(message_reply.substring(0,55))  +'</p></div>');
 
+             $(selector + ' .' + hash + ' .boards_nickname').css('top','55px');
+             $(selector + ' .' + hash + ' .board_message_pubkey').css('top','70px');
 
 
         }
@@ -4556,7 +3342,6 @@ let print_board_message = async (hash, address, message, timestamp, fetching_boa
 
 
   } else {
-    console.log('This is not a reply');
   }
 
   if (selector == '#recent_board_messages .inner') {
@@ -4599,7 +3384,9 @@ let print_board_message = async (hash, address, message, timestamp, fetching_boa
 
 
 
-
+   $('#boards .' + hash + ' .boards_nickname').click(function(){
+     $('#boards .' + hash + ' .board_message_pubkey').click();
+   })
 
    $('#boards .' + hash + ' .board_message_pubkey').click(function(e){
      $('#boards_messages').addClass('menu');
@@ -4755,27 +3542,13 @@ ipcRenderer.on('new-message', async (event, transaction) => {
 		 }
 
 		 console.log('Debug me', hex_json);
-     hex_json.h = transaction.hash;
+     thisHash = transaction.hash;
      hex_json.brd = transaction.transfers[0].publicKey;
-     hex_json.timestamp = resp.result.block.timestamp;
+     time = timestamp;
 
      // Save board message in db, returns false if message already existed in db
      let message_was_unknown = true;
 
-       await boards_db.find({hash : hex_json.h}, function (err,docs){
-
-           if (docs.length == 0 && hex_json.m) {
-
-
-           let message_db = {"hash": hex_json.h, "board": hex_json.brd, "sender": hex_json.k, "message":hex_json.m, "timestamp": hex_json.timestamp, "nickname": hex_json.n, "reply": hex_json.r};-
-
-           boards_db.insert(message_db);
-
-         } else {
-           message_was_unknown = false;
-         }
-
-     });
      // console.log(hex_json);
      let this_addr = await Address.fromAddress(hex_json.k);
      // console.log(this_addr);
@@ -4789,24 +3562,22 @@ ipcRenderer.on('new-message', async (event, transaction) => {
 
 		 let to_board;
 
-		 await dictionary.find({ original: transaction.transfers[0].publicKey }, async function (err,docs){
+     await boards_db.find({hash : thisHash}, function (err,docs){
 
-			 console.log(docs)
+         if (docs.length == 0 && message) {
 
-				 if (!docs.length == 0) {
+         save_boards_message(hex_json, time, thisHash);
+         known_pool_txs.push(thisHash);
 
-					 to_board = docs[0].translation;
+       } else {
+         message_was_unknown = false;
+         console.log('iknow');
+         known_pool_txs.push(thisHash);
+         return;
+       }
+     });
 
-				 } else if (transaction.transfers[0].publicKey == "0b66b223812861ad15e5310b4387f475c414cd7bda76be80be6d3a55199652fc") {
-           to_board = "Home";
-           } else {
-					 to_board = letter_from_spend_key(transaction.transfers[0].publicKey);
-				 }
 
-
-				      await require("fs").writeFile(userDataDir + "/" +hex_json.k + ".png", get_avatar(hex_json.k, 'png'), 'base64', function(err) {
-				        console.log(err);
-				      });
 
 				      let message = escapeHtml(hex_json.m);
 
@@ -4824,7 +3595,7 @@ ipcRenderer.on('new-message', async (event, transaction) => {
 
 				 		if (hex_json.k != currentAddr && message_was_unknown) {
 
-              last_block_checked = transaction.hash;
+              last_block_checked = thisHash;
 
 				    //   notifier.notify({
 				    //     title: name + " in " + to_board,
@@ -4845,12 +3616,12 @@ ipcRenderer.on('new-message', async (event, transaction) => {
             if ($('.board_icon.current').attr('invitekey') == transaction.transfers[0].publicKey) {
 
 
-              print_board_message(transaction.hash, hex_json.k, hex_json.m, parseInt(hex_json.timestamp), hex_json.brd, hex_json.n, hex_json.r, '#boards_messages');
+              print_board_message(thisHash, hex_json.k, hex_json.m, escapeHtml(parseInt(hex_json.t)), hex_json.brd, esacpeHtml(hex_json.n), esacpeHtml(hex_json.r), '#boards_messages');
 
             }
             $('.board_icon[invitekey='+ hex_json.brd + ']').addClass('unread_board');
             $('#recent_board_messages .default').remove();
-            print_board_message(transaction.hash, hex_json.k, hex_json.m, parseInt(hex_json.timestamp), hex_json.brd, hex_json.n, hex_json.r, '#recent_board_messages .inner');
+            print_board_message(thisHash, hex_json.k, hex_json.m, escapeHtml(parseInt(hex_json.t)), hex_json.brd, esacpeHtml(hex_json.n), esacpeHtml(hex_json.r), '#recent_board_messages .inner');
 				 }
 
 
@@ -4858,13 +3629,12 @@ ipcRenderer.on('new-message', async (event, transaction) => {
 
 
 
-})
 
 let known_pool_txs = [];
 
-async function backgroundSyncBoardMessages() {
+async function backgroundSyncMessages() {
 
-
+console.log('Background syncing...');
 
       let json = await fetch('http://' + rmt.getGlobal('node') + '/get_pool_changes_lite', {
            method: 'POST',
@@ -4874,6 +3644,7 @@ async function backgroundSyncBoardMessages() {
          })
 
          json = await json.json();
+         console.log(json);
 
         // console.log(json);
 
@@ -4891,21 +3662,313 @@ async function backgroundSyncBoardMessages() {
 
           let thisExtra = transactions[transaction].transactionPrefixInfo.extra;
           let thisHash = transactions[transaction].transactionPrefixInfotxHash;
-
+          console.log(known_pool_txs);
           if (known_pool_txs.indexOf(thisHash) === -1) {
              known_pool_txs.push(thisHash);
+
            } else {
              console.log("This transaction is already known");
              continue;
            }
+           if (check_counter == 0) {
+              await sleep(1000);
+            }
+            if (thisHash.length < 65) {
+            await boards_db.find({hash: thisHash}), function (err,docs){
+                if (docs.length == 0) {
+                  return;
+             }}
+           } else {
+                console.log('err', err);
+                console.log(docs);
+               message_was_unknown = false;
+               known_pool_txs.push(thisHash);
+                return;
+              }
+
+
+           all_transactions = transactions;
+
+           latest_transaction = await find_messages({}, 0, 1);
+           let latest_transaction_time = 0;
+
+             try {
+           latest_transaction_time = latest_transaction[0].timestamp;
+         } catch (e) {console.log(e);}
+
+         all_transactions = all_transactions.filter(function (el) {
+           return el != null;
+         });
+
+           console.log('THIS EXTRA', thisExtra);
 
           if (thisExtra.length > 64) {
 
-          let result = trimExtra(thisExtra);
+            let extra = trimExtra(thisExtra);
+            let tx = JSON.parse(extra);
+            known_keys = await find(keychain, {});
 
-       		 let hex_json = JSON.parse(result);
 
-       		 if (hex_json.b) {
+             if (tx.key && tx.t && tx.key != Buffer.from(keyPair.publicKey).toString('hex')) {
+
+                 let senderKey = tx.key;
+
+                 let box = tx.box;
+
+                 let timestamp = tx.t;
+
+                  let decryptBox = nacl.box.open(hexToUint(box), nonceFromTimestamp(timestamp), hexToUint(senderKey), keyPair.secretKey);
+
+                 if (!decryptBox) {
+                  console.log('Cant decrypt new conversation');
+                   continue;
+                 }
+
+                 let message_dec = naclUtil.encodeUTF8(decryptBox);
+
+                 payload_json = JSON.parse(message_dec);
+
+
+                 payload_json.t = timestamp;
+
+                 payload_keychain = {"key": senderKey, "address": payload_json.from};
+
+                 keychain.find({ "key": senderKey }, function (err, docs) {
+
+                   if (docs.length == 0) {
+
+                     keychain.insert(payload_keychain);
+
+                   }
+                 });
+                 console.log('saved SAVED saved');
+                 save_message(payload_json);
+
+             } else {
+
+                 if (tx.box) {
+
+
+                 // If no key is appended to message we need to try the keys in our payload_keychain
+
+                 let box = tx.box
+                 console.log('box', box);
+
+                 let timestamp = tx.t;
+
+                 let i = 0;
+
+                 let decryptBox = false;
+
+
+                 try {
+                  decryptBox = await naclSealed.sealedbox.open(hexToUint(box),
+                  nonceFromTimestamp(timestamp),
+                  keyPair.secretKey);
+                  } catch (err) {
+                    console.log('timestamp', timestamp);
+                    console.log(err);
+                  }
+
+                 while (i < known_keys.length && !decryptBox) {
+                   console.log('Decrypting..');
+
+                   let possibleKey = known_keys[i].key;
+                   console.log('Trying key:', possibleKey);
+                   i = i+1;
+                   try {
+                    decryptBox = nacl.box.open(hexToUint(box),
+                    nonceFromTimestamp(timestamp),
+                    hexToUint(possibleKey),
+                    keyPair.secretKey);
+                  } catch (err) {
+                    // console.log('timestamp', timestamp);
+                    console.log(err);
+                    continue;
+                  }
+                  console.log('Decrypted:', decryptBox);
+
+
+                   }
+
+                   if (!decryptBox) {
+                     console.log('Cannot decrypt..');
+                     continue;
+                   }
+
+
+                   let message_dec = naclUtil.encodeUTF8(decryptBox);
+
+                   payload_json = JSON.parse(message_dec);
+                   payload_json.t = timestamp;
+                   // console.log(payload_json);
+                   if (payload_json.s) {
+
+                     let this_addr = await Address.fromAddress(payload_json.from);
+
+                     let verified = await xkrUtils.verifyMessageSignature(payload_json.msg, this_addr.spend.publicKey, payload_json.s);
+
+                     if (!verified) {
+                       continue;
+                     }
+
+                   }
+                   if (payload_json.k) {
+                     console.log('Found key!', payload_json);
+                     keychain.find({ "key": payload_json.k }, function (err, docs) {
+
+                       if (docs.length == 0) {
+
+                         keychain.insert({ "key": payload_json.k, "address": payload_json.from });
+
+                         }
+                     });
+                   } else {
+                     console.log('No key :( ', payload_json);
+                   }
+
+                   console.log('saving this', payload_json);
+
+                   save_message(payload_json);
+
+
+
+                if (payload_json.t > latest_transaction_time) {
+
+
+                 if ($('#recipient_form').val() == payload_json.from  && payload_json.from != $('#currentAddrSpan').text() ){
+
+                   // If a new message is received, and it's from the active contacts
+                   // this function will print the new message in the messages field.
+
+                   // NOTE: Sent messages will be automatically printed by the send
+                   // message function, not this one.
+
+                   avatar_base64 = get_avatar(payload_json.from);
+                   payload_json.msg = parseCall(payload_json.msg, payload_json.from);
+                   let links = handle_links(payload_json.msg);
+                   let display_message = links[0];
+
+
+
+
+
+
+                   if (payload_json.msg.length && $('#welcome_alpha').hasClass('hidden')) {
+                     $('#messages').append('<li class="received_message" id=' + payload_json.t + '><img class="message_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><p>' + display_message + '</p><span class="time" timestamp="' + payload_json.t + '">' + moment(payload_json.t).fromNow() + '</span></li>');
+                     $('#messages_pane').scrollTop($('#messages').height());
+                   }
+                   console.log('debagg3', payload_json.t);
+                   $('#'+ payload_json.t).click(function(){
+                     shell.openExternal($(this).attr('href'));
+                   })
+                   let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(payload_json.msg);
+
+                   if (magnetLinks) {
+                     handleMagnetLink(magnetLinks, payload_json.t, true, payload_json.from);
+                   }
+
+                   // Scroll to bottom
+                   $('#messages_pane').find('audio').remove();
+
+                 } else if (payload_json.from != $('#currentAddrSpan').text() ) {
+                   $('#messages_pane').find('audio').remove();
+                   $('#messages_pane').append('<audio autoplay><source src="static/message.mp3" type="audio/mpeg"></audio>');
+
+
+                   let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(payload_json.msg);
+
+                   if (magnetLinks) {
+                     handleMagnetLink(magnetLinks, payload_json.t, true, payload_json.from);
+                   }
+                   if (handleMagnetListed(payload_json.msg)) {
+                     // console.log('my-addr:', $('.currentAddr').text());
+                     // console.log('their-addr:', payload_json.from);
+                     //
+                     // console.log( 'waddafakk', payload_json.from != $('.currentAddr').text() );
+
+                     await require("fs").writeFile(userDataDir + "/" +payload_json.from + ".png", get_avatar(payload_json.from, 'png'), 'base64', function(err) {
+                       // console.log(err);
+                     });
+                    let actions = [];
+                    if (payload_json.msg.substring(0,1) == "Δ" || payload_json.msg.substring(0,1) == "Λ") {
+                      actions = ["Answer", "Decline"];
+                    }
+                     notifier.notify({
+                       title: await get_translation(payload_json.from),
+                       message: handleMagnetListed(parseCall(payload_json.msg, payload_json.from)),
+                       icon: userDataDir + "/" +payload_json.from + ".png",
+                       wait: true, // Wait with callback, until user action is taken against notification,
+                      actions: actions
+                     },function (err, response, metadata) {
+                      // Response is response from notification
+                      // Metadata contains activationType, activationAt, deliveredAt
+                      console.log(response, metadata.activationValue, err);
+
+                      if (response == 'activate') {
+                        ipcRenderer.send('show-window');
+                        print_conversation(payload_json.from);
+                         $('#message_icon').click();
+                      }
+                      if(metadata.activationValue == "Answer" || metadata.button == "Answer" ) {
+
+                        $('#answerCall').click();
+
+                      }
+                    });
+                   }
+                   //
+                   //
+                   // let myNotification = new Notification(payload_json.from, {
+                   //   body: payload_json.msg
+                   // })
+                   //
+                   // myNotification.onclick = () => {
+                   //   print_conversation(payload_json.from);
+                   // }
+
+
+                 }
+
+                 let conversation_address = '';
+
+                 if ($('#currentAddrSpan').text() == payload_json.from) {
+                   // Sent message
+                   conversation_address = $('#currentAddrSpan').text();
+
+                 } else {
+                   // Received message
+                   conversation_address = payload_json.from;
+                 }
+
+
+
+
+                 if ( $('.' + conversation_address).attr("address") == conversation_address ) {
+                   // If there is a contact in the sidebar,
+                   // then we update it, and move it to the top.
+
+                   let listed_msg = handleMagnetListed(payload_json.msg);
+
+                 if (listed_msg && payload_json.from != currentAddr) {
+                 $('.' + conversation_address).find('.listed_message').text(listed_msg).parent().detach().prependTo("#messages_contacts");
+                 if (payload_json.from != currentAddr) {
+                   $('.' + conversation_address).addClass('unread_message');
+                 }
+                 }
+               } else if (conversation_address != currentAddr) {
+                 // If there isn't one, create one
+
+                 if (!$('.' + conversation_address).width() && !$('.active_contact .' + conversation_address).width()) {
+                   console.log('conversation_address', conversation_address);
+                   $('#messages_contacts').prepend('<li class="active_contact unread_message ' + conversation_address + '" address="' + conversation_address + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + get_avatar(conversation_address) + '" /><span class="contact_address">' + conversation_address + '</span><br><span class="listed_message">'+handleMagnetListed(payload_json.msg)+'</li>');
+               }}
+
+             }
+           } else {
+
+
+           if (tx.b) {
 
              let known_keys = rmt.getGlobal('boards_addresses');
 
@@ -4916,9 +3979,13 @@ async function backgroundSyncBoardMessages() {
                  try {
           			 let secretKey = naclUtil.decodeUTF8(key.substring(1, 33));
 
+
           			 let this_keyPair = nacl.box.keyPair.fromSecretKey(secretKey);
-          			 hex_json = JSON.parse(naclUtil.encodeUTF8(nacl.box.open(fromHexString(hex_json.b), nonceFromTimestamp(hex_json.t), this_keyPair.publicKey, this_keyPair.secretKey)));
+          			 hex_json = JSON.parse(naclUtil.encodeUTF8(nacl.box.open(fromHexString(tx.b), nonceFromTimestamp(tx.t), this_keyPair.publicKey, this_keyPair.secretKey)));
                  console.log('Decrypted:', hex_json);
+                 let time = tx.t
+                 let message = escapeHtml(hex_json.m);
+                 save_boards_message(hex_json, time, thisHash);
                  hex_json.brd = hex_json.brd;
                } catch (err) {
                  console.log('Couldnt encrypt..', err);
@@ -4926,37 +3993,23 @@ async function backgroundSyncBoardMessages() {
              }
 
        		 } else {
+             hex_json = tx;
              hex_json.brd = invite_code_from_ascii(hex_json.brd);
-           }
 
+
+             console.log('nope not a privet');
        		 // console.log('Debug me', hex_json);
-            hex_json.h = thisHash;
-
-
-
 
            if (hex_json.brd == '486f6d6500000000000000000000000000000000000000000000000000000000') {
              hex_json.brd =  '0b66b223812861ad15e5310b4387f475c414cd7bda76be80be6d3a55199652fc';
            }
 
-            hex_json.timestamp = parseInt(Date.now() / 1000);
+            hex_json.t = parseInt(Date.now() / 1000);
 
             // Save board message in db, returns false if message already existed in db
             let message_was_unknown = true;
+            hex_json.h = thisHash;
 
-              await boards_db.find({hash : hex_json.h}, function (err,docs){
-
-                  if (docs.length == 0 && hex_json.m) {
-
-                  let message_db = {"hash": hex_json.h, "board": hex_json.brd, "sender": hex_json.k, "message":hex_json.m, "timestamp": hex_json.timestamp, "nickname": hex_json.n, "reply": hex_json.r};-
-
-                  boards_db.insert(message_db);
-
-                } else {
-                  message_was_unknown = false;
-                }
-
-            });
 
             console.log('message_was_unknown', message_was_unknown);
             console.log(hex_json);
@@ -4967,31 +4020,21 @@ async function backgroundSyncBoardMessages() {
        		 // let verified = nacl.sign.detached.verify(naclUtil.decodeUTF8(hex_json.m), fromHexString(hex_json.s), fromHexString(hex_json.k));
 
        		 if (!verified) {
+               console.log('not verified');
        			 return;
        		 }
 
        		 let to_board;
 
-       		 await dictionary.find({ original: hex_json.brd }, async function (err,docs){
 
-       			 console.log(docs)
+           key = escapeHtml(hex_json.k);
 
-       				 if (!docs.length == 0) {
-
-       					 to_board = docs[0].translation;
-
-       				 } else if (invite_code_from_ascii(hex_json.brd) == "0b66b223812861ad15e5310b4387f475c414cd7bda76be80be6d3a55199652fc") {
-                  to_board = "Home";
-                  } else {
-       					 to_board = letter_from_spend_key(hex_json.brd);
-       				 }
-
-
-       				      await require("fs").writeFile(userDataDir + "/" +hex_json.k + ".png", get_avatar(hex_json.k, 'png'), 'base64', function(err) {
+       				      await require("fs").writeFile(userDataDir + "/" + key + ".png", get_avatar(key, 'png'), 'base64', function(err) {
        				        console.log(err);
        				      });
-
+                    let time = hex_json.t
        				      let message = escapeHtml(hex_json.m);
+                    save_boards_message(hex_json, time, thisHash);
 
        				      if (message.length < 1) {
                       console.log('Empty message, skipping');
@@ -5005,11 +4048,12 @@ async function backgroundSyncBoardMessages() {
        				     } else {
        				 			name = 'Anonymous';
        				 		}
+
                   if ($('#recent_board_messages .inner .board_message').length > 4) {
                     $('#recent_board_messages .inner .board_message')[$('#recent_board_messages .inner .board_message').length -1].remove();
                   }
-
-                  print_board_message(thisHash, hex_json.k, hex_json.m, hex_json.timestamp, hex_json.brd, name, hex_json.r, '#recent_board_messages .inner');
+                  console.log('we here');
+                  print_board_message(thisHash, key, hex_json.m, escapeHtml(parseInt(hex_json.t)), hex_json.brd, esacpeHtml(hex_json.n), esacpeHtml(hex_json.r), '#recent_board_messages .inner');
 
                         let boards_addresses = rmt.getGlobal('boards_addresses');
                         let boards_keys = [];
@@ -5017,7 +4061,10 @@ async function backgroundSyncBoardMessages() {
                         for (address in boards_addresses) {
                           boards_keys.push(boards_addresses[address][1]);
                         }
-       				 		if (hex_json.k != currentAddr && message_was_unknown && $('.board_icon.current').attr('invitekey') != hex_json.brd && boards_keys.indexOf(hex_json.brd) != -1) {
+
+
+
+       				 		if (this_addr != currentAddr && message_was_unknown && $('.board_icon.current').attr('invitekey') != hex_json.brd) {
 
                      last_block_checked = transaction.hash;
                      $('#messages_pane').find('audio').remove();
@@ -5047,8 +4094,8 @@ async function backgroundSyncBoardMessages() {
                    // }
 
                    // print_single_board_message(thisHash, '#recent_board_messages .inner');
-       				 } else if (hex_json.k != currentAddr && message_was_unknown && hex_json.brd == $('.current').attr('invitekey')) {
-                 print_board_message(thisHash, hex_json.k, hex_json.m, hex_json.timestamp, hex_json.brd, name, hex_json.r, '#boards_messages');
+       				 } else if (key != currentAddr && message_was_unknown && hex_json.brd == $('.current').attr('invitekey')) {
+                 print_board_message(thisHash, key, hex_json.m, escapeHtml(parseInt(hex_json.t)), hex_json.brd, esacpeHtml(hex_json.n), esacpeHtml(hex_json.r), '#boards_messages');
                  $('#boards .board_message').each(function(index){
                    console.log( index + ": " + $( this ).text() );
                    $(this).delay(index*100).animate({
@@ -5064,21 +4111,16 @@ async function backgroundSyncBoardMessages() {
                }
 
 
-       			 })
+              }
+           }
 
+        }}} catch (err) {
+          await sleep(sleepAmount);
 
-
-
+              backgroundSyncMessages();
           }
-
-        } catch (err) {
-          continue;
-        }
-
-        }
-
-
 }
+  }
 
 let global_nonce;
 
@@ -5361,7 +4403,7 @@ ipcRenderer.on('got-profile', async (event, json) => {
   //
   // }
 
-})
+});
 
 ipcRenderer.on('got-boards', async (event, json) => {
 
@@ -5523,10 +4565,12 @@ ipcRenderer.on('got-boards', async (event, json) => {
        }
 
        if (hex_json.n) {
-         $('#boards .' + hash + ' .board_message_pubkey').before('<span class="boards_nickname">' + escapeHtml(hex_json.n) + '</span>')
+         $('#boards .' + hash + ' .board_message_pubkey').before('<span class="boards_nickname">' + escapeHtml(hex_json.n) + '</span>');
+         $('#boards .' + hash + ' .board_message_pubkey').css('display','none');
        }
 
        if (hex_json.r) {
+          $('#boards .' + hash + ' .boards_nickname').css('top','50px');
          // $('.this_board_message .board_message_pubkey').before('<span class="boards_nickname">' + hex_json.n + '</span>')
          let tx_data_reply = await fetch('http://' + rmt.getGlobal('node') + '/json_rpc', {
               method: 'POST',
@@ -5564,7 +4608,9 @@ ipcRenderer.on('got-boards', async (event, json) => {
             let avatar_base64_reply = get_avatar(hex_json_reply.k);
             let message_reply = hex_json_reply.m;
 
-            $('#boards .' + hash + ' img').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/svg+xml;base64,' + avatar_base64_reply + '"><p>' + message_reply.substring(0,55)  +'..</p></div>');
+            $('#boards .' + hash + ' img').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/svg+xml;base64,' + avatar_base64_reply + '"><p>' + escapeHtml(message_reply.substring(0,55))  +'..</p></div>');
+
+            $('#boards .' + hash + ' .board_message_pubkey').css('top','78px');
 
 
 
@@ -5601,12 +4647,7 @@ ipcRenderer.on('got-boards', async (event, json) => {
 
      } catch (err) {
        console.log('Error:', err)
-       continue;
+       return;
      }
-
-  }
-
-
-
-
-})
+   }
+ })
