@@ -39,7 +39,7 @@
           <h1>Welcome to Hugin Messenger!</h1>
 
           <span id="hugin-background" class="rgb"><img src='static/hugin-neon.png' /></span>
-            </div>
+        </div>
           <!-- <span id="creating-wallet">
 
             <div class="lds-ripple"><div></div><div></div></div>
@@ -349,6 +349,7 @@
                     <span id="connection_settings_page" class="setting_page">
 
                    <h1>Connection</h2>
+                     <div id="node_list">
 
                     <h3>Node</h3>
                      <div class="dropdown">
@@ -358,7 +359,7 @@
                           </div>
                       </div>
                       <div style="position: relative;">
-                      <textarea id="nodeInput">127.0.0.1:11898 (Localhost)
+                      <textarea id="nodeInput">node:port
 
                       </textarea>
                       <span class="nodeInputLoading"><div class="lds-ripple-small"><div></div><div></div></div></span>
@@ -370,7 +371,27 @@
 
 
                     </span>
+                      </div>
 
+
+                    <div id="node_status">
+                      <h3>Info</h3>
+                      <div class="status-content">
+
+                        <div class="active-node">
+                            <a>Address</a><span>Connecting to node...</span>
+                        </div>
+
+                        <div class="node-height">
+                          <a>Height</a><span>Synchronizing...</span>
+                        </div>
+
+                        <div class="current-node-status">
+                          <a>Status</a><span class="rgb">Checking status...</span>
+
+                        </div>
+                      </div>
+                    </div>
 
                   </div>
          <div style="display: none" id="drop-overlay">

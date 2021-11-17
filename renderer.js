@@ -125,7 +125,7 @@ function sendTransaction() {
 
   // $("#payment_message").unbind('click');
 
-  let global_mixin = `${parseInt($('#blockcount').text().split(': ')[1]) > 799999 ? 3 : 3}`;
+  let global_mixin = 0;
 
   console.log(global_mixin);
 
@@ -299,12 +299,27 @@ function updateStatus() {
       $("#network_status").text("Synchronized");
       $("#blockcount").text( "Block height: " + knownCount );
       $('#status_icon').css('background-color','rgba(53,199,72,1)');
-      $("#daemon_status").attr('title', 'Synchronized')
+      $("#daemon_status").attr('title', 'Synchronized');
+      $('#connection_settings_page .current-node-status span').text('Connected');
+      $('#connection_settings_page .current-node-status').removeClass('rgb');
+      $('#connection_settings_page .active-node span').text(rmt.getGlobal('node'));
+      $('#connection_settings_page .node-height span').text(blockCount);
+      $('#connection_settings_page .current-node-status span').removeClass('rgb');
+      $('#connection_settings_page .current-node-status span').css('background-color', 'rgb(53, 199, 72, 0.80)');
+        $('#connection_settings_page .current-node-status').css('width', '35%');
+      $('#login_swap_node_modal #nodeInputStatus').text('✅');
+      $('#login_swap_node_modal .nodeInputLoading').hide();
     } else if (peers > 0) {
     $("#network_status").text("Synchronizing..");
     $("#blockcount").text(blockCount +" / " + knownCount );
     $('#status_icon').css('background-color','rgba(253,189,65,1)');
-    $("#daemon_status").attr('title', 'Synchronizing: '+blockCount +" / " + knownCount )
+    $('#connection_settings_page .current-node-status span').addClass('rgb');
+    $("#daemon_status").attr('title', 'Synchronizing: '+blockCount +" / " + knownCount );
+    $('#connection_settings_page .current-node-status span').text('Synchronizing');
+    $('#connection_settings_page .active-node span').text(rmt.getGlobal('node'));
+    $('#connection_settings_page .node-height span').text(+blockCount +" / " + knownCount);
+    $('#connection_settings_page .current-node-status').css('width', '50%');
+
     }
 
     })
@@ -312,7 +327,11 @@ function updateStatus() {
       console.log(err)
       $('#status_icon').css('background-color','#FF4743');
       $("#daemon_status").attr('title', "Connecting to node...");
-      ipcRenderer.send('kill-wallet');
+      $('#login_swap_node_modal .nodeInputLoading').show();
+      $('#connection_settings_page .current-node-status span').addClass('rgb');
+      $('#connection_settings_page .current-node-status').css('width', '45&%');
+      $('#connection_settings_page .current-node-status span').text('Connecting');
+      $('#connection_settings_page .active-node span').text('Connecting...');
     })
 
 }
@@ -478,7 +497,7 @@ $("document").ready(async function(){
                 $('#login-screen').fadeIn();
                 $('#login_swap_node_modal').css({
                 right: "-80px",
-                top: "-300px"
+                top: "-370px"
               });
             } else {
               console.log('Not! first start!');
@@ -587,7 +606,6 @@ $("document").ready(async function(){
                      $('#login_swap_node_modal #nodeInput').blur(function(){
 
                          $('#login_swap_node_modal #nodeInputStatus').text('');
-                         $('#login_swap_node_modal .nodeInputLoading').show();
 
 
                            fetch('http://' + $('#login_swap_node_modal #nodeInput').val() + '/json_rpc', {
@@ -605,7 +623,6 @@ $("document").ready(async function(){
                               }).catch(err => {
                                 console.log(err);
                                 $('#login_swap_node_modal .nodeInputLoading').hide();
-                                $('#login_swap_node_modal #nodeInputStatus').text('❌');
                               })
 
 
@@ -697,7 +714,6 @@ $("document").ready(async function(){
   $('#connection_settings_page #nodeInput').blur(function(){
 
       $('#connection_settings_page #nodeInputStatus').text('');
-      $('#connection_settings_page .nodeInputLoading').show();
 
 
         fetch('http://' + $('#connection_settings_page #nodeInput').val() + '/json_rpc', {
@@ -711,6 +727,7 @@ $("document").ready(async function(){
              console.log(json);
              $('#connection_settings_page .nodeInputLoading').hide();
              $('#connection_settings_page #nodeInputStatus').text('✅');
+
 
            }).catch(err => {
              console.log(err);
