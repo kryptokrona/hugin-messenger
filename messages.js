@@ -1981,12 +1981,12 @@ async function save_boards_message(message_json, time, thisHash) {
   } else {
 
   if (board.substring(59,64) == "00000") {
-    board = letter_from_spend_key(board);
+
     if (board == "") {
     board = "0000000000000000000000000000000000000000000000000000000000000000";
   } else {
     console.log(board);
-  board = letter_from_spend_key(board);
+  board = board;
   console.log('pöblic!', board);
   }
 } else {
@@ -3350,6 +3350,7 @@ let print_board_message = async (hash, address, message, timestamp, fetching_boa
 
     if (fetching_board.substring(59,64) == '00000') {
       //public
+      console.log(fetchnig_board);
       to_board = letter_from_spend_key(fetching_board);
       $('#recent_board_messages .inner .' + hash + " .board_message_pubkey" ).after('<span class="in_board"> in ' + to_board.substring(0,44) + ' </span>');
 
@@ -3369,7 +3370,7 @@ let print_board_message = async (hash, address, message, timestamp, fetching_boa
                } else {
                  to_board = fetching_board;
                }
-               $('#recent_board_messages .inner .' + hash + " .board_message_pubkey" ).after('<span class="in_board"> in ' + to_board + ' </span>');
+               $('#recent_board_messages .inner .' + hash).after('<span class="in_board"> in ' + to_board + ' </span>');
 
 
     })
@@ -3616,12 +3617,12 @@ ipcRenderer.on('new-message', async (event, transaction) => {
             if ($('.board_icon.current').attr('invitekey') == transaction.transfers[0].publicKey) {
 
 
-              print_board_message(thisHash, hex_json.k, hex_json.m, escapeHtml(parseInt(hex_json.t)), hex_json.brd, esacpeHtml(hex_json.n), esacpeHtml(hex_json.r), '#boards_messages');
+              print_board_message(thisHash, hex_json.k, hex_json.m, parseInt(hex_json.t), hex_json.brd, escapeHtml(hex_json.n), escapeHtml(hex_json.r), '#boards_messages');
 
             }
             $('.board_icon[invitekey='+ hex_json.brd + ']').addClass('unread_board');
             $('#recent_board_messages .default').remove();
-            print_board_message(thisHash, hex_json.k, hex_json.m, escapeHtml(parseInt(hex_json.t)), hex_json.brd, esacpeHtml(hex_json.n), esacpeHtml(hex_json.r), '#recent_board_messages .inner');
+            print_board_message(thisHash, hex_json.k, hex_json.m, parseInt(hex_json.t), hex_json.brd, escapeHtml(hex_json.n), escapeHtml(hex_json.r), '#recent_board_messages .inner');
 				 }
 
 
@@ -4027,14 +4028,13 @@ console.log('Background syncing...');
        		 let to_board;
 
 
-           key = escapeHtml(hex_json.k);
+           let senderKey = escapeHtml(hex_json.k);
+           console.log(senderKey);
+        
 
-       				      await require("fs").writeFile(userDataDir + "/" + key + ".png", get_avatar(key, 'png'), 'base64', function(err) {
-       				        console.log(err);
-       				      });
-                    let time = hex_json.t
+                    let time = escapeHtml(hex_json.t)
        				      let message = escapeHtml(hex_json.m);
-                    save_boards_message(hex_json, time, thisHash);
+
 
        				      if (message.length < 1) {
                       console.log('Empty message, skipping');
@@ -4053,18 +4053,10 @@ console.log('Background syncing...');
                     $('#recent_board_messages .inner .board_message')[$('#recent_board_messages .inner .board_message').length -1].remove();
                   }
                   console.log('we here');
-                  print_board_message(thisHash, key, hex_json.m, escapeHtml(parseInt(hex_json.t)), hex_json.brd, esacpeHtml(hex_json.n), esacpeHtml(hex_json.r), '#recent_board_messages .inner');
-
-                        let boards_addresses = rmt.getGlobal('boards_addresses');
-                        let boards_keys = [];
-
-                        for (address in boards_addresses) {
-                          boards_keys.push(boards_addresses[address][1]);
-                        }
+                  save_boards_message(hex_json, time, thisHash);
 
 
-
-       				 		if (this_addr != currentAddr && message_was_unknown && $('.board_icon.current').attr('invitekey') != hex_json.brd) {
+       				 		if (senderKey != currentAddr && message_was_unknown && $('.board_icon.current').attr('invitekey') != hex_json.brd) {
 
                      last_block_checked = transaction.hash;
                      $('#messages_pane').find('audio').remove();
@@ -4074,7 +4066,7 @@ console.log('Background syncing...');
        				      notifier.notify({
        				        title: name + " in " + to_board,
        				        message: message,
-       				        icon: userDataDir + "/" + hex_json.k + ".png",
+       				        icon: userDataDir + "/" + senderKey + ".png",
        				        wait: true // Wait with callback, until user action is taken against notification
        				      },function (err, response, metadata) {
        				 			 console.log(err, response, metadata);
@@ -4094,8 +4086,8 @@ console.log('Background syncing...');
                    // }
 
                    // print_single_board_message(thisHash, '#recent_board_messages .inner');
-       				 } else if (key != currentAddr && message_was_unknown && hex_json.brd == $('.current').attr('invitekey')) {
-                 print_board_message(thisHash, key, hex_json.m, escapeHtml(parseInt(hex_json.t)), hex_json.brd, esacpeHtml(hex_json.n), esacpeHtml(hex_json.r), '#boards_messages');
+       				 } else if (senderKey != currentAddr && message_was_unknown && hex_json.brd == $('.current').attr('invitekey')) {
+                 print_board_message(thisHash, key, hex_json.m, escapeHtml(parseInt(hex_json.t)), hex_json.brd, escapeHtml(hex_json.n), escapeHtml(hex_json.r), '#boards_messages');
                  $('#boards .board_message').each(function(index){
                    console.log( index + ": " + $( this ).text() );
                    $(this).delay(index*100).animate({
@@ -4105,6 +4097,7 @@ console.log('Background syncing...');
                    });
 
                  })
+                   print_board_message(thisHash, senderKey, hex_json.m, escapeHtml(parseInt(hex_json.t)), hex_json.brd, escapeHtml(hex_json.n), escapeHtml(hex_json.r), '#recent_board_messages .inner');
 
                } else {
                  console.log('Already know about this message, skipping..');
