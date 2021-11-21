@@ -3450,6 +3450,7 @@ button.emoji-picker__category-button:hover {
   margin-bottom: 10px;
   opacity: 0.6;
   margin-top: -15px;
+  height: 35px;
 }
 
 .board_message_reply p {
@@ -3469,12 +3470,12 @@ button.emoji-picker__category-button:hover {
   transform: rotate(90deg);
   font-weight: 400;
   font-size: 28pt;
-  margin-left: 25px;
+  margin-left: 10px;
 }
 
 #recent_board_messages .board_message_reply::before {
 
-  margin-left: 35px;
+  margin-left: 10px;
 }
 
 .remove {
@@ -3970,14 +3971,14 @@ right: 15px;
 }
 
 #recent_board_messages .board_message_reply p {
-
+  vertical-align: 15px;
   font-size: 11px;
   width: 70%;
   line-height: 0.01em;
   }
 
   #recent_board_messages .boards_nickname {
-
+  top: 35px;
   vertical-align: 36px;
   }
 
