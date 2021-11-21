@@ -1331,7 +1331,7 @@ ipcRenderer.on('removed-subwallet', async (evt, addr) => {
 })
 
 
-let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json, silent=false, temp_hash) => {
+let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json, silent=false, temp_hash, to_board) => {
 
         let global_mixin = `${blockCount > 799999 ? 3 : 3}`;
 
@@ -1357,7 +1357,8 @@ let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json
           if (payload_json.brd) {
           let time = parseInt(temp_hash / 1000);
           let thisHash = resp.body.result.transactionHash;
-          save_boards_message(payload_json, time, thisHash);
+          console.log(to_board);
+          save_boards_message(payload_json, time, thisHash, to_board);
 
           }
           if (resp.body.error) {
@@ -1700,8 +1701,6 @@ async function sendBoardMessage(message) {
       print_board_message(temp_hash, payload_json.k, payload_json.m, Date.now()/1000, address, payload_json.n, payload_json.r, '#boards_messages');
 
 
-
-
       //payload_json_decoded = naclUtil.decodeUTF8(JSON.stringify(payload_json));
 
       // let box = nacl.box(payload_json_decoded, nonceFromTimestamp(timestamp), hexToUint($('#recipient_pubkey_form').val()), keyPair.secretKey);
@@ -1742,11 +1741,14 @@ async function sendBoardMessage(message) {
 
       sendAddr = $("#currentAddrSpan").text();
       transfer = [ { 'amount':amount, 'address':receiver } ];
-
+      let to_board = current_board
       console.log('temp_hash', temp_hash);
       $('.' + temp_hash).addClass('loading_message');
-
-      return sendTransaction(mixin, transfer, fee, sendAddr, payload_hex, payload_json, true, temp_hash);
+      if (!$('.board_icon.current').hasClass('private') && current_board != "Home") {
+        to_board = invite_code_from_ascii(payload_json.brd)
+        console.log(to_board);
+      }
+      return sendTransaction(mixin, transfer, fee, sendAddr, payload_hex, payload_json, true, temp_hash, to_board);
 
       }
 
@@ -1962,10 +1964,10 @@ function save_message(message_json) {
 
 }
 
-async function save_boards_message(message_json, time, thisHash) {
+async function save_boards_message(message_json, time, thisHash, to_board) {
 
   let hash =  thisHash;
-  let board = message_json.brd;
+  let board = to_board;
   let sender = message_json.k;
   let message = message_json.m;
   let timestamp = time
@@ -1974,25 +1976,10 @@ async function save_boards_message(message_json, time, thisHash) {
   if (!message_json.m) {
     return;
   }
-    if (board == "Home") {
-    board = "0b66b223812861ad15e5310b4387f475c414cd7bda76be80be6d3a55199652fc";
-    console.log('HOME');
-
-  } else {
-
-  if (board.substring(59,64) == "00000") {
-
-    if (board == "") {
-    board = "0000000000000000000000000000000000000000000000000000000000000000";
-  } else {
-    console.log(board);
-  board = board;
-  console.log('pöblic!', board);
-  }
+  if (board == "Home") {
+  board = "0b66b223812861ad15e5310b4387f475c414cd7bda76be80be6d3a55199652fc";
 } else {
   board = board;
-  console.log('PRIVET', board);
-}
 }
 
   console.log(board);
@@ -2835,10 +2822,9 @@ ipcRenderer.on('wallet-started', async () => {
 			      });
 
 
-            check_protection();
-            await sleep(1000);
-            backgroundSyncMessages();
 
+            await sleep(1000);
+            check_protection();
 });
 
 
@@ -2880,204 +2866,204 @@ $('#boards_icon').click(function(){
 
 let current_reply_to = '';
 
-// let print_single_board_message = async (hash, selector) => {
-//
-//   if (!hash) {
-//     return;
-//   }
-//
-//   let tx_data = await fetch('http://' + rmt.getGlobal('node') + '/json_rpc', {
-//        method: 'POST',
-//        body: JSON.stringify({
-//          jsonrpc: '2.0',
-//          method: 'f_transaction_json',
-//          params: {hash: hash}
-//        })
-//      })
-//
-//      const resp = await tx_data.json();
-//      let timestamp = resp.result.block.timestamp;
-//      try {
-//      result = trimExtra(resp.result.tx.extra);
-//      // console.log(result);
-//      let hex_json = JSON.parse(fromHex(result));
-//      if (hex_json.b) {
-//        let key = $('.current').attr('inviteKey');
-//        let secretKey = naclUtil.decodeUTF8(key.substring(1, 33));
-//
-//        let this_keyPair = nacl.box.keyPair.fromSecretKey(secretKey);
-//        // console.log(this_keyPair);
-//         hex_json = JSON.parse(naclUtil.encodeUTF8(nacl.box.open(fromHexString(hex_json.b), nonceFromTimestamp(hex_json.t), this_keyPair.publicKey, this_keyPair.secretKey)));
-//      }
-//      // console.log(hex_json);
-//      let this_addr = await Address.fromAddress(hex_json.k);
-//      let tips = 0;
-//
-//      // console.log(this_addr);
-//      let verified = await xkrUtils.verifyMessageSignature(hex_json.m, this_addr.spend.publicKey, hex_json.s);
-//      // console.log(verified);
-//      //let verified = nacl.sign.detached.verify(naclUtil.decodeUTF8(hex_json.m), fromHexString(hex_json.s), fromHexString(hex_json.k));
-//
-//      if (!verified) {
-//        return;
-//      }
-//      let avatar_base64 = get_avatar(hex_json.k);
-//
-//       let addClasses = '';
-//       if (containsOnlyEmojis(hex_json.m)) {
-//         addClasses = 'emoji-message';
-//       }
-//
-//       let message = escapeHtml(hex_json.m);
-//
-//       if (message.length < 1) {
-//         return;
-//       }
-//
-//         geturl = new RegExp(
-//                 "(^|[ \t\r\n])((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&~=-])|%[A-Fa-f0-9]{2}){3,}(#([a-zA-Z0-9][a-zA-Z0-9$_.+!*(),;/?:@&~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))"
-//                ,"g"
-//              );
-//
-//       // Instantiate attachments
-//       let youtube_links = '';
-//       let image_attached = '';
-//
-//       // Find links
-//       let links_in_message = message.match(geturl);
-//
-//       // Supported image attachment filetypes
-//       let imagetypes = ['.png','.jpg','.gif', '.webm', '.jpeg', '.webp'];
-//
-//       // Find magnet links
-//       //let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(message);
-//
-//       //message = message.replace(magnetLinks[0], "");
-//
-//       if (links_in_message) {
-//
-//         for (let j = 0; j < links_in_message.length; j++) {
-//
-//           if (links_in_message[j].match(/youtu/) || links_in_message[j].match(/y2u.be/)) { // Embeds YouTube links
-//             message = message.replace(links_in_message[j],'');
-//             embed_code = links_in_message[j].split('/').slice(-1)[0].split('=').slice(-1)[0];
-//             youtube_links += '<div style="position:relative;height:0;padding-bottom:42.42%"><iframe src="https://www.youtube.com/embed/' + embed_code + '?modestbranding=1" style="position:absolute;width:80%;height:100%;left:10%" width="849" height="360" frameborder="0" allow="autoplay; encrypted-media"></iframe></div>';
-//           } else if (imagetypes.indexOf(links_in_message[j].substr(-4)) > -1 ) { // Embeds image links
-//             message = message.replace(links_in_message[j],'');
-//             image_attached_url = links_in_message[j];
-//             image_attached = '<img class="attachment" src="' + image_attached_url + '" />';
-//           } else { // Embeds other links
-//             message = message.replace(links_in_message[j],'<a target="_new" href="' + links_in_message[j] + '">' + links_in_message[j] + '</a>');
-//           }
-//         }
-//       }
-//
-//
-//
-//       if (message.length < 1 && youtube_links.length > 0) {
-//         $(selector).prepend('<li class="board_message ' + hash + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div>'+ image_attached + youtube_links +'<span class="time" timestamp="'+ timestamp*1000 +'">' + moment(timestamp*1000).fromNow() + '</span></li>');
-//
-//       } else if (image_attached > 0 && youtube_links.length > 0) {
-//
-//         $(selector).prepend('<li class="board_message ' + hash + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time" timestamp="'+ timestamp*1000 +'">' + moment(timestamp*1000).fromNow() + '</span></li>');
-//
-//
-//       } else  {
-//         $(selector).prepend('<li class="board_message ' + hash + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time" timestamp="'+ timestamp*1000 +'">' + moment(timestamp*1000).fromNow() + '</span></li>');
-//      }
-//
-//      if (hex_json.n) {
-//        $(selector + ' .' + hash + ' .board_message_pubkey').before('<span class="boards_nickname">' + escapeHtml(hex_json.n) + '</span>');
-//        $(selector + ' .' + hash + ' .board_message_pubkey').css('display','none');
-//      }
-//
-//
-//
-//      if (hex_json.r) {
-//        // $('.this_board_message .board_message_pubkey').before('<span class="boards_nickname">' + hex_json.n + '</span>')
-//        let tx_data_reply = await fetch('http://' + rmt.getGlobal('node') + '/json_rpc', {
-//             method: 'POST',
-//             body: JSON.stringify({
-//               jsonrpc: '2.0',
-//               method: 'f_transaction_json',
-//               params: {hash: hex_json.r}
-//             })
-//           })
-//
-//           const resp_reply = await tx_data_reply.json();
-//           let result_reply = trimExtra(resp_reply.result.tx.extra);
-//           let hex_json_reply = JSON.parse(fromHex(result_reply));
-//
-//           // console.log(hex_json_reply);
-//
-//           if (hex_json_reply.b) {
-//
-//            let key = $('.board_icon.current').attr('invitekey');
-//            let secretKey = naclUtil.decodeUTF8(key.substring(1, 33));
-//
-//            let this_keyPair = nacl.box.keyPair.fromSecretKey(secretKey);
-//            hex_json_reply = JSON.parse(naclUtil.encodeUTF8(nacl.box.open(fromHexString(hex_json_reply.b), nonceFromTimestamp(hex_json_reply.t), this_keyPair.publicKey, this_keyPair.secretKey)));
-//
-//          }
-//            let this_addr = await Address.fromAddress(hex_json_reply.k);
-//            // console.log(this_addr);
-//            let verified_reply = await xkrUtils.verifyMessageSignature(hex_json_reply.m, this_addr.spend.publicKey, hex_json_reply.s);
-//            // console.log(verified);
-//           // let verified_reply = nacl.sign.detached.verify(naclUtil.decodeUTF8(hex_json_reply.m), fromHexString(hex_json_reply.s), fromHexString(hex_json_reply.k));
-//
-//           if (!verified_reply) {
-//             return;
-//           }
-//           let avatar_base64_reply = get_avatar(hex_json_reply.k);
-//           let message_reply = hex_json_reply.m;
-//
-//           $('#boards .' + hash + ' img').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/svg+xml;base64,' + avatar_base64_reply + '"><p>' + message_reply.substring(0,55)  +'..</p></div>');
-//           $(selector + ' .' + hash + ' .boards_nickname').css('top','58px');
-//           $(selector + ' .' + hash + ' .board_message_pubkey').css('top','58px');
-//
-//
-//      }
-//
-//         if (tips) {
-//             $('#boards .' + hash).append('<span class="tips">' + parseFloat(tips/100000).toFixed(5) + '</span>');
-//         }
-//
-//
-//       $('#boards .' + hash + ' .board_message_pubkey').click(function(e){
-//         $('#boards_messages').addClass('menu');
-//         e.preventDefault();
-//         let address = $(this).text();
-//         $('#payment_rec_addr').val(address);
-//         $('#payment_id').val(hash);
-//         $('#send_payment').removeClass('hidden');
-//         if (!$('#modal').hasClass('hidden')) {
-//           $('#modal').addClass('hidden');
-//           $('#boards_messages').addClass('menu');
-//         }
-//
-//
-//       })
-//
-//      $('#boards .' + hash).click(function(){
-//        reply(hash);
-//        $(this).addClass('rgb');
-//        $('#boards').scrollTop('0');
-//      });
-//
-//      $('#boards .' + hash).delay(100).animate({
-//        opacity: 1
-//      }, 150, function() {
-//        // Animation complete.
-//      });
-//
-//
-//
-//    } catch (err) {
-//      console.log('Error:', err)
-//      return;
-//    }
-//
-// }
+let print_single_board_message = async (hash, selector) => {
+
+  if (!hash) {
+    return;
+  }
+
+  let tx_data = await fetch('http://' + rmt.getGlobal('node') + '/json_rpc', {
+       method: 'POST',
+       body: JSON.stringify({
+         jsonrpc: '2.0',
+         method: 'f_transaction_json',
+         params: {hash: hash}
+       })
+     })
+
+     const resp = await tx_data.json();
+     let timestamp = resp.result.block.timestamp;
+     try {
+     result = trimExtra(resp.result.tx.extra);
+     // console.log(result);
+     let hex_json = JSON.parse(fromHex(result));
+     if (hex_json.b) {
+       let key = $('.current').attr('inviteKey');
+       let secretKey = naclUtil.decodeUTF8(key.substring(1, 33));
+
+       let this_keyPair = nacl.box.keyPair.fromSecretKey(secretKey);
+       // console.log(this_keyPair);
+        hex_json = JSON.parse(naclUtil.encodeUTF8(nacl.box.open(fromHexString(hex_json.b), nonceFromTimestamp(hex_json.t), this_keyPair.publicKey, this_keyPair.secretKey)));
+     }
+     // console.log(hex_json);
+     let this_addr = await Address.fromAddress(hex_json.k);
+     let tips = 0;
+
+     // console.log(this_addr);
+     let verified = await xkrUtils.verifyMessageSignature(hex_json.m, this_addr.spend.publicKey, hex_json.s);
+     // console.log(verified);
+     //let verified = nacl.sign.detached.verify(naclUtil.decodeUTF8(hex_json.m), fromHexString(hex_json.s), fromHexString(hex_json.k));
+
+     if (!verified) {
+       return;
+     }
+     let avatar_base64 = get_avatar(hex_json.k);
+
+      let addClasses = '';
+      if (containsOnlyEmojis(hex_json.m)) {
+        addClasses = 'emoji-message';
+      }
+
+      let message = escapeHtml(hex_json.m);
+
+      if (message.length < 1) {
+        return;
+      }
+
+        geturl = new RegExp(
+                "(^|[ \t\r\n])((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&~=-])|%[A-Fa-f0-9]{2}){3,}(#([a-zA-Z0-9][a-zA-Z0-9$_.+!*(),;/?:@&~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))"
+               ,"g"
+             );
+
+      // Instantiate attachments
+      let youtube_links = '';
+      let image_attached = '';
+
+      // Find links
+      let links_in_message = message.match(geturl);
+
+      // Supported image attachment filetypes
+      let imagetypes = ['.png','.jpg','.gif', '.webm', '.jpeg', '.webp'];
+
+      // Find magnet links
+      //let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(message);
+
+      //message = message.replace(magnetLinks[0], "");
+
+      if (links_in_message) {
+
+        for (let j = 0; j < links_in_message.length; j++) {
+
+          if (links_in_message[j].match(/youtu/) || links_in_message[j].match(/y2u.be/)) { // Embeds YouTube links
+            message = message.replace(links_in_message[j],'');
+            embed_code = links_in_message[j].split('/').slice(-1)[0].split('=').slice(-1)[0];
+            youtube_links += '<div style="position:relative;height:0;padding-bottom:42.42%"><iframe src="https://www.youtube.com/embed/' + embed_code + '?modestbranding=1" style="position:absolute;width:80%;height:100%;left:10%" width="849" height="360" frameborder="0" allow="autoplay; encrypted-media"></iframe></div>';
+          } else if (imagetypes.indexOf(links_in_message[j].substr(-4)) > -1 ) { // Embeds image links
+            message = message.replace(links_in_message[j],'');
+            image_attached_url = links_in_message[j];
+            image_attached = '<img class="attachment" src="' + image_attached_url + '" />';
+          } else { // Embeds other links
+            message = message.replace(links_in_message[j],'<a target="_new" href="' + links_in_message[j] + '">' + links_in_message[j] + '</a>');
+          }
+        }
+      }
+
+
+
+      if (message.length < 1 && youtube_links.length > 0) {
+        $(selector).prepend('<li class="board_message ' + hash + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div>'+ image_attached + youtube_links +'<span class="time" timestamp="'+ timestamp*1000 +'">' + moment(timestamp*1000).fromNow() + '</span></li>');
+
+      } else if (image_attached > 0 && youtube_links.length > 0) {
+
+        $(selector).prepend('<li class="board_message ' + hash + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time" timestamp="'+ timestamp*1000 +'">' + moment(timestamp*1000).fromNow() + '</span></li>');
+
+
+      } else  {
+        $(selector).prepend('<li class="board_message ' + hash + '" id=""><div class="board_message_user"><img class="board_avatar" src="data:image/svg+xml;base64,' + avatar_base64 + '"><span class="board_message_pubkey">' + hex_json.k + '</span></div><p class="' + addClasses + '">' + message + image_attached + youtube_links +'</p><span class="time" timestamp="'+ timestamp*1000 +'">' + moment(timestamp*1000).fromNow() + '</span></li>');
+     }
+
+     if (hex_json.n) {
+       $(selector + ' .' + hash + ' .board_message_pubkey').before('<span class="boards_nickname">' + escapeHtml(hex_json.n) + '</span>');
+       $(selector + ' .' + hash + ' .board_message_pubkey').css('display','none');
+     }
+
+
+
+     if (hex_json.r) {
+       // $('.this_board_message .board_message_pubkey').before('<span class="boards_nickname">' + hex_json.n + '</span>')
+       let tx_data_reply = await fetch('http://' + rmt.getGlobal('node') + '/json_rpc', {
+            method: 'POST',
+            body: JSON.stringify({
+              jsonrpc: '2.0',
+              method: 'f_transaction_json',
+              params: {hash: hex_json.r}
+            })
+          })
+
+          const resp_reply = await tx_data_reply.json();
+          let result_reply = trimExtra(resp_reply.result.tx.extra);
+          let hex_json_reply = JSON.parse(fromHex(result_reply));
+
+          // console.log(hex_json_reply);
+
+          if (hex_json_reply.b) {
+
+           let key = $('.board_icon.current').attr('invitekey');
+           let secretKey = naclUtil.decodeUTF8(key.substring(1, 33));
+
+           let this_keyPair = nacl.box.keyPair.fromSecretKey(secretKey);
+           hex_json_reply = JSON.parse(naclUtil.encodeUTF8(nacl.box.open(fromHexString(hex_json_reply.b), nonceFromTimestamp(hex_json_reply.t), this_keyPair.publicKey, this_keyPair.secretKey)));
+
+         }
+           let this_addr = await Address.fromAddress(hex_json_reply.k);
+           // console.log(this_addr);
+           let verified_reply = await xkrUtils.verifyMessageSignature(hex_json_reply.m, this_addr.spend.publicKey, hex_json_reply.s);
+           // console.log(verified);
+          // let verified_reply = nacl.sign.detached.verify(naclUtil.decodeUTF8(hex_json_reply.m), fromHexString(hex_json_reply.s), fromHexString(hex_json_reply.k));
+
+          if (!verified_reply) {
+            return;
+          }
+          let avatar_base64_reply = get_avatar(hex_json_reply.k);
+          let message_reply = hex_json_reply.m;
+
+          $('#boards .' + hash + ' img').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/svg+xml;base64,' + avatar_base64_reply + '"><p>' + message_reply.substring(0,55)  +'..</p></div>');
+          $(selector + ' .' + hash + ' .boards_nickname').css('top','58px');
+          $(selector + ' .' + hash + ' .board_message_pubkey').css('top','58px');
+
+
+     }
+
+        if (tips) {
+            $('#boards .' + hash).append('<span class="tips">' + parseFloat(tips/100000).toFixed(5) + '</span>');
+        }
+
+
+      $('#boards .' + hash + ' .board_message_pubkey').click(function(e){
+        $('#boards_messages').addClass('menu');
+        e.preventDefault();
+        let address = $(this).text();
+        $('#payment_rec_addr').val(address);
+        $('#payment_id').val(hash);
+        $('#send_payment').removeClass('hidden');
+        if (!$('#modal').hasClass('hidden')) {
+          $('#modal').addClass('hidden');
+          $('#boards_messages').addClass('menu');
+        }
+
+
+      })
+
+     $('#boards .' + hash).click(function(){
+       reply(hash);
+       $(this).addClass('rgb');
+       $('#boards').scrollTop('0');
+     });
+
+     $('#boards .' + hash).delay(100).animate({
+       opacity: 1
+     }, 150, function() {
+       // Animation complete.
+     });
+
+
+
+   } catch (err) {
+     console.log('Error:', err)
+     return;
+   }
+
+}
 
 $('#replyto_exit').click(function(){
 
@@ -3283,6 +3269,8 @@ let print_board_message = async (hash, address, message, timestamp, fetching_boa
 
            $(selector + ' .' + hash + ' .boards_nickname').css('top','55px');
            $(selector + ' .' + hash + ' .board_message_pubkey').css('top','70px');
+           $('#recent_board_messages .inner .' + hash + ' .board_message_pubkey').css('top','86px');
+           $('#recent_board_messages .inner .' + hash + ' .boards_nickname').css('top','67px');
 
 
         } else {
@@ -3350,13 +3338,12 @@ let print_board_message = async (hash, address, message, timestamp, fetching_boa
 
     if (fetching_board.substring(59,64) == '00000') {
       //public
-      console.log(fetchnig_board);
       to_board = letter_from_spend_key(fetching_board);
-      $('#recent_board_messages .inner .' + hash + " .board_message_pubkey" ).after('<span class="in_board"> in ' + to_board.substring(0,44) + ' </span>');
+      $('#recent_board_messages .inner .' + hash + " .board_message_user" ).before('<span class="in_board"> in ' + to_board.substring(0,44) + ' </span>');
 
     } else if (fetching_board == '0b66b223812861ad15e5310b4387f475c414cd7bda76be80be6d3a55199652fc') {
       to_board = 'Home';
-      $('#recent_board_messages .inner .' + hash + " .board_message_pubkey" ).after('<span class="in_board"> in ' + to_board.substring(0,44) + ' </span>');
+      $('#recent_board_messages .inner .' + hash + " .board_message_user" ).before('<span class="in_board"> in ' + to_board.substring(0,44) + ' </span>');
     } else {
 
 
@@ -3422,7 +3409,7 @@ let print_board_message = async (hash, address, message, timestamp, fetching_boa
   console.log('Error:', err)
   return;
 }
-//
+
 //   let avatar_base64 = get_avatar(pubkey);
 //
 //    if (current_board != fetching_board) {
@@ -3617,12 +3604,12 @@ ipcRenderer.on('new-message', async (event, transaction) => {
             if ($('.board_icon.current').attr('invitekey') == transaction.transfers[0].publicKey) {
 
 
-              print_board_message(thisHash, hex_json.k, hex_json.m, parseInt(hex_json.t), hex_json.brd, escapeHtml(hex_json.n), escapeHtml(hex_json.r), '#boards_messages');
+              print_board_message(thisHash, hex_json.k, hex_json.m, escapeHtml(parseInt(hex_json.t)), hex_json.brd, escapeHtml(hex_json.n), escapeHtml(hex_json.r), '#boards_messages');
 
             }
             $('.board_icon[invitekey='+ hex_json.brd + ']').addClass('unread_board');
             $('#recent_board_messages .default').remove();
-            print_board_message(thisHash, hex_json.k, hex_json.m, parseInt(hex_json.t), hex_json.brd, escapeHtml(hex_json.n), escapeHtml(hex_json.r), '#recent_board_messages .inner');
+            print_board_message(thisHash, hex_json.k, hex_json.m, escapeHtml(parseInt(hex_json.t)), hex_json.brd, escapeHtml(hex_json.n), escapeHtml(hex_json.r), '#recent_board_messages .inner');
 				 }
 
 
@@ -3663,22 +3650,28 @@ console.log('Background syncing...');
 
           let thisExtra = transactions[transaction].transactionPrefixInfo.extra;
           let thisHash = transactions[transaction].transactionPrefixInfotxHash;
-          console.log(known_pool_txs);
           if (known_pool_txs.indexOf(thisHash) === -1) {
              known_pool_txs.push(thisHash);
 
            } else {
-             console.log("This transaction is already known");
+             console.log("This transaction is already known", thisHash);
              continue;
            }
            if (check_counter == 0) {
               await sleep(1000);
             }
             if (thisHash.length < 65) {
-            await boards_db.find({hash: thisHash}), function (err,docs){
-                if (docs.length == 0) {
-                  return;
-             }}
+              boards_db.find({ hash: thisHash }, function (err, docs) {
+                console.log(docs);
+                  message_was_unknown = false;
+                  if (docs.length == 0) {
+                      message_was_unknown = true;
+                      return;
+                  } else {
+                    known_pool_txs.push(thisHash);
+                  }
+             })
+
            } else {
                 console.log('err', err);
                 console.log(docs);
@@ -3703,7 +3696,7 @@ console.log('Background syncing...');
 
            console.log('THIS EXTRA', thisExtra);
 
-          if (thisExtra.length > 64) {
+          if (thisExtra.length > 64 && message_was_unknown) {
 
             let extra = trimExtra(thisExtra);
             let tx = JSON.parse(extra);
@@ -3742,7 +3735,6 @@ console.log('Background syncing...');
 
                    }
                  });
-                 console.log('saved SAVED saved');
                  save_message(payload_json);
 
              } else {
@@ -3986,24 +3978,24 @@ console.log('Background syncing...');
                  console.log('Decrypted:', hex_json);
                  let time = tx.t
                  let message = escapeHtml(hex_json.m);
-                 save_boards_message(hex_json, time, thisHash);
-                 hex_json.brd = hex_json.brd;
+                 board_key = hex_json.brd;
+                 save_boards_message(hex_json, time, thisHash, board_key);
                } catch (err) {
                  console.log('Couldnt encrypt..', err);
                }
              }
 
        		 } else {
-             hex_json = tx;
-             hex_json.brd = invite_code_from_ascii(hex_json.brd);
+             let hex_json = tx;
+             if (hex_json.brd == 'Home') {
+               to_board =  '0b66b223812861ad15e5310b4387f475c414cd7bda76be80be6d3a55199652fc';
+             } else {
+             to_board = invite_code_from_ascii(hex_json.brd);
+            }
 
-
-             console.log('nope not a privet');
        		 // console.log('Debug me', hex_json);
 
-           if (hex_json.brd == '486f6d6500000000000000000000000000000000000000000000000000000000') {
-             hex_json.brd =  '0b66b223812861ad15e5310b4387f475c414cd7bda76be80be6d3a55199652fc';
-           }
+
 
             hex_json.t = parseInt(Date.now() / 1000);
 
@@ -4015,7 +4007,6 @@ console.log('Background syncing...');
             console.log('message_was_unknown', message_was_unknown);
             console.log(hex_json);
             let this_addr = await Address.fromAddress(hex_json.k);
-            console.log(this_addr);
             let verified = await xkrUtils.verifyMessageSignature(hex_json.m, this_addr.spend.publicKey, hex_json.s);
             // console.log(verified);
        		 // let verified = nacl.sign.detached.verify(naclUtil.decodeUTF8(hex_json.m), fromHexString(hex_json.s), fromHexString(hex_json.k));
@@ -4025,16 +4016,16 @@ console.log('Background syncing...');
        			 return;
        		 }
 
-       		 let to_board;
-
 
            let senderKey = escapeHtml(hex_json.k);
-           console.log(senderKey);
-        
 
-                    let time = escapeHtml(hex_json.t)
+
+                    let time = escapeHtml(hex_json.t);
        				      let message = escapeHtml(hex_json.m);
+                    await require("fs").writeFile(userDataDir + "/" + senderKey + ".png", get_avatar(senderKey, 'png'), 'base64', function(err) {
+       				        console.log(err);
 
+       				      });
 
        				      if (message.length < 1) {
                       console.log('Empty message, skipping');
@@ -4044,7 +4035,7 @@ console.log('Background syncing...');
        				 		 let name;
 
        				     if (hex_json.n) {
-       				       name = hex_json.n;
+       				       name = escapeHtml(hex_json.n);
        				     } else {
        				 			name = 'Anonymous';
        				 		}
@@ -4052,17 +4043,22 @@ console.log('Background syncing...');
                   if ($('#recent_board_messages .inner .board_message').length > 4) {
                     $('#recent_board_messages .inner .board_message')[$('#recent_board_messages .inner .board_message').length -1].remove();
                   }
-                  console.log('we here');
-                  save_boards_message(hex_json, time, thisHash);
 
 
-       				 		if (senderKey != currentAddr && message_was_unknown && $('.board_icon.current').attr('invitekey') != hex_json.brd) {
+                        let boards_addresses = rmt.getGlobal('boards_addresses');
+                        let boards_keys = [];
+
+                        for (address in boards_addresses) {
+                          boards_keys.push(boards_addresses[address][1]);
+                        }
+                        save_boards_message(hex_json, time, thisHash, to_board);
+       				 		if (senderKey != currentAddr && message_was_unknown && to_board != $('.current').attr('invitekey')) {
 
                      last_block_checked = transaction.hash;
                      $('#messages_pane').find('audio').remove();
                      $('#messages_pane').append('<audio autoplay><source src="static/boardmessage.mp3" type="audio/mpeg"></audio>');
-                     $('.board_icon[invitekey='+ hex_json.brd + ']').addClass('unread_board');
-
+                     $('.board_icon[invitekey='+ to_board + ']').addClass('unread_board');
+                     print_board_message(thisHash, senderKey, hex_json.m, hex_json.t, to_board, hex_json.n, hex_json.r, '#recent_board_messages .inner');
        				      notifier.notify({
        				        title: name + " in " + to_board,
        				        message: message,
@@ -4086,8 +4082,9 @@ console.log('Background syncing...');
                    // }
 
                    // print_single_board_message(thisHash, '#recent_board_messages .inner');
-       				 } else if (senderKey != currentAddr && message_was_unknown && hex_json.brd == $('.current').attr('invitekey')) {
-                 print_board_message(thisHash, key, hex_json.m, escapeHtml(parseInt(hex_json.t)), hex_json.brd, escapeHtml(hex_json.n), escapeHtml(hex_json.r), '#boards_messages');
+
+       				 } if (senderKey != currentAddr && message_was_unknown && to_board == $('.current').attr('invitekey')) {
+                 print_board_message(thisHash, senderKey, hex_json.m, hex_json.t, to_board, hex_json.n, hex_json.r, '#boards_messages');
                  $('#boards .board_message').each(function(index){
                    console.log( index + ": " + $( this ).text() );
                    $(this).delay(index*100).animate({
@@ -4097,7 +4094,6 @@ console.log('Background syncing...');
                    });
 
                  })
-                   print_board_message(thisHash, senderKey, hex_json.m, escapeHtml(parseInt(hex_json.t)), hex_json.brd, escapeHtml(hex_json.n), escapeHtml(hex_json.r), '#recent_board_messages .inner');
 
                } else {
                  console.log('Already know about this message, skipping..');
@@ -4109,8 +4105,6 @@ console.log('Background syncing...');
 
         }}} catch (err) {
           await sleep(sleepAmount);
-
-              backgroundSyncMessages();
           }
 }
   }
