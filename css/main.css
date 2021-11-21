@@ -1387,7 +1387,7 @@ overlay #hugin-background img {
 }
 
 .login-avatar-box {
-
+  -webkit-user-select:none;
   height: 124px;
 }
 
