@@ -2821,7 +2821,16 @@ ipcRenderer.on('wallet-started', async () => {
 
 			      });
 
+            //Pushes boards_db hashes to known_pool_txs
 
+            boards_db.find({ hash: { $exists: true } }, function (err, docs) {
+              console.log(docs);
+
+            for (doc in docs.reverse()) {
+              hash = docs[doc].hash;
+              known_pool_txs.push(hash);
+            }
+            });
 
             await sleep(1000);
             check_protection();
@@ -3357,7 +3366,7 @@ let print_board_message = async (hash, address, message, timestamp, fetching_boa
                } else {
                  to_board = fetching_board;
                }
-               $('#recent_board_messages .inner .' + hash).after('<span class="in_board"> in ' + to_board + ' </span>');
+               $('#recent_board_messages .inner .' + hash + " .board_message_user").before('<span class="in_board"> in ' + to_board.substring(0,44) + ' </span>');
 
 
     })
@@ -3657,9 +3666,6 @@ console.log('Background syncing...');
              console.log("This transaction is already known", thisHash);
              continue;
            }
-           if (check_counter == 0) {
-              await sleep(1000);
-            }
             if (thisHash.length < 65) {
               boards_db.find({ hash: thisHash }, function (err, docs) {
                 console.log(docs);
@@ -3960,8 +3966,9 @@ console.log('Background syncing...');
              }
            } else {
 
-
-           if (tx.b) {
+             if (tx.b || tx.brd) {
+              let hex_json;
+             if (tx.b) {
 
              let known_keys = rmt.getGlobal('boards_addresses');
 
@@ -3976,17 +3983,17 @@ console.log('Background syncing...');
           			 let this_keyPair = nacl.box.keyPair.fromSecretKey(secretKey);
           			 hex_json = JSON.parse(naclUtil.encodeUTF8(nacl.box.open(fromHexString(tx.b), nonceFromTimestamp(tx.t), this_keyPair.publicKey, this_keyPair.secretKey)));
                  console.log('Decrypted:', hex_json);
-                 let time = tx.t
+                 let time = escape(tx.t);
                  let message = escapeHtml(hex_json.m);
-                 board_key = hex_json.brd;
-                 save_boards_message(hex_json, time, thisHash, board_key);
+                 to_board = escapeHtml(hex_json.brd);
+                 save_boards_message(hex_json, time, thisHash, to_board);
                } catch (err) {
                  console.log('Couldnt encrypt..', err);
                }
              }
 
-       		 } else {
-             let hex_json = tx;
+       		  } else {
+             hex_json = tx;
              if (hex_json.brd == 'Home') {
                to_board =  '0b66b223812861ad15e5310b4387f475c414cd7bda76be80be6d3a55199652fc';
              } else {
@@ -3999,29 +4006,35 @@ console.log('Background syncing...');
 
             hex_json.t = parseInt(Date.now() / 1000);
 
+            time = escape(hex_json.t);
             // Save board message in db, returns false if message already existed in db
             let message_was_unknown = true;
             hex_json.h = thisHash;
+
 
 
             console.log('message_was_unknown', message_was_unknown);
             console.log(hex_json);
             let this_addr = await Address.fromAddress(hex_json.k);
             let verified = await xkrUtils.verifyMessageSignature(hex_json.m, this_addr.spend.publicKey, hex_json.s);
+            if (!verified) {
+                console.log('not verified');
+              return;
+            }
             // console.log(verified);
        		 // let verified = nacl.sign.detached.verify(naclUtil.decodeUTF8(hex_json.m), fromHexString(hex_json.s), fromHexString(hex_json.k));
-
-       		 if (!verified) {
-               console.log('not verified');
-       			 return;
-       		 }
+         }
 
 
-           let senderKey = escapeHtml(hex_json.k);
+
+            if (tx.b) {
+             time = escape(parseInt(tx.t));
+            }
+            let senderKey = escape(hex_json.k);
+            let message = escapeHtml(hex_json.m);
 
 
-                    let time = escapeHtml(hex_json.t);
-       				      let message = escapeHtml(hex_json.m);
+
                     await require("fs").writeFile(userDataDir + "/" + senderKey + ".png", get_avatar(senderKey, 'png'), 'base64', function(err) {
        				        console.log(err);
 
@@ -4058,7 +4071,7 @@ console.log('Background syncing...');
                      $('#messages_pane').find('audio').remove();
                      $('#messages_pane').append('<audio autoplay><source src="static/boardmessage.mp3" type="audio/mpeg"></audio>');
                      $('.board_icon[invitekey='+ to_board + ']').addClass('unread_board');
-                     print_board_message(thisHash, senderKey, hex_json.m, hex_json.t, to_board, hex_json.n, hex_json.r, '#recent_board_messages .inner');
+                     print_board_message(thisHash, senderKey, message, time, to_board, name, hex_json.r, '#recent_board_messages .inner');
        				      notifier.notify({
        				        title: name + " in " + to_board,
        				        message: message,
@@ -4084,7 +4097,7 @@ console.log('Background syncing...');
                    // print_single_board_message(thisHash, '#recent_board_messages .inner');
 
        				 } if (senderKey != currentAddr && message_was_unknown && to_board == $('.current').attr('invitekey')) {
-                 print_board_message(thisHash, senderKey, hex_json.m, hex_json.t, to_board, hex_json.n, hex_json.r, '#boards_messages');
+                 print_board_message(thisHash, senderKey, message, time, to_board, name, hex_json.r, '#boards_messages');
                  $('#boards .board_message').each(function(index){
                    console.log( index + ": " + $( this ).text() );
                    $(this).delay(index*100).animate({
@@ -4100,14 +4113,25 @@ console.log('Background syncing...');
                }
 
 
-              }
+
+           } else {
+             await sleep(200);
+             console.log("Not a board nor box");
            }
 
-        }}} catch (err) {
-          await sleep(sleepAmount);
+      }
+      }
+          } else {
+          return;
+          }
+          } catch (err) {
+          await sleep(200);
+          console.log("Not a board or box");
+          console.log(err);
           }
 }
-  }
+}
+
 
 let global_nonce;
 
