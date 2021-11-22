@@ -1656,7 +1656,7 @@ async function sendBoardMessage(message) {
       amount = 1;
       fee = 10;
       mixin = 3;
-      timestamp = Date.now()/1000;
+      timestamp = parseInt(Date.now()/1000);
       //
       //let signature = nacl.sign.detached(naclUtil.decodeUTF8(message_to_send), signingKeyPair.secretKey);
       // console.log('getting private key for ', currentAddr);
@@ -1675,8 +1675,11 @@ async function sendBoardMessage(message) {
       // Convert message data to json
       if ($('.board_icon.current').hasClass('private')) {
         current_board = $('.current').attr('invitekey');
+        payload_json = {"m":message_to_send, "k":currentAddr, "s": signature, "brd": current_board};
+      } else {
+      payload_json = {"m":message_to_send, "k":currentAddr, "s": signature, "brd": current_board, "t": timestamp};
       }
-      payload_json = {"m":message_to_send, "k":currentAddr, "s": signature, "brd": current_board};
+
 
       if ($('.boards_nickname_form').val().length) {
         payload_json.n = $('.boards_nickname_form').val();
@@ -1970,7 +1973,7 @@ async function save_boards_message(message_json, time, thisHash, to_board) {
   let board = to_board;
   let sender = message_json.k;
   let message = message_json.m;
-  let timestamp = time
+  let timestamp = time;
   let nickname = message_json.n;
   let this_reply = message_json.r;
   if (!message_json.m) {
@@ -4004,7 +4007,7 @@ console.log('Background syncing...');
 
 
 
-            hex_json.t = parseInt(Date.now() / 1000);
+
 
             time = escape(hex_json.t);
             // Save board message in db, returns false if message already existed in db
@@ -4029,7 +4032,9 @@ console.log('Background syncing...');
 
             if (tx.b) {
              time = escape(parseInt(tx.t));
-            }
+           } else {
+             time = escape(hex_json.t);
+           }
             let senderKey = escape(hex_json.k);
             let message = escapeHtml(hex_json.m);
 
