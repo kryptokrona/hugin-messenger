@@ -1434,7 +1434,8 @@ let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json
         } else {
 					if (handleMagnetListed(payload_json.msg).length && transfer[0].address != currentAddr) {
             console.log('Prepending new contact..');
-          $('#messages_contacts').prepend('<li class="active_contact ' + transfer[0].address + '" address="' + transfer[0].address + '"><img class="contact_avatar" src="data:image/svg+xml;base64,' + get_avatar(transfer[0].address) + '" /><span class="contact_address">' + transfer[0].address + '</span><br><span class="listed_message">'+handleMagnetListed(payload_json.msg)+'</li>');
+          $('#messages_contacts .active_contact').css('border-left', 'none');
+          $('#messages_contacts').prepend('<li class="active_contact ' + transfer[0].address + '" address="' + transfer[0].address + '" style="border-left: ridge; "><img class="contact_avatar" src="data:image/svg+xml;base64,' + get_avatar(transfer[0].address) + '" /><span class="contact_address">' + transfer[0].address + '</span><br><span class="listed_message">'+handleMagnetListed(payload_json.msg)+'</li>');
           }
         }
         }
