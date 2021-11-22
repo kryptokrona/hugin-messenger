@@ -1355,7 +1355,7 @@ let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json
             console.log('keep pushin');
           }
           if (payload_json.brd) {
-          let time = temp_hash / 1000;
+          let time = escape(parseInt(temp_hash / 1000));
           let thisHash = resp.body.result.transactionHash;
           console.log(to_board);
           save_boards_message(payload_json, time, thisHash, to_board);
@@ -1969,7 +1969,7 @@ function save_message(message_json) {
 }
 
 async function save_boards_message(message_json, time, thisHash, to_board) {
-
+  
   let hash =  thisHash;
   let board = to_board;
   let sender = message_json.k;
