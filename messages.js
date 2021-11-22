@@ -1355,7 +1355,7 @@ let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json
             console.log('keep pushin');
           }
           if (payload_json.brd) {
-          let time = parseInt(temp_hash / 1000);
+          let time = temp_hash / 1000;
           let thisHash = resp.body.result.transactionHash;
           console.log(to_board);
           save_boards_message(payload_json, time, thisHash, to_board);
@@ -1992,7 +1992,7 @@ async function save_boards_message(message_json, time, thisHash, to_board) {
 
         if (docs.length == 0 && message) {
 
-        let message_db = {"hash": hash, "board": board, "sender": sender, "message": message, "timestamp": time, "nickname": nickname, "reply": this_reply};-
+        let message_db = {"hash": hash, "board": board, "sender": sender, "message": message, "timestamp": timestamp, "nickname": nickname, "reply": this_reply};-
         console.log('SAVING DIZ S');
         boards_db.insert(message_db);
 
@@ -4004,7 +4004,6 @@ console.log('Background syncing...');
             }
 
        		 // console.log('Debug me', hex_json);
-
 
 
 
