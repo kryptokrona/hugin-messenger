@@ -1858,7 +1858,7 @@ font-size: 16pt;
 }
 
 .in-call-contact .contact_address {
-  width: 59%;
+  width: 55%;
   color: black;
 }
 
@@ -2082,7 +2082,7 @@ width: 75%;
     font-size: 14px;
     margin-top: -44px;
     font-weight: 500;
-    margin-left: 5px;
+    margin-left: 10px;
     font-family: "montserrat";
     color: rgba(255,255,255,0.9);
       -webkit-user-select: none;
@@ -2093,8 +2093,8 @@ width: 75%;
   vertical-align: -17px;
 }
 
-.contact_avatar { -webkit-user-select: none; border-radius: 50%; position: relative; left: -43px; top: -1px; height: 48px; width: 48px; }
-.listed_message { -webkit-user-select: none; display: block; font-family: "Montserrat"; font-weight: 300; width: 90%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 11px; opacity: 0.7; margin-top: -10px; margin-left: 5px; }
+.contact_avatar { -webkit-user-select: none; border-radius: 15%; position: relative; left: -43px; top: -1px; height: 48px; width: 48px; }
+.listed_message { -webkit-user-select: none; display: block; font-family: "Montserrat"; font-weight: 300; width: 90%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 11px; opacity: 0.7; margin-top: -10px; margin-left: 10px; }
 
 #messages_contacts, #boards_messages {
   --scrollbarBG: transparent;
