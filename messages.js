@@ -1970,7 +1970,7 @@ function save_message(message_json) {
 }
 
 async function save_boards_message(message_json, time, thisHash, to_board) {
-  
+
   let hash =  thisHash;
   let board = to_board;
   let sender = message_json.k;
@@ -3590,7 +3590,7 @@ ipcRenderer.on('new-message', async (event, transaction) => {
 				 		 let name;
 
 				     if (hex_json.n) {
-				       name = hex_json.n;
+				       name = escape(hex_json.n);
 				     } else {
 				 			name = 'Anonymous';
 				 		}
@@ -3618,12 +3618,12 @@ ipcRenderer.on('new-message', async (event, transaction) => {
             if ($('.board_icon.current').attr('invitekey') == transaction.transfers[0].publicKey) {
 
 
-              print_board_message(thisHash, hex_json.k, hex_json.m, escapeHtml(parseInt(hex_json.t)), hex_json.brd, escapeHtml(hex_json.n), escapeHtml(hex_json.r), '#boards_messages');
+              print_board_message(thisHash, hex_json.k, hex_json.m, parseInt(time), hex_json.brd, hex_json.n, hex_json.r, '#boards_messages');
 
             }
             $('.board_icon[invitekey='+ hex_json.brd + ']').addClass('unread_board');
             $('#recent_board_messages .default').remove();
-            print_board_message(thisHash, hex_json.k, hex_json.m, escapeHtml(parseInt(hex_json.t)), hex_json.brd, escapeHtml(hex_json.n), escapeHtml(hex_json.r), '#recent_board_messages .inner');
+            print_board_message(thisHash, hex_json.k, hex_json.m, parseInt(time), hex_json.brd, hex_json.n, hex_json.r, '#recent_board_messages .inner');
 				 }
 
 
@@ -3656,6 +3656,8 @@ console.log('Background syncing...');
 
         json = JSON.parse(json);
 
+        known_pool_txs = $(known_pool_txs).not(json.deletedTxsIds).get();
+
         let transactions = json.addedTxs;
 
         for (transaction in transactions) {
@@ -3671,7 +3673,7 @@ console.log('Background syncing...');
              console.log("This transaction is already known", thisHash);
              continue;
            }
-            if (thisHash.length < 65) {
+            if (thisHash.length == 64) {
               boards_db.find({ hash: thisHash }, function (err, docs) {
                 console.log(docs);
                   message_was_unknown = false;
@@ -3685,9 +3687,8 @@ console.log('Background syncing...');
 
            } else {
                 console.log('err', err);
-                console.log(docs);
                message_was_unknown = false;
-               known_pool_txs.push(thisHash);
+               console.log('not a hash');
                 return;
               }
 
@@ -3707,7 +3708,7 @@ console.log('Background syncing...');
 
            console.log('THIS EXTRA', thisExtra);
 
-          if (thisExtra.length > 64 && message_was_unknown) {
+          if (thisExtra.length > 200 && message_was_unknown) {
 
             let extra = trimExtra(thisExtra);
             let tx = JSON.parse(extra);
@@ -4009,8 +4010,11 @@ console.log('Background syncing...');
 
 
 
-
+           if (!hex_json.t) {
+             time = parseInt(Date.now()/1000);
+           } else {
             time = escape(hex_json.t);
+            }
             // Save board message in db, returns false if message already existed in db
             let message_was_unknown = true;
             hex_json.h = thisHash;
