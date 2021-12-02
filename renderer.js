@@ -125,7 +125,7 @@ function sendTransaction() {
 
   // $("#payment_message").unbind('click');
 
-  let global_mixin = 0;
+  let global_mixin = 3;
 
   console.log(global_mixin);
 
