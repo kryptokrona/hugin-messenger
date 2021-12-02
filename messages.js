@@ -2826,16 +2826,6 @@ ipcRenderer.on('wallet-started', async () => {
 
 			      });
 
-            //Pushes boards_db hashes to known_pool_txs
-
-            boards_db.find({ hash: { $exists: true } }, function (err, docs) {
-              console.log(docs);
-
-            for (doc in docs.reverse()) {
-              hash = docs[doc].hash;
-              known_pool_txs.push(hash);
-            }
-            });
 
             await sleep(1000);
             check_protection();
@@ -3283,7 +3273,6 @@ let print_board_message = async (hash, address, message, timestamp, fetching_boa
 
            $(selector + ' .' + hash + ' .boards_nickname').css('top','55px');
            $(selector + ' .' + hash + ' .board_message_pubkey').css('top','70px');
-           $('#recent_board_messages .inner .' + hash + ' .board_message_pubkey').css('top','86px');
            $('#recent_board_messages .inner .' + hash + ' .boards_nickname').css('top','67px');
 
 
@@ -3333,6 +3322,8 @@ let print_board_message = async (hash, address, message, timestamp, fetching_boa
 
              $(selector + ' .' + hash + ' .boards_nickname').css('top','55px');
              $(selector + ' .' + hash + ' .board_message_pubkey').css('top','70px');
+
+             $('#recent_board_messages .inner .' + hash + ' .board_message_pubkey').css('top','86px');
 
 
         }
@@ -3659,7 +3650,7 @@ console.log('Background syncing...');
         known_pool_txs = $(known_pool_txs).not(json.deletedTxsIds).get();
 
         let transactions = json.addedTxs;
-
+        let message_was_unknown = true;
         for (transaction in transactions) {
 
           try {
@@ -3837,7 +3828,6 @@ console.log('Background syncing...');
                    save_message(payload_json);
 
 
-
                 if (payload_json.t > latest_transaction_time) {
 
 
@@ -4007,14 +3997,6 @@ console.log('Background syncing...');
             }
 
        		 // console.log('Debug me', hex_json);
-
-
-
-           if (!hex_json.t) {
-             time = parseInt(Date.now()/1000);
-           } else {
-            time = escape(hex_json.t);
-            }
             // Save board message in db, returns false if message already existed in db
             let message_was_unknown = true;
             hex_json.h = thisHash;
@@ -4035,11 +4017,10 @@ console.log('Background syncing...');
 
 
 
-            if (tx.b) {
-             time = escape(parseInt(tx.t));
-           } else {
-             time = escape(hex_json.t);
-           }
+          let time = parseInt(Date.now()/1000);
+          if (hex_json.t) {
+          time = escape(hex_json.t);
+          }
             let senderKey = escape(hex_json.k);
             let message = escapeHtml(hex_json.m);
 
@@ -4132,11 +4113,11 @@ console.log('Background syncing...');
       }
       }
           } else {
+            console.log("Not a board or box");
           return;
           }
           } catch (err) {
           await sleep(200);
-          console.log("Not a board or box");
           console.log(err);
           }
 }
