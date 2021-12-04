@@ -1316,6 +1316,7 @@ overlay {
 #login button {
   font-family: "Montserrat";
   font-size: 17px;
+  -webkit-user-select:none;
 }
 
 #login, #welcome {
@@ -1376,9 +1377,11 @@ overlay #hugin-background img {
   top: -19%;
   left: -5%;
   margin-top: 10%;
+  -webkit-user-select:none;
 }
 
 #login-screen h1, #login-screen h2 {
+  -webkit-user-select:none;
   width: 100%;
 }
 
@@ -2093,7 +2096,7 @@ width: 75%;
   vertical-align: -17px;
 }
 
-.contact_avatar { -webkit-user-select: none; border-radius: 15%; position: relative; left: -43px; top: -1px; height: 48px; width: 48px; }
+.contact_avatar { -webkit-user-select: none; border-radius: 40%; position: relative; left: -44px; top: -1px; height: 48px; width: 48px; }
 .listed_message { -webkit-user-select: none; display: block; font-family: "Montserrat"; font-weight: 300; width: 90%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 11px; opacity: 0.7; margin-top: -10px; margin-left: 10px; }
 
 #messages_contacts, #boards_messages {
@@ -2873,8 +2876,9 @@ color: black;
 }
 
 #incomingCall img {
-  margin-left: 101px;
-width: 33%;
+margin-left: 101px;
+width: 96px;
+height: 96px;
 background: black;
 margin-bottom: 10px;
 /* background: linear-gradient(270deg, #000000, #1b1836);
