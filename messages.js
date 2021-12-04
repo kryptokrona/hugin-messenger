@@ -3650,7 +3650,6 @@ console.log('Background syncing...');
         known_pool_txs = $(known_pool_txs).not(json.deletedTxsIds).get();
 
         let transactions = json.addedTxs;
-        let message_was_unknown = true;
         for (transaction in transactions) {
 
           try {
@@ -4015,12 +4014,10 @@ console.log('Background syncing...');
        		 // let verified = nacl.sign.detached.verify(naclUtil.decodeUTF8(hex_json.m), fromHexString(hex_json.s), fromHexString(hex_json.k));
          }
 
-
-
-          let time = parseInt(Date.now()/1000);
-          if (hex_json.t) {
-          time = escape(hex_json.t);
-          }
+         let time = escape(parseInt(Date.now() / 1000));
+         if (tx.b) {
+          time = escape(parseInt(tx.t));
+        }
             let senderKey = escape(hex_json.k);
             let message = escapeHtml(hex_json.m);
 
@@ -4062,7 +4059,6 @@ console.log('Background syncing...');
                      $('#messages_pane').find('audio').remove();
                      $('#messages_pane').append('<audio autoplay><source src="static/boardmessage.mp3" type="audio/mpeg"></audio>');
                      $('.board_icon[invitekey='+ to_board + ']').addClass('unread_board');
-                     print_board_message(thisHash, senderKey, message, time, to_board, name, hex_json.r, '#recent_board_messages .inner');
        				      notifier.notify({
        				        title: name + " in " + to_board,
        				        message: message,
