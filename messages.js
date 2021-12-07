@@ -139,7 +139,7 @@ let print_board = (board) => {
 
   console.log('Printing board', board);
   $('#boards .board_message').remove();
-  boards_db.find({board : board}).sort({ timestamp: -1 }).limit(25).exec(async function (err,docs){
+  boards_db.find({board : board}).sort({ timestamp: -1 }).limit(50).exec(async function (err,docs){
 
 
 

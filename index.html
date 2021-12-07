@@ -185,27 +185,19 @@
       </div>
 
       <div id="boards" class="hidden">
-
+        <div id="board-menu">
+          <h3>Boards</h3>
+          <i class="fa fa-list-ul"></i><p class="recent">Recent</p></br>
+          <!-- <i class="fa fa-th "></i><p class="explore">Explore</p></br>
+          <i class="fa fa-line-chart"></i><p class="trending">Trending</p> -->
+        </div>
             <input class="boards_nickname_form" type="text" placeholder="Anonymous">
           </input>
           <span id="replyto" class="hidden rgb">Replying to anonymous</span><span class="hidden" id="replyto_exit">+</span>
         <input id="boards_message_form" type="text" placeholder="Message">
         <div id="board_title"></div>
       </input>
-      <div id="board_box" class="board-flip">
-    <h3>Welcome to Hugin!</h3>
-    <h5>What is Hugin?</h5>
-    <p>Hugin is a decentralized social network that lives on the kryptokrona blockchain</p>
-    <h5>How do I use it?</h5>
-    <p>First you need to get some kryptokrona. Copy your SEKR-address from your profile and then transfer som xkr there!<br>Then simply type your message into the text field above the feed and hit enter 🙂</p>
-    <h5>How do I register?</h5>
-    <p>You are automatically registered when you visit this website the first time.<br>
-    <h5>How does it work?</h5>
-    <p>All messages are stored on the kryptokrona blockchain, a decentralized database of sorts, which this site reads from.</p>
-    <br>
-    <p style="word-break: break-all;font-size: 14px">If you like this service, please feel free to send some xkr to <br><b>SEKReXcwhgX9LVUgnist5JNqSTqwkC7KejZfCULR3sGkcqBSY7bV5PR3QMppFWFSAs5HUdENPKSXXdbkEo6pThSVUub41Nc1CMS</b></p>
 
-  </div>
 
     <i class="fa fa-smile-o emoji-boards" style="opacity: 0.5;
     margin-top: 23px;
@@ -215,6 +207,12 @@
   </div>
 
       </div>
+      <div id="board_box" class="board-flip">
+          <div class="inner">
+            <p class="default">No messages yet</p>
+          </div>
+
+        </div>
 
       <div id="wallet_summary" style="display: none;">
 
@@ -465,12 +463,6 @@
             </div>
           </div> -->
 
-          <div id="recent_board_messages">
-            <h2>Recent board activity</h2>
-            <div class="inner">
-              <p class="default">No messages yet</p>
-            </div>
-          </div>
 
 
           <div id="recent_transactions">
