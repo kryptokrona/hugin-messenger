@@ -98,15 +98,18 @@ overflow-y: scroll;
 }
 
 #board_box {
-
+overflow-y: scroll;
 background-color: rgba(0,0,0,0.1);
 border-radius: 5px;
 width: 33%;
+top: 110px !important;
+right: 10px !important;
 color: white;
 position: absolute;
 right: 50px;
 font-size: 11pt;
 padding: 10px;
+height: 700px;
 display: none;
 }
 
