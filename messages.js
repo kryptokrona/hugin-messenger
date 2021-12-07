@@ -370,7 +370,7 @@ let startCall = (audio, video, screenshare=false) => {
 
   $('#messages_pane').find('audio').remove();
   $('#messages_pane').append('<audio autoplay><source src="static/startcall.mp3" type="audio/mpeg"></audio>');
-  $('#messages_contacts > li').css('border-left', 'none');
+  $('.active_contact').removeClass('border-rgb');
 
   // $('#video-button').unbind('click');
   //
