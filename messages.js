@@ -3601,13 +3601,12 @@ ipcRenderer.on('new-message', async (event, transaction) => {
 			 return;
 		 }
 
-		 let to_board;
-
+		 let to_board = hex_json.brd;
      await boards_db.find({hash : thisHash}, function (err,docs){
 
          if (docs.length == 0 && message) {
 
-         save_boards_message(hex_json, time, thisHash);
+         save_boards_message(hex_json, time, thisHash, to_board);
          known_pool_txs.push(thisHash);
 
        } else {
@@ -3657,12 +3656,12 @@ ipcRenderer.on('new-message', async (event, transaction) => {
             if ($('.board_icon.current').attr('invitekey') == transaction.transfers[0].publicKey) {
 
 
-              print_board_message(thisHash, hex_json.k, hex_json.m, parseInt(time), hex_json.brd, hex_json.n, hex_json.r, '#boards_messages');
+              print_board_message(thisHash, hex_json.k, message, parseInt(time), to_board, name, hex_json.r, '#boards_messages');
 
             }
             $('.board_icon[invitekey='+ hex_json.brd + ']').addClass('unread_board');
             $('#board_box .default').remove();
-            print_board_message(thisHash, hex_json.k, hex_json.m, parseInt(time), hex_json.brd, hex_json.n, hex_json.r, '#board_box .inner');
+            print_board_message(thisHash, hex_json.k, message, parseInt(time), to_board, name, hex_json.r, '#board_box .inner');
 				 }
 
 
