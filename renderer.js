@@ -784,6 +784,8 @@ $("document").ready(async function(){
   $('#avatar_contact').fadeOut();
   $('#context_menu').fadeOut();
   $('.board_icon').removeClass('current');
+  $('#board_box').removeClass('show');
+  $('#board_box').addClass('hidden');
 
 $('#send_payment').addClass('hidden');
 if ($('#flip-box-inner').hasClass('flip')) {
@@ -827,6 +829,8 @@ $("#messages_page").removeClass('hidden');
 $('#messages .received_message, #messages .sent_message').show();
 $('#messages_pane').scrollTop($('#messages').height());
 $('#currentchat_footer').removeClass('hidden');
+$('#board_box').removeClass('show');
+$('#board_box').addClass('hidden');
 if ($('#boards').hasClass('hidden') && $('#flip-box-inner').hasClass('flip')) {
 flip();
 }
@@ -855,6 +859,8 @@ $('#currentchat_header_wrapper').removeClass('toggled_addr');
 $('#avatar_contact').fadeOut();
 $('#context_menu').fadeOut();
 $('#replyto_exit').click();
+$('#board_box').removeClass('show');
+$('#board_box').addClass('hidden');
 $('.board_icon').removeClass('current');
 if (!$('#flip-box-inner').hasClass('flip')) {
 flip();
@@ -904,6 +910,8 @@ $("#status_icon").click(function(){
   $('#send_payment').addClass('hidden');
   $('#avatar_contact').fadeOut();
   $('#context_menu').fadeOut();
+  $('#board_box').removeClass('show');
+  $('#board_box').addClass('hidden');
   $('#currentchat_header_wrapper').removeClass('toggled_addr');
   if (!$('#flip-box-inner').hasClass('flip')) {
   flip();
