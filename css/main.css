@@ -651,7 +651,7 @@ border-radius: 5px;
 
 #container > div:not(#modal) {
 
-  width: 28%;
+  width: 27%;
   height: 100%;
   top: 0;
   padding-left: 20px;
@@ -1651,14 +1651,15 @@ font-size: 14pt;
  .board_message {
    transition: 0.3s;
    list-style: none;
-   max-width: 60%;
+   max-width: 52%;
    margin-bottom: 2px;
    border-radius: 15px;
-   margin-left: 20%;
+   margin-left: 15%;
    position: relative;
    padding: 15px;
    padding-left: 20px;
    opacity: 0;
+   cursor: pointer;
    -webkit-user-select:none;
 
  }
@@ -1822,7 +1823,6 @@ font-size: 14pt;
   overflow-x: hidden;
   height: 100%;
   perspective: 1000px;
-  transition: 1s padding-top;
 }
 
 
@@ -1836,7 +1836,6 @@ font-size: 14pt;
   margin: 7px;
   margin-left: 7px;
   position: relative;
-  transition: 0.2s;
 }
 
 #messages_contacts .fa {
@@ -2092,29 +2091,31 @@ width: 75%;
   }
 
 #messages .contact_address {
-  display: inline-block;
-  vertical-align: -17px;
+margin-left: 2px;
+display: inline-block;
+vertical-align: 0px;
+margin-bottom: -16px;
 }
 
 .contact_avatar { -webkit-user-select: none; border-radius: 40%; position: relative; left: -44px; top: -1px; height: 48px; width: 48px; }
 .listed_message { -webkit-user-select: none; display: block; font-family: "Montserrat"; font-weight: 300; width: 90%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 11px; opacity: 0.7; margin-top: -10px; margin-left: 10px; }
 
-#messages_contacts, #boards_messages {
+#messages_contacts, #boards_messages, #board_box {
   --scrollbarBG: transparent;
   --thumbBG: #3337;
 
 }
-#messages_contacts::-webkit-scrollbar, #boards_messages::-webkit-scrollbar {
+#messages_contacts::-webkit-scrollbar, #boards_messages::-webkit-scrollbar, #board_box::-webkit-scrollbar {
   width: 8px;
 }
-#messages_contacts, #boards_messages {
+#messages_contacts, #boards_messages, #board_box {
   scrollbar-width: thin;
   scrollbar-color: var(--thumbBG) var(--scrollbarBG);
 }
-#messages_contacts::-webkit-scrollbar-track, #boards_messages::-webkit-scrollbar-track {
+#messages_contacts::-webkit-scrollbar-track, #boards_messages::-webkit-scrollbar-track, #board_box::-webkit-scrollbar-track {
   background: var(--scrollbarBG);
 }
-#messages_contacts::-webkit-scrollbar-thumb, #boards_messages::-webkit-scrollbar-thumb {
+#messages_contacts::-webkit-scrollbar-thumb, #boards_messages::-webkit-scrollbar-thumb, #board_box::-webkit-scrollbar-thumb {
   background-color: var(--thumbBG) ;
   border-radius: 3px;
   border: 3px solid var(--scrollbarBG);
@@ -2150,7 +2151,7 @@ width: 75%;
 
 .show {
   transition: 0.3s;
-  display: block;
+  display: block !important;
   position: absolute;
 
 }
@@ -2164,7 +2165,10 @@ width: 75%;
 
 @media (prefers-color-scheme: light) {
 
-
+  #board-menu {
+    background: rgba(0,0,0,0.02) !important;
+    color: #53565c !important;
+  }
   .unread_board:not(.current)::after {
     border-color: #F5F6F7;
   }
@@ -2366,7 +2370,7 @@ header  {
     background: white !important;
   }
 
-  #messages_contacts, #boards_messages {
+  #messages_contacts, #boards_messages, #board_box {
     --scrollbarBG: transparent;
     --thumbBG: rgba(0,0,0,0.1);
 
@@ -3450,7 +3454,7 @@ button.emoji-picker__category-button:hover {
 }
 
 
-#recent_board_messages .board_message_reply {
+#board_box .board_message_reply {
   margin-bottom: 10px;
   opacity: 0.6;
   margin-top: -15px;
@@ -3473,13 +3477,13 @@ button.emoji-picker__category-button:hover {
   display: inline-block;
   transform: rotate(90deg);
   font-weight: 400;
-  font-size: 28pt;
+  font-size: 26pt;
   margin-left: 10px;
 }
 
-#recent_board_messages .board_message_reply::before {
+#board_box .board_message_reply::before {
 
-  margin-left: 10px;
+  margin-left: 5px;
 }
 
 .remove {
@@ -3529,6 +3533,45 @@ button.emoji-picker__category-button:hover {
   87.5% {
     background: 5ff2f0;
   }
+}
+
+
+@keyframes rgb-border {
+  0%, 100% {
+    border-color: #5f86f2;
+  }
+  12.5% {
+    border-color: #a65ff2;
+  }
+  25% {
+    border-color: #f25fd0;
+  }
+  37.5% {
+    border-color: #f25f61;
+  }
+  50% {
+    border-color: #f2cb5f;
+  }
+  62.5% {
+    border-color: #abf25f;
+  }
+  75% {
+    border-color: #5ff281;
+  }
+  87.5% {
+    border-color: #5ff2f0;
+  }
+}
+
+.border-rgb {
+  border-color: #5f86f2;
+  border: 4px solid #5f86f2;
+  -webkit-animation: rgb-border 10s ease infinite;
+  -moz-animation: rgb-border 10s ease infinite;
+  animation: rgb-border 10s ease infinite;
+  padding-left: 46px;
+  padding-top: 4px;
+  padding-bottom: 4px;
 }
 
 .profile-avatar {
@@ -3737,15 +3780,16 @@ right: 15px;
 
 
 #board_title {
+  -webkit-user-select: none;
   text-align: center;
-  height: 12px;
+  height: 20px;
   color: white;
   font-size: 14px;
   top: 82px;
   position: absolute;
   z-index: 9999;
-  width: 20%;
-  right: 5%;
+  width: 11%;
+  right: 7%;
   padding-top: 8px;
   font-family: Montserrat;
   font-weight: 700;
@@ -3820,22 +3864,54 @@ right: 15px;
   display: inline-block;
 }
 
-#recent_board_messages {
+#board_box {
 
   display: inline-block;
 } */
 
-#recent_board_messages .board_avatar {
-  width: 48px;
-  height: 48px;
+#board_box .board_avatar {
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   margin-left: -10px;
   -webkit-user-select: none;
 }
 
+#board-menu {
+  height: 50px;
+  width: 14%;
+  top: 12%;
+  left: -1%;
+  color: #f1f2f3;
+  font-size: 17px;
+  position: absolute;
+  background: rgba(0,0,0,0.1);
+  height: 25%;
+  text-align: center;
+  border-radius: 5px;
+}
+#board-menu h3 {
+    margin-left: 5%;
+  }
+
+#board-menu p:hover {
+  opacity: 1;
+}
+
+#board-menu p {
+  font-weight: 600;
+  opacity: 0.9;
+  font-weight: 400;
+  display: inline-block;
+  font-size: 15px;
+  cursor: pointer;
+  margin-left: 10px;
+  font-family: "Montserrat";
+}
+
 /*
 
-#recent_board_messages .board_message_pubkey {
+#board_box .board_message_pubkey {
 
   display: none;
 }
@@ -3859,7 +3935,7 @@ right: 15px;
 }
 
 #welcome_alpha #profile img {
-  width: 64px;
+  width: 58px;
 }
 
 #welcome_alpha #profile, #welcome_alpha #message-balance, #recent_private_messages {
@@ -3868,7 +3944,7 @@ right: 15px;
   vertical-align: top;
 }
 
-#recent_board_messages .inner {
+#board_box .inner {
   background: transparent !important;
   padding: 0px;
   width: 100%;
@@ -3932,61 +4008,61 @@ right: 15px;
   }
 }
 
-#recent_board_messages .board_message_pubkey {
+#board_box .board_message_pubkey {
   height: 5px;
   cursor: unset;
   left: 55px;
   top: 53px;
   position: absolute;
 }
-#recent_board_messages .board_message {
+#board_box .board_message {
   transition: 0.3s;
-  list-style: none;
-  max-width: 90%;
-  margin-bottom: 2px;
-  border-radius: 15px;
-  margin-left: 5%;
-  position: relative;
-  padding: 15px;
-  padding-left: 20px;
-  opacity: 1;
-  -webkit-user-select:none;
+    list-style: none;
+    border-radius: 15px;
+    position: relative;
+    padding: 15px;
+    margin-right: 0px;
+    max-width: 100%;
+    padding-left: 20px;
+    opacity: 1;
+    margin-left: 0px;
+    -webkit-user-select: none;
 }
 
-#recent_board_messages .board_message p {
-  font-size: 14px;
+#board_box .board_message p {
+  font-size: 12px;
   white-space: nowrap;
+  display: inline-block;
   overflow: hidden;
-  width: 90%;
   text-overflow: ellipsis;
-  font-weight: 400
-  border-radius: 5px;
-  width: max-content;
-  display: inline;
-  line-height: 7px;
-  vertical-align: 20%;
+  width: 87%;
+  font-weight: 400 border-radius: 5px;
+  line-height: 14px;
+  vertical-align: 0%;
 }
 
-#recent_board_messages .board_avatar_reply {
+#board_box .board_avatar_reply {
   top: -5px;
   max-width: 40px;
   height: 40px;
-  margin-left: 5px;
 }
 
-#recent_board_messages .board_message_reply p {
-  vertical-align: 15px;
-  font-size: 11px;
-  width: 70%;
+#board_box .board_message_reply p {
+  vertical-align: 12px;
+  font-size: 10px;
+  display: inline-block;
+  width: 60%;
   line-height: 0.01em;
   }
 
-  #recent_board_messages .boards_nickname {
-  top: 35px;
+  #board_box .boards_nickname {
+    top: 32px;
+  font-size: 12px;
+  margin-left: -8px;
   vertical-align: 36px;
   }
 
-#recent_board_messages .board_message_user {
+#board_box .board_message_user {
   padding-top: 10px;
 }
 
@@ -4040,9 +4116,10 @@ right: 15px;
 }
 
 .in_board {
+    font-size: 12px;
     vertical-align: top;
     font-weight: 400;
-    font-family: "montserrat";
+    font-family: "RobotoMono";
     width: 250px;
     display: inline-block;
     overflow: hidden;
@@ -4077,7 +4154,7 @@ right: 15px;
   height: 85%;
   transition: 0.1s;
   transition-timing-function: cubic-bezier(.17,.67,.25,.89);
-  margin-left: 0px;
+  margin-left: 55px;
 }
 
 #message-box {
@@ -4115,9 +4192,9 @@ button:hover {
 }
 
 .menu {
-  transition: 0.1s;
-  margin-left: -15% !important;
-  padding-right: 15% !important;
+  transition: 0.15s;
+  margin-left: -2% !important;
+  padding-right: 2% !important;
   transition-timing-function: cubic-bezier(.17,.67,.25,.89);
 }
 
