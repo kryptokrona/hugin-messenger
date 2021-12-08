@@ -744,7 +744,7 @@ let parseCall = (msg, sender=false, emitCall=true) => {
          $('#incomingCall').append('<audio autoplay loop><source src="static/ringtone.mp3" type="audio/mpeg"></audio>');
          $('#incomingCall').find('h1').text(`Incoming ${msg.substring(0,1) == "Δ" ? "video" : "audio"} call!`);
          $('#incomingCall').show();
-         let avatar_base64 = get_avatar(sender);
+         let avatar_base64 = get_big_avatar(sender);
          $('#incomingCall img').attr('src',"data:image/svg+xml;base64," + avatar_base64);
 
 				 dictionary.find({ original: sender }, function (err,docs){
@@ -766,6 +766,7 @@ let parseCall = (msg, sender=false, emitCall=true) => {
            $('#answerCall').unbind('click');
 					 $('#boards').addClass('hidden');
 					 $('#messages_page').removeClass('hidden');
+           $('.active_contact').removeClass('border-rgb');
 					 $('#new_board').addClass('hidden');
 					 $('#boards_picker').addClass('hidden');
            if ($('#recipient_form').text() != sender) {
