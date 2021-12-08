@@ -1513,6 +1513,7 @@ function sendMessage(message, silent=false) {
     $('#message_form').val('');
     $('#message_form').focus();
     $('#currentchat_header_wrapper').removeClass('toggled_addr');
+    $('.' + receiver ).removeClass('unread_message');
 
 
 
