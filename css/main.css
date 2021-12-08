@@ -647,6 +647,7 @@ border-radius: 5px;
   background-size: 100% 100%;
   box-shadow: inset 0px 0px 0px 1px #161415;
   cursor: pointer;
+  -webkit-user-select: none;
 }
 
 #container > div:not(#modal) {
@@ -3889,9 +3890,11 @@ right: 15px;
   height: 25%;
   text-align: center;
   border-radius: 5px;
+  -webkit-user-select: none;
 }
 #board-menu h3 {
     margin-left: 5%;
+    -webkit-user-select: none;
   }
 
 #board-menu p:hover {
