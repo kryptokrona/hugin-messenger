@@ -2263,6 +2263,7 @@ let sleepAmount = 1000;
 
 async function print_conversation(conversation) {
 	avatar_base64 = get_big_avatar(conversation);
+  avatar_sender = get_avatar(conversation);
   $('#messages .sent_message').remove();
   $('#messages .recieved_message').remove();
   $('#avatar_contact').attr('src','data:image/svg+xml;base64,' + avatar_base64).fadeIn();
@@ -2325,7 +2326,7 @@ async function print_conversation(conversation) {
          nickname_element = '<span class="contact_address">' + nickname + '</span>';
        }
 
-    $('#messages').append('<li id="' + messages[n].timestamp + '" timestamp="' + messages[n].timestamp + '" class="' + messages[n].type + '_message"><img class="message_avatar" src="data:image/png;base64,' + avatar_base64 + '">' + nickname_element + '<p>' + parseCall(messages[n].message, false, false) + '</p><span class="time" timestamp="' + messages[n].timestamp + '">' + moment(messages[n].timestamp).fromNow() + '</span></li>');
+    $('#messages').append('<li id="' + messages[n].timestamp + '" timestamp="' + messages[n].timestamp + '" class="' + messages[n].type + '_message"><img class="message_avatar" src="data:image/png;base64,' + avatar_sender + '">' + nickname_element + '<p>' + parseCall(messages[n].message, false, false) + '</p><span class="time" timestamp="' + messages[n].timestamp + '">' + moment(messages[n].timestamp).fromNow() + '</span></li>');
 
 
       let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(messages[n].message);
