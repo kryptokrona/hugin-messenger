@@ -2623,7 +2623,6 @@ let check_protection = async () => {
     console.log('last_checked_warnings', last_checked_warnings);
     if (last_checked_warnings > 0 && last_checked_counter == check_counter) {
       console.log('No checks for 120s, restarting service.');
-        backgroundSyncMessages();
 
       last_checked_warnings = 0;
     } else if (last_checked_counter == check_counter && last_checked_warnings == 0) {
@@ -2639,7 +2638,7 @@ let check_protection = async () => {
     console.log(err);
   }
   last_checked_counter = check_counter;
-  await sleep(2000);
+  await sleep(sleepAmount);
   check_protection();
   $('.time').each(function() {
 
