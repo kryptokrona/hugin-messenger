@@ -3888,7 +3888,7 @@ right: 15px;
 
 #board-menu {
   height: 50px;
-  width: 11%;
+  width: 11.5%;
   top: 11%;
   left: 1.7%;
   color: #f1f2f3;
@@ -3916,7 +3916,7 @@ right: 15px;
   display: inline-block;
   font-size: 15px;
   cursor: pointer;
-  margin-left: 10px;
+  margin-left: 5px;
   font-family: "Montserrat";
 }
 
