@@ -3809,6 +3809,14 @@ right: 15px;
   opacity: 0.8;
 }
 
+#boards .saving {
+  color: black;
+  position: absolute;
+  font-weight: 200;
+  right: 50%;
+  top: 5%;
+}
+
 
 /*
 #profile img {
@@ -3880,9 +3888,9 @@ right: 15px;
 
 #board-menu {
   height: 50px;
-  width: 14%;
-  top: 12%;
-  left: -1%;
+  width: 11%;
+  top: 11%;
+  left: 1.7%;
   color: #f1f2f3;
   font-size: 17px;
   position: absolute;
@@ -3893,7 +3901,7 @@ right: 15px;
   -webkit-user-select: none;
 }
 #board-menu h3 {
-    margin-left: 5%;
+    margin-left: 2%;
     -webkit-user-select: none;
   }
 

@@ -2327,7 +2327,7 @@ async function print_conversation(conversation) {
          nickname_element = '<span class="contact_address">' + nickname + '</span>';
        }
 
-    $('#messages').append('<li id="' + messages[n].timestamp + '" timestamp="' + messages[n].timestamp + '" class="' + messages[n].type + '_message"><img class="message_avatar" src="data:image/png;base64,' + avatar_sender + '">' + nickname_element + '<p>' + parseCall(messages[n].message, false, false) + '</p><span class="time" timestamp="' + messages[n].timestamp + '">' + moment(messages[n].timestamp).fromNow() + '</span></li>');
+    $('#messages').append('<li id="' + messages[n].timestamp + '" timestamp="' + messages[n].timestamp + '" class="' + messages[n].type + '_message"><img class="message_avatar" src="data:image/png;base64,' + avatar_sender + '">' + nickname_element + '<p>' + parseCall(messages[n].message, false, false) + links[1] + links[2] + '</p><span class="time" timestamp="' + messages[n].timestamp + '">' + moment(messages[n].timestamp).fromNow() + '</span></li>');
 
 
       let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(messages[n].message);
@@ -2552,6 +2552,7 @@ $('#create_pub_board_button').click(async function(){
     $('#modal').addClass('hidden');
     $('#board_title').empty();
     $('#boards_messages').fadeOut();
+    $('#board_title').after('<p class="saving">Loading public board...<span>.</span><span>.</span><span>.</span></p>');
     ipcRenderer.send('import-view-subwallet', invite_code);
       print_board(invite_code);
 
@@ -2574,6 +2575,7 @@ $('#join_priv_board_button').click(async function(){
     $('#join_priv_board_input').val('');
     $('#board_title').empty();
     $('#boards_messages').fadeOut();
+    $('#board_title').after('<p class="saving">Joining board...<span>.</span><span>.</span><span>.</span></p>');
     ipcRenderer.send('import-view-subwallet', invite_code);
       print_board(invite_code);
 
@@ -2591,16 +2593,17 @@ $('#create_priv_board_button').click(async function(){
   if(await crypto.checkKey(invite_code)) {
     $('.priv_board_error').removeClass('error');
     $('#join_priv_board_input').val('');
+    $('#boards .saving').text('').fadeIn();
     $('#boards_messages').removeClass('menu');
     $('#modal').addClass('hidden');
     $('#board_title').empty();
     $('#boards_messages').fadeOut();
+    $('#board_title').after('<p class="saving">Creating new board...<span>.</span><span>.</span><span>.</span></p>');
     ipcRenderer.send('import-view-subwallet', invite_code);
 
   } else {
     $('#create_priv_board_button').click();
   }
-
 
 });
 
@@ -2681,7 +2684,7 @@ ipcRenderer.on('imported-view-subwallet', async (event, address) => {
          $('#send_payment').addClass('hidden');
 
         print_board(current_board);
-
+        $('#boards .saving').fadeOut();
       }
 
 });
@@ -2856,8 +2859,6 @@ ipcRenderer.on('wallet-started', async () => {
 			      });
 
 
-            await sleep(1000);
-            check_protection();
 });
 $('#board-menu .recent').click(function(){
   $('#board_box').toggleClass('show');
@@ -3144,7 +3145,6 @@ let imagetypes = ['.png','.jpg','.gif', '.webm', '.jpeg', '.webp'];
 //let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(message);
 
 //message = message.replace(magnetLinks[0], "");
-
 if (links_in_message) {
 
   for (let j = 0; j < links_in_message.length; j++) {
@@ -3586,9 +3586,9 @@ ipcRenderer.on('new-message', async (event, transaction) => {
 		 }
 
 		 console.log('Debug me', hex_json);
-     thisHash = transaction.hash;
+     let thisHash = transaction.hash;
      hex_json.brd = transaction.transfers[0].publicKey;
-     time = timestamp;
+     let time = escape(timestamp);
 
      // Save board message in db, returns false if message already existed in db
      let message_was_unknown = true;
@@ -3659,12 +3659,12 @@ ipcRenderer.on('new-message', async (event, transaction) => {
             if ($('.board_icon.current').attr('invitekey') == transaction.transfers[0].publicKey) {
 
 
-              print_board_message(thisHash, hex_json.k, message, parseInt(time), to_board, name, hex_json.r, '#boards_messages');
+              print_board_message(thisHash, hex_json.k, message, time, to_board, name, hex_json.r, '#boards_messages');
 
             }
             $('.board_icon[invitekey='+ hex_json.brd + ']').addClass('unread_board');
             $('#board_box .default').remove();
-            print_board_message(thisHash, hex_json.k, message, parseInt(time), to_board, name, hex_json.r, '#board_box .inner');
+            print_board_message(thisHash, hex_json.k, message, time, to_board, name, hex_json.r, '#board_box .inner');
 				 }
 
 
@@ -4226,7 +4226,8 @@ ipcRenderer.on('got-login-complete', async () => {
 
 
       }
-
+      sleep(1000);
+      check_protection();
 
     })
 
