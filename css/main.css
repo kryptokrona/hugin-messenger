@@ -296,7 +296,7 @@
 
 /* Dropdown Content (Hidden by Default) */
 .dropdown-content, #status-content {
-  width: 320px;
+  width: 360px;
   position: relative;
   background-color: rgba(0,0,0,0.1)
   min-width: 160px;
