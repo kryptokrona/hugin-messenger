@@ -4172,7 +4172,6 @@ right: 15px;
   height: 85%;
   transition: 0.1s;
   transition-timing-function: cubic-bezier(.17,.67,.25,.89);
-  margin-left: 55px;
 }
 
 #message-box {
