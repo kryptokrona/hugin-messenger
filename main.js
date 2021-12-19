@@ -316,7 +316,7 @@ let fetchNodes = () => {
 
   return new Promise((resolve, reject) => {
 
-    fetch('https://kryptokrona.se/nodelist.json')
+    fetch('https://raw.githubusercontent.com/kryptokrona/kryptokrona-nodes-list/master/nodes.json')
     .then(res => res.json())
     .then(json => {
 

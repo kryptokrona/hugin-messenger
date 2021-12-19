@@ -296,11 +296,13 @@
 
 /* Dropdown Content (Hidden by Default) */
 .dropdown-content, #status-content {
-  width: 100%;
+  width: 320px;
   position: relative;
   background-color: rgba(0,0,0,0.1)
   min-width: 160px;
   z-index: 1;
+  overflow: scroll;
+  max-height: 400px;
 }
 
 .node-height {
@@ -331,7 +333,7 @@
 }
 
 /* Change color of dropdown links on hover */
-.dropdown-content a:hover {background-color: ; color: white;}
+.dropdown-content a:hover {background-color: rgba(0,0,0,0.05); color: white;}
 
 /* Show the dropdown menu on hover */
 .dropdown:hover .dropdown-content {display: block;}
@@ -1051,6 +1053,7 @@ h1, h2, h3, h4 {
   width: 95%;
   font-family: 'Montserrat';
   font-weight: 600;
+  -webkit-user-select: none;
 }
 
 #payment_sent a, #payment_sent p {
@@ -2101,22 +2104,23 @@ margin-bottom: -16px;
 .contact_avatar { -webkit-user-select: none; border-radius: 40%; position: relative; left: -44px; top: -1px; height: 48px; width: 48px; }
 .listed_message { -webkit-user-select: none; display: block; font-family: "Montserrat"; font-weight: 300; width: 90%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 11px; opacity: 0.7; margin-top: -10px; margin-left: 10px; }
 
-#messages_contacts, #boards_messages, #board_box {
+#messages_contacts, #boards_messages, #board_box, .dropdown-content {
   --scrollbarBG: transparent;
   --thumbBG: #3337;
+  overflow: auto;
 
 }
-#messages_contacts::-webkit-scrollbar, #boards_messages::-webkit-scrollbar, #board_box::-webkit-scrollbar {
+#messages_contacts::-webkit-scrollbar, #boards_messages::-webkit-scrollbar, #board_box::-webkit-scrollbar, .dropdown-content::-webkit-scrollbar {
   width: 8px;
 }
-#messages_contacts, #boards_messages, #board_box {
+#messages_contacts, #boards_messages, #board_box, #status-content {
   scrollbar-width: thin;
   scrollbar-color: var(--thumbBG) var(--scrollbarBG);
 }
-#messages_contacts::-webkit-scrollbar-track, #boards_messages::-webkit-scrollbar-track, #board_box::-webkit-scrollbar-track {
+#messages_contacts::-webkit-scrollbar-track, #boards_messages::-webkit-scrollbar-track, #board_box::-webkit-scrollbar-track, .dropdown-content::-webkit-scrollbar-track {
   background: var(--scrollbarBG);
 }
-#messages_contacts::-webkit-scrollbar-thumb, #boards_messages::-webkit-scrollbar-thumb, #board_box::-webkit-scrollbar-thumb {
+#messages_contacts::-webkit-scrollbar-thumb, #boards_messages::-webkit-scrollbar-thumb, #board_box::-webkit-scrollbar-thumb, .dropdown-content::-webkit-scrollbar-thumb {
   background-color: var(--thumbBG) ;
   border-radius: 3px;
   border: 3px solid var(--scrollbarBG);
@@ -2169,6 +2173,9 @@ margin-bottom: -16px;
   #board-menu {
     background: rgba(0,0,0,0.02) !important;
     color: #53565c !important;
+  }
+  #boards .saving {
+    color: black;
   }
   .unread_board:not(.current)::after {
     border-color: #F5F6F7;
@@ -3810,7 +3817,7 @@ right: 15px;
 }
 
 #boards .saving {
-  color: black;
+  color: white;
   position: absolute;
   font-weight: 200;
   right: 50%;
