@@ -3698,6 +3698,18 @@ button.emoji-picker__category-button:hover {
     animation-delay: .4s;
 }
 
+#create-account .saving {
+  right: 30%;
+  bottom: 20%;
+  position: absolute;
+}
+
+.login-avatar-box .saving {
+  align-items: center;
+  margin-left: 28%;
+  position: absolute;
+}
+
 .saving, #saving {
   margin-top: 10%;
   font-weight: 200;
