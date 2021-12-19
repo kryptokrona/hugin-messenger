@@ -1496,7 +1496,7 @@ function sendMessage(message, silent=false) {
              let links = handle_links(message);
              let display_message = links[0];
 
-    $('#messages').append('<li class="sent_message" id="' + id_elem +  '"><img class="message_avatar" src="data:image/png;base64,' + avatar_base64 + '"><p>' + display_message + '</p><span class="time" timestamp="' + Date.now() + '">right now</span></li>');
+    $('#messages').append('<li class="sent_message" id="' + id_elem +  '"><img class="message_avatar" src="data:image/png;base64,' + avatar_base64 + '"><p>' + display_message + links[1] + links[2] + '</p><span class="time" timestamp="' + Date.now() + '">right now</span></li>');
       console.log('debagg2', id_elem);
       $('#' + id_elem).click(function(){
         shell.openExternal($(this).attr('href'));
