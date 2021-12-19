@@ -2760,7 +2760,7 @@ color: black;
 
 }
 
-#messages_contacts {
+#messages_contacts, .dropdown-content {
   --scrollbarBG: transparent;
   --thumbBG: rgba(0,0,0,0.05);
 
