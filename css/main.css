@@ -2175,7 +2175,7 @@ margin-bottom: -16px;
     color: #53565c !important;
   }
   #boards .saving {
-    color: black;
+    color: black !important;
   }
   .unread_board:not(.current)::after {
     border-color: #F5F6F7;
@@ -3919,7 +3919,7 @@ right: 15px;
   border-radius: 5px;
   -webkit-user-select: none;
 }
-#board-menu h3 {
+#board-menu h3, #board-menu fa {
     margin-left: 2%;
     -webkit-user-select: none;
   }
