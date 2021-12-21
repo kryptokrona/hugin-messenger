@@ -1664,7 +1664,6 @@ font-size: 14pt;
    padding-left: 20px;
    opacity: 0;
    cursor: pointer;
-   -webkit-user-select:none;
 
  }
 
@@ -4062,15 +4061,19 @@ right: 15px;
 #board_box .board_message p {
   font-size: 12px;
   white-space: nowrap;
-  display: inline-block;
   overflow: hidden;
   text-overflow: ellipsis;
   width: 87%;
+  display: inline-block;
   font-weight: 400 border-radius: 5px;
   line-height: 14px;
   vertical-align: 0%;
 }
 
+#board_box .attachment {
+  margin-left: 25px;
+  display: inline-flex;
+}
 #board_box .board_avatar_reply {
   top: -5px;
   max-width: 40px;
