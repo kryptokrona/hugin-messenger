@@ -1658,7 +1658,7 @@ font-size: 14pt;
    max-width: 52%;
    margin-bottom: 2px;
    border-radius: 15px;
-   margin-left: 15%;
+   margin-left: 20%;
    position: relative;
    padding: 15px;
    padding-left: 20px;
@@ -4225,8 +4225,8 @@ button:hover {
 
 .menu {
   transition: 0.15s;
-  margin-left: -2% !important;
-  padding-right: 2% !important;
+  margin-left: -7% !important;
+  padding-right: 7% !important;
   transition-timing-function: cubic-bezier(.17,.67,.25,.89);
 }
 
