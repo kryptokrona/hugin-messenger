@@ -135,6 +135,47 @@ let reply_to_board_message = (hash) => {
 
 }
 
+$('#board-menu .trending').click(function() {
+   print_trending('#');
+
+});
+
+let print_trending = (tag) => {
+console.log(tag);
+  let board_title = 'Trending';
+  let this_board = 'Trends';
+  $('.current').removeClass('current');
+  $('#board_title').text(tag);
+  if (tag == '#') {
+    $('#board_title').text('Trending');
+  }
+$('#boards_messages').show();
+$('#boards .board_message').remove();
+let hashtag = new RegExp(tag);
+   boards_db.find({message : hashtag }).sort({ timestamp: -1 }).limit(50).exec(async function (err,docs){
+  for (doc in docs.reverse()) {
+
+    let hash = docs[doc].hash;
+    let pubkey = docs[doc].sender;
+    let message = docs[doc].message;
+    let timestamp = docs[doc].timestamp;
+    let nickname = docs[doc].nickname;
+    let this_reply = docs[doc].reply;
+    let board = docs[doc].board;
+    let words = message.split(' ');
+    for (word in words) {
+      console.log(words);
+      if (words[word].substring(0,1) == '#') {
+    console.log(docs);
+
+    await print_board_message(hash, pubkey, message, timestamp, board, nickname, this_reply, '#boards_messages');
+
+  }
+}
+}
+});
+}
+
 let print_board = (board) => {
 
   console.log('Printing board', board);
@@ -2247,7 +2288,9 @@ let known_txs = [];
       $('#message_form').focus();
       $('#messages_pane').hide();
       $('.border-rgb').removeClass('border-rgb');
+      if (!$(this).hasClass('rgb')) {
         $(this).addClass('border-rgb');
+      }
       $('#recipient_form').val($(this).find('.contact_address').text());
       $(this).removeClass('unread_message');
      await print_conversation($(this).attr('address'));
@@ -3217,7 +3260,7 @@ let get_tips = async (hash) => {
 }
 
 let print_board_message = async (hash, address, message, timestamp, fetching_board, nickname=false, reply=false, selector) => {
-
+  let hashtag = true;
   try {
 
 
@@ -3290,7 +3333,19 @@ let print_board_message = async (hash, address, message, timestamp, fetching_boa
 
 
    } else  {
+     if (hashtag) {
+       let words = message.split(' ');
+       for (word in words) {
+         console.log(words);
+         if (words[word].substring(0,1) == '#') {
+           let hashtag = '<a class="hashtag">' + words[word] + '</a>';
+           message = message.replace(words[word], hashtag);
+         }
+       }
+       $(selector).prepend('<li class="board_message ' + hash + '" id=""><div class="board_message_user"><span class="board_message_pubkey">' + address + '</span></div><img class="board_avatar" src="data:image/png;base64,' + avatar_base64 + '"><p class="test">' + message + '</p>'+ image_attached +'<span class="time" timestamp="'+ timestamp*1000 +'">' + moment(timestamp*1000).fromNow() + '</span></li>');
+     } else {
      $(selector).prepend('<li class="board_message ' + hash + '" id=""><div class="board_message_user"><span class="board_message_pubkey">' + address + '</span></div><img class="board_avatar" src="data:image/png;base64,' + avatar_base64 + '"><p class="' + addClasses + '">' + message + youtube_links +'</p>'+ image_attached +'<span class="time" timestamp="'+ timestamp*1000 +'">' + moment(timestamp*1000).fromNow() + '</span></li>');
+  }
   }
 
   if (nickname) {
@@ -3374,7 +3429,6 @@ let print_board_message = async (hash, address, message, timestamp, fetching_boa
 
 
 
-
   } else {
   }
 
@@ -3415,7 +3469,17 @@ let print_board_message = async (hash, address, message, timestamp, fetching_boa
 
 
   }
+  let this_hashtag = $('#boards .' + hash + ' .hashtag').text();
+  console.log(this_hashtag);
+  $('#boards .' + hash + ' .hashtag').click(function() {
+    print_trending(this_hashtag);
 
+  });
+
+  $('#board_box .inner .' + hash + ' .hashtag').click(function() {
+    print_trending($('#board_box .inner .' + hash + ' .hashtag').text());
+
+  });
 
 
    $('#boards .' + hash + ' .boards_nickname').click(function(){
@@ -3550,7 +3614,6 @@ let print_board_message = async (hash, address, message, timestamp, fetching_boa
 //
 //
 //   }
-
 }
 
 let last_board_message = '';
