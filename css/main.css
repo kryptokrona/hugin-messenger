@@ -2316,6 +2316,11 @@ header  {
    background: rgba(0,0,0,0.03)
  }
 
+ .hashtag:hover {
+   color: black !important;
+   cursor: pointer;
+ }
+
  a {
 
   color: rgba(0,0,0,0.5);
@@ -3411,7 +3416,7 @@ button.emoji-picker__category-button:hover {
 
 .rgb {
   transition: 0.3s;
-  background: #5f86f2;
+  background: #5ff281;
   -webkit-animation: rgb 30s ease infinite;
   -moz-animation: rgb 30s ease infinite;
   animation: rgb 30s ease infinite;
@@ -3538,7 +3543,7 @@ button.emoji-picker__category-button:hover {
     background: #5ff281;
   }
   87.5% {
-    background: 5ff2f0;
+    background: #5ff2f0;
   }
 }
 
@@ -3919,7 +3924,7 @@ right: 15px;
   -webkit-user-select: none;
 }
 #board-menu h3, #board-menu fa {
-    margin-left: 2%;
+    margin-left: 3%;
     -webkit-user-select: none;
   }
 
@@ -4033,7 +4038,7 @@ right: 15px;
     color: #5ff281;
   }
   87.5% {
-    color: 5ff2f0;
+    color: #5ff2f0;
   }
 }
 
@@ -4228,6 +4233,15 @@ button:hover {
   margin-left: -7% !important;
   padding-right: 7% !important;
   transition-timing-function: cubic-bezier(.17,.67,.25,.89);
+}
+
+.hashtag {
+  color: #2b2b2b;
+
+}
+.hashtag:hover {
+  color: white;
+  cursor: pointer;
 }
 
 .video-grid {
