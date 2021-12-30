@@ -2295,6 +2295,7 @@ let known_txs = [];
       $(this).removeClass('unread_message');
      await print_conversation($(this).attr('address'));
       $('#settings_page').fadeOut();
+      $('#message_form').prop('placeholder','Message');
       $('#currentchat_footer').removeClass('hidden');
       $('#send_payment').addClass('hidden');
 
@@ -3102,7 +3103,7 @@ let print_single_board_message = async (hash, selector) => {
           let avatar_base64_reply = get_avatar(hex_json_reply.k);
           let message_reply = hex_json_reply.m;
 
-          $('#boards .' + hash + ' img').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/png;base64,' + avatar_base64_reply + '"><p>' + message_reply.substring(0,55)  +'..</p></div>');
+          $('#boards .' + hash + ' img').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/png;base64,' + avatar_base64_reply + '"><p>' + message_reply.substring(0,50)  +'..</p></div>');
           $(selector + ' .' + hash + ' .boards_nickname').css('top','58px');
           $(selector + ' .' + hash + ' .board_message_pubkey').css('top','58px');
 
@@ -3365,7 +3366,7 @@ let print_board_message = async (hash, address, message, timestamp, fetching_boa
 
         if (docs.length) {
 
-           $(selector + ' .' + hash + ' .board_avatar').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/png;base64,' + get_avatar(docs[0].sender) + '"><p>' + docs[0].message.substring(0,55)  +'..</p></div>');
+           $(selector + ' .' + hash + ' .board_avatar').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/png;base64,' + get_avatar(docs[0].sender) + '"><p>' + docs[0].message.substring(0,50)  +'..</p></div>');
 
            $(selector + ' .' + hash + ' .boards_nickname').css('top','55px');
            $(selector + ' .' + hash + ' .board_message_pubkey').css('top','70px');
@@ -3414,7 +3415,7 @@ let print_board_message = async (hash, address, message, timestamp, fetching_boa
              let avatar_base64_reply = escapeHtml(get_avatar(hex_json_reply.k));
              let message_reply = escapeHtml(hex_json_reply.m);
 
-             $(selector + ' .' + hash + ' .board_avatar').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/png;base64,' + avatar_base64_reply + '"><p>' + escapeHtml(message_reply.substring(0,55))  +'</p></div>');
+             $(selector + ' .' + hash + ' .board_avatar').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/png;base64,' + avatar_base64_reply + '"><p>' + escapeHtml(message_reply.substring(0,50))  +'</p></div>');
 
              $(selector + ' .' + hash + ' .boards_nickname').css('top','55px');
              $(selector + ' .' + hash + ' .board_message_pubkey').css('top','70px');
@@ -4719,7 +4720,7 @@ ipcRenderer.on('got-boards', async (event, json) => {
             let avatar_base64_reply = get_avatar(hex_json_reply.k);
             let message_reply = hex_json_reply.m;
 
-            $('#boards .' + hash + ' img').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/png;base64,' + avatar_base64_reply + '"><p>' + escapeHtml(message_reply.substring(0,55))  +'..</p></div>');
+            $('#boards .' + hash + ' img').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/png;base64,' + avatar_base64_reply + '"><p>' + escapeHtml(message_reply.substring(0,50))  +'..</p></div>');
 
             $('#boards .' + hash + ' .board_message_pubkey').css('top','78px');
 
