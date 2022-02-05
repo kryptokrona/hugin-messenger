@@ -4084,10 +4084,12 @@ right: 15px;
   overflow: hidden;
   text-overflow: ellipsis;
   width: 87%;
-  display: inline-block;
+  display: block;
+  margin-left: 30px;
   font-weight: 400 border-radius: 5px;
   line-height: 14px;
   vertical-align: 0%;
+}
 }
 
 #board_box .attachment {
@@ -4102,11 +4104,11 @@ right: 15px;
 
 #board_box .board_message_reply p {
   vertical-align: 53%;
-  font-size: 10px;
+  font-size: 11px;
   width: 60%;
   position: absolute;
   top: 36%;
-  left: 14%;
+  left: 44px;
   display: inline-block;
   line-height: 0.01em;
   }
