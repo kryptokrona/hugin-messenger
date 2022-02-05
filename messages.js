@@ -988,11 +988,11 @@ let downloadMagnet = (magnetLink, element) => {
 
 let handleMagnetListed = (message) => {
 
-  if (message.substring(0,1) == "Δ" || message.substring(0,1) == "Λ" || message.substring(0,1) == "δ" || message.substring(0,1) == "λ"  ) {
+  if (message.substring(0,1) == "Δ" || message.substring(0,1) == "Λ") {
 
     return "Call started";
-  } else {
-
+  } else if ( message.substring(0,1) == "δ" || message.substring(0,1) == "λ"  ){
+    return "Call answered";
   }
 
   let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(message);
@@ -2019,11 +2019,13 @@ function save_message(message_json) {
       type = "received";
     }
 
+    let message = handleMagnetListed(message_json.msg);
+
   db.find({timestamp : message_json.t}, function (err,docs){
 
       if (docs.length == 0) {
 
-      message_db = {"conversation": conversation, "type":type, "message":message_json.msg, "timestamp": message_json.t};-
+      message_db = {"conversation": conversation, "type":type, "message":message, "timestamp": message_json.t};-
 
       db.insert(message_db);
 
@@ -3326,7 +3328,6 @@ let print_board_message = async (hash, address, message, timestamp, fetching_boa
    }
 
 
-
    if (message.length < 1 && youtube_links.length > 0) {
      $(selector).prepend('<li class="board_message ' + hash + '" id=""><div class="board_message_user"><span class="board_message_pubkey">' + address + '</span></div><img class="board_avatar" src="data:image/png;base64,' + avatar_base64 + '">'+ image_attached + youtube_links +'<span class="time" timestamp="'+ timestamp*1000 +'">' + moment(timestamp*1000).fromNow() + '</span></li>');
 
@@ -3358,12 +3359,14 @@ let print_board_message = async (hash, address, message, timestamp, fetching_boa
   }
 }
 
-  if (nickname) {
+if (!nickname) {
+  nickname = "Anonymous";
+}
 
     $(selector + ' .' + hash + ' .board_message_pubkey').before('<span class="boards_nickname">' + escapeHtml(nickname) + '</span>');
     $(selector + ' .' + hash + ' .board_message_pubkey').css('display','none');
 
-}
+
   if (reply) {
     // $('.this_board_message .board_message_pubkey').before('<span class="boards_nickname">' + hex_json.n + '</span>')
 
@@ -3378,7 +3381,6 @@ let print_board_message = async (hash, address, message, timestamp, fetching_boa
            $(selector + ' .' + hash + ' .board_avatar').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/png;base64,' + get_avatar(docs[0].sender) + '"><p>' + docs[0].message.substring(0,50)  +'..</p></div>');
 
            $(selector + ' .' + hash + ' .boards_nickname').css('top','55px');
-           $(selector + ' .' + hash + ' .board_message_pubkey').css('top','70px');
            $('#board_box .inner .' + hash + ' .boards_nickname').css('top','63px');
 
 
@@ -3427,9 +3429,6 @@ let print_board_message = async (hash, address, message, timestamp, fetching_boa
              $(selector + ' .' + hash + ' .board_avatar').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/png;base64,' + avatar_base64_reply + '"><p>' + escapeHtml(message_reply.substring(0,50))  +'</p></div>');
 
              $(selector + ' .' + hash + ' .boards_nickname').css('top','55px');
-             $(selector + ' .' + hash + ' .board_message_pubkey').css('top','70px');
-
-             $('#board_box .inner .' + hash + ' .board_message_pubkey').css('top','86px');
 
 
         }
@@ -4687,7 +4686,6 @@ ipcRenderer.on('got-boards', async (event, json) => {
 
        if (hex_json.n) {
          $('#boards .' + hash + ' .board_message_pubkey').before('<span class="boards_nickname">' + escapeHtml(hex_json.n) + '</span>');
-         $('#boards .' + hash + ' .board_message_pubkey').css('display','none');
        }
 
        if (hex_json.r) {
