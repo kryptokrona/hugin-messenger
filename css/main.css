@@ -1472,7 +1472,7 @@ overlay #login img {
 
 #nodeInputStatus {
   position: absolute;
-top: 11px;
+top: 8px;
 left: 333px;
 font-size: 14pt;
 }
@@ -1694,6 +1694,7 @@ font-size: 14pt;
     padding-right: 7px;
     font-size: 6.8pt;
     cursor: pointer;
+    display: none;
   }
 
 
@@ -3203,7 +3204,7 @@ button:focus {
   display: block;
   margin-top: 20px;
   margin-left: 2px;
-  padding-top: 15px;
+  padding-top: 10px;
   padding-left: 15px;
   font-size: 15px;
   font-weight: 300;
@@ -3211,7 +3212,13 @@ button:focus {
   resize: none;
   overflow: hidden;
   position: relative;
+  border: 1px solid #979797;
 }
+
+#nodeInput:focus {
+  border: 1px solid #919197;
+}
+
 
 #nodeConnect, #modal button {
 
@@ -3370,7 +3377,7 @@ button.emoji-picker__category-button:hover {
 }
 
 .boards_nickname {
-  width: 25%;
+  width: 40%;
   overflow: hidden;
   font-size: 14px;
   position: absolute;
@@ -4053,6 +4060,7 @@ right: 15px;
   left: 55px;
   top: 53px;
   position: absolute;
+  display: none;
 }
 #board_box .board_message {
   transition: 0.3s;
