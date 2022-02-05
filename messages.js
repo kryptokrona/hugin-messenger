@@ -3379,7 +3379,7 @@ if (!nickname) {
 
            $(selector + ' .' + hash + ' .board_avatar').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/png;base64,' + get_avatar(docs[0].sender) + '"><p>' + docs[0].message.substring(0,50)  +'..</p></div>');
 
-           $(selector + ' .' + hash + ' .boards_nickname').css('top','55px');
+           $(selector + ' .' + hash + ' .boards_nickname').css('top','59px');
            $('#board_box .inner .' + hash + ' .boards_nickname').css('top','63px');
 
 
@@ -3427,7 +3427,7 @@ if (!nickname) {
 
              $(selector + ' .' + hash + ' .board_avatar').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/png;base64,' + avatar_base64_reply + '"><p>' + escapeHtml(message_reply.substring(0,50))  +'</p></div>');
 
-             $(selector + ' .' + hash + ' .boards_nickname').css('top','55px');
+             $(selector + ' .' + hash + ' .boards_nickname').css('top','59px');
 
 
         }
@@ -4172,7 +4172,11 @@ console.log('Background syncing...');
                         for (address in boards_addresses) {
                           boards_keys.push(boards_addresses[address][1]);
                         }
+
+                        if (boards_keys.indexOf(to_board) != -1) {
                         save_boards_message(hex_json, time, thisHash, to_board);
+                        }
+
        				 		if (senderKey != currentAddr && message_was_unknown && to_board != $('.current').attr('invitekey') && boards_keys.indexOf(to_board) != -1) {
                     print_board_message(thisHash, senderKey, message, time, to_board, name, hex_json.r, '#board_box .inner');
                      last_block_checked = transaction.hash;
