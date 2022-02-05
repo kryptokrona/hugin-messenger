@@ -3364,7 +3364,6 @@ if (!nickname) {
 }
 
     $(selector + ' .' + hash + ' .board_message_pubkey').before('<span class="boards_nickname">' + escapeHtml(nickname) + '</span>');
-    $(selector + ' .' + hash + ' .board_message_pubkey').css('display','none');
 
 
   if (reply) {
