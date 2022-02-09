@@ -1235,6 +1235,10 @@ h1, h2, h3, h4 {
     margin-bottom: 20px;
 }
 
+#modal input:focus {
+  border: 1px solid #d7d2d2;
+}
+
 #modal .fa-plus {
 position: absolute;
 top: 5;
@@ -1642,7 +1646,7 @@ font-size: 14pt;
    width: max-content;
    max-width: 95%;
    display: block;
-   line-height: 15px;
+   line-height: 17px;
    word-wrap: break-word;
    border-top-left-radius: 0;
    font-size: 15px;
@@ -3151,6 +3155,10 @@ background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, 
       font-weight: 300;
 }
 
+#importMnemonic:focus {
+  border: 1px solid #d7d2d2;
+}
+
 input {
 
   background: rgba(0,0,0,0.1);
@@ -3218,7 +3226,7 @@ button:focus {
 }
 
 #nodeInput:focus {
-  border: 1px solid #919197;
+  border: 1px solid #d7d2d2;
 }
 
 
@@ -3490,7 +3498,7 @@ button.emoji-picker__category-button:hover {
 .board_message_reply p {
   display: inline-block;
   font-size: 10pt;
-  padding: 8px;
+  padding: 4px;
   margin-left: -5px;
   /* padding-top: 0; */
   vertical-align: 16px;
@@ -3979,7 +3987,7 @@ right: 15px;
   border-radius: 10px;
   padding: 20px;
   white-space: nowrap;
-  min-height: 144px;
+  min-height: 160px;
 }
 
 #welcome_alpha #profile img {
@@ -3996,6 +4004,14 @@ right: 15px;
   background: transparent !important;
   padding: 0px;
   width: 100%;
+}
+
+#board_box .close_recent {
+  rotate: 45deg;
+  position: absolute;
+  right: 10px;
+  font-size: 17px;
+  top: 10px;
 }
 
 #profile_address, #profile_message_key {
@@ -4110,7 +4126,7 @@ right: 15px;
   top: 36%;
   left: 44px;
   display: inline-block;
-  line-height: 0.01em;
+  line-height: 5px;
   }
 
   #board_box .boards_nickname {
