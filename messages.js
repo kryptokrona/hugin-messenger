@@ -164,7 +164,6 @@ let hashtag = new RegExp(tag);
     let board = docs[doc].board;
     let words = message.split(' ');
     for (word in words) {
-      console.log(words);
       try {
       if (words[word].substring(0,1) == '#') {
     await print_board_message(hash, pubkey, message, timestamp, board, nickname, this_reply, '#boards_messages');
@@ -784,7 +783,7 @@ let parseCall = (msg, sender=false, emitCall=true) => {
 
         // Start ringing sequence
 
-         $('#incomingCall').append('<audio autoplay loop><source src="static/ringtone.mp3" type="audio/mpeg"></audio>');
+         $('#incomingCall').append('<audio autoplay><source src="static/ringtone.mp3" type="audio/mpeg"></audio>');
          $('#incomingCall').find('h1').text(`Incoming ${msg.substring(0,1) == "Δ" ? "video" : "audio"} call!`);
          $('#incomingCall').show();
          let avatar_base64 = get_big_avatar(sender);
