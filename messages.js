@@ -740,6 +740,8 @@ let answerCall = (msg, contact_address) => {
 
     peer2.on('connect', () => {
 
+      $('#messages_pane').find('audio').remove();
+      $('#messages_pane').append('<audio autoplay><source src="static/startcall.mp3" type="audio/mpeg"></audio>');
       $('#caller_menu_type').text(`${video ? 'Video' : 'Voice'}` + ' connected');
       $('.' + contact_address + ' .lds-ellipsis').fadeOut().remove();
       $('.' + contact_address).addClass('online');
@@ -2374,7 +2376,7 @@ async function print_conversation(conversation) {
          nickname_element = '<span class="contact_address">' + nickname + '</span>';
        }
 
-    $('#messages').append('<li id="' + messages[n].timestamp + '" timestamp="' + messages[n].timestamp + '" class="' + messages[n].type + '_message"><img class="message_avatar" src="data:image/png;base64,' + avatar_sender + '">' + nickname_element + '<p>' + parseCall(messages[n].message, false, false) + links[1] + links[2] + '</p><span class="time" timestamp="' + messages[n].timestamp + '">' + moment(messages[n].timestamp).fromNow() + '</span></li>');
+    $('#messages').append('<li id="' + messages[n].timestamp + '" timestamp="' + messages[n].timestamp + '" class="' + messages[n].type + '_message"><img class="message_avatar" src="data:image/png;base64,' + avatar_sender + '">' + nickname_element + '<p>' + parseCall(messages[n].message, false, false) +'</p>'+ links[1] + links[2] + '<span class="time" timestamp="' + messages[n].timestamp + '">' + moment(messages[n].timestamp).fromNow() + '</span></li>');
 
 
       let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(messages[n].message);
@@ -3961,14 +3963,11 @@ console.log('Background syncing...');
                    payload_json.msg = parseCall(payload_json.msg, payload_json.from);
                    let links = handle_links(payload_json.msg);
                    let display_message = links[0];
-
-
-
-
-
+                   let youtube_links = links[1];
+                   let image_attached = links[2];
 
                    if (payload_json.msg.length && $('#welcome_alpha').hasClass('hidden')) {
-                     $('#messages').append('<li class="received_message" id=' + payload_json.t + '><img class="message_avatar" src="data:image/png;base64,' + avatar_base64 + '"><p>' + display_message + '</p><span class="time" timestamp="' + payload_json.t + '">' + moment(payload_json.t).fromNow() + '</span></li>');
+                     $('#messages').append('<li class="received_message" id=' + payload_json.t + '><img class="message_avatar" src="data:image/png;base64,' + avatar_base64 + '"><p>' + display_message +'</p>' + image_attached + youtube_links +' <span class="time" timestamp="' + payload_json.t + '">' + moment(payload_json.t).fromNow() + '</span></li>');
                      $('#messages_pane').scrollTop($('#messages').height());
                    }
                    console.log('debagg3', payload_json.t);
