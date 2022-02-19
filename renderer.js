@@ -877,7 +877,15 @@ $('.close').click(function(){
       $('#context_menu').hide();
       $('#avatar_contact').hide();
   }
+  });
+
+$('.close_recent').click(function(){
+  $('#board_box').removeClass('show');
+  $('#replyto_exit').click();
+  $('#boards_messages').removeClass('menu');
+
 });
+
 $("#modal > i").click(function(){
 $('#modal').addClass('hidden');
 $('.pub_board_error').removeClass('error').addClass('hidden');
