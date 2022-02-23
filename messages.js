@@ -149,12 +149,15 @@ console.log(tag);
   if (tag == '#') {
     $('#board_title').text('Trending');
   }
+
+
 $('#boards_messages').show();
 $('#boards .board_message').remove();
 let hashtag = new RegExp(tag);
    boards_db.find({message : hashtag }).sort({ timestamp: -1 }).limit(50).exec(async function (err,docs){
   for (doc in docs.reverse()) {
-
+    $('.active_user').remove();
+    let board_posters = [];
     let hash = docs[doc].hash;
     let pubkey = docs[doc].sender;
     let message = docs[doc].message;
@@ -181,6 +184,7 @@ let print_board = (board) => {
 
   console.log('Printing board', board);
   $('#boards .board_message').remove();
+  let board_posters = [];
   boards_db.find({board : board}).sort({ timestamp: -1 }).limit(50).exec(async function (err,docs){
 
 
@@ -205,6 +209,7 @@ let print_board = (board) => {
   })
 
 }
+let board_posters = [];
 
 let print_boards = async () => {
 
@@ -241,14 +246,14 @@ let print_boards = async () => {
 
 		   $('.board_icon').click(function() {
 
-
          let board_title = $(this).attr('title');
 		     let this_board = $(this).attr('id');
 
 		     if ($(this).hasClass('current')) {
 		       return;
 		     }
-
+         board_posters = [];
+        $('.active_user').remove();
 		     current_board = this_board;
 		     if (this_board == "home_board") {
 		       this_board = 'SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc';
@@ -2543,7 +2548,7 @@ $("document").ready(function(){
     $('#currentchat_pubkey').hide();
     $('.checkmark').hide();
     $("#new_board").addClass('hidden');
-    $('#boards_messages').removeClass('menu');
+    $('#boards_messages').removeClass('recent');
     $('#modal').addClass('hidden');
     $("#boards_picker").addClass('hidden');
     $('#messages .received_message, #messages .sent_message').fadeOut();
@@ -2575,7 +2580,7 @@ $('#new_board').click(function(){
   $('#modal').toggleClass('hidden');
   $('#modal div').addClass('hidden');
   $('#new_board_modal').removeClass('hidden');
-  $('#boards_messages').toggleClass('menu');
+  $('#recent_messages').removeClass('show');
   $('#replyto_exit').click();
   if (!$('#boards_messages').hasClass('menu')) {
     $('#boards_messages').addClass('menu');
@@ -2909,7 +2914,18 @@ ipcRenderer.on('wallet-started', async () => {
 
 });
 $('#board-menu .recent').click(function(){
-  $('#board_box').toggleClass('show');
+    $('#recent_messages').toggleClass('show');
+    $('#active_hugins').toggleClass('hidden');
+    $('.close_recent').toggleClass('show');
+    $('.box_header').text('Recent Messages');
+
+    if (!$('#recent_messages').hasClass('show') && $('#active_hugins').hasClass('hidden')) {
+      $('#active_hugins').removeClass('hidden');
+        $('#recent_messages').toggleClass('show');
+    }
+    if (!$('#recent_messages').hasClass('show')) {
+      $('.box_header').text('Active Hugins');
+    }
   $('#replyto_exit').click();
   $('#boards_messages').toggleClass('menu');
   if (!$('#modal').hasClass('hidden') || !$('#send_payment').hasClass('hidden')) {
@@ -2933,7 +2949,8 @@ $('#boards_icon').click(function(){
 
   return;
   } else {
-
+    $('.active_user').remove();
+    board_posters = [];
      print_board('0b66b223812861ad15e5310b4387f475c414cd7bda76be80be6d3a55199652fc');
      $('#board_title').text('Home');
  $("#boards-menu").fadeIn();
@@ -3265,6 +3282,7 @@ let get_tips = async (hash) => {
       }
 }
 
+
 let print_board_message = async (hash, address, message, timestamp, fetching_board, nickname=false, reply=false, selector) => {
   let hashtag = true;
   try {
@@ -3364,6 +3382,14 @@ if (!nickname) {
   nickname = "Anonymous";
 }
 
+if (board_posters.indexOf(address) === -1) {
+   board_posters.push(address);
+   $('#active_hugins').append('<li class="active_user ' + address + '" id=""><div class="board_message_user"><span class="board_message_pubkey">' + address + '</span></div><img class="board_avatar" src="data:image/png;base64,' + avatar_base64 + '"><span class="boards_nickname">' + escapeHtml(nickname) + '</span></li>');
+
+ } else {
+   console.log("This transaction is address is already known", address);
+ }
+
     $(selector + ' .' + hash + ' .board_message_pubkey').before('<span class="boards_nickname">' + escapeHtml(nickname) + '</span>');
 
 
@@ -3381,7 +3407,7 @@ if (!nickname) {
            $(selector + ' .' + hash + ' .board_avatar').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/png;base64,' + get_avatar(docs[0].sender) + '"><p>' + docs[0].message.substring(0,50)  +'..</p></div>');
 
            $(selector + ' .' + hash + ' .boards_nickname').css('top','59px');
-           $('#board_box .inner .' + hash + ' .boards_nickname').css('top','63px');
+           $('#recent_messages .' + hash + ' .boards_nickname').css('top','63px');
 
 
         } else {
@@ -3441,18 +3467,18 @@ if (!nickname) {
   } else {
   }
 
-  if (selector == '#board_box .inner') {
+  if (selector == '#recent_messages') {
 
     let to_board = '';
 
     if (fetching_board.substring(59,64) == '00000') {
       //public
       to_board = letter_from_spend_key(fetching_board);
-      $('#board_box .inner .' + hash + " .board_message_user" ).before('<span class="in_board">' + to_board.substring(0,22) + ' </span>');
+      $('#recent_messages .' + hash + " .board_message_user" ).before('<span class="in_board">' + to_board.substring(0,22) + ' </span>');
 
     } else if (fetching_board == '0b66b223812861ad15e5310b4387f475c414cd7bda76be80be6d3a55199652fc') {
       to_board = 'Home';
-      $('#board_box .inner .' + hash + " .board_message_user" ).before('<span class="in_board">' + to_board.substring(0,22) + ' </span>');
+      $('#recent_messages .' + hash + " .board_message_user" ).before('<span class="in_board">' + to_board.substring(0,22) + ' </span>');
     } else {
 
 
@@ -3466,7 +3492,7 @@ if (!nickname) {
                } else {
                  to_board = fetching_board;
                }
-               $('#board_box .inner .' + hash + " .board_message_user").before('<span class="in_board">' + to_board.substring(0,22) + ' </span>');
+               $('#recent_messages .' + hash + " .board_message_user").before('<span class="in_board">' + to_board.substring(0,22) + ' </span>');
 
 
     })
@@ -3485,8 +3511,8 @@ if (!nickname) {
 
   });
 
-  $('#board_box .inner .' + hash + ' .hashtag').click(function() {
-    print_trending($('#board_box .inner .' + hash + ' .hashtag').text());
+  $('#recent_messages .' + hash + ' .hashtag').click(function() {
+    print_trending($('#recent_messages .' + hash + ' .hashtag').text());
 
   });
 
@@ -3735,7 +3761,7 @@ ipcRenderer.on('new-message', async (event, transaction) => {
             }
             $('.board_icon[invitekey='+ hex_json.brd + ']').addClass('unread_board');
             $('#board_box .default').remove();
-            print_board_message(thisHash, hex_json.k, message, time, to_board, name, hex_json.r, '#board_box .inner');
+            print_board_message(thisHash, hex_json.k, message, time, to_board, name, hex_json.r, '#recent_messages');
 				 }
 
 
@@ -4159,8 +4185,8 @@ console.log('Background syncing...');
        				 			name = 'Anonymous';
        				 		}
 
-                  if ($('#board_box .inner .board_message').length > 4) {
-                    $('#board_box .inner .board_message')[$('#board_box .inner .board_message').length -1].remove();
+                  if ($('#recent_messages .board_message').length > 4) {
+                    $('#recent_messages .board_message')[$('#recent_messages .board_message').length -1].remove();
                   }
 
 
@@ -4176,7 +4202,7 @@ console.log('Background syncing...');
                         }
 
        				 		if (senderKey != currentAddr && message_was_unknown && to_board != $('.current').attr('invitekey') && boards_keys.indexOf(to_board) != -1) {
-                    print_board_message(thisHash, senderKey, message, time, to_board, name, hex_json.r, '#board_box .inner');
+                    print_board_message(thisHash, senderKey, message, time, to_board, name, hex_json.r, '#recent_messages');
                      last_block_checked = transaction.hash;
                      $('#messages_pane').find('audio').remove();
                      $('#messages_pane').append('<audio autoplay><source src="static/boardmessage.mp3" type="audio/mpeg"></audio>');
@@ -4281,7 +4307,7 @@ ipcRenderer.on('got-login-complete', async () => {
           continue;
         }
         $('#board_box .default').remove();
-        print_board_message(hash, pubkey, message, timestamp, docs[doc].board, nickname, this_reply, '#board_box .inner');
+        print_board_message(hash, pubkey, message, timestamp, docs[doc].board, nickname, this_reply, '#recent_messages');
         // i += 1;
         //
         // if (boards_keys.indexOf(docs[doc].board) === -1 && i < 55 && docs[doc].board) {
