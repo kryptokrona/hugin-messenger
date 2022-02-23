@@ -880,10 +880,12 @@ $('.close').click(function(){
   });
 
 $('.close_recent').click(function(){
-  $('#board_box').removeClass('show');
+  $('#recent_messages').removeClass('show');
+  $('#active_hugins').removeClass('hidden');
+  $('.close_recent').removeClass('show');
   $('#replyto_exit').click();
   $('#boards_messages').removeClass('menu');
-
+  $('.box_header').text('Active Hugins');
 });
 
 $("#modal > i").click(function(){
