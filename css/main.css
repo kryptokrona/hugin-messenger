@@ -654,10 +654,10 @@ border-radius: 5px;
 
 #container > div:not(#modal) {
 
-  width: 27%;
+  width: 24%;
   height: 100%;
   top: 0;
-  padding-left: 20px;
+  padding-left: 12px;
   border-bottom-left-radius: 5px;
   transition: 0.1s;
   transition-timing-function: cubic-bezier(.17,.67,.25,.89);
@@ -1661,10 +1661,10 @@ font-size: 14pt;
  .board_message {
    transition: 0.3s;
    list-style: none;
-   max-width: 52%;
+   max-width: 55%;
    margin-bottom: 2px;
    border-radius: 15px;
-   margin-left: 20%;
+   margin-left: 20.5%;
    position: relative;
    padding: 15px;
    padding-left: 20px;
@@ -2394,7 +2394,7 @@ header  {
     background: white !important;
   }
 
-  #messages_contacts, #boards_messages, #board_box {
+  #messages_contacts, #boards_messages, #recent_messages, #active_hugins {
     --scrollbarBG: transparent;
     --thumbBG: rgba(0,0,0,0.1);
 
@@ -3937,7 +3937,7 @@ right: 15px;
   height: 50px;
   width: 11.5%;
   top: 11%;
-  left: 1.7%;
+  left: 1%;
   color: #f1f2f3;
   font-size: 17px;
   position: absolute;
@@ -4256,7 +4256,7 @@ right: 15px;
   width: 100%;
   overflow-y: auto;
   overflow-x: hidden;
-  margin-left: -7% !important;
+  margin-left: -6.5% !important;
   padding-right: 7% !important;
   height: 85%;
   transition: 0.1s;
