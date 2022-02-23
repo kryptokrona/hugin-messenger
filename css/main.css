@@ -2110,23 +2110,23 @@ margin-bottom: -16px;
 .contact_avatar { -webkit-user-select: none; border-radius: 40%; position: relative; left: -44px; top: -1px; height: 48px; width: 48px; }
 .listed_message { -webkit-user-select: none; display: block; font-family: "Montserrat"; font-weight: 300; width: 90%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 11px; opacity: 0.7; margin-top: -12px; margin-left: 10px; }
 
-#messages_contacts, #boards_messages, #board_box, .dropdown-content {
+#messages_contacts, #boards_messages, #recent_messages, #active_hugins, .dropdown-content {
   --scrollbarBG: transparent;
   --thumbBG: #3337;
   overflow: auto;
 
 }
-#messages_contacts::-webkit-scrollbar, #boards_messages::-webkit-scrollbar, #board_box::-webkit-scrollbar, .dropdown-content::-webkit-scrollbar {
+#messages_contacts::-webkit-scrollbar, #boards_messages::-webkit-scrollbar, #recent_messages::-webkit-scrollbar, #active_hugins::-webkit-scrollbar, .dropdown-content::-webkit-scrollbar {
   width: 8px;
 }
-#messages_contacts, #boards_messages, #board_box, #status-content {
+#messages_contacts, #boards_messages, #recent_messages, #status-content {
   scrollbar-width: thin;
   scrollbar-color: var(--thumbBG) var(--scrollbarBG);
 }
-#messages_contacts::-webkit-scrollbar-track, #boards_messages::-webkit-scrollbar-track, #board_box::-webkit-scrollbar-track, .dropdown-content::-webkit-scrollbar-track {
+#messages_contacts::-webkit-scrollbar-track, #boards_messages::-webkit-scrollbar-track, #recent_messages::-webkit-scrollbar-track, #active_hugins::-webkit-scrollbar-track, .dropdown-content::-webkit-scrollbar-track {
   background: var(--scrollbarBG);
 }
-#messages_contacts::-webkit-scrollbar-thumb, #boards_messages::-webkit-scrollbar-thumb, #board_box::-webkit-scrollbar-thumb, .dropdown-content::-webkit-scrollbar-thumb {
+#messages_contacts::-webkit-scrollbar-thumb, #boards_messages::-webkit-scrollbar-thumb, #recent_messages::-webkit-scrollbar-thumb, #active_hugins::-webkit-scrollbar-thumb, .dropdown-content::-webkit-scrollbar-thumb {
   background-color: var(--thumbBG) ;
   border-radius: 3px;
   border: 3px solid var(--scrollbarBG);
@@ -3931,6 +3931,8 @@ right: 15px;
   -webkit-user-select: none;
 }
 
+
+
 #board-menu {
   height: 50px;
   width: 11.5%;
@@ -4000,10 +4002,21 @@ right: 15px;
   vertical-align: top;
 }
 
-#board_box .inner {
+#recent_messages {
   background: transparent !important;
   padding: 0px;
+  height: -webkit-fill-available;
   width: 100%;
+  overflow: scroll;
+  padding-bottom: 40px;
+  display: none;
+}
+
+#active_hugins {
+  overflow: scroll;
+  height: 633px;
+  padding-bottom: 40px;
+
 }
 
 #board_box .close_recent {
@@ -4012,6 +4025,11 @@ right: 15px;
   right: 10px;
   font-size: 17px;
   top: 10px;
+  display: none;
+}
+
+.recent {
+  display: block;
 }
 
 #profile_address, #profile_message_key {
@@ -4080,7 +4098,7 @@ right: 15px;
   position: absolute;
   display: none;
 }
-#board_box .board_message {
+#board_box .board_message, .active_user {
   transition: 0.3s;
     list-style: none;
     border-radius: 15px;
@@ -4092,6 +4110,19 @@ right: 15px;
     opacity: 1;
     margin-left: 0px;
     -webkit-user-select: none;
+}
+
+#active_hugins .active_user {
+  padding: 2px;
+}
+
+#active_hugins .boards_nickname{
+  top: 5px !important;
+  font-size: 12px !important;
+  margin-left: 10px !important;
+}
+#active_hugins .board_avatar {
+  margin-left: 17px !important;
 }
 
 #board_box .board_message p {
@@ -4225,6 +4256,8 @@ right: 15px;
   width: 100%;
   overflow-y: auto;
   overflow-x: hidden;
+  margin-left: -7% !important;
+  padding-right: 7% !important;
   height: 85%;
   transition: 0.1s;
   transition-timing-function: cubic-bezier(.17,.67,.25,.89);
