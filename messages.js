@@ -3433,8 +3433,8 @@ print_active_hugin(address, nickname);
     console.log('length', message.length);
     console.log('emojione', emojione.toShort(message).replaceAll(':',''));
     if(containsOnlyEmojis(message) && message.length < 3) {
-      let element = $('.' + reply +' .react_menu .'+emojione.toShort(message).replaceAll(':',''));
-      if (element.length) {
+      let element = $('.' + reply +' .'+emojione.toShort(message).replaceAll(':',''));
+      if (element.height()) {
         console.log('exists already');
         element.find('counter').text(parseInt(element.find('counter').text()) + 1);
       } else {
