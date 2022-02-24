@@ -3324,9 +3324,9 @@ let print_board_message = async (hash, address, message, timestamp, fetching_boa
         }
 
 
-    let tips = 0;
+  let tips = 0;
 
-     // get_tips(hash);
+   // get_tips(hash);
 
   let avatar_base64 = get_avatar(address);
 
@@ -3415,15 +3415,35 @@ if (!nickname) {
 
 print_active_hugin(address, nickname);
 
-    $(selector + ' .' + hash + ' .board_message_pubkey').before('<span class="boards_nickname">' + escapeHtml(nickname) + '</span>');
-
-
+  $(selector + ' .' + hash + ' .board_message_pubkey').before('<span class="boards_nickname">' + escapeHtml(nickname) + '</span>');
+  $(selector + ' .' + hash).append('<div class="react_menu main"><i class="fa fa-smile-o"></div>');
+  $(selector + ' .' + hash + ' .react_menu i').click(function(e){
+    $(selector + ' .' + hash).click();
+    $('.emoji-boards').click();
+    e.preventDefault();
+    e.stopPropagation();
+  })
   if (reply) {
     // $('.this_board_message .board_message_pubkey').before('<span class="boards_nickname">' + hex_json.n + '</span>')
 
-    boards_db.find({hash : reply}, async function (err,docs){
+    console.log('emojis', containsOnlyEmojis(message));
+    console.log('length', message.length);
+    if(containsOnlyEmojis(message) && message.length < 3) {
+      let element = $('.' + reply +' #react_menu .'+message);
+      if (element.length) {
+        console.log('exists already');
+        element.find('counter').text(parseInt(element.find('counter').text()) + 1);
+      } else {
+        console.log('party party ', reply);
+        $('.' + reply +' .react_menu').append('<i class="' + message +'">' + message + '</i>');
+      }
+      $('.'+hash).remove();
+      return;
+    } else {
+    }
 
-      console.log(docs);
+
+    boards_db.find({hash : reply}, async function (err,docs){
 
       let hex_json_reply;
 
@@ -3563,6 +3583,8 @@ print_active_hugin(address, nickname);
 
    })
 
+
+
   $('#boards .' + hash).click(function(){
     reply_to_board_message(hash);
     if ($('#board_box').hasClass('show')) {
@@ -3575,6 +3597,7 @@ print_active_hugin(address, nickname);
     $(this).addClass('rgb');
     $('#boards').scrollTop('0');
   });
+
 
   $('#boards .' + hash).delay(100).animate({
     opacity: 1

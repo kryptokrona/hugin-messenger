@@ -4240,6 +4240,21 @@ right: 15px;
     right: -23%;
     top: 10%;
 }
+.react_menu {
+
+  position: absolute;
+  left: 108px;
+  bottom: 4px;
+
+}
+
+.react_menu i {
+    color: rgba(255,255,255,0.4);
+    background: rgba(0,0,0,0.2);
+    padding: 5px;
+    border-radius: 5px;
+    display: inline-block;
+  }
 
 
 #profile_balance {
