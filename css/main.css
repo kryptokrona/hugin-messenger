@@ -4014,9 +4014,13 @@ right: 15px;
 
 #active_hugins {
   overflow: scroll;
-  height: 633px;
+  height: 670px;
   padding-bottom: 40px;
 
+}
+
+.box_header {
+  padding: 3px;
 }
 
 #board_box .close_recent {
