@@ -184,7 +184,8 @@ let print_board = (board) => {
 
   console.log('Printing board', board);
   $('#boards .board_message').remove();
-  let board_posters = [];
+  board_posters = [];
+  $('.active_user').remove();
   boards_db.find({board : board}).sort({ timestamp: -1 }).limit(100).exec(async function (err,docs){
 
 
@@ -2919,6 +2920,7 @@ $('#board-menu .recent').click(function(){
     // $('.close_recent').toggleClass('show');
     // $('.box_header').text('Recent Messages');
     $('#board_title').text('Recent messages');
+    $('.current').removeClass('current');
 
     if (!$('#recent_messages').hasClass('show') && $('#active_hugins').hasClass('hidden')) {
       $('#active_hugins').removeClass('hidden');
@@ -3416,7 +3418,7 @@ if (!nickname) {
 print_active_hugin(address, nickname);
 
   $(selector + ' .' + hash + ' .board_message_pubkey').before('<span class="boards_nickname">' + escapeHtml(nickname) + '</span>');
-  $(selector + ' .' + hash).append('<div class="react_menu main"><i class="fa fa-smile-o"></div>');
+  $(selector + ' .' + hash).append('<div class="react_menu main"><i class="fa fa-smile-o"></div><div class="reactions"></div>');
   $(selector + ' .' + hash + ' .react_menu i').click(function(e){
     $(selector + ' .' + hash).click();
     $('.emoji-boards').click();
@@ -3429,13 +3431,13 @@ print_active_hugin(address, nickname);
     console.log('emojis', containsOnlyEmojis(message));
     console.log('length', message.length);
     if(containsOnlyEmojis(message) && message.length < 3) {
-      let element = $('.' + reply +' #react_menu .'+message);
+      let element = $('.' + reply +' .react_menu .'+message);
       if (element.length) {
         console.log('exists already');
         element.find('counter').text(parseInt(element.find('counter').text()) + 1);
       } else {
         console.log('party party ', reply);
-        $('.' + reply +' .react_menu').append('<i class="' + message +'">' + message + '</i>');
+        $('.' + reply +' .reactions').append('<i class="' + message +'">' + message + '</i>');
       }
       $('.'+hash).remove();
       return;
