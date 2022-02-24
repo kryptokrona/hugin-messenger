@@ -3348,9 +3348,9 @@ li .gradient {
 #boards {
   background: #1b1b1b;
   width: 100% !important;
-  height: 100% !important;
+  height: 100%;
   padding: 25px;
-  overflow-y: scroll;
+  overflow: scroll;
   position: relative;
 }
 
@@ -4246,6 +4246,13 @@ right: 15px;
   left: 108px;
   bottom: 4px;
 
+}
+
+.reactions {
+  display: block;
+  position: absolute;
+  bottom: 8px;
+  left: 135px;
 }
 
 .react_menu i {
