@@ -4255,6 +4255,15 @@ right: 15px;
   left: 135px;
 }
 
+.reactions i {
+  font-style: normal;
+  background: rgba(0,0,0,0.2);
+  padding: 2px;
+  border-radius: 5px;
+  margin-right: 3px;
+  padding-bottom: 4px;
+}
+
 .react_menu i {
     color: rgba(255,255,255,0.4);
     background: rgba(0,0,0,0.2);

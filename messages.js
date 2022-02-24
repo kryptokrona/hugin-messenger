@@ -6,6 +6,7 @@ const { openAlias } = require('openalias');
 const { desktopCapturer, shell } = require('electron');
 const contextMenu = require('electron-context-menu');
 const path = require('path');
+const emojione = require('emojione');
 
 const {
     Address,
@@ -3430,14 +3431,15 @@ print_active_hugin(address, nickname);
 
     console.log('emojis', containsOnlyEmojis(message));
     console.log('length', message.length);
+    console.log('emojione', emojione.toShort(message).replaceAll(':',''));
     if(containsOnlyEmojis(message) && message.length < 3) {
-      let element = $('.' + reply +' .react_menu .'+message);
+      let element = $('.' + reply +' .react_menu .'+emojione.toShort(message).replaceAll(':',''));
       if (element.length) {
         console.log('exists already');
         element.find('counter').text(parseInt(element.find('counter').text()) + 1);
       } else {
         console.log('party party ', reply);
-        $('.' + reply +' .reactions').append('<i class="' + message +'">' + message + '</i>');
+        $('.' + reply +' .reactions').append('<i class="' + emojione.toShort(message).replaceAll(':','') +'">' + message + '</i>');
       }
       $('.'+hash).remove();
       return;
