@@ -347,7 +347,7 @@
 #boards_message_form {
   font-size: 12pt;
   height: 57px !important;
-  width: 77%;
+  width: 51%;
   padding: 0;
   padding-left: 15px;
   line-height: 100%;
@@ -3414,6 +3414,7 @@ button.emoji-picker__category-button:hover {
   font-weight: 700;
   line-height: 60px;
   -webkit-user-select: none;
+  font-size: 10px;
 }
 
 #replyto_exit {
@@ -3824,29 +3825,28 @@ right: 15px;
   }
 }
 
-
 #board_title {
-  -webkit-user-select: none;
-  text-align: center;
-  height: 20px;
-  color: white;
-  font-size: 14px;
-  top: 82px;
-  position: absolute;
-  z-index: 9999;
-  width: 11%;
-  right: 7%;
-  padding-top: 8px;
-  font-family: Montserrat;
-  font-weight: 700;
-  border-top-left-radius: 1px;
-  border-bottom-left-radius: 10px;
-  text-overflow: ellipsis;
-  border-bottom-right-radius: 10px;
-  overflow: hidden;
-  padding-bottom: 14px;
-  cursor: pointer;
-  text-overflow: ellipsis;
+    -webkit-user-select: none;
+    text-align: center;
+    height: 20px;
+    color: white;
+    font-size: 24px;
+    top: 42px;
+    position: absolute;
+    z-index: 9999;
+    width: 24%;
+    right: 42px;
+    padding-top: 8px;
+    font-family: Montserrat;
+    font-weight: 700;
+    border-top-left-radius: 1px;
+    border-bottom-left-radius: 10px;
+    text-overflow: ellipsis;
+    border-bottom-right-radius: 10px;
+    overflow: hidden;
+    padding-bottom: 14px;
+    cursor: pointer;
+    text-overflow: ellipsis;
 }
 
 
@@ -3934,19 +3934,22 @@ right: 15px;
 
 
 #board-menu {
-  height: 50px;
-  width: 11.5%;
-  top: 11%;
-  left: 1%;
-  color: #f1f2f3;
-  font-size: 17px;
-  position: absolute;
-  background: rgba(0,0,0,0.1);
-  height: 25%;
-  text-align: center;
-  border-radius: 5px;
-  -webkit-user-select: none;
+    height: 50px;
+    width: 11.5%;
+    padding: 12px;
+    padding-top: 11%;
+    top: 0;
+    left: 0;
+    color: #f1f2f3;
+    font-size: 17px;
+    position: absolute;
+    background: rgba(0,0,0,0.1);
+    height: 100%;
+    text-align: center;
+    border-radius: 5px;
+    -webkit-user-select: none;
 }
+
 #board-menu h3, #board-menu fa {
     margin-left: 3%;
     -webkit-user-select: none;
@@ -4233,6 +4236,9 @@ right: 15px;
     display: inline-block;
     overflow: hidden;
     text-overflow: ellipsis;
+    position: absolute;
+    right: -23%;
+    top: 10%;
 }
 
 

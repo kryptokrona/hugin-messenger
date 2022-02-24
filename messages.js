@@ -131,7 +131,7 @@ let reply_to_board_message = (hash) => {
 
   $('#boards_message_form').css('padding-left',amount);
 
-  $('#boards_message_form').css('width','calc(80% - ' + ( amount + 17 ) + 'px)');
+  $('#boards_message_form').css('width','calc(80% - ' + ( amount + 300 ) + 'px)');
 
 }
 
@@ -2923,9 +2923,6 @@ $('#board-menu .recent').click(function(){
     if (!$('#recent_messages').hasClass('show') && $('#active_hugins').hasClass('hidden')) {
       $('#active_hugins').removeClass('hidden');
         $('#recent_messages').toggleClass('show');
-    }
-    if (!$('#recent_messages').hasClass('show')) {
-      $('.box_header').text('Active Hugins');
     }
   $('#replyto_exit').click();
   $('#boards_messages').toggleClass('menu');
