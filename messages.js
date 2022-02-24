@@ -157,7 +157,7 @@ let hashtag = new RegExp(tag);
    boards_db.find({message : hashtag }).sort({ timestamp: -1 }).limit(50).exec(async function (err,docs){
   for (doc in docs.reverse()) {
     $('.active_user').remove();
-    let board_posters = [];
+    board_posters = [];
     let hash = docs[doc].hash;
     let pubkey = docs[doc].sender;
     let message = docs[doc].message;
@@ -185,7 +185,7 @@ let print_board = (board) => {
   console.log('Printing board', board);
   $('#boards .board_message').remove();
   let board_posters = [];
-  boards_db.find({board : board}).sort({ timestamp: -1 }).limit(50).exec(async function (err,docs){
+  boards_db.find({board : board}).sort({ timestamp: -1 }).limit(100).exec(async function (err,docs){
 
 
 
@@ -2914,10 +2914,11 @@ ipcRenderer.on('wallet-started', async () => {
 
 });
 $('#board-menu .recent').click(function(){
-    $('#recent_messages').toggleClass('show');
-    $('#active_hugins').toggleClass('hidden');
-    $('.close_recent').toggleClass('show');
-    $('.box_header').text('Recent Messages');
+    // $('#recent_messages').toggleClass('show');
+    // $('#active_hugins').toggleClass('hidden');
+    // $('.close_recent').toggleClass('show');
+    // $('.box_header').text('Recent Messages');
+    $('#board_title').text('Recent messages');
 
     if (!$('#recent_messages').hasClass('show') && $('#active_hugins').hasClass('hidden')) {
       $('#active_hugins').removeClass('hidden');
@@ -2933,6 +2934,25 @@ $('#board-menu .recent').click(function(){
   }
   $('#send_payment').addClass('hidden');
   $('#modal').addClass('hidden');
+  let recent_msgs = $('#recent_messages').html();
+  console.log('REEEEEEEEE',recent_msgs);
+  $('#boards_messages').empty().append(recent_msgs);
+  board_posters = [];
+  $('.active_user').remove();
+  $('#boards .board_message').each(function(index){
+    console.log( index + ": " + $( this ).text() );
+    let nickname = $(this).find('.boards_nickname').text();
+    let address =  $(this).find('.board_message_pubkey').text();
+    console.log('classLIST', address);
+    print_active_hugin(address, nickname);
+    $(this).delay(index*100).animate({
+      opacity: 1
+    }, 150, function() {
+      // Animation complete.
+    });
+
+  })
+
 });
 
 
@@ -3281,6 +3301,20 @@ let get_tips = async (hash) => {
           $('#boards .' + hash + '').append('<span class="tips">' + parseFloat(tips/100000).toFixed(5) + '</span>');
       }
 }
+let print_active_hugin = (address, nickname) => {
+
+if (board_posters.indexOf(address) === -1) {
+   board_posters.push(address);
+   $('#active_hugins').append('<li class="active_user ' + address + '" id=""><div class="board_message_user"><span class="board_message_pubkey">' + address + '</span></div><img class="board_avatar" src="data:image/png;base64,' + get_avatar(address) + '"><span class="boards_nickname">' + escapeHtml(nickname) + '</span></li>');
+
+ } else {
+   let known_nickname = $('#active_hugins .' + address + ' .boards_nickname').text();
+   if (nickname != known_nickname) {
+     $('#active_hugins .' + address + ' .boards_nickname').text(nickname);
+   }
+   console.log("No address", address);
+ }
+}
 
 
 let print_board_message = async (hash, address, message, timestamp, fetching_board, nickname=false, reply=false, selector) => {
@@ -3382,13 +3416,7 @@ if (!nickname) {
   nickname = "Anonymous";
 }
 
-if (board_posters.indexOf(address) === -1) {
-   board_posters.push(address);
-   $('#active_hugins').append('<li class="active_user ' + address + '" id=""><div class="board_message_user"><span class="board_message_pubkey">' + address + '</span></div><img class="board_avatar" src="data:image/png;base64,' + avatar_base64 + '"><span class="boards_nickname">' + escapeHtml(nickname) + '</span></li>');
-
- } else {
-   console.log("This transaction is address is already known", address);
- }
+print_active_hugin(address, nickname);
 
     $(selector + ' .' + hash + ' .board_message_pubkey').before('<span class="boards_nickname">' + escapeHtml(nickname) + '</span>');
 
