@@ -3436,10 +3436,14 @@ print_active_hugin(address, nickname);
       let element = $('.' + reply +' .'+emojione.toShort(message).replaceAll(':',''));
       if (element.height()) {
         console.log('exists already');
-        element.find('counter').text(parseInt(element.find('counter').text()) + 1);
+        element.find('.counter').text(parseInt(element.find('.counter').text()) + 1);
       } else {
         console.log('party party ', reply);
-        $('.' + reply +' .reactions').append('<i class="' + emojione.toShort(message).replaceAll(':','') +'">' + message + '</i>');
+        $('.' + reply +' .reactions').append('<i class="' + emojione.toShort(message).replaceAll(':','') +'">' + message + '<span class="counter">1</span></i>');
+        $('.' + reply +' .reactions .' + emojione.toShort(message).replaceAll(':','')).click(function(){
+          current_reply_to = reply;
+          sendBoardMessage(message);
+        })
       }
       $('.'+hash).remove();
       return;
