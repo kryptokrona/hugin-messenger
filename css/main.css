@@ -4244,7 +4244,7 @@ right: 15px;
 
   position: absolute;
   left: 128px;
-  bottom: 4px;
+  bottom: 6px;
   display: none;
 
 }
@@ -4252,7 +4252,7 @@ right: 15px;
 .reactions {
   display: block;
   position: absolute;
-  bottom: 8px;
+  bottom: 10px;
   left: 155px;
 }
 
@@ -4263,6 +4263,7 @@ right: 15px;
   border-radius: 5px;
   margin-right: 3px;
   padding-bottom: 4px;
+  cursor: pointer;
 }
 
 .react_menu i {
