@@ -1664,7 +1664,7 @@ font-size: 14pt;
    max-width: 55%;
    margin-bottom: 2px;
    border-radius: 15px;
-   margin-left: 20.5%;
+   margin-left: 22%;
    position: relative;
    padding: 15px;
    padding-left: 20px;
@@ -3350,7 +3350,7 @@ li .gradient {
   width: 100% !important;
   height: 100%;
   padding: 25px;
-  overflow: scroll;
+  overflow: hidden;
   position: relative;
 }
 
@@ -4017,7 +4017,7 @@ right: 15px;
 
 #active_hugins {
   overflow: scroll;
-  height: 670px;
+  height: 640px;
   padding-bottom: 40px;
 
 }
@@ -4243,8 +4243,9 @@ right: 15px;
 .react_menu {
 
   position: absolute;
-  left: 108px;
+  left: 128px;
   bottom: 4px;
+  display: none;
 
 }
 
@@ -4252,7 +4253,7 @@ right: 15px;
   display: block;
   position: absolute;
   bottom: 8px;
-  left: 135px;
+  left: 155px;
 }
 
 .reactions i {
@@ -4269,7 +4270,6 @@ right: 15px;
     background: rgba(0,0,0,0.2);
     padding: 5px;
     border-radius: 5px;
-    display: inline-block;
   }
 
 
@@ -4295,9 +4295,9 @@ right: 15px;
 
 #boards_messages {
   width: 100%;
-  overflow-y: auto;
+  overflow-y: scroll;
   overflow-x: hidden;
-  margin-left: -6.5% !important;
+  margin-left: -8% !important;
   padding-right: 7% !important;
   height: 85%;
   transition: 0.1s;

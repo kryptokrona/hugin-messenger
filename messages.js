@@ -3591,7 +3591,14 @@ print_active_hugin(address, nickname);
 
    })
 
-
+   $('.board_message').hover(
+     function () {
+       $(this).find('.react_menu').show();
+     },
+     function () {
+         $(this).find('.react_menu').hide();
+     }
+     );
 
   $('#boards .' + hash).click(function(){
     reply_to_board_message(hash);
