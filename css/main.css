@@ -3482,6 +3482,7 @@ button.emoji-picker__category-button:hover {
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
   opacity: 0.6;
+  z-index: 2;
 }
 
 .board_message_reply:hover {
@@ -3830,8 +3831,8 @@ right: 15px;
     text-align: center;
     height: 20px;
     color: white;
-    font-size: 24px;
-    top: 42px;
+    font-size: 22px;
+    top: 33px;
     position: absolute;
     z-index: 9999;
     width: 24%;
@@ -4232,13 +4233,15 @@ right: 15px;
     vertical-align: top;
     font-weight: 400;
     font-family: "RobotoMono";
-    width: 250px;
+    width: 110px;
     display: inline-block;
     overflow: hidden;
     text-overflow: ellipsis;
     position: absolute;
-    right: -23%;
     top: 10%;
+    right: 4%;
+    z-index: 999;
+    cursor: pointer;
 }
 .react_menu {
 
