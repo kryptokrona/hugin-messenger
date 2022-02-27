@@ -2915,11 +2915,14 @@ ipcRenderer.on('wallet-started', async () => {
 
 
 });
+
+
 $('#board-menu .recent').click(function(){
     // $('#recent_messages').toggleClass('show');
     // $('#active_hugins').toggleClass('hidden');
     // $('.close_recent').toggleClass('show');
     // $('.box_header').text('Recent Messages');
+
     $('#board_title').text('Recent messages');
     $('.current').removeClass('current');
 
@@ -2945,6 +2948,7 @@ $('#board-menu .recent').click(function(){
     let address =  $(this).find('.board_message_pubkey').text();
     console.log('classLIST', address);
     print_active_hugin(address, nickname);
+    $('#boards_messages').scrollTop('#boards_messages').height();
     $(this).delay(index*100).animate({
       opacity: 1
     }, 150, function() {
@@ -2952,7 +2956,17 @@ $('#board-menu .recent').click(function(){
     });
 
   })
-
+  $('#boards .in_board').click(function(){
+    $('.current').removeClass('current');
+    let recent_board = $(this).prop("classList")[1];
+    $('#board_title').text($(this).text());
+    current_board = '';
+    let board_icon = $('.board_icon[invitekey='+ recent_board + ']');
+    board_title = board_icon.attr('title');
+    this_board = board_icon.attr('id');
+    $('.board_icon[invitekey='+ recent_board + ']').addClass('current');
+    print_board(recent_board);
+  });
 });
 
 
@@ -3433,14 +3447,14 @@ print_active_hugin(address, nickname);
     console.log('length', message.length);
     console.log('emojione', emojione.toShort(message).replaceAll(':',''));
     if(containsOnlyEmojis(message) && message.length < 3) {
-      let element = $('.' + reply +' .'+emojione.toShort(message).replaceAll(':',''));
+      let element = $('#boards .' + reply +' .'+emojione.toShort(message).replaceAll(':',''));
       if (element.height()) {
         console.log('exists already');
         element.find('.counter').text(parseInt(element.find('.counter').text()) + 1);
       } else {
         console.log('party party ', reply);
-        $('.' + reply +' .reactions').append('<i class="' + emojione.toShort(message).replaceAll(':','') +'">' + message + '<span class="counter">1</span></i>');
-        $('.' + reply +' .reactions .' + emojione.toShort(message).replaceAll(':','')).click(function(){
+        $('#boards .' + reply +' .reactions').append('<i class="' + emojione.toShort(message).replaceAll(':','') +'">' + message + '<span class="counter">1</span></i>');
+        $('#boards .' + reply +' .reactions .' + emojione.toShort(message).replaceAll(':','')).click(function(){
           current_reply_to = reply;
           sendBoardMessage(message);
         })
@@ -3460,7 +3474,6 @@ print_active_hugin(address, nickname);
            $(selector + ' .' + hash + ' .board_avatar').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/png;base64,' + get_avatar(docs[0].sender) + '"><p>' + docs[0].message.substring(0,50)  +'..</p></div>');
 
            $(selector + ' .' + hash + ' .boards_nickname').css('top','59px');
-           $('#recent_messages .' + hash + ' .boards_nickname').css('top','63px');
 
 
         } else {
@@ -3527,11 +3540,11 @@ print_active_hugin(address, nickname);
     if (fetching_board.substring(59,64) == '00000') {
       //public
       to_board = letter_from_spend_key(fetching_board);
-      $('#recent_messages .' + hash + " .board_message_user" ).before('<span class="in_board">' + to_board.substring(0,22) + ' </span>');
+      $('#recent_messages .' + hash + " .board_message_user" ).before('<span class="in_board ' + fetching_board + '">' + to_board.substring(0,22) + ' </span>');
 
     } else if (fetching_board == '0b66b223812861ad15e5310b4387f475c414cd7bda76be80be6d3a55199652fc') {
       to_board = 'Home';
-      $('#recent_messages .' + hash + " .board_message_user" ).before('<span class="in_board">' + to_board.substring(0,22) + ' </span>');
+      $('#recent_messages .' + hash + " .board_message_user" ).before('<span class="in_board ' + fetching_board + '">' + to_board.substring(0,22) + ' </span>');
     } else {
 
 
@@ -3545,15 +3558,13 @@ print_active_hugin(address, nickname);
                } else {
                  to_board = fetching_board;
                }
-               $('#recent_messages .' + hash + " .board_message_user").before('<span class="in_board">' + to_board.substring(0,22) + ' </span>');
+               $('#recent_messages .' + hash + " .board_message_user").before('<span class="in_board ' + fetching_board + '">' + to_board.substring(0,22) + ' </span>');
 
 
     })
 
 
-
     }
-
 
 
   }
@@ -3568,7 +3579,6 @@ print_active_hugin(address, nickname);
     print_trending($('#recent_messages .' + hash + ' .hashtag').text());
 
   });
-
 
    $('#boards .' + hash + ' .boards_nickname').click(function(){
      $('#boards .' + hash + ' .board_message_pubkey').click();
@@ -3596,7 +3606,7 @@ print_active_hugin(address, nickname);
        $(this).find('.react_menu').show();
      },
      function () {
-         $(this).find('.react_menu').hide();
+       $(this).find('.react_menu').hide();
      }
      );
 
