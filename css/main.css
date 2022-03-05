@@ -2176,6 +2176,11 @@ margin-bottom: -16px;
 
 @media (prefers-color-scheme: light) {
 
+  .reactions i, .react_menu i {
+    background: rgba(0,0,0,0.05) !important;
+    color: #53565c !important;
+  }
+
   #board-menu {
     background: rgba(0,0,0,0.02) !important;
     color: #53565c !important;
@@ -4383,8 +4388,9 @@ height: 0;
 }
 
 .tag {
-  font-size: 17px;
-  font-family: RobotoMono;
+  font-size: 15px;
+  font-family: Montserrat;
+  font-style: italic;
   display: block;
-  margin-left: 10%;
+  margin-left: 15%;
 }
