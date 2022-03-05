@@ -3653,6 +3653,9 @@ print_active_hugin(address, nickname);
      );
 
   $('#boards .' + hash).click(function(){
+    if ($(this).hasClass('loading_message')) {
+    hash = $(this).prop("classList")[3];
+    }
     reply_to_board_message(hash);
     if ($('#board_box').hasClass('show')) {
       $('#send_payment').addClass('hidden');
