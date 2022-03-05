@@ -250,7 +250,7 @@ let print_boards = async () => {
 
          let board_title = $(this).attr('title');
 		     let this_board = $(this).attr('id');
-
+         reactions = {};
 		     if ($(this).hasClass('current')) {
 		       return;
 		     }
@@ -2938,7 +2938,6 @@ $('#board-menu .recent').click(function(){
   $('#send_payment').addClass('hidden');
   $('#modal').addClass('hidden');
   let recent_msgs = $('#recent_messages').html();
-  console.log('REEEEEEEEE',recent_msgs);
   $('#boards_messages').empty().append(recent_msgs);
   board_posters = [];
   $('.active_user').remove();
@@ -2946,7 +2945,6 @@ $('#board-menu .recent').click(function(){
     console.log( index + ": " + $( this ).text() );
     let nickname = $(this).find('.boards_nickname').text();
     let address =  $(this).find('.board_message_pubkey').text();
-    console.log('classLIST', address);
     print_active_hugin(address, nickname);
     $('#boards_messages').scrollTop('#boards_messages').height();
     $(this).delay(index*100).animate({
@@ -2973,6 +2971,7 @@ $('#board-menu .recent').click(function(){
 $('#join_board_button').click(function(){});
 
 $('#boards_icon').click(function(){
+  let reactions = {};
   misc.find({}, function (err,docs){
     if (docs[0]) {
       $('.boards_nickname_form').val(docs[0].nickname);
@@ -3326,10 +3325,10 @@ if (board_posters.indexOf(address) === -1) {
    if (nickname != known_nickname) {
      $('#active_hugins .' + address + ' .boards_nickname').text(nickname);
    }
-   console.log("No address", address);
  }
 }
 
+let reactions = {};
 
 let print_board_message = async (hash, address, message, timestamp, fetching_board, nickname=false, reply=false, selector) => {
   let hashtag = true;
@@ -3407,7 +3406,6 @@ let print_board_message = async (hash, address, message, timestamp, fetching_boa
 
      if (hashtag) {
        let words = message.split(' ');
-       console.log(words);
        try {
        for (word in words) {
 
@@ -3441,28 +3439,49 @@ print_active_hugin(address, nickname);
     e.stopPropagation();
   })
   if (reply) {
-    // $('.this_board_message .board_message_pubkey').before('<span class="boards_nickname">' + hex_json.n + '</span>')
 
-    console.log('emojis', containsOnlyEmojis(message));
-    console.log('length', message.length);
-    console.log('emojione', emojione.toShort(message).replaceAll(':',''));
-    if(containsOnlyEmojis(message) && message.length < 3) {
-      let element = $('#boards .' + reply +' .'+emojione.toShort(message).replaceAll(':',''));
-      if (element.height()) {
-        console.log('exists already');
-        element.find('.counter').text(parseInt(element.find('.counter').text()) + 1);
-      } else {
-        console.log('party party ', reply);
-        $('#boards .' + reply +' .reactions').append('<i class="' + emojione.toShort(message).replaceAll(':','') +'">' + message + '<span class="counter">1</span></i>');
-        $('#boards .' + reply +' .reactions .' + emojione.toShort(message).replaceAll(':','')).click(function(){
-          current_reply_to = reply;
-          sendBoardMessage(message);
-        })
-      }
-      $('.'+hash).remove();
-      return;
-    } else {
+    if(containsOnlyEmojis(message) && message.length < 8) {
+      let text_emoji = emojione.toShort(message).replaceAll(':','');
+      let element = $('#boards .' + reply +' .'+text_emoji);
+      let thisEmoji = text_emoji;
+      let someTXhash = reply;
+      let someAddr = address;
+      let post_reactions = reactions[someTXhash];
+      $(selector + ' .'+hash).remove();
+          try {
+            // Try to check if this address is in the list of reactors for this specific post and emoji
+            if (element.height()) {
+              let has_reacted = post_reactions[thisEmoji].indexOf(someAddr);
+              if (has_reacted > -1) {
+                  // Do nothing, user already made this reaction
+                  return;
+              } else {
+                      // Somebody has reacted to this post before
+                      reactions[someTXhash][thisEmoji] = [someAddr];
+                      element.find('.counter').text(parseInt(element.find('.counter').text()) + 1);
+
+              }
+            } else {
+                // Nobody has reacted with this emoji or to this post before
+                if (reactions[someTXhash] === undefined ) {
+                reactions = {[someTXhash]: [thisEmoji]};
+                }
+                reactions[someTXhash][thisEmoji] = [someAddr];
+                $('#boards .' + reply +' .reactions').append('<i class="' + text_emoji +'">' + message + '<span class="counter">1</span></i>');
+                $('#boards .' + reply +' .reactions .' + text_emoji).click(function(){
+                  current_reply_to = reply;
+                  sendBoardMessage(message);
+                })
+            }
+          } catch (err) {
+          console.log(err);
+
+          }
+
     }
+
+
+
 
 
     boards_db.find({hash : reply}, async function (err,docs){
