@@ -347,7 +347,7 @@
 #boards_message_form {
   font-size: 12pt;
   height: 57px !important;
-  width: 51%;
+  width: 52%;
   padding: 0;
   padding-left: 15px;
   line-height: 100%;
@@ -3310,7 +3310,9 @@ li .gradient {
 }
 
 .download-button {
+  display: block;
   margin-left: 7px !important;
+  margin-top: 10px;
   width: 88px;
   text-transform: uppercase;
   font-weight: bold;
@@ -3407,37 +3409,36 @@ button.emoji-picker__category-button:hover {
 }
 
 #replyto {
+  top: 0px;
   position: absolute;
-  height: 57px;
+  height: 25px;
   border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px;
+  border-bottom-left-radius: 0px;
   color: #1b1b1b;
   padding-left: 40px;
   padding-right: 20px;
-  vertical-align: bottom;
   font-family: 'Montserrat';
-  font-weight: 700;
-  line-height: 60px;
+  font-weight: 600;
+  line-height: 27px;
   -webkit-user-select: none;
-  font-size: 10px;
+  font-size: 11px;
 }
 
 #replyto_exit {
-  font-size: 22pt;
+  font-size: 20pt;
   color: #1b1b1b;
   transform: rotate(45deg);
   position: absolute;
-  margin-left: 10px;
+  margin-left: 5px;
   cursor: pointer;
   font-family: 'Montserrat';
-  top: 37px;
-  font-weight: 700;
-
+  top: -3px;
+  font-weight: 600;
 }
 
+
 #replyto_exit:hover {
-  font-size: 24pt;
-  top: 36px;
+  font-size: 21pt;
   color: white;
 }
 
