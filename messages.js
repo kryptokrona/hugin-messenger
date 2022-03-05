@@ -130,10 +130,6 @@ let reply_to_board_message = (hash) => {
 
   let amount = parseInt($('#replyto').width()) + 70;
 
-  $('#boards_message_form').css('padding-left',amount);
-
-  $('#boards_message_form').css('width','calc(80% - ' + ( amount + 300 ) + 'px)');
-
 }
 
 $('#board-menu .trending').click(function() {
@@ -3467,7 +3463,8 @@ print_active_hugin(address, nickname);
     e.stopPropagation();
   })
   if (reply) {
-
+    $(selector + ' .' + hash + ' .board_avatar').before('<div class="board_message_reply"><img class="board_avatar_reply"><p></p></div>');
+    $(selector + ' .' + hash + ' .boards_nickname').css('top','59px');
     if(containsOnlyEmojis(message) && message.length < 8) {
       let text_emoji = emojione.toShort(message).replaceAll(':','');
       let element = $('#boards .' + reply +' .'+text_emoji);
@@ -3517,10 +3514,12 @@ print_active_hugin(address, nickname);
       let hex_json_reply;
 
         if (docs.length) {
+          $(selector + ' .' + hash + ' .board_message_reply').remove();
+          $(selector + ' .' + hash + ' .board_avatar_reply').remove();
 
            $(selector + ' .' + hash + ' .board_avatar').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/png;base64,' + get_avatar(docs[0].sender) + '"><p>' + docs[0].message.substring(0,50)  +'..</p></div>');
 
-           $(selector + ' .' + hash + ' .boards_nickname').css('top','59px');
+
 
 
         } else {
