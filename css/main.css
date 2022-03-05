@@ -4381,3 +4381,10 @@ height: 0;
 #boards_message .anon p {
   line-height: 24px;
 }
+
+.tag {
+  font-size: 17px;
+  font-family: RobotoMono;
+  display: block;
+  margin-left: 10%;
+}
