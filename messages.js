@@ -1416,6 +1416,7 @@ let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json
           if (payload_json.brd) {
           let time = escape(parseInt(temp_hash / 1000));
           let thisHash = resp.body.result.transactionHash;
+          $('#boards .' + temp_hash).addClass(thisHash);
           console.log(to_board);
           save_boards_message(payload_json, time, thisHash, to_board);
 
@@ -2952,7 +2953,6 @@ $('#board-menu .recent').click(function(){
   $('#boards_messages').empty().append(recent_msgs);
   $('.active_user').remove();
   $('#boards .board_message').each(function(index){
-    console.log( index + ": " + $( this ).text() );
     let nickname = $(this).find('.boards_nickname').text();
     let address =  $(this).find('.board_message_pubkey').text();
     print_active_hugin(address, nickname);
