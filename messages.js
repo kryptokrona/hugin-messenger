@@ -3454,9 +3454,10 @@ let print_board_message = async (hash, address, message, timestamp, fetching_boa
 if (!nickname) {
   nickname = "Anonymous";
 }
+if ($('.board_icon[invitekey='+ fetching_board + ']').hasClass('current')) {
 
 print_active_hugin(address, nickname);
-
+}
   $(selector + ' .' + hash + ' .board_message_pubkey').before('<span class="boards_nickname">' + escapeHtml(nickname) + '</span>');
   $(selector + ' .' + hash).append('<div class="react_menu main"><i class="fa fa-smile-o"></div><div class="reactions"></div>');
   $(selector + ' .' + hash + ' .react_menu i').click(function(e){
