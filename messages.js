@@ -250,10 +250,10 @@ let print_boards = async () => {
 
          let board_title = $(this).attr('title');
 		     let this_board = $(this).attr('id');
-         reactions = {};
 		     if ($(this).hasClass('current')) {
 		       return;
 		     }
+         reactions = {};
          board_posters = [];
         $('.active_user').remove();
 		     current_board = this_board;
@@ -4370,7 +4370,7 @@ ipcRenderer.on('got-login-complete', async () => {
     let thisAddr = resp.body.result.addresses[0];
 
   console.log($('#currentAddrSpan').text());
-    boards_db.find({sender: { $ne: $('#currentAddrSpan').text()}}).sort({ timestamp: -1 }).limit(20).exec(function (err,docs){
+    boards_db.find({sender: { $ne: $('#currentAddrSpan').text()}}).sort({ timestamp: -1 }).limit(30).exec(function (err,docs){
 
 
       let boards_addresses = rmt.getGlobal('boards_addresses');
