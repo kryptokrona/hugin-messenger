@@ -3417,7 +3417,7 @@ button.emoji-picker__category-button:hover {
   border-top-right-radius: 5px;
 border-bottom-right-radius: 1px;
   color: #1b1b1b;
-  padding-left: 40px;
+  padding-left: 30px;
   padding-right: 20px;
   font-family: 'Montserrat';
   font-weight: 600;
@@ -4132,8 +4132,8 @@ right: 15px;
 
 #active_hugins .boards_nickname{
   top: 5px !important;
-  font-size: 12px !important;
-  margin-left: 10px !important;
+  font-size: 13.37px !important;
+  margin-left: 7px !important;
 }
 #active_hugins .board_avatar {
   margin-left: 17px !important;
