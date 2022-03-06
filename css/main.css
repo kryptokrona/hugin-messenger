@@ -2176,6 +2176,11 @@ margin-bottom: -16px;
 
 @media (prefers-color-scheme: light) {
 
+  .reactors {
+    background-color: rgba(255,255,255,0.9) !important;
+    color: #53565c !important;
+  }
+
   .reactions i, .react_menu i {
     background: rgba(0,0,0,0.05) !important;
     color: #53565c !important;
@@ -3415,7 +3420,7 @@ button.emoji-picker__category-button:hover {
   border-top-left-radius: 5px;
   border-bottom-left-radius: 1px;
   border-top-right-radius: 5px;
-border-bottom-right-radius: 1px;
+  border-bottom-right-radius: 1px;
   color: #1b1b1b;
   padding-left: 30px;
   padding-right: 20px;
@@ -4267,6 +4272,7 @@ right: 15px;
 
 .reactions i {
   font-style: normal;
+  position: relative;
   background: rgba(0,0,0,0.2);
   padding: 2px;
   border-radius: 5px;
@@ -4394,4 +4400,15 @@ height: 0;
   font-style: italic;
   display: block;
   margin-left: 15%;
+}
+
+.reactors {
+  position: absolute;
+  border-radius: 5px;
+  color: #f1f2f3;
+  background-color: rgba(0,0,0,0.1);
+  padding: 5px;
+  font-size: 11px;
+  top: 20px;
+  left: 0px;
 }

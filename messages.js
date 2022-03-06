@@ -1756,12 +1756,14 @@ async function sendBoardMessage(message) {
         $('#replyto_exit').click();
         if(containsOnlyEmojis(message) && message.length < 8) {
           let text_emoji = emojione.toShort(message).replaceAll(':','');
+          try {
           let already_exists = reactions[payload_json.r][text_emoji].indexOf(currentAddr);
-          if (already_exists > -1) {
-            console.log('exists', message);
+          console.log('exists', message);
           return;
-          }
+        } catch (err) {
+          console.log(err);
         }
+      }
       }
       address = $('.current').attr('id');
       console.log(address);
@@ -3329,15 +3331,21 @@ let get_tips = async (hash) => {
       }
 }
 let print_active_hugin = (address, nickname) => {
-
-if (board_posters.indexOf(address) === -1) {
-   board_posters.push(address);
+let already_known = false;
+for (a in board_posters){
+  if (board_posters[a].address == address) {
+    already_known = true;
+  }
+}
+if (!already_known) {
+   board_posters.push({address: address, nickname: nickname});
    $('#active_hugins').append('<li class="active_user ' + address + '" id=""><div class="board_message_user"><span class="board_message_pubkey">' + address + '</span></div><img class="board_avatar" src="data:image/png;base64,' + get_avatar(address) + '"><span class="boards_nickname">' + escapeHtml(nickname) + '</span></li>');
 
  } else {
    let known_nickname = $('#active_hugins .' + address + ' .boards_nickname').text();
    if (nickname != known_nickname) {
      $('#active_hugins .' + address + ' .boards_nickname').text(nickname);
+
    }
  }
 }
@@ -3646,6 +3654,28 @@ print_active_hugin(address, nickname);
 
 
    })
+   $('.board_message .reactions i').hover(
+
+     function (e) {
+      e.stopPropagation();
+      e.preventDefault();
+      let txHash = $(this).parent().parent().prop('classList')[1];
+      let emojiText = $(this).prop('classList')[0];
+      let reactors = reactions[txHash][emojiText];
+      let reactors_formatted = [];
+       for (r in reactors) {
+         for (a in board_posters){
+           if (board_posters[a].address == reactors[r]) {
+             reactors_formatted.push(board_posters[a].nickname);
+           }
+         }
+       }
+       $(this).append('<div class="reactors">' + reactors_formatted.toString() + '</div>');
+     },
+     function () {
+       $(this).find('.reactors').remove();
+     }
+     );
 
    $('.board_message').hover(
      function () {
