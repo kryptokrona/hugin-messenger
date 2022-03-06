@@ -1758,8 +1758,10 @@ async function sendBoardMessage(message) {
           let text_emoji = emojione.toShort(message).replaceAll(':','');
           try {
           let already_exists = reactions[payload_json.r][text_emoji].indexOf(currentAddr);
+          if (already_exists > -1) {
           console.log('exists', message);
           return;
+          }
         } catch (err) {
           console.log(err);
         }
