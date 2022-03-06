@@ -1754,6 +1754,14 @@ async function sendBoardMessage(message) {
       if (current_reply_to.length > 0) {
         payload_json.r = current_reply_to;
         $('#replyto_exit').click();
+        if(containsOnlyEmojis(message) && message.length < 8) {
+          let text_emoji = emojione.toShort(message).replaceAll(':','');
+          let already_exists = reactions[payload_json.r][text_emoji].indexOf(currentAddr);
+          if (already_exists > -1) {
+            console.log('exists', message);
+          return;
+          }
+        }
       }
       address = $('.current').attr('id');
       console.log(address);
@@ -2977,7 +2985,7 @@ $('#board-menu .recent').click(function(){
 $('#join_board_button').click(function(){});
 
 $('#boards_icon').click(function(){
-  let reactions = {};
+  reactions = {};
   misc.find({}, function (err,docs){
     if (docs[0]) {
       $('.boards_nickname_form').val(docs[0].nickname);
@@ -3471,41 +3479,39 @@ print_active_hugin(address, nickname);
       let thisEmoji = text_emoji;
       let someTXhash = reply;
       let someAddr = address;
-      let post_reactions = reactions[someTXhash];
+      console.log(reactions);
       $(selector + ' .'+hash).remove();
-          try {
+      try {
+        console.log(reactions);
             // Try to check if this address is in the list of reactors for this specific post and emoji
-            if (element.height()) {
-              let has_reacted = post_reactions[thisEmoji].indexOf(someAddr);
-              if (has_reacted > -1) {
-                  // Do nothing, user already made this reaction
-                  return;
-              } else {
-                      // Somebody has reacted to this post before
-                      reactions[someTXhash][thisEmoji] = [someAddr];
-                      element.find('.counter').text(parseInt(element.find('.counter').text()) + 1);
-
-              }
+            let has_reacted = reactions[someTXhash][thisEmoji].indexOf(someAddr);
+            if (has_reacted > -1) {
+                // Do nothing, user already made this reaction
+                return;
             } else {
-                // Nobody has reacted with this emoji or to this post before
-                if (reactions[someTXhash] === undefined ) {
-                reactions = {[someTXhash]: [thisEmoji]};
-                }
-                reactions[someTXhash][thisEmoji] = [someAddr];
-                $('#boards .' + reply +' .reactions').append('<i class="' + text_emoji +'">' + message + '<span class="counter">1</span></i>');
-                $('#boards .' + reply +' .reactions .' + text_emoji).click(function(){
-                  current_reply_to = reply;
-                  sendBoardMessage(message);
-                })
+                // If user hasn't made this exact reaction before, push it to the list
+                element.find('.counter').text(parseInt(element.find('.counter').text()) + 1);
+                reactions[someTXhash][thisEmoji].push(someAddr);
             }
-          } catch (err) {
-          console.log(err);
+            } catch (err) {
+              // Nobody has reacted with this emoji before
+              $('#boards .' + reply +' .reactions').append('<i class="' + text_emoji +'">' + message + '<span class="counter">1</span></i>');
+              $('#boards .' + reply +' .reactions .' + text_emoji).click(function(){
+                console.log();
+                  console.log('loG lOOL');
+                current_reply_to = reply;
+                sendBoardMessage(message);
 
+              });
+              if (reactions[someTXhash]) {
+                  // Somebody has reacted to this post before
+                  reactions[someTXhash][thisEmoji] = [someAddr];
+              } else {
+                  // First reaction for this post
+                  reactions[someTXhash] = {[thisEmoji]: [someAddr]};
+              }
+            }
           }
-
-    }
-
-
 
 
 
