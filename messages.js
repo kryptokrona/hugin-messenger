@@ -2611,7 +2611,7 @@ $('#create_pub_board_button').click(async function(){
     $('#modal').addClass('hidden');
     $('#board_title').empty();
     $('#boards_messages').fadeOut();
-    $('#board_title').after('<p class="saving">Loading public board...<span>.</span><span>.</span><span>.</span></p>');
+    $('#board_title').after('<p class="saving">Loading public board<span>.</span><span>.</span><span>.</span></p>');
     ipcRenderer.send('import-view-subwallet', invite_code);
       print_board(invite_code);
 
@@ -2634,7 +2634,7 @@ $('#join_priv_board_button').click(async function(){
     $('#join_priv_board_input').val('');
     $('#board_title').empty();
     $('#boards_messages').fadeOut();
-    $('#board_title').after('<p class="saving">Joining board...<span>.</span><span>.</span><span>.</span></p>');
+    $('#board_title').after('<p class="saving">Joining board<span>.</span><span>.</span><span>.</span></p>');
     ipcRenderer.send('import-view-subwallet', invite_code);
       print_board(invite_code);
 
@@ -2657,7 +2657,7 @@ $('#create_priv_board_button').click(async function(){
     $('#modal').addClass('hidden');
     $('#board_title').empty();
     $('#boards_messages').fadeOut();
-    $('#board_title').after('<p class="saving">Creating new board...<span>.</span><span>.</span><span>.</span></p>');
+    $('#board_title').after('<p class="saving">Creating new board<span>.</span><span>.</span><span>.</span></p>');
     ipcRenderer.send('import-view-subwallet', invite_code);
 
   } else {
@@ -3514,10 +3514,9 @@ print_active_hugin(address, nickname);
       let hex_json_reply;
 
         if (docs.length) {
-          $(selector + ' .' + hash + ' .board_message_reply').remove();
-          $(selector + ' .' + hash + ' .board_avatar_reply').remove();
-
-           $(selector + ' .' + hash + ' .board_avatar').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/png;base64,' + get_avatar(docs[0].sender) + '"><p>' + docs[0].message.substring(0,50)  +'..</p></div>');
+           $(selector + ' .' + hash + ' .board_message_reply').remove();
+           $(selector + ' .' + hash + ' .board_avatar_reply').remove();
+           $(selector + ' .' + hash + ' .board_avatar').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/png;base64,' + get_avatar(docs[0].sender) + '"><p>' + docs[0].message.substring(0,50)  +'..</p></div>').fadeIn();;
 
 
 

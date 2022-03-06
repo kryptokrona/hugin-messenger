@@ -3480,7 +3480,6 @@ border-bottom-right-radius: 1px;
 
 .board_avatar_reply {
   display: inline-block;
-  margin-top: 4px;
 }
 
 .board_message_reply {
@@ -3516,7 +3515,6 @@ border-bottom-right-radius: 1px;
 
 
 .board_message_reply::before {
-  margin-bottom: 25px;
   content: "∟";
   display: inline-block;
   transform: rotate(90deg);
