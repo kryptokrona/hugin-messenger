@@ -369,6 +369,11 @@ ipcRenderer.on('got-login-complete', async () => {
     updateBalance(thisAddr);
     getHistory();
 
+    $('.charge_button').click(function(){
+      $(this).prop('href', 'https://kryptokrona.org/faucet/faucet.html?address=' + thisAddr);
+      $(this).prop('target', '_new');
+    })
+
   })
   .catch(err => {
     console.log(err)

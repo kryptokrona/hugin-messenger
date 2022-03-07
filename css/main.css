@@ -4307,6 +4307,22 @@ right: 15px;
 #message-balance .inner {
 
   text-align: center;
+  position: relative;
+}
+.fa-external-link {
+  position: absolute;
+  right: -2px;
+  top: 27px;
+  font-size: 14px !important;
+}
+.charge_button {
+  cursor: pointer;
+  position: absolute;
+  font-size: 21pt;
+  opacity: 1;
+  right: 46px;
+  top: 74px;
+  color: white;
 }
 
 #profile_balance span {
