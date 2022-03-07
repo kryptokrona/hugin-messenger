@@ -1547,10 +1547,10 @@ function sendMessage(message, silent=false) {
     if (!silent) {
       let id_elem = Date.now();
 
-             let links = handle_links(message);
-             let display_message = links[0];
+             message = handle_links(message);
+             // let display_message = links[0];
 
-    $('#messages').append('<li class="sent_message" id="' + id_elem +  '"><img class="message_avatar" src="data:image/png;base64,' + avatar_base64 + '"><p>' + display_message + links[1] + links[2] + '</p><span class="time" timestamp="' + Date.now() + '">right now</span></li>');
+    $('#messages').append('<li class="sent_message" id="' + id_elem +  '"><img class="message_avatar" src="data:image/png;base64,' + avatar_base64 + '"><p>' + message + '</p><span class="time" timestamp="' + Date.now() + '">right now</span></li>');
       console.log('debagg2', id_elem);
       $('#' + id_elem).click(function(){
         shell.openExternal($(this).attr('href'));
@@ -2387,10 +2387,10 @@ async function print_conversation(conversation) {
     // console.log( parseCall(messages[n].message, false, false) );
 
 
-       let links = handle_links(messages[n].message);
-       messages[n].message = links[0];
-       let youtube_links = links[1];
-       let image_attached = links[2];
+       // let links = handle_links(messages[n].message);
+       messages[n].message = handle_links(messages[n].message);
+       // let youtube_links = links[1];
+       // let image_attached = links[2];
        let nickname = await get_translation(conversation);
        let nickname_element = '';
 
@@ -2398,7 +2398,7 @@ async function print_conversation(conversation) {
          nickname_element = '<span class="contact_address">' + nickname + '</span>';
        }
 
-    $('#messages').append('<li id="' + messages[n].timestamp + '" timestamp="' + messages[n].timestamp + '" class="' + messages[n].type + '_message"><img class="message_avatar" src="data:image/png;base64,' + avatar_sender + '">' + nickname_element + '<p>' + parseCall(messages[n].message, false, false) +'</p>'+ links[1] + links[2] + '<span class="time" timestamp="' + messages[n].timestamp + '">' + moment(messages[n].timestamp).fromNow() + '</span></li>');
+       $('#messages').append('<li id="' + messages[n].timestamp + '" timestamp="' + messages[n].timestamp + '" class="' + messages[n].type + '_message"><img class="message_avatar" src="data:image/png;base64,' + avatar_sender + '">' + nickname_element + '<p>' + parseCall(messages[n].message, false, false) +'</p><span class="time" timestamp="' + messages[n].timestamp + '">' + moment(messages[n].timestamp).fromNow() + '</span></li>');
 
 
       let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(messages[n].message);
@@ -3239,8 +3239,6 @@ $('#replyto_exit').click(function(){
 })
 
 
-
-
 let handle_links = (message) => {
   geturl = new RegExp(
           "(^|[ \t\r\n])((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&~=-])|%[A-Fa-f0-9]{2}){3,}(#([a-zA-Z0-9][a-zA-Z0-9$_.+!*(),;/?:@&~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))"
@@ -3248,7 +3246,7 @@ let handle_links = (message) => {
        );
 
 // Instantiate attachments
-let youtube_links = '';
+let youtube_links = [];
 let image_attached = '';
 
 // Find links
@@ -3264,25 +3262,27 @@ let imagetypes = ['.png','.jpg','.gif', '.webm', '.jpeg', '.webp'];
 if (links_in_message) {
 
   for (let j = 0; j < links_in_message.length; j++) {
-
-    if (links_in_message[j].match(/youtu/) || links_in_message[j].match(/y2u.be/)) { // Embeds YouTube links
-      message = message.replace(links_in_message[j],'');
-      embed_code = links_in_message[j].split('/').slice(-1)[0].split('=').slice(-1)[0];
-      youtube_links += '<div style="position:relative;height:0;padding-bottom:42.42%"><iframe src="https://www.youtube.com/embed/' + embed_code + '?modestbranding=1" style="position:absolute;width:80%;height:100%;left:10%" width="849" height="360" frameborder="0" allow="autoplay; encrypted-media"></iframe></div>';
-    } else if (imagetypes.indexOf(links_in_message[j].substr(-4)) > -1 ) { // Embeds image links
-      message = message.replace(links_in_message[j],'');
-      image_attached_url = links_in_message[j];
+    let this_link = links_in_message[j];
+    if (this_link.match(/youtu/) || this_link.match(/y2u.be/)) { // Embeds YouTube links
+      let embed_code = open_embed(this_link);
+      let embed_button =   '<button onClick="event.stopPropagation(); $(this).addClass(\'hidden\').after(open_embed(\'' + this_link + '\'))" link="'+ this_link +'" class="embed_button">Embed</button>';
+      let youtube_element = '<br><a target="_new" href="' + this_link + '">' + this_link + '</a>' + embed_button + '<br>';
+      message = message.replace(this_link, youtube_element);
+      // embed_code = this_link.split('/').slice(-1)[0].split('=').slice(-1)[0];
+      // let embed_code = this_link.split('/').slice(-1)[0].split('=').slice(-1)[0];
+      // let iframe = '<div style="position:relative;height:0;padding-bottom:42.42%"><iframe src="https://www.youtube.com/embed/' + embed_code + '?modestbranding=1" style="position:absolute;width:80%;height:100%;left:10%" width="849" height="360" frameborder="0" allow="autoplay; encrypted-media"></iframe></div>'
+      // youtube_links.push({link: this_link})
+    } else if (imagetypes.indexOf(this_link.substr(-4)) > -1 ) { // Embeds image links
+      message = message.replace(this_link,'');
+      image_attached_url = this_link;
       image_attached = '<img class="attachment" src="' + image_attached_url + '" />';
     } else { // Embeds other links
-      message = message.replace(links_in_message[j],'<a target="_new" href="' + links_in_message[j] + '">' + links_in_message[j] + '</a>');
+      message = message.replace(this_link,'<a target="_new" href="' + this_link + '">' + this_link + '</a>');
     }
   }
-  return [message, youtube_links, image_attached];
-} else {
-  return [message,'',''];
 }
 
-
+return message;
 }
 
 let get_tips = async (hash) => {
@@ -3372,7 +3372,6 @@ if (trendingTags.indexOf(hashtag) === -1) {
 let reactions = {};
 
 let print_board_message = async (hash, address, message, timestamp, fetching_board, nickname=false, reply=false, selector) => {
-  let hashtag = true;
   try {
 
 
@@ -3383,7 +3382,6 @@ let print_board_message = async (hash, address, message, timestamp, fetching_boa
 
   let tips = 0;
 
-   // get_tips(hash);
 
   let avatar_base64 = get_avatar(address);
 
@@ -3396,58 +3394,9 @@ let print_board_message = async (hash, address, message, timestamp, fetching_boa
      return;
    }
 
-     geturl = new RegExp(
-             "(^|[ \t\r\n])((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&~=-])|%[A-Fa-f0-9]{2}){3,}(#([a-zA-Z0-9][a-zA-Z0-9$_.+!*(),;/?:@&~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))"
-            ,"g"
-          );
-
-   // Instantiate attachments
-   let youtube_links = '';
-   let image_attached = '';
-
-   // Find links
-   let links_in_message = message.match(geturl);
-
-   // Supported image attachment filetypes
-   let imagetypes = ['.png','.jpg','.gif', '.webm', '.jpeg', '.webp'];
-
-   // Find magnet links
-   //let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(message);
-
-   //message = message.replace(magnetLinks[0], "");
-
-   if (links_in_message) {
-
-     for (let j = 0; j < links_in_message.length; j++) {
-
-       if (links_in_message[j].match(/youtu/) || links_in_message[j].match(/y2u.be/)) { // Embeds YouTube links
-         message = message.replace(links_in_message[j],'');
-         embed_code = links_in_message[j].split('/').slice(-1)[0].split('=').slice(-1)[0];
-         youtube_links += '<div style="position:relative;height:0;padding-bottom:42.42%"><iframe src="https://www.youtube.com/embed/' + embed_code + '?modestbranding=1" style="position:absolute;width:80%;height:100%;left:10%" width="849" height="360" frameborder="0" allow="autoplay; encrypted-media"></iframe></div>';
-       } else if (imagetypes.indexOf(links_in_message[j].substr(-4)) > -1 ) { // Embeds image links
-         message = message.replace(links_in_message[j],'');
-         image_attached_url = links_in_message[j];
-         image_attached = '<img class="attachment" src="' + image_attached_url + '" />';
-       } else { // Embeds other links
-         message = message.replace(links_in_message[j],'<a target="_new" href="' + links_in_message[j] + '">' + links_in_message[j] + '</a>');
-       }
-     }
-   }
-
-
-   if (message.length < 1 && youtube_links.length > 0) {
-     $(selector).prepend('<li class="board_message ' + hash + '" id=""><div class="board_message_user"><span class="board_message_pubkey">' + address + '</span></div><img class="board_avatar" src="data:image/png;base64,' + avatar_base64 + '">'+ image_attached + youtube_links +'<span class="time" timestamp="'+ timestamp*1000 +'">' + moment(timestamp*1000).fromNow() + '</span></li>');
-
-   } else if (image_attached > 0 && youtube_links.length > 0) {
-
-     $(selector).prepend('<li class="board_message ' + hash + '" id=""><div class="board_message_user"><span class="board_message_pubkey">' + address + '</span></div><img class="board_avatar" src="data:image/png;base64,' + avatar_base64 + '"><p class="' + addClasses + '">' + message + youtube_links +'</p>'+ image_attached +'<span class="time" timestamp="'+ timestamp*1000 +'">' + moment(timestamp*1000).fromNow() + '</span></li>');
-
-
-   } else  {
-
-     if (hashtag) {
+    message = handle_links(message);
+    try {
        let words = message.split(' ');
-       try {
        for (word in words) {
 
          if (words[word].substring(0,1) == '#') {
@@ -3455,15 +3404,14 @@ let print_board_message = async (hash, address, message, timestamp, fetching_boa
            message = message.replace(words[word], hashtag);
          }
        }
-       $(selector).prepend('<li class="board_message ' + hash + '" id=""><div class="board_message_user"><span class="board_message_pubkey">' + address + '</span></div><img class="board_avatar" src="data:image/png;base64,' + avatar_base64 + '"><p class="test">' + message + '</p>'+ image_attached +'<span class="time" timestamp="'+ timestamp*1000 +'">' + moment(timestamp*1000).fromNow() + '</span></li>');
+
      } catch (err) {
        console.log(err);
+       console.log(message);
      }
 
-   } else {
-     $(selector).prepend('<li class="board_message ' + hash + '" id=""><div class="board_message_user"><span class="board_message_pubkey">' + address + '</span></div><img class="board_avatar" src="data:image/png;base64,' + avatar_base64 + '"><p class="' + addClasses + '">' + message + youtube_links +'</p>'+ image_attached +'<span class="time" timestamp="'+ timestamp*1000 +'">' + moment(timestamp*1000).fromNow() + '</span></li>');
-  }
-}
+       $(selector).prepend('<li class="board_message ' + hash + '" id=""><div class="board_message_user"><span class="board_message_pubkey">' + address + '</span></div><img class="board_avatar" src="data:image/png;base64,' + avatar_base64 + '"><p class="">' + message + '</p><span class="time" timestamp="'+ timestamp*1000 +'">' + moment(timestamp*1000).fromNow() + '</span></li>');
+
 
 if (!nickname) {
   nickname = "Anonymous";
@@ -3705,7 +3653,6 @@ print_active_hugin(address, nickname);
     $(this).addClass('rgb');
     $('#boards').scrollTop('0');
   });
-
 
   $('#boards .' + hash).delay(100).animate({
     opacity: 1
@@ -4143,13 +4090,13 @@ console.log('Background syncing...');
 
                    avatar_base64 = get_avatar(payload_json.from);
                    payload_json.msg = parseCall(payload_json.msg, payload_json.from);
-                   let links = handle_links(payload_json.msg);
-                   let display_message = links[0];
-                   let youtube_links = links[1];
-                   let image_attached = links[2];
+                   message = handle_links(payload_json.msg);
+                   // let display_message = links[0];
+                   // let youtube_links = links[1];
+                   // let image_attached = links[2];
 
                    if (payload_json.msg.length && $('#welcome_alpha').hasClass('hidden')) {
-                     $('#messages').append('<li class="received_message" id=' + payload_json.t + '><img class="message_avatar" src="data:image/png;base64,' + avatar_base64 + '"><p>' + display_message +'</p>' + image_attached + youtube_links +' <span class="time" timestamp="' + payload_json.t + '">' + moment(payload_json.t).fromNow() + '</span></li>');
+                     $('#messages').append('<li class="received_message" id=' + payload_json.t + '><img class="message_avatar" src="data:image/png;base64,' + avatar_base64 + '"><p>' + message + '</p><span class="time" timestamp="' + payload_json.t + '">' + moment(payload_json.t).fromNow() + '</span></li>');
                      $('#messages_pane').scrollTop($('#messages').height());
                    }
                    console.log('debagg3', payload_json.t);
