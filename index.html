@@ -651,6 +651,12 @@
       // You can also require other files to run in this process
       require('./renderer.js')
       require('./messages.js')
+      const open_embed = (link) => {
+        let ytlink = link;
+        let embed_code = ytlink.split('/').slice(-1)[0].split('=').slice(-1)[0];
+        let iframe = '<div class="embed_window" style="position:relative;height:0;padding-bottom:42.42%"><iframe src="https://www.youtube.com/embed/' + embed_code + '?modestbranding=1" style="position:absolute;width:80%;height:100%;left:10%" width="849" height="360" frameborder="0" allow="autoplay; encrypted-media"></iframe><button onClick="event.stopPropagation();$(this).parent().parent().find(\'.embed_button\').removeClass(\'hidden\') ;$(this).parent().remove()">Close</button></div>';
+        return iframe;
+      }
 
     </script>
     <script type="module" src="emoji.js"></script>
