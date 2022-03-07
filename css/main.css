@@ -4439,3 +4439,25 @@ height: 0;
   left: 0px;
   width: auto;
 }
+
+.embed_button{
+}
+
+.embed {
+  display: inline-block;
+  background: rgba(0,0,0,0.1);
+  color: white;
+}
+
+.embed_window button {
+position: absolute;
+top: -16% !important;;
+position: absolute;
+right: -70px !important;
+/* padding-right: 6px !important;
+padding-left: 5px !important;
+padding-bottom: 5px !important;
+padding-top: 5px !important;
+background: magenta !important; */
+}
+}
