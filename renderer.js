@@ -261,6 +261,11 @@ function updateBalance(address) {
     thisBalance = parseFloat(resp.body.result.availableBalance).toFixed(2)/100000;
     thisLockedAmount = parseFloat(resp.body.result.lockedAmount).toFixed(2)/100000;
 
+    if(parseFloat(resp.body.result.availableBalance) + parseFloat(resp.body.result.lockedAmount) == 0) {
+      $('.charge_button').removeClass('hidden');
+    } else {
+      $('.charge_button').removeClass('hidden').addClass('hidden');
+    }
 
     $("#balancetext").text(thisBalance);
 
