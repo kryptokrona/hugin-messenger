@@ -2680,7 +2680,7 @@ $('#create_priv_board_button').click(async function(){
 
 ipcRenderer.on('blurred', async (event) => {
   // console.log('blur');
-  sleepAmount = 10000;
+  sleepAmount = 30000;
 })
 
 let last_checked_counter = 0;
@@ -2725,7 +2725,7 @@ let check_protection = async () => {
 
 ipcRenderer.on('focused', async (event) => {
   // console.log('focus');
-  sleepAmount = 1000;
+  sleepAmount = 4000;
 
 
 })
@@ -3662,6 +3662,9 @@ print_active_hugin(address, nickname);
       e.stopPropagation();
       e.preventDefault();
       let txHash = $(this).parent().parent().prop('classList')[1];
+      if ($(this).parent().parent().hasClass('loading_message')) {
+      txHash = $(this).parent().parent().prop("classList")[3];
+      }
       let emojiText = $(this).prop('classList')[0];
       let reactors = reactions[txHash][emojiText];
       let reactors_formatted = [];
