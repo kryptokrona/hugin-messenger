@@ -347,7 +347,7 @@
 #boards_message_form {
   font-size: 12pt;
   height: 57px !important;
-  width: 52%;
+  width: 56%;
   padding: 0;
   padding-left: 15px;
   line-height: 100%;
@@ -654,7 +654,7 @@ border-radius: 5px;
 
 #container > div:not(#modal) {
 
-  width: 24%;
+  width: 20%;
   height: 100%;
   top: 0;
   padding-left: 12px;
@@ -1644,7 +1644,7 @@ font-size: 14pt;
  .board_message p {
    border-radius: 5px;
    width: max-content;
-   max-width: 95%;
+   max-width: 90%;
    display: block;
    line-height: 17px;
    word-wrap: break-word;
@@ -1661,7 +1661,7 @@ font-size: 14pt;
  .board_message {
    transition: 0.3s;
    list-style: none;
-   max-width: 55%;
+   max-width: 59%;
    margin-bottom: 2px;
    border-radius: 15px;
    margin-left: 22.2%;
@@ -1731,7 +1731,7 @@ font-size: 14pt;
 .time {
   opacity: 0.4;
   font-size: 9.2px;
-  display: block;
+  display: inline-block;
   margin-left: 5px;
   padding-top: 10px;
 }
@@ -3840,14 +3840,14 @@ right: 15px;
 #board_title {
     -webkit-user-select: none;
     text-align: center;
-    height: 20px;
+    height: 44px;
     color: white;
     font-size: 22px;
     top: 33px;
     position: absolute;
     z-index: 9999;
-    width: 24%;
-    right: 42px;
+    width: 19%;
+    right: 54px;
     padding-top: 8px;
     font-family: Montserrat;
     font-weight: 700;
@@ -3950,7 +3950,7 @@ right: 15px;
     width: 11.5%;
     padding: 12px;
     padding-top: 11%;
-    top: 0;
+    top: -15px;
     left: 0;
     color: #f1f2f3;
     font-size: 17px;
@@ -3962,10 +3962,14 @@ right: 15px;
     -webkit-user-select: none;
 }
 
-#board-menu h3, #board-menu fa {
-    margin-left: 3%;
+#board-menu h3 {
+    margin-left: 2%;
     -webkit-user-select: none;
   }
+
+#board-menu .fa {
+  margin-left: -10px;
+}
 
 #board-menu p:hover {
   opacity: 1;
@@ -4036,6 +4040,8 @@ right: 15px;
 
 .box_header {
   padding: 3px;
+  margin-top: -5px;
+  margin-left: 7px;
 }
 
 #board_box .close_recent {
@@ -4133,15 +4139,16 @@ right: 15px;
 
 #active_hugins .active_user {
   padding: 2px;
+  margin-top: -10px;
 }
 
 #active_hugins .boards_nickname{
-  top: 5px !important;
+  top: 3px !important;
   font-size: 13.37px !important;
-  margin-left: 7px !important;
+  margin-left: -8px !important;
 }
 #active_hugins .board_avatar {
-  margin-left: 17px !important;
+  margin-left: 8px !important;
 }
 
 #board_box .board_message p {
@@ -4180,10 +4187,11 @@ right: 15px;
   }
 
   #board_box .boards_nickname {
-    top: 32px;
+  top: 32px;
   font-size: 12px;
   margin-left: -8px;
   vertical-align: 36px;
+  width: 80%;
   }
 
 #board_box .board_message_user {
@@ -4257,17 +4265,18 @@ right: 15px;
 .react_menu {
 
   position: absolute;
-  left: 128px;
-  bottom: 6px;
+  right: 17px;
+  top: 17%;
   display: none;
 
 }
 
 .reactions {
-  display: block;
-  position: absolute;
+  display: inline-block;
+  position: initial;
   bottom: 10px;
-  left: 155px;
+  padding: 7px;
+  margin-left: auto;
 }
 
 .reactions i {
@@ -4404,11 +4413,13 @@ height: 0;
 
 .reactors {
   position: absolute;
+  display: block;
   border-radius: 5px;
   color: #f1f2f3;
   background-color: rgba(0,0,0,0.1);
   padding: 5px;
   font-size: 11px;
-  top: 20px;
+  top: 25px;
   left: 0px;
+  width: auto;
 }
