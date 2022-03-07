@@ -3506,9 +3506,8 @@ print_active_hugin(address, nickname);
             } catch (err) {
               // Nobody has reacted with this emoji before
               $('#boards .' + reply +' .reactions').append('<i class="' + text_emoji +'">' + message + '<span class="counter">1</span></i>');
-              $('#boards .' + reply +' .reactions .' + text_emoji).click(function(){
-                console.log();
-                  console.log('loG lOOL');
+              $('#boards .' + reply +' .reactions .' + text_emoji).click(function(e){
+                e.stopPropagation();
                 current_reply_to = reply;
                 sendBoardMessage(message);
 
