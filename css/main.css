@@ -3195,6 +3195,7 @@ button:not(.download-button):not(.emoji-picker__emoji):not(.emoji-picker__catego
     padding-top: 10px;
     padding-bottom: 10px;
     padding-left: 9px;
+    padding-right: 9px;
     font-size: 15px;
     cursor: pointer;
 
@@ -4441,6 +4442,7 @@ height: 0;
 }
 
 .embed_button{
+  margin-left: 15px;
 }
 
 .embed {
@@ -4448,16 +4450,25 @@ height: 0;
   background: rgba(0,0,0,0.1);
   color: white;
 }
-
+.embed_window {
+  position: relative;
+  width: 550px;
+  margin-top: 8px;
+  margin-bottom: 5px;
+}
 .embed_window button {
-position: absolute;
-top: -16% !important;;
-position: absolute;
-right: -70px !important;
+position: relative;
+left: 50px;
+margin-top: 5px;
 /* padding-right: 6px !important;
 padding-left: 5px !important;
 padding-bottom: 5px !important;
 padding-top: 5px !important;
 background: magenta !important; */
+}
+
+.board_message button {
+  vertical-align: middle;
+  margin-left: 15px;
 }
 }
