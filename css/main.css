@@ -1605,6 +1605,10 @@ font-size: 14pt;
   display: none;
 }
 
+#messages_pane a {
+color: white;
+}
+
 #messages_currentchat li {
   width: 100%;
 }
@@ -1614,7 +1618,7 @@ font-size: 14pt;
   border-radius: 5px;
   background: #006AA7;
   width: max-content;
-  max-width: 40%;
+  max-width: 50%;
   margin-left: auto;
   margin-right: 40px;
   word-wrap: break-word;
@@ -1631,7 +1635,7 @@ font-size: 14pt;
   border-radius: 5px;
   background: #2c2c2c;
   width: max-content;
-  max-width: 40%;
+  max-width: 50%;
   word-wrap: break-word;
   border-top-left-radius: 0;
   margin-left: 15px;
@@ -1727,11 +1731,14 @@ font-size: 14pt;
   margin-left: -5px;
     -webkit-user-select: none;
 }
+#boards .time {
+  display: inline-block;
+}
 
 .time {
   opacity: 0.4;
   font-size: 9.2px;
-  display: inline-block;
+  display: block;
   margin-left: 5px;
   padding-top: 10px;
 }
@@ -2534,7 +2541,7 @@ header  {
 
   .dropdown-content a {
 
-    color: #53565c;
+    color: #53565c !important;
   }
 
   .dropdown-content a:hover {
@@ -2815,8 +2822,8 @@ color: black;
   }
 
 
-  .sent_message button {
-      display: none;
+  .sent_message .download-button {
+      display: none !important;
   }
 #drop-overlay {
   width: 100%;
@@ -3322,7 +3329,7 @@ li .gradient {
 }
 
 .download-button {
-  display: block;
+  display: none;
   margin-left: 7px !important;
   margin-top: 10px;
   width: 88px;
@@ -4447,8 +4454,15 @@ height: 0;
   width: auto;
 }
 
-.embed_button{
-  margin-left: 15px;
+.embed_button, .close_embed{
+  margin-left: 10px !important;
+  margin-top: auto;
+  font-size: 12px !important;
+  background: none !important;
+  border: 1.7px solid !important;
+  padding: 5px !important;
+  text-transform: uppercase;
+  font-weight: bold;
 }
 
 .embed {
@@ -4463,19 +4477,11 @@ height: 0;
   margin-bottom: 5px;
 }
 .embed_window button {
-position: relative;
-left: 50px;
-margin-top: 5px;
+  position: relative;
+  left: 50px;
+  margin-top: 5px;
 }
 
-.board_message button {
-  margin-left: 7px !important;
-  margin-top: auto;
-  font-size: 12px !important;
-  background: none !important;
-  border: 1.7px solid !important;
-  padding: 5px !important;
-  text-transform: uppercase;
-  font-weight: bold;
-}
+#messages_pane .embed_window {
+  width: auto !important;
 }
