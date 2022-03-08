@@ -1552,7 +1552,9 @@ function sendMessage(message, silent=false) {
 
     $('#messages').append('<li class="sent_message" id="' + id_elem +  '"><img class="message_avatar" src="data:image/png;base64,' + avatar_base64 + '"><p>' + message + '</p><span class="time" timestamp="' + Date.now() + '">right now</span></li>');
       console.log('debagg2', id_elem);
-      $('#' + id_elem).click(function(){
+      $('#'+ id_elem +  ' > p > a').click(function(){
+        event.preventDefault();
+        e.stopPropagation();
         shell.openExternal($(this).attr('href'));
       })
 
@@ -2406,7 +2408,9 @@ async function print_conversation(conversation) {
         handleMagnetLink(magnetLinks, messages[n].timestamp);
       }
       // console.log('debagg4', messages[n].timestamp);
-      $('#'+ messages[n].timestamp).click(function(){
+      $('#'+ messages[n].timestamp + ' > p > a').click(function(e){
+        event.preventDefault();
+        e.stopPropagation();
         shell.openExternal($(this).attr('href'));
       })
 
@@ -3410,8 +3414,11 @@ let print_board_message = async (hash, address, message, timestamp, fetching_boa
      }
 
        $(selector).prepend('<li class="board_message ' + hash + '" id=""><div class="board_message_user"><span class="board_message_pubkey">' + address + '</span></div><img class="board_avatar" src="data:image/png;base64,' + avatar_base64 + '"><p class="">' + message + '</p><span class="time" timestamp="'+ timestamp*1000 +'">' + moment(timestamp*1000).fromNow() + '</span></li>');
-
-
+       $(selector + ' .' + hash +  ' > p > a').click(function(e){
+         event.preventDefault();
+         e.stopPropagation();
+         shell.openExternal($(this).attr('href'));
+       })
 if (!nickname) {
   nickname = "Anonymous";
 }
@@ -4099,7 +4106,9 @@ console.log('Background syncing...');
                      $('#messages_pane').scrollTop($('#messages').height());
                    }
                    console.log('debagg3', payload_json.t);
-                   $('#'+ payload_json.t).click(function(){
+                   $('#'+ payload_json.t +  ' > p > a').click(function(e){
+                     event.preventDefault();
+                     e.stopPropagation();
                      shell.openExternal($(this).attr('href'));
                    })
                    let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(payload_json.msg);
