@@ -1552,7 +1552,7 @@ function sendMessage(message, silent=false) {
 
     $('#messages').append('<li class="sent_message" id="' + id_elem +  '"><img class="message_avatar" src="data:image/png;base64,' + avatar_base64 + '"><p>' + message + '</p><span class="time" timestamp="' + Date.now() + '">right now</span></li>');
       console.log('debagg2', id_elem);
-      $('#'+ id_elem +  ' > p > a').click(function(){
+      $('#'+ id_elem +  ' > p > a').click(function(e){
         event.preventDefault();
         e.stopPropagation();
         shell.openExternal($(this).attr('href'));
