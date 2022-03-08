@@ -4485,3 +4485,7 @@ height: 0;
 #messages_pane .embed_window {
   width: auto !important;
 }
+
+#messages_pane a {
+  word-break: break-all;
+}
