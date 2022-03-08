@@ -3265,7 +3265,7 @@ if (links_in_message) {
     let this_link = links_in_message[j];
     if (this_link.match(/youtu/) || this_link.match(/y2u.be/)) { // Embeds YouTube links
       let embed_button =   '<button onClick="event.stopPropagation(); $(this).addClass(\'hidden\').after(open_embed(\'' + this_link + '\'))" link="'+ this_link +'" class="embed_button">Embed</button>';
-      let youtube_element = '<br><a target="_new" href="' + this_link + '">' + this_link + '</a>' + embed_button + '<br>';
+      let youtube_element = '<a target="_new" href="' + this_link + '">' + this_link + '</a>' + embed_button + '<br>';
       message = message.replace(this_link, youtube_element);
       // embed_code = this_link.split('/').slice(-1)[0].split('=').slice(-1)[0];
       // let embed_code = this_link.split('/').slice(-1)[0].split('=').slice(-1)[0];
@@ -3273,7 +3273,7 @@ if (links_in_message) {
       // youtube_links.push({link: this_link})
     } else if (imagetypes.indexOf(this_link.substr(-4)) > -1 ) { // Embeds image links
       let embed_button = '<button onClick="event.stopPropagation(); $(this).addClass(\'hidden\').after(open_image(\'' + this_link + '\'))" link="'+ this_link +'" class="embed_button">Embed</button>'
-      let image_attached = '<br><a target="_new" href="' + this_link + '">' + this_link + '</a>' + embed_button + '<br>';
+      let image_attached = '<a target="_new" href="' + this_link + '">' + this_link + '</a>' + embed_button + '<br>';
       message = message.replace(this_link, image_attached);
     } else { // Embeds other links
       message = message.replace(this_link,'<a target="_new" href="' + this_link + '">' + this_link + '</a>');
