@@ -2176,6 +2176,12 @@ margin-bottom: -16px;
 
 @media (prefers-color-scheme: light) {
 
+  .board_message button {
+    color: #53565c !important;
+  }
+  .board_message button:hover {
+    color: black !important;
+  }
   .reactors {
     background-color: rgba(255,255,255,0.9) !important;
     color: #53565c !important;
@@ -4460,15 +4466,16 @@ height: 0;
 position: relative;
 left: 50px;
 margin-top: 5px;
-/* padding-right: 6px !important;
-padding-left: 5px !important;
-padding-bottom: 5px !important;
-padding-top: 5px !important;
-background: magenta !important; */
 }
 
 .board_message button {
-  vertical-align: middle;
-  margin-left: 15px;
+  margin-left: 7px !important;
+  margin-top: auto;
+  font-size: 12px !important;
+  background: none !important;
+  border: 1.7px solid !important;
+  padding: 5px !important;
+  text-transform: uppercase;
+  font-weight: bold;
 }
 }
