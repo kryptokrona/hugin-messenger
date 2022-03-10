@@ -4438,9 +4438,10 @@ height: 0;
 .tag {
   font-size: 15px;
   font-family: Montserrat;
-  font-style: italic;
+  position: relative;
   display: block;
-  margin-left: 15%;
+  margin-left: 5%;
+  font-weight: 600;
 }
 
 .reactors {
@@ -4500,4 +4501,17 @@ height: 0;
   top: 5%;
   border-radius: 5px;
   font-size: 15px;
+}
+
+.count {
+  position: absolute;
+  font-family: "Montserrat";
+  font-weight: bold;
+  padding: 5px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  background: white;
+  color: black;
+  right: 10px;
+  border-radius: 5px;
 }

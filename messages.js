@@ -136,15 +136,17 @@ $('#board-menu .trending').click(function() {
    print_trending('#');
 
 });
-let trendingTags = [];
+let trendingTags = {};
 let print_trending = (tag) => {
 console.log(tag);
+trendingTags = {};
+$('#active_hugins .tag').remove();
   let board_title = 'Trending';
   let this_board = 'Trends';
   $('.current').removeClass('current');
   $('#board_title').text(tag);
   if (tag == '#') {
-    $('#board_title').text('Trending');
+      $('#board_title').text('Trending');
   }
   board_posters = [];
   $('.active_user').remove();
@@ -168,15 +170,24 @@ console.log(tag);
       try {
       if (words[word].substring(0,1) == '#') {
         let thisHashtag = words[word];
-      await  print_hashtag(thisHashtag);
+        if (trendingTags[thisHashtag] && tag == '#') {
+        trendingTags[thisHashtag] += 1;
+        console.log(trendingTags[thisHashtag])
+      } else if (tag == '#'){
+        trendingTags[thisHashtag] = 1;
+        console.log(trendingTags[thisHashtag])
+      }
+      if (doc < 50) {
     await print_board_message(hash, pubkey, message, timestamp, board, nickname, this_reply, '#boards_messages');
-  }
+        }
+      }
     } catch (err ){
     console.log(err);
     return;
     }
 }
 }
+await print_hashtags(trendingTags);
 });
 }
 
@@ -186,7 +197,7 @@ let print_board = (board) => {
   $('#boards .board_message').remove();
   board_posters = [];
   $('.active_user').remove();
-  trendingTags = [];
+  trendingTags = {};
   $('#active_hugins .tag').remove();
   $('.box_header').find('h3').text('Active users');
   boards_db.find({board : board}).sort({ timestamp: -1 }).limit(100).exec(async function (err,docs){
@@ -2954,7 +2965,7 @@ $('#board-menu .recent').click(function(){
   if (!$('#modal').hasClass('hidden') || !$('#send_payment').hasClass('hidden')) {
     $('#boards_messages').addClass('menu');
   }
-  trendingTags = [];
+  trendingTags = {};
   current_board = '';
   board_posters = [];
   $('.box_header').find('h3').text('Active users');
@@ -3359,22 +3370,24 @@ if (!already_known) {
    }
  }
 }
+let print_hashtags = async (hashtags) => {
 
-let print_hashtag = async (hashtag) => {
-if (trendingTags.indexOf(hashtag) === -1) {
-   trendingTags.push(hashtag);
-   $('#active_hugins').prepend('<li class="tag"><span class="hashtag">' + hashtag + '</span></li>');
+  let trending_sorted = Object.keys(hashtags).sort(function(a,b){return hashtags[a]-hashtags[b]});
+    for (tag in trending_sorted) {
+    let this_hashtag = trending_sorted[tag];
+    let trending_count = hashtags[this_hashtag];
+
+    print_hashtag(this_hashtag, trending_count);
+    }
+}
+
+let print_hashtag = async (hashtag, count) => {
+
+   $('#active_hugins').prepend('<li class="tag"><span class="hashtag">' + hashtag + '</span><span class="count">' + count +'</span></li>');
    $('#active_hugins .hashtag').click(function() {
-     print_trending($(this).text());
+    print_trending($(this).text());
 
    });
-
- } else {
-   let tag = $('#active_hugins .hashtag').text();
-   if (tag = hashtag) {
-     return;
-   }
- }
 }
 
 let reactions = {};
