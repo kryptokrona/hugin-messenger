@@ -347,9 +347,10 @@
 #boards_message_form {
   font-size: 12pt;
   height: 57px !important;
-  width: 56%;
+  width: 55%;
   padding: 0;
-  padding-left: 15px;
+  padding-left: 10px;
+  margin-left: 15%;
   line-height: 100%;
   vertical-align: top;
   background: #2b2727 !important;
@@ -1206,7 +1207,7 @@ h1, h2, h3, h4 {
     border: none;
     margin-bottom: 25px;
     margin-right: 1.5%;
-    width: 11%;
+    width: 90%;
     font-family: 'Montserrat';
     font-weight: 700;
     background: rgba(0,0,0,0.1);
@@ -2403,7 +2404,7 @@ header  {
 
   .boards_nickname_form {
 
-    background: #f9f9f9 !important;
+    background: white !important;
     color:#53565c !important;
   }
 
@@ -3972,7 +3973,7 @@ font-size: 13px;
     height: 50px;
     width: 11.5%;
     padding: 12px;
-    padding-top: 11%;
+    padding-top: 40px;
     top: -15px;
     left: 0;
     color: #f1f2f3;
