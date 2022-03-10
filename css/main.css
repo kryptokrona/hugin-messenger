@@ -4491,3 +4491,13 @@ height: 0;
 #messages_pane a {
   word-break: break-all;
 }
+
+#board_loader {
+  display: block;
+  width: 500px;
+  position: absolute;
+  right: 26%;
+  top: 5%;
+  border-radius: 5px;
+  font-size: 15px;
+}

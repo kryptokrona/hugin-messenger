@@ -355,7 +355,7 @@ ipcRenderer.on('changed-node', function() {
 ipcRenderer.on('got-login-complete', async () => {
 
   console.log('Wallet started!');
-
+  $('.welcome').remove();
   walletd = new TurtleCoinWalletd(
     'http://127.0.0.1',
     remote.getGlobal('port'),
@@ -936,4 +936,8 @@ $("#status_icon").click(function(){
   if (!$('#flip-box-inner').hasClass('flip')) {
   flip();
   }
+  });
+
+  ipcRenderer.on('synced', async (event) => {
+    $('#board_loader').fadeOut();
   });
