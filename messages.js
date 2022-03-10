@@ -140,13 +140,13 @@ let trendingTags = {};
 let print_trending = (tag) => {
 console.log(tag);
 trendingTags = {};
-$('#active_hugins .tag').remove();
   let board_title = 'Trending';
   let this_board = 'Trends';
   $('.current').removeClass('current');
   $('#board_title').text(tag);
   if (tag == '#') {
       $('#board_title').text('Trending');
+      $('#active_hugins .tag').remove();
   }
   board_posters = [];
   $('.active_user').remove();
