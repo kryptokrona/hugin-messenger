@@ -3536,7 +3536,8 @@ print_active_hugin(address, nickname);
 
              let avatar_base64_reply = escapeHtml(get_avatar(hex_json_reply.k));
              let message_reply = escapeHtml(hex_json_reply.m);
-
+             $(selector + ' .' + hash + ' .board_message_reply').remove();
+             $(selector + ' .' + hash + ' .board_avatar_reply').remove();
              $(selector + ' .' + hash + ' .board_avatar').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/png;base64,' + avatar_base64_reply + '"><p>' + escapeHtml(message_reply.substring(0,50))  +'</p></div>');
 
              $(selector + ' .' + hash + ' .boards_nickname').css('top','59px');
