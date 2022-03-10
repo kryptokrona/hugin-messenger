@@ -656,12 +656,12 @@
       const open_embed = (link) => {
         let ytlink = link;
         let embed_code = ytlink.split('/').slice(-1)[0].split('=').slice(-1)[0];
-        let iframe = '<button class="close_embed" onClick="event.stopPropagation();$(this).parent().find(\'.embed_button\').removeClass(\'hidden\') ;$(this).parent().find(\'.embed_window\').remove(); $(this).remove()">Close</button><div class="embed_window" style="position:relative;;padding-bottom:42.42%"><iframe src="https://www.youtube.com/embed/' + embed_code + '?modestbranding=1" style="position:absolute;width:80%;height:100%;left:10%" width="849" height="360" frameborder="0" allow="autoplay; encrypted-media"></iframe></div>';
+        let iframe = '<button class="close_embed" onClick="event.stopPropagation();$(this).parent().find(\'.embed_button\').removeClass(\'hidden\') ;$(this).parent().find(\'.embed_window\').remove(); $(this).parent().find(\'.close_embed\').remove()">Close</button><div class="embed_window" style="position:relative;;padding-bottom:42.42%"><iframe src="https://www.youtube.com/embed/' + embed_code + '?modestbranding=1" style="position:absolute;width:80%;height:100%;left:10%" width="849" height="360" frameborder="0" allow="autoplay; encrypted-media"></iframe></div>';
         return iframe;
       }
 
       const open_image = (link) => {
-        let image ='<button class="close_embed" onClick="event.stopPropagation();$(this).parent().find(\'.embed_button\').removeClass(\'hidden\') ;$(this).parent().find(\'.embed_window\').remove(); $(this).remove()">Close</button></img><div class="embed_window" style="position:relative"><img class="attachment" src="' + link + '"></img></div>';
+        let image ='<button class="close_embed" onClick="event.stopPropagation();$(this).parent().find(\'.embed_button\').removeClass(\'hidden\') ;$(this).parent().find(\'.embed_window\').remove(); $(this).parent().find(\'.close_embed\').remove()">Close</button></img><div class="embed_window" style="position:relative"><img class="attachment" src="' + link + '"></img></div>';
         return image;
       }
 
