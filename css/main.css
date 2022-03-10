@@ -3771,7 +3771,8 @@ button.emoji-picker__category-button:hover {
 .tips {
   position: absolute;
 top: 15px;
-right: 15px;
+right: 48px;
+font-size: 13px;
 
 }
 
@@ -3786,12 +3787,12 @@ right: 15px;
     text-align: center;
     width: 100%;
     color: #f1f2f3;
-    line-height: 19px;
+    /* line-height: 19px; */
     vertical-align: middle;
     margin-left: 10px;
     margin-right: 5px;
-    animation: hue 30s ease infinite;
-    color: #5f86f2;
+    /* animation: hue 30s ease infinite;
+    color: #5f86f2; */
 }
 
 .lds-ellipsis {
@@ -3971,7 +3972,7 @@ right: 15px;
     position: absolute;
     background: rgba(0,0,0,0.1);
     height: 100%;
-    text-align: center;
+    text-align: left;
     border-radius: 5px;
     -webkit-user-select: none;
 }
@@ -3979,10 +3980,11 @@ right: 15px;
 #board-menu h3 {
     margin-left: 2%;
     -webkit-user-select: none;
+    text-align: center;
   }
 
 #board-menu .fa {
-  margin-left: -10px;
+  margin-left: 5px;
 }
 
 #board-menu p:hover {
@@ -3990,14 +3992,14 @@ right: 15px;
 }
 
 #board-menu p {
-  font-weight: 600;
   opacity: 0.9;
-  font-weight: 400;
+  font-weight: 600;
   display: inline-block;
-  font-size: 15px;
+  font-size: 14px;
   cursor: pointer;
-  margin-left: 5px;
+  margin-left: 12px;
   font-family: "Montserrat";
+  text-transform: uppercase;
 }
 
 /*

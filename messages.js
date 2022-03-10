@@ -3288,34 +3288,41 @@ if (links_in_message) {
 return message;
 }
 
-let get_tips = async (hash) => {
+let get_block_height_from_timestamp = (timestamp, blockheight) => {
+
+  let current_time = parseInt(Date.now() / 1000);
+
+  let block_time = 90;
+
+  let time_delta = current_time - timestamp;
+  console.log(time_delta);
+  console.log(block_time);
+  console.log(parseInt(time_delta / block_time));
+  console.log(parseInt(time_delta / block_time));
+
+  return parseInt(time_delta / block_time);
+
+
+}
+
+let get_tips = async (hash, timestamp) => {
 
   let tips = 0;
 
-   let status = await walletd.getStatus();
+  let status = await walletd.getStatus();
 
-   let blockCount = status.body.result.blockCount;
+  let blockCount = status.body.result.blockCount;
 
-   let tx_data_reply = await fetch('http://' + rmt.getGlobal('node') + '/json_rpc', {
-        method: 'POST',
-        body: JSON.stringify({
-          jsonrpc: '2.0',
-          method: 'f_transaction_json',
-          params: {hash: hash}
-        })
-      });
+  let block_delta = get_block_height_from_timestamp(timestamp, blockCount);
 
-      let block_height = await tx_data_reply.json();
-      block_height = block_height.result.block.height;
+  let blocks_to_check = parseInt(blockCount) - block_delta;
 
   let transactions = await walletd.getTransactions(
-    blockCount - block_height,
-    block_height,
+    block_delta,
+    blockCount - block_delta,
     '',
     [],
     hash);
-
-    console.log('transactions', transactions);
 
    let blocks = transactions.body.result.items;
 
@@ -3328,8 +3335,6 @@ let get_tips = async (hash) => {
 
        }
      }
-
-     console.log('FOund tips:', tips);
 
       if (tips) {
           $('#boards .' + hash + '').append('<span class="tips">' + parseFloat(tips/100000).toFixed(5) + '</span>');
@@ -3666,7 +3671,9 @@ print_active_hugin(address, nickname);
     // Animation complete.
   });
 
-
+  if (address == currentAddr) {
+  get_tips(hash, timestamp);
+}
 
 } catch (err) {
   console.log('Error:', err)
