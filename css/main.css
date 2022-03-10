@@ -2183,6 +2183,14 @@ margin-bottom: -16px;
 
 @media (prefers-color-scheme: light) {
 
+  .tips::before {
+    color: black !important;
+  }
+
+  .count {
+    background: rgba(0,0,0,0.05) !important;
+  }
+
   .board_message button {
     color: #53565c !important;
   }
