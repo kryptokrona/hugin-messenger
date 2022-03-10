@@ -3403,6 +3403,46 @@ let print_board_message = async (hash, address, message, timestamp, fetching_boa
 
   let tips = 0;
 
+  if(reply && containsOnlyEmojis(message) && message.length < 8) {
+    let text_emoji = emojione.toShort(message).replaceAll(':','');
+    let element = $('#boards .' + reply +' .'+text_emoji);
+    let thisEmoji = text_emoji;
+    let someTXhash = reply;
+    let someAddr = address;
+    console.log(reactions);
+    $(selector + ' .'+hash).remove();
+    try {
+      console.log(reactions);
+          // Try to check if this address is in the list of reactors for this specific post and emoji
+          let has_reacted = reactions[someTXhash][thisEmoji].indexOf(someAddr);
+          if (has_reacted > -1) {
+              // Do nothing, user already made this reaction
+              return;
+          } else {
+              // If user hasn't made this exact reaction before, push it to the list
+              element.find('.counter').text(parseInt(element.find('.counter').text()) + 1);
+              reactions[someTXhash][thisEmoji].push(someAddr);
+          }
+          } catch (err) {
+            // Nobody has reacted with this emoji before
+            $('#boards .' + reply +' .reactions').append('<i class="' + text_emoji +'">' + message + '<span class="counter">1</span></i>');
+            $('#boards .' + reply +' .reactions .' + text_emoji).click(function(e){
+              e.stopPropagation();
+              current_reply_to = reply;
+              sendBoardMessage(message);
+
+            });
+            if (reactions[someTXhash]) {
+                // Somebody has reacted to this post before
+                reactions[someTXhash][thisEmoji] = [someAddr];
+            } else {
+                // First reaction for this post
+                reactions[someTXhash] = {[thisEmoji]: [someAddr]};
+            }
+          }
+          return;
+        }
+
 
   let avatar_base64 = get_avatar(address);
 
@@ -3455,46 +3495,6 @@ print_active_hugin(address, nickname);
   if (reply) {
     $(selector + ' .' + hash + ' .board_avatar').before('<div class="board_message_reply"><img class="board_avatar_reply"><p></p></div>');
     $(selector + ' .' + hash + ' .boards_nickname').css('top','59px');
-    if(containsOnlyEmojis(message) && message.length < 8) {
-      let text_emoji = emojione.toShort(message).replaceAll(':','');
-      let element = $('#boards .' + reply +' .'+text_emoji);
-      let thisEmoji = text_emoji;
-      let someTXhash = reply;
-      let someAddr = address;
-      console.log(reactions);
-      $(selector + ' .'+hash).remove();
-      try {
-        console.log(reactions);
-            // Try to check if this address is in the list of reactors for this specific post and emoji
-            let has_reacted = reactions[someTXhash][thisEmoji].indexOf(someAddr);
-            if (has_reacted > -1) {
-                // Do nothing, user already made this reaction
-                return;
-            } else {
-                // If user hasn't made this exact reaction before, push it to the list
-                element.find('.counter').text(parseInt(element.find('.counter').text()) + 1);
-                reactions[someTXhash][thisEmoji].push(someAddr);
-            }
-            } catch (err) {
-              // Nobody has reacted with this emoji before
-              $('#boards .' + reply +' .reactions').append('<i class="' + text_emoji +'">' + message + '<span class="counter">1</span></i>');
-              $('#boards .' + reply +' .reactions .' + text_emoji).click(function(e){
-                e.stopPropagation();
-                current_reply_to = reply;
-                sendBoardMessage(message);
-
-              });
-              if (reactions[someTXhash]) {
-                  // Somebody has reacted to this post before
-                  reactions[someTXhash][thisEmoji] = [someAddr];
-              } else {
-                  // First reaction for this post
-                  reactions[someTXhash] = {[thisEmoji]: [someAddr]};
-              }
-            }
-          }
-
-
 
     boards_db.find({hash : reply}, async function (err,docs){
 
