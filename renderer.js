@@ -355,14 +355,12 @@ ipcRenderer.on('changed-node', function() {
 ipcRenderer.on('got-login-complete', async () => {
 
   console.log('Wallet started!');
-  $('.welcome').remove();
   walletd = new TurtleCoinWalletd(
     'http://127.0.0.1',
     remote.getGlobal('port'),
     remote.getGlobal('rpc_pw'),
     false
   )
-
 
   walletd.getAddresses()
   .then(resp => {
@@ -423,6 +421,7 @@ function load_page(prev,next) {
     prev.css('display','none');
   });
 
+  $('.welcome').remove();
 }
 
 
