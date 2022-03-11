@@ -360,6 +360,7 @@
   border: none;
   font-family: "Montserrat";
   padding-right: 41px;
+  margin-bottom: 10px;
 }
 
 #balancelogo::before {
@@ -3437,6 +3438,7 @@ button.emoji-picker__category-button:hover {
 }
 
 #replyto {
+  left: 15.7%;
   top: 0px;
   position: absolute;
   height: 25px;
@@ -3455,6 +3457,7 @@ button.emoji-picker__category-button:hover {
 }
 
 #replyto_exit {
+  left: 15.7%;
   font-size: 20pt;
   color: #1b1b1b;
   transform: rotate(45deg);
