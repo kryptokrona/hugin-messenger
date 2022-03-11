@@ -191,9 +191,10 @@ await print_hashtags(trendingTags);
 let print_board = (board) => {
 
   $('#boards .board_message').remove();
+  reactions = {};
   board_posters = [];
-  $('.active_user').remove();
   trendingTags = {};
+  $('.active_user').remove();
   $('#active_hugins .tag').remove();
   $('.box_header').find('h3').text('Active users');
   boards_db.find({board : board}).sort({ timestamp: -1 }).limit(100).exec(async function (err,docs){
