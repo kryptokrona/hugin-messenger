@@ -193,8 +193,8 @@ let print_board = (board) => {
   $('#boards .board_message').remove();
   reactions = {};
   board_posters = [];
-  trendingTags = {};
   $('.active_user').remove();
+  trendingTags = {};
   $('#active_hugins .tag').remove();
   $('.box_header').find('h3').text('Active users');
   boards_db.find({board : board}).sort({ timestamp: -1 }).limit(100).exec(async function (err,docs){
@@ -236,6 +236,31 @@ let print_boards = async () => {
     let board_color = intToRGB(hashCode((this_address[1])));
     if (this_address[0] == "SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc") {
       $('#boards_picker').append('<div class="board_icon rgb" id="home_board" title="Home" invitekey="0b66b223812861ad15e5310b4387f475c414cd7bda76be80be6d3a55199652fc" style=""><i class="fa fa-home"></i></div>');
+      $('.board_icon').click(function() {
+
+        let board_title = $(this).attr('title');
+        let this_board = $(this).attr('id');
+        if ($(this).hasClass('current')) {
+          return;
+        }
+        reactions = {};
+        board_posters = [];
+       $('.active_user').remove();
+        current_board = this_board;
+        $('#board_title').text('Home');
+        $('#boards_messages').show();
+        $(this).removeClass('unread_board');
+        $('#board_title').text(board_title);
+        $('.current').removeClass('current');
+        $(this).addClass('current');
+        $('#replyto_exit').click();
+        $('#send_payment').addClass('hidden');
+          print_board("0b66b223812861ad15e5310b4387f475c414cd7bda76be80be6d3a55199652fc");
+
+
+
+
+      });
     } else {
 			await dictionary.find({ original: this_address[1] }, function (err,docs){
 
@@ -255,45 +280,46 @@ let print_boards = async () => {
 			$('#' + this_address[0]).append('<i class="fa fa-lock"></i>').addClass('private');
 		}
 
+    $('.board_icon').click(function() {
 
-		   $('.board_icon').click(function() {
+      let board_title = $(this).attr('title');
+      let this_board = $(this).attr('id');
+      if ($(this).hasClass('current')) {
+        return;
+      }
+      reactions = {};
+      board_posters = [];
+     $('.active_user').remove();
+      current_board = this_board;
+      if (this_board == "home_board") {
+        this_board = 'SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc';
+        $('#board_title').text('Home');
+      }
+      $('#boards_messages').show();
+      $(this).removeClass('unread_board');
+      $('#board_title').text(board_title);
+      // ipcRenderer.send('get-boards', this_board);
+      $('.current').removeClass('current');
+      $(this).addClass('current');
+      $('#replyto_exit').click();
+      $('#send_payment').addClass('hidden');
+      let this_invite_key = $(this).attr('invitekey');
 
-         let board_title = $(this).attr('title');
-		     let this_board = $(this).attr('id');
-		     if ($(this).hasClass('current')) {
-		       return;
-		     }
-         reactions = {};
-         board_posters = [];
-        $('.active_user').remove();
-		     current_board = this_board;
-		     if (this_board == "home_board") {
-		       this_board = 'SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc';
-           $('#board_title').text('Home');
-		     }
-         $('#boards_messages').show();
-         $(this).removeClass('unread_board');
-         $('#board_title').text(board_title);
-		     // ipcRenderer.send('get-boards', this_board);
-		     $('.current').removeClass('current');
-		     $(this).addClass('current');
-         $('#replyto_exit').click();
-         $('#send_payment').addClass('hidden');
-         let this_invite_key = $(this).attr('invitekey');
-
-         if (this_invite_key) {
-           print_board(this_invite_key);
-         } else {
-           print_board("0b66b223812861ad15e5310b4387f475c414cd7bda76be80be6d3a55199652fc");
-         }
-
+      if (this_invite_key) {
+        print_board(this_invite_key);
+      } else {
+        print_board("0b66b223812861ad15e5310b4387f475c414cd7bda76be80be6d3a55199652fc");
+      }
 
 
 
-		   });
+
+    });
+
 
 	});
 }
+
 
 
   }
@@ -3386,44 +3412,6 @@ let print_board_message = async (hash, address, message, timestamp, fetching_boa
 
   let tips = 0;
 
-  if(reply && containsOnlyEmojis(message) && message.length < 8) {
-    let text_emoji = emojione.toShort(message).replaceAll(':','');
-    let element = $('#boards .' + reply +' .'+text_emoji);
-    let thisEmoji = text_emoji;
-    let someTXhash = reply;
-    let someAddr = address;
-    $(selector + ' .'+hash).remove();
-    try {
-          // Try to check if this address is in the list of reactors for this specific post and emoji
-          let has_reacted = reactions[someTXhash][thisEmoji].indexOf(someAddr);
-          if (has_reacted > -1) {
-              // Do nothing, user already made this reaction
-              return;
-          } else {
-              // If user hasn't made this exact reaction before, push it to the list
-              element.find('.counter').text(parseInt(element.find('.counter').text()) + 1);
-              reactions[someTXhash][thisEmoji].push(someAddr);
-          }
-          } catch (err) {
-            // Nobody has reacted with this emoji before
-            $('#boards .' + reply +' .reactions').append('<i class="' + text_emoji +'">' + message + '<span class="counter">1</span></i>');
-            $('#boards .' + reply +' .reactions .' + text_emoji).click(function(e){
-              e.stopPropagation();
-              current_reply_to = reply;
-              sendBoardMessage(message);
-
-            });
-            if (reactions[someTXhash]) {
-                // Somebody has reacted to this post before
-                reactions[someTXhash][thisEmoji] = [someAddr];
-            } else {
-                // First reaction for this post
-                reactions[someTXhash] = {[thisEmoji]: [someAddr]};
-            }
-          }
-          return;
-        }
-
 
   let avatar_base64 = get_avatar(address);
 
@@ -3539,6 +3527,42 @@ print_active_hugin(address, nickname);
 
       })
 
+      if(containsOnlyEmojis(message) && message.length < 8) {
+        let text_emoji = emojione.toShort(message).replaceAll(':','');
+        let thisEmoji = text_emoji;
+        let someTXhash = reply;
+        let someAddr = address;
+        $(selector + ' .'+hash).remove();
+        try {
+          let element = $(selector +' .' + reply +' .'+text_emoji);
+              // Try to check if this address is in the list of reactors for this specific post and emoji
+              let has_reacted = reactions[someTXhash][thisEmoji].indexOf(someAddr);
+              if (has_reacted > -1) {
+                  // Do nothing, user already made this reaction
+                  return;
+              } else {
+                  // If user hasn't made this exact reaction before, push it to the list
+                  element.find('.counter').text(parseInt(element.find('.counter').text()) + 1);
+                  reactions[someTXhash][thisEmoji].push(someAddr);
+              }
+              } catch (err) {
+                // Nobody has reacted with this emoji before
+                $(selector + ' .' + reply +' .reactions').append('<i class="' + text_emoji +'">' + message + '<span class="counter">1</span></i>');
+                $(selector + ' .' + reply +' .reactions .' + text_emoji).click(function(e){
+                  e.stopPropagation();
+                  current_reply_to = reply;
+                  sendBoardMessage(message);
+
+                });
+                if (reactions[someTXhash]) {
+                    // Somebody has reacted to this post before
+                    reactions[someTXhash][thisEmoji] = [someAddr];
+                } else {
+                    // First reaction for this post
+                    reactions[someTXhash] = {[thisEmoji]: [someAddr]};
+                }
+              }
+            }
 
 
 
@@ -3864,8 +3888,10 @@ ipcRenderer.on('new-message', async (event, transaction) => {
 
               print_board_message(thisHash, hex_json.k, message, time, to_board, name, hex_json.r, '#boards_messages');
 
+            } else {
+
+              $('.board_icon[invitekey='+ hex_json.brd + ']').addClass('unread_board');
             }
-            $('.board_icon[invitekey='+ hex_json.brd + ']').addClass('unread_board');
             $('#board_box .default').remove();
             print_board_message(thisHash, hex_json.k, message, time, to_board, name, hex_json.r, '#recent_messages');
 				 }
