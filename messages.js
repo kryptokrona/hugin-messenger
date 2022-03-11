@@ -138,7 +138,6 @@ $('#board-menu .trending').click(function() {
 });
 let trendingTags = {};
 let print_trending = (tag) => {
-console.log(tag);
 trendingTags = {};
   let board_title = 'Trending';
   let this_board = 'Trends';
@@ -172,10 +171,8 @@ trendingTags = {};
         let thisHashtag = words[word];
         if (trendingTags[thisHashtag] && tag == '#') {
         trendingTags[thisHashtag] += 1;
-        console.log(trendingTags[thisHashtag])
       } else if (tag == '#'){
         trendingTags[thisHashtag] = 1;
-        console.log(trendingTags[thisHashtag])
       }
       if (doc < 50) {
     await print_board_message(hash, pubkey, message, timestamp, board, nickname, this_reply, '#boards_messages');
@@ -193,7 +190,6 @@ await print_hashtags(trendingTags);
 
 let print_board = (board) => {
 
-  console.log('Printing board', board);
   $('#boards .board_message').remove();
   board_posters = [];
   $('.active_user').remove();
@@ -602,7 +598,7 @@ if (!screenshare) {
     })
 
     peer1.on('connect', () => {
-
+      $('#messages_pane').append('<audio autoplay><source src="static/startcall.mp3" type="audio/mpeg"></audio>');
       $('#caller_menu_type').text(`${video ? 'Video' : 'Voice'}` + ' connected');
       $('.' + contact_address + ' .lds-ellipsis').fadeOut().remove();
       $('.' + contact_address).addClass('online');
@@ -2324,7 +2320,6 @@ let known_txs = [];
 
 
   $("#messages_contacts").unbind('click').on("click", "li", async function(){
-    console.log('clickkkk');
       $('#message_form').focus();
       $('#messages_pane').hide();
       $('.border-rgb').removeClass('border-rgb');
@@ -2704,19 +2699,13 @@ let last_checked_warnings = 0;
 let check_protection = async () => {
 
   try {
-    console.log('last_checked_counter', last_checked_counter);
-    console.log('check_counter', check_counter);
-    console.log('last_checked_warnings', last_checked_warnings);
     if (last_checked_warnings > 0 && last_checked_counter == check_counter) {
-      console.log('No checks for 120s, restarting service.');
 
       last_checked_warnings = 0;
     } else if (last_checked_counter == check_counter && last_checked_warnings == 0) {
       last_checked_warnings += 1;
-      console.log('No checks for 20s, syncing.');
       backgroundSyncMessages();
     }  else {
-      console.log('No issues with checking messages.');
       last_checked_warnings = 0;
     }
 
@@ -2756,9 +2745,6 @@ ipcRenderer.on('imported-view-subwallet', async (event, address) => {
         await print_boards();
         await sleep(1000);
          current_board = $('#' + address).attr('invitekey');
-
-         console.log(current_board);
-         console.log(address);
 
          $('#boards_messages').fadeIn();
          $('#board_title').text(letter_from_spend_key(current_board));
@@ -3306,10 +3292,6 @@ let get_block_height_from_timestamp = (timestamp, blockheight) => {
   let block_time = 90;
 
   let time_delta = current_time - timestamp;
-  console.log(time_delta);
-  console.log(block_time);
-  console.log(parseInt(time_delta / block_time));
-  console.log(parseInt(time_delta / block_time));
 
   return parseInt(time_delta / block_time);
 
@@ -3409,10 +3391,8 @@ let print_board_message = async (hash, address, message, timestamp, fetching_boa
     let thisEmoji = text_emoji;
     let someTXhash = reply;
     let someAddr = address;
-    console.log(reactions);
     $(selector + ' .'+hash).remove();
     try {
-      console.log(reactions);
           // Try to check if this address is in the list of reactors for this specific post and emoji
           let has_reacted = reactions[someTXhash][thisEmoji].indexOf(someAddr);
           if (has_reacted > -1) {
@@ -3522,8 +3502,6 @@ print_active_hugin(address, nickname);
 
              const resp_reply = await tx_data_reply.json();
 
-             console.log('resp_reply',resp_reply);
-
              let result_reply = trimExtra(resp_reply.result.tx.extra);
              hex_json_reply = JSON.parse(fromHex(result_reply));
 
@@ -3534,7 +3512,7 @@ print_active_hugin(address, nickname);
 
                let this_keyPair = nacl.box.keyPair.fromSecretKey(secretKey);
                hex_json_reply = JSON.parse(naclUtil.encodeUTF8(nacl.box.open(fromHexString(hex_json_reply.b), nonceFromTimestamp(hex_json_reply.t), this_keyPair.publicKey, this_keyPair.secretKey)));
-               console.log('Decrypted:', hex_json_reply);
+
              }
                let this_addr = await Address.fromAddress(hex_json_reply.k);
                // console.log(this_addr);
@@ -3583,8 +3561,6 @@ print_active_hugin(address, nickname);
 
             await dictionary.find({ original: fetching_board }, async function (err,docs){
 
-       			 console.log(docs)
-
        				 if (!docs.length == 0) {
 
        					 to_board = docs[0].translation;
@@ -3602,7 +3578,6 @@ print_active_hugin(address, nickname);
 
   }
   let this_hashtag = $(selector + ' .' + hash + ' .hashtag').text();
-  console.log(this_hashtag);
   $(selector + ' .' + hash + ' .hashtag').click(function() {
     print_trending(this_hashtag);
 
@@ -3914,7 +3889,6 @@ console.log('Background syncing...');
          })
 
          json = await json.json();
-         console.log(json);
 
         // console.log(json);
 
@@ -3942,7 +3916,6 @@ console.log('Background syncing...');
            }
             if (thisHash.length == 64) {
               boards_db.find({ hash: thisHash }, function (err, docs) {
-                console.log(docs);
                   message_was_unknown = false;
                   if (docs.length == 0) {
                       message_was_unknown = true;
@@ -4420,13 +4393,11 @@ ipcRenderer.on('got-login-complete', async () => {
         boards_keys.push(boards_addresses[address][1]);
       }
 
-      console.log(boards_keys);
       let i = 0;
       let j = 0;
 
       for (doc in docs.reverse()) {
         // continue;
-        console.log(docs[doc]);
         let hash = docs[doc].hash;
         let pubkey = docs[doc].sender;
         let message = docs[doc].message;
@@ -4704,7 +4675,6 @@ ipcRenderer.on('got-boards', async (event, json) => {
   }
   for (tx in json) {
     let hash = json[tx].hash;
-    console.log();
     let this_json_tx = json[tx];
     if (!hash) {
       continue;
