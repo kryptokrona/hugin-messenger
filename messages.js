@@ -2978,6 +2978,7 @@ $('#board-menu .recent').click(function(){
   if (!$('#modal').hasClass('hidden') || !$('#send_payment').hasClass('hidden')) {
     $('#boards_messages').addClass('menu');
   }
+  reactions = {};
   trendingTags = {};
   current_board = '';
   board_posters = [];
@@ -3520,7 +3521,7 @@ print_active_hugin(address, nickname);
              $(selector + ' .' + hash + ' .board_avatar_reply').remove();
              $(selector + ' .' + hash + ' .board_avatar').before('<div class="board_message_reply"><img class="board_avatar_reply" src="data:image/png;base64,' + avatar_base64_reply + '"><p>' + escapeHtml(message_reply.substring(0,50))  +'</p></div>');
 
-             $(selector + ' .' + hash + ' .boards_nickname').css('top','59px');
+             $(selector + ' .' + hash + ' .boards_nickname').css('top','49px');
 
 
         }
@@ -3548,7 +3549,7 @@ print_active_hugin(address, nickname);
               } catch (err) {
                 // Nobody has reacted with this emoji before
                 $(selector + ' .' + reply +' .reactions').append('<i class="' + text_emoji +'">' + message + '<span class="counter">1</span></i>');
-                $(selector + ' .' + reply +' .reactions .' + text_emoji).click(function(e){
+                $(selector + ' .' + reply +' .reactions .'+ text_emoji).click(function(e){
                   e.stopPropagation();
                   current_reply_to = reply;
                   sendBoardMessage(message);
@@ -4333,7 +4334,7 @@ console.log('Background syncing...');
                         save_boards_message(hex_json, time, thisHash, to_board);
                         }
 
-       				 		if (senderKey != currentAddr && message_was_unknown && to_board != $('.current').attr('invitekey') && boards_keys.indexOf(to_board) != -1) {
+       				 		if (senderKey != currentAddr && message_was_unknown && to_board != $('.current').attr('invitekey') && boards_keys.indexOf(to_board) != -1 || containsOnlyEmojis(message) && message.length < 8) {
                     print_board_message(thisHash, senderKey, message, time, to_board, name, hex_json.r, '#recent_messages');
                      last_block_checked = transaction.hash;
                      $('#messages_pane').find('audio').remove();
