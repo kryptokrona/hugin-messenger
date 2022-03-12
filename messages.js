@@ -3464,7 +3464,7 @@ print_active_hugin(address, nickname);
   })
   if (reply) {
     $(selector + ' .' + hash + ' .board_avatar').before('<div class="board_message_reply"><img class="board_avatar_reply"><p></p></div>');
-    $(selector + ' .' + hash + ' .boards_nickname').css('top','59px');
+    $(selector + ' .' + hash + ' .boards_nickname').css('top','49px');
 
     boards_db.find({hash : reply}, async function (err,docs){
 
@@ -3839,6 +3839,7 @@ ipcRenderer.on('new-message', async (event, transaction) => {
 
          save_boards_message(hex_json, time, thisHash, to_board);
          known_pool_txs.push(thisHash);
+         $('.board_icon[invitekey='+ hex_json.brd + ']').addClass('unread_board');
 
        } else {
          message_was_unknown = false;
@@ -3859,7 +3860,7 @@ ipcRenderer.on('new-message', async (event, transaction) => {
 				 		 let name;
 
 				     if (hex_json.n) {
-				       name = escape(hex_json.n);
+				       name = escapeHtml(hex_json.n);
 				     } else {
 				 			name = 'Anonymous';
 				 		}
@@ -3890,8 +3891,6 @@ ipcRenderer.on('new-message', async (event, transaction) => {
               print_board_message(thisHash, hex_json.k, message, time, to_board, name, hex_json.r, '#boards_messages');
 
             } else {
-
-              $('.board_icon[invitekey='+ hex_json.brd + ']').addClass('unread_board');
             }
             $('#board_box .default').remove();
             print_board_message(thisHash, hex_json.k, message, time, to_board, name, hex_json.r, '#recent_messages');
@@ -4300,11 +4299,6 @@ console.log('Background syncing...');
 
 
 
-                    await require("fs").writeFile(userDataDir + "/" + senderKey + ".png", get_avatar(senderKey, 'png'), 'base64', function(err) {
-       				        console.log(err);
-
-       				      });
-
        				      if (message.length < 1) {
                       console.log('Empty message, skipping');
        				        return;
@@ -4330,11 +4324,19 @@ console.log('Background syncing...');
                           boards_keys.push(boards_addresses[address][1]);
                         }
 
-                        if (boards_keys.indexOf(to_board) != -1) {
-                        save_boards_message(hex_json, time, thisHash, to_board);
-                        }
+                        let known_board;
 
-       				 		if (senderKey != currentAddr && message_was_unknown && to_board != $('.current').attr('invitekey') && boards_keys.indexOf(to_board) != -1 || containsOnlyEmojis(message) && message.length < 8) {
+                        if (boards_keys.indexOf(to_board) != -1) {
+
+                          save_boards_message(hex_json, time, thisHash, to_board);
+                          known_board = true;
+
+                        } else {
+                          known_board = false;
+                          }
+
+
+       				 		if (senderKey != currentAddr && message_was_unknown && to_board != $('.current').attr('invitekey') && known_board || known_board && containsOnlyEmojis(message) && message.length < 8) {
                     print_board_message(thisHash, senderKey, message, time, to_board, name, hex_json.r, '#recent_messages');
                      last_block_checked = transaction.hash;
                      $('#messages_pane').find('audio').remove();
