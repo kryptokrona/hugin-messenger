@@ -106,7 +106,8 @@ const {ipcRenderer} = require('electron');
 let reply_to_board_message = (hash) => {
 
   current_reply_to = hash;
-  $('.board_message').removeClass('rgb');
+  $('.board_message').removeClass('reply-border-rgb');
+  $('#boards_message_form').addClass('reply-border-rgb');
   let nickname = false;
 
   try {
@@ -1343,7 +1344,7 @@ const hashAddr = (addr) => {
   return hash_hex;
 }
 
-String.prototype.hashCode = function() {
+String.prototype.hash_code = function() {
     var hash = 0;
     if (this.length == 0) {
         return hash;
@@ -1357,7 +1358,7 @@ String.prototype.hashCode = function() {
 }
 
 const hashCode = (str) => {
-		let hash = Math.abs(str.hashCode())*0.007812499538;
+		let hash = Math.abs(str.hash_code())*0.007812499538;
     return Math.floor(hash);
 
 }
@@ -1441,7 +1442,6 @@ let sendTransaction = (mixin, transfer, fee, sendAddr, payload_hex, payload_json
           if (payload_json.from || payload_json.k == currentAddr) {
             let thisHash = resp.body.result.transactionHash;
             known_pool_txs.push(thisHash);
-            console.log('keep pushin');
           }
           if (payload_json.brd) {
           let time = escape(parseInt(temp_hash / 1000));
@@ -3263,7 +3263,8 @@ $('#replyto_exit').click(function(){
     $('#replyto_exit').hide();
     current_reply_to = '';
     $('#boards_message_form').attr('style','');
-    $('.board_message').removeClass('rgb');
+    $('.board_message').removeClass('reply-border-rgb');
+    $('#boards_message_form').removeClass('reply-border-rgb');
 
 })
 
@@ -3455,9 +3456,9 @@ if ($('.board_icon[invitekey='+ fetching_board + ']').hasClass('current')) {
 print_active_hugin(address, nickname);
 }
   $(selector + ' .' + hash + ' .board_message_pubkey').before('<span class="boards_nickname">' + escapeHtml(nickname) + '</span>');
-  $(selector + ' .' + hash).append('<div class="react_menu main"><i class="fa fa-smile-o"></div><div class="reactions"></div>');
-  $(selector + ' .' + hash + ' .react_menu i').click(function(e){
-    $(selector + ' .' + hash).click();
+  $(selector + ' .' + hash).append('<div class="react_menu main"><i class="fa fa-smile-o"></i><i class="fa fa-reply"></i></div><div class="reactions"></div>');
+  $(selector + ' .' + hash + ' .react_menu .fa-smile-o').click(function(e){
+    $(selector + ' .' + hash + ' .react_menu .fa-reply').click();
     $('.emoji-boards').click();
     e.preventDefault();
     e.stopPropagation();
@@ -3664,9 +3665,10 @@ print_active_hugin(address, nickname);
      }
      );
 
-  $('#boards .' + hash).click(function(){
-    if ($(this).hasClass('loading_message')) {
-    hash = $(this).prop("classList")[3];
+    $(selector + ' .' + hash + ' .react_menu .fa-reply').click(function(){
+      console.log($(this).parent().parent(), 'klass');
+    if ( $(this).parent().parent().hasClass('loading_message')) {
+    hash = $(this).parent().parent().prop("classList")[3];
     }
     reply_to_board_message(hash);
     if ($('#board_box').hasClass('show')) {
@@ -3676,7 +3678,7 @@ print_active_hugin(address, nickname);
     }
     $('#board_box').removeClass('show');
     $('#board_box').addClass('hidden');
-    $(this).addClass('rgb');
+    $(this).parent().parent().addClass('reply-border-rgb');
     $('#boards').scrollTop('0');
   });
 
