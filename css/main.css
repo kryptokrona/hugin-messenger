@@ -361,6 +361,7 @@
   font-family: "Montserrat";
   padding-right: 41px;
   margin-bottom: 10px;
+  border: 2px solid transparent;
 }
 
 #balancelogo::before {
@@ -1676,7 +1677,7 @@ color: white;
    padding-left: 20px;
    opacity: 0;
    cursor: pointer;
-
+   border: 2px solid transparent;
  }
 
  .board_message:hover {
@@ -2184,6 +2185,10 @@ margin-bottom: -16px;
 
 
 @media (prefers-color-scheme: light) {
+
+  #replyto,  #replyto_exit {
+    color: black;
+  }
 
   .tips::before {
     color: black !important;
@@ -3446,7 +3451,7 @@ button.emoji-picker__category-button:hover {
   border-bottom-left-radius: 1px;
   border-top-right-radius: 5px;
   border-bottom-right-radius: 1px;
-  color: #1b1b1b;
+  color: white;
   padding-left: 30px;
   padding-right: 20px;
   font-family: 'Montserrat';
@@ -3459,7 +3464,7 @@ button.emoji-picker__category-button:hover {
 #replyto_exit {
   left: 15.7%;
   font-size: 20pt;
-  color: #1b1b1b;
+  color: white;
   transform: rotate(45deg);
   position: absolute;
   margin-left: 5px;
@@ -3550,7 +3555,7 @@ button.emoji-picker__category-button:hover {
   display: inline-block;
   transform: rotate(90deg);
   font-weight: 400;
-  font-size: 26pt;
+  font-size: 22pt;
   margin-left: 10px;
 }
 
@@ -3645,6 +3650,14 @@ button.emoji-picker__category-button:hover {
   padding-left: 46px;
   padding-top: 4px;
   padding-bottom: 4px;
+}
+
+.reply-border-rgb {
+  border-color: #5f86f2;
+  border: 2px solid #5f86f2;
+  -webkit-animation: rgb-border 10s ease infinite;
+  -moz-animation: rgb-border 10s ease infinite;
+  animation: rgb-border 10s ease infinite;
 }
 
 .profile-avatar {
@@ -4510,9 +4523,9 @@ height: 0;
   width: 500px;
   position: absolute;
   right: 26%;
-  top: 5%;
+  top: 6%;
   border-radius: 5px;
-  font-size: 15px;
+  font-size: 14px;
 }
 
 .count {
@@ -4527,4 +4540,13 @@ height: 0;
   color: black;
   right: 10px;
   border-radius: 5px;
+}
+
+.fa-reply {
+  color: black;
+  position: absolute;
+  right: 0px;
+  top: 33px;
+  display: inline-block;
+
 }
