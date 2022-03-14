@@ -4166,6 +4166,7 @@ console.log('Background syncing...');
 
                    if (magnetLinks) {
                      handleMagnetLink(magnetLinks, payload_json.t, true, payload_json.from);
+                     $('#'+ payload_json.t +' p > .download-button').css('display','block');
                    }
 
                    // Scroll to bottom
