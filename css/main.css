@@ -3367,10 +3367,10 @@ li .gradient {
 
 .progress {
   height: 120%;
-    width: 0px;
-    background: black;
-    margin-top: -2px;
-    margin-left: -6px;
+  width: 0px;
+  background: black;
+  margin-top: 0px !important;
+  margin-left: 0px !important;
 }
 
 .fa-circle-o-notch {
