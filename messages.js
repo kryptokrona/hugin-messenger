@@ -194,6 +194,8 @@ let print_board = (board) => {
   $('#boards .board_message').remove();
   reactions = {};
   board_posters = [];
+  hugin_nicknames = {};
+  activeHugins = {};
   $('.active_user').remove();
   trendingTags = {};
   $('#active_hugins .tag').remove();
@@ -214,9 +216,9 @@ let print_board = (board) => {
       let this_reply = docs[doc].reply;
       await print_board_message(hash, pubkey, message, timestamp, fetching_board, nickname, this_reply, '#boards_messages');
       // let print_board_message = async (hash, address, message, timestamp, fetching_board, nickname=false, reply=false, selector) => {
-
     }
 
+    print_active_hugins();
 
 
   })
@@ -3362,6 +3364,31 @@ let get_tips = async (hash, timestamp) => {
           $('#boards .' + hash + '').append('<span class="tips">' + parseFloat(tips/100000).toFixed(5) + '</span>');
       }
 }
+
+let hugin_nicknames = {};
+
+let update_active_hugins = (address, nickname) => {
+
+        // Try to check if this address is in the list of recent posters for this specific board
+        if (activeHugins[address]) {
+            activeHugins[address] += 1;
+        } else {
+            activeHugins[address] = 1;
+            hugin_nicknames[address] = nickname;
+        }
+}
+
+
+
+let print_active_hugins = () => {
+  let active_hugins_sorted = Object.keys(activeHugins).sort(function(a,b){return activeHugins[a]-activeHugins[b]}).reverse();
+  for (hugin in active_hugins_sorted) {
+    let address = active_hugins_sorted[hugin];
+    let nickname = hugin_nicknames[address];
+    print_active_hugin(address, nickname);
+  }
+}
+
 let print_active_hugin = (address, nickname) => {
 let already_known = false;
 for (a in board_posters){
@@ -3402,6 +3429,7 @@ let print_hashtag = async (hashtag, count) => {
 }
 
 let reactions = {};
+let activeHugins = {};
 
 let print_board_message = async (hash, address, message, timestamp, fetching_board, nickname=false, reply=false, selector) => {
   try {
@@ -3453,7 +3481,7 @@ if (!nickname) {
 }
 if ($('.board_icon[invitekey='+ fetching_board + ']').hasClass('current')) {
 
-print_active_hugin(address, nickname);
+update_active_hugins(address, nickname);
 }
   $(selector + ' .' + hash + ' .board_message_pubkey').before('<span class="boards_nickname">' + escapeHtml(nickname) + '</span>');
   $(selector + ' .' + hash).append('<div class="react_menu main"><i class="fa fa-smile-o"></i><i class="fa fa-reply"></i></div><div class="reactions"></div>');
