@@ -2877,7 +2877,8 @@ ipcRenderer.on('wallet-started', async () => {
               // }
 
               ipcRenderer.send('get-profile');
-
+              await sleep(2000);
+              sync_messages();
 						// window.setInterval(function(){
             //
 						// },1000);
@@ -2958,7 +2959,7 @@ ipcRenderer.on('wallet-started', async () => {
 
 			      });
 
-
+            check_protections();
 });
 
 
@@ -3929,14 +3930,397 @@ ipcRenderer.on('new-message', async (event, transaction) => {
 
 			 })
 
+    async function print_pm (payload_json) {
+
+      if ($('#recipient_form').val() == payload_json.from  && payload_json.from != $('#currentAddrSpan').text()){
+
+        // If a new message is received, and it's from the active contacts
+        // this function will print the new message in the messages field.
+
+        // NOTE: Sent messages will be automatically printed by the send
+        // message function, not this one.
+
+        avatar_base64 = get_avatar(payload_json.from);
+        payload_json.msg = parseCall(payload_json.msg, payload_json.from);
+        message = handle_links(payload_json.msg);
+        // let display_message = links[0];
+        // let youtube_links = links[1];
+        // let image_attached = links[2];
+
+        if (payload_json.msg.length && $('#welcome_alpha').hasClass('hidden')) {
+          $('#messages').append('<li class="received_message" id=' + payload_json.t + '><img class="message_avatar" src="data:image/png;base64,' + avatar_base64 + '"><p>' + message + '</p><span class="time" timestamp="' + payload_json.t + '">' + moment(payload_json.t).fromNow() + '</span></li>');
+          $('#messages_pane').scrollTop($('#messages').height());
+        }
+        console.log('debagg3', payload_json.t);
+        $('#'+ payload_json.t +  ' > p > a').click(function(e){
+          event.preventDefault();
+          e.stopPropagation();
+          shell.openExternal($(this).attr('href'));
+        })
+        let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(payload_json.msg);
+
+        if (magnetLinks) {
+          handleMagnetLink(magnetLinks, payload_json.t, true, payload_json.from);
+          $('#'+ payload_json.t +' p > .download-button').css('display','block');
+        }
+
+        // Scroll to bottom
+        $('#messages_pane').find('audio').remove();
+        if (payload_json.from == $('#recipient_form').val() && !$('#boards').hasClass('hidden')) {
+          $('#messages_pane').append('<audio autoplay><source src="static/message.mp3" type="audio/mpeg"></audio>');
+        }
+      } else if (payload_json.from != $('#currentAddrSpan').text()) {
+        $('#messages_pane').find('audio').remove();
+        $('#messages_pane').append('<audio autoplay><source src="static/message.mp3" type="audio/mpeg"></audio>');
+
+
+        let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(payload_json.msg);
+
+        if (magnetLinks) {
+          handleMagnetLink(magnetLinks, payload_json.t, true, payload_json.from);
+        }
+        if (handleMagnetListed(payload_json.msg)) {
+          // console.log('my-addr:', $('.currentAddr').text());
+          // console.log('their-addr:', payload_json.from);
+          //
+          // console.log( 'waddafakk', payload_json.from != $('.currentAddr').text() );
+
+          // await require("fs").writeFile(userDataDir + "/" +payload_json.from + ".png", get_avatar(payload_json.from, 'png'), 'base64', function(err) {
+          //   // console.log(err);
+          // });
+         let actions = [];
+         if (payload_json.msg.substring(0,1) == "Δ" || payload_json.msg.substring(0,1) == "Λ") {
+           actions = ["Answer", "Decline"];
+         }
+         //  notifier.notify({
+         //    title: await get_translation(payload_json.from),
+         //    message: handleMagnetListed(parseCall(payload_json.msg, payload_json.from)),
+         //    icon: userDataDir + "/" +payload_json.from + ".png",
+         //    wait: true, // Wait with callback, until user action is taken against notification,
+         //   actions: actions
+         //  },function (err, response, metadata) {
+         //   // Response is response from notification
+         //   // Metadata contains activationType, activationAt, deliveredAt
+         //   console.log(response, metadata.activationValue, err);
+         //
+         //   if (response == 'activate') {
+         //     ipcRenderer.send('show-window');
+         //     print_conversation(payload_json.from);
+         //      $('#message_icon').click();
+         //   }
+         //   if(metadata.activationValue == "Answer" || metadata.button == "Answer" ) {
+         //
+         //     $('#answerCall').click();
+         //
+         //   }
+         // });
+        }
+        //
+        //
+        // let myNotification = new Notification(payload_json.from, {
+        //   body: payload_json.msg
+        // })
+        //
+        // myNotification.onclick = () => {
+        //   print_conversation(payload_json.from);
+        // }
+
+
+      }
+
+      let conversation_address = '';
+
+      if ($('#currentAddrSpan').text() == payload_json.from) {
+        // Sent message
+        conversation_address = $('#currentAddrSpan').text();
+
+      } else {
+        // Received message
+        conversation_address = payload_json.from;
+      }
 
 
 
+
+      if ( $('.' + conversation_address).attr("address") == conversation_address ) {
+        // If there is a contact in the sidebar,
+        // then we update it, and move it to the top.
+
+        let listed_msg = handleMagnetListed(payload_json.msg);
+
+      if (listed_msg && payload_json.from != currentAddr) {
+      $('.' + conversation_address).find('.listed_message').text(listed_msg).parent().detach().prependTo("#messages_contacts");
+      if (payload_json.from != currentAddr) {
+        $('.' + conversation_address).addClass('unread_message');
+      }
+      }
+    } else if (conversation_address != currentAddr) {
+      // If there isn't one, create one
+
+      if (!$('.' + conversation_address).width() && !$('.active_contact .' + conversation_address).width()) {
+        console.log('conversation_address', conversation_address);
+        $('#messages_contacts').prepend('<li class="active_contact unread_message ' + conversation_address + '" address="' + conversation_address + '"><img class="contact_avatar" src="data:image/png;base64,' + get_avatar(conversation_address) + '" /><span class="contact_address">' + conversation_address + '</span><br><span class="listed_message">'+handleMagnetListed(payload_json.msg)+'</li>');
+    }}
+
+    }
+
+
+let last_check_counter = 0;
+let checked_warnings = 0;
+let counter = 0;
+
+let check_protections = async () => {
+
+  try {
+    if (checked_warnings > 0 && last_check_counter == counter) {
+      console.log('No checks for 120s, restarting service.');
+      sync_messages(true);
+      last_checked_warnings = 0;
+    } else if (last_check_counter == counter && checked_warnings == 0) {
+      checked_warnings += 1;
+      console.log('No checks for 60s, giving warning.');
+    }  else {
+      console.log('No issues with checking messages.');
+      checked_warnings = 0;
+    }
+
+  } catch (err) {
+    console.log(err);
+  }
+  last_check_counter = counter;
+  await sleep(60000);
+  check_protections();
+
+}
+
+ipcRenderer.on('focused', async (event) => {
+  // console.log('focus');
+  sleepAmount = 3000;
+
+
+})
+
+
+async function sync_messages() {
+
+
+         known_keys = await find(keychain, {});
+
+         let unconfirmed_transactions = [];
+         let confirmed_transactions = [];
+
+       try {
+         block_height = await get_block_height();
+         console.log(block_height);
+       } catch (err){
+         console.log(err);
+         return;
+         sleep(3000);
+         sync_messages();
+       }
+
+
+         let check_block = last_block_checked;
+
+             try {
+       				// console.log('heights:', last_block_checked, block_height);
+            confirmed_transactions = await get_confirmed_messages(last_block_checked, block_height);
+       			// console.log('confirmed txs:', confirmed_transactions);
+            console.log(confirmed_transactions);
+             check_block = block_height;
+           } catch (err) {
+             console.log(err);
+             if (err == 'ETOOLARGE') {
+
+               confirmed_transactions = [];
+               while (check_block+10000 < block_height) {
+                 new_transactions = await get_confirmed_messages(check_block, 10000);
+
+                 confirmed_transactions = confirmed_transactions.concat(new_transactions);
+
+                 check_block = check_block + 10000;
+               }
+             }
+
+         }
+
+         for (t in confirmed_transactions) {
+         let tx_json = JSON.parse(confirmed_transactions[t]);
+         await db.find({timestamp : tx_json.t}, function (err,docs){
+           if (docs.length > 0) {
+             console.log('Old msg', tx_json.t);
+             return;
+           } else {
+             console.log('New msg');
+           }
+           });
+         }
+         for (n in confirmed_transactions) {
+
+
+           try {
+
+           payload_json = await decrypt_message(confirmed_transactions[n]);
+           console.log(payload_json);
+
+           } catch (err) {
+             console.log(err);
+             return;
+            }
+            if (payload_json.from != currentAddr) {
+
+             save_message(payload_json);
+             print_pm(payload_json);
+            }
+
+         }
+       }
+
+async function decrypt_message (transaction) {
+
+  let payload_json;
+  let tx;
+
+  try {
+
+      try {
+        console.log(transaction);
+        tx = JSON.parse(transaction);
+       console.log('tx', tx);
+      } catch (err) {
+        console.log(err);
+        return;
+      }
+
+
+      if (tx.key && tx.t && tx.key != Buffer.from(keyPair.publicKey).toString('hex')) {
+
+        let senderKey = tx.key;
+
+        let box = tx.box;
+
+        let timestamp = tx.t;
+
+         let decryptBox = nacl.box.open(hexToUint(box), nonceFromTimestamp(timestamp), hexToUint(senderKey), keyPair.secretKey);
+
+        if (!decryptBox) {
+         console.log('Cant decrypt new conversation');
+        }
+
+        let message_dec = naclUtil.encodeUTF8(decryptBox);
+
+        payload_json = JSON.parse(message_dec);
+
+
+        payload_json.t = timestamp;
+
+        payload_keychain = {"key": senderKey, "address": payload_json.from};
+
+        keychain.find({ "key": senderKey }, function (err, docs) {
+
+          if (docs.length == 0) {
+
+            keychain.insert(payload_keychain);
+
+          }
+        });
+
+    } else {
+
+        if (tx.m || tx.b) {
+        }
+
+        // If no key is appended to message we need to try the keys in our payload_keychain
+        let box = tx.box;
+
+        let timestamp = tx.t;
+
+        let i = 0;
+
+        let decryptBox = false;
+
+
+        try {
+         decryptBox = naclSealed.sealedbox.open(hexToUint(box),
+         nonceFromTimestamp(timestamp),
+         keyPair.secretKey);
+         } catch (err) {
+           // console.log('timestamp', timestamp);
+           console.log(err);
+         }
+
+        while (i < known_keys.length && !decryptBox) {
+          // console.log('Decrypting..');
+
+          let possibleKey = known_keys[i].key;
+          // console.log('Trying key:', possibleKey);
+          i = i+1;
+          try {
+           decryptBox = nacl.box.open(hexToUint(box),
+           nonceFromTimestamp(timestamp),
+           hexToUint(possibleKey),
+           keyPair.secretKey);
+         } catch (err) {
+           // console.log('timestamp', timestamp);
+           console.log(err);
+         }
+         console.log('Decrypted:', decryptBox);
+
+
+          }
+
+          if (!decryptBox) {
+            console.log('Cannot decrypt..');
+            return;
+          }
+
+
+          let message_dec = naclUtil.encodeUTF8(decryptBox);
+
+          payload_json = JSON.parse(message_dec);
+          payload_json.t = timestamp;
+          // console.log(payload_json);
+          if (payload_json.s) {
+
+            let this_addr = await Address.fromAddress(payload_json.from);
+
+            let verified = await xkrUtils.verifyMessageSignature(payload_json.msg, this_addr.spend.publicKey, payload_json.s);
+
+            if (!verified) {
+              return;
+            }
+
+          }
+          if (payload_json.k) {
+            console.log('Found key!', payload_json);
+            keychain.find({ "key": payload_json.k }, function (err, docs) {
+
+              if (docs.length == 0) {
+
+                keychain.insert({ "key": payload_json.k, "address": payload_json.from });
+
+                }
+            });
+          } else {
+            console.log('No key :( ', payload_json);
+          }
+
+        }
+
+        console.log(payload_json);
+        return payload_json;
+
+    } catch (err) {
+      console.log(err);
+      return;
+    }
+  }
 let known_pool_txs = [];
 
 async function backgroundSyncMessages() {
 
 console.log('Background syncing...');
+let message_was_unknown;
 
       let json = await fetch('http://' + rmt.getGlobal('node') + '/get_pool_changes_lite', {
            method: 'POST',
@@ -4136,136 +4520,9 @@ console.log('Background syncing...');
 
                 if (payload_json.t > latest_transaction_time) {
 
-
-                 if ($('#recipient_form').val() == payload_json.from  && payload_json.from != $('#currentAddrSpan').text() ){
-
-                   // If a new message is received, and it's from the active contacts
-                   // this function will print the new message in the messages field.
-
-                   // NOTE: Sent messages will be automatically printed by the send
-                   // message function, not this one.
-
-                   avatar_base64 = get_avatar(payload_json.from);
-                   payload_json.msg = parseCall(payload_json.msg, payload_json.from);
-                   message = handle_links(payload_json.msg);
-                   // let display_message = links[0];
-                   // let youtube_links = links[1];
-                   // let image_attached = links[2];
-
-                   if (payload_json.msg.length && $('#welcome_alpha').hasClass('hidden')) {
-                     $('#messages').append('<li class="received_message" id=' + payload_json.t + '><img class="message_avatar" src="data:image/png;base64,' + avatar_base64 + '"><p>' + message + '</p><span class="time" timestamp="' + payload_json.t + '">' + moment(payload_json.t).fromNow() + '</span></li>');
-                     $('#messages_pane').scrollTop($('#messages').height());
-                   }
-                   console.log('debagg3', payload_json.t);
-                   $('#'+ payload_json.t +  ' > p > a').click(function(e){
-                     event.preventDefault();
-                     e.stopPropagation();
-                     shell.openExternal($(this).attr('href'));
-                   })
-                   let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(payload_json.msg);
-
-                   if (magnetLinks) {
-                     handleMagnetLink(magnetLinks, payload_json.t, true, payload_json.from);
-                     $('#'+ payload_json.t +' p > .download-button').css('display','block');
-                   }
-
-                   // Scroll to bottom
-                   $('#messages_pane').find('audio').remove();
-
-                 } else if (payload_json.from != $('#currentAddrSpan').text() ) {
-                   $('#messages_pane').find('audio').remove();
-                   $('#messages_pane').append('<audio autoplay><source src="static/message.mp3" type="audio/mpeg"></audio>');
-
-
-                   let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(payload_json.msg);
-
-                   if (magnetLinks) {
-                     handleMagnetLink(magnetLinks, payload_json.t, true, payload_json.from);
-                   }
-                   if (handleMagnetListed(payload_json.msg)) {
-                     // console.log('my-addr:', $('.currentAddr').text());
-                     // console.log('their-addr:', payload_json.from);
-                     //
-                     // console.log( 'waddafakk', payload_json.from != $('.currentAddr').text() );
-
-                     await require("fs").writeFile(userDataDir + "/" +payload_json.from + ".png", get_avatar(payload_json.from, 'png'), 'base64', function(err) {
-                       // console.log(err);
-                     });
-                    let actions = [];
-                    if (payload_json.msg.substring(0,1) == "Δ" || payload_json.msg.substring(0,1) == "Λ") {
-                      actions = ["Answer", "Decline"];
-                    }
-                     notifier.notify({
-                       title: await get_translation(payload_json.from),
-                       message: handleMagnetListed(parseCall(payload_json.msg, payload_json.from)),
-                       icon: userDataDir + "/" +payload_json.from + ".png",
-                       wait: true, // Wait with callback, until user action is taken against notification,
-                      actions: actions
-                     },function (err, response, metadata) {
-                      // Response is response from notification
-                      // Metadata contains activationType, activationAt, deliveredAt
-                      console.log(response, metadata.activationValue, err);
-
-                      if (response == 'activate') {
-                        ipcRenderer.send('show-window');
-                        print_conversation(payload_json.from);
-                         $('#message_icon').click();
-                      }
-                      if(metadata.activationValue == "Answer" || metadata.button == "Answer" ) {
-
-                        $('#answerCall').click();
-
-                      }
-                    });
-                   }
-                   //
-                   //
-                   // let myNotification = new Notification(payload_json.from, {
-                   //   body: payload_json.msg
-                   // })
-                   //
-                   // myNotification.onclick = () => {
-                   //   print_conversation(payload_json.from);
-                   // }
-
-
+                  print_pm(payload_json);
                  }
 
-                 let conversation_address = '';
-
-                 if ($('#currentAddrSpan').text() == payload_json.from) {
-                   // Sent message
-                   conversation_address = $('#currentAddrSpan').text();
-
-                 } else {
-                   // Received message
-                   conversation_address = payload_json.from;
-                 }
-
-
-
-
-                 if ( $('.' + conversation_address).attr("address") == conversation_address ) {
-                   // If there is a contact in the sidebar,
-                   // then we update it, and move it to the top.
-
-                   let listed_msg = handleMagnetListed(payload_json.msg);
-
-                 if (listed_msg && payload_json.from != currentAddr) {
-                 $('.' + conversation_address).find('.listed_message').text(listed_msg).parent().detach().prependTo("#messages_contacts");
-                 if (payload_json.from != currentAddr) {
-                   $('.' + conversation_address).addClass('unread_message');
-                 }
-                 }
-               } else if (conversation_address != currentAddr) {
-                 // If there isn't one, create one
-
-                 if (!$('.' + conversation_address).width() && !$('.active_contact .' + conversation_address).width()) {
-                   console.log('conversation_address', conversation_address);
-                   $('#messages_contacts').prepend('<li class="active_contact unread_message ' + conversation_address + '" address="' + conversation_address + '"><img class="contact_avatar" src="data:image/png;base64,' + get_avatar(conversation_address) + '" /><span class="contact_address">' + conversation_address + '</span><br><span class="listed_message">'+handleMagnetListed(payload_json.msg)+'</li>');
-               }}
-
-             }
            } else {
 
              if (tx.b || tx.brd) {
