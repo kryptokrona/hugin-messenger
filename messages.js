@@ -3833,7 +3833,15 @@ ipcRenderer.on('new-message', async (event, transaction) => {
 		 let timestamp = resp.result.block.timestamp;
      result = trimExtra(resp.result.tx.extra);
 		 let hex_json = JSON.parse(fromHex(result));
-     console.log(hex_json);
+     let thisHash = transaction.hash;
+
+     if (known_pool_txs.indexOf(thisHash) === -1) {
+        known_pool_txs.push(thisHash);
+
+      } else {
+        console.log("This transaction is already known", thisHash);
+        return;
+      }
 
 		 if (hex_json.b) {
 
@@ -3846,7 +3854,6 @@ ipcRenderer.on('new-message', async (event, transaction) => {
 		 }
 
 		 console.log('Debug me', hex_json);
-     let thisHash = transaction.hash;
      hex_json.brd = transaction.transfers[0].publicKey;
      let time = escape(timestamp);
 
@@ -3997,6 +4004,7 @@ ipcRenderer.on('new-message', async (event, transaction) => {
             title: await get_translation(payload_json.from),
             message: handleMagnetListed(parseCall(payload_json.msg, payload_json.from)),
             icon: userDataDir + "/" +payload_json.from + ".png",
+            appID: "Hugin Messenger",
             wait: true, // Wait with callback, until user action is taken against notification,
            actions: actions
           },function (err, response, metadata) {
@@ -4354,7 +4362,7 @@ let message_was_unknown;
 
            } else {
              console.log("This transaction is already known", thisHash);
-             continue;
+             return;
            }
             if (thisHash.length == 64) {
               boards_db.find({ hash: thisHash }, function (err, docs) {
