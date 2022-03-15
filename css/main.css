@@ -621,7 +621,7 @@ border-radius: 5px;
 }
 
 #daemon_status {
-
+  opacity: 0.85;
   height: 50px;
   vertical-align: middle;
   line-height: 48px;
@@ -631,15 +631,6 @@ border-radius: 5px;
   bottom: -1px;
   left: 15px;
   width: 50px;
-  /* background: linear-gradient(270deg, #000000, #1b1836);
-  background-size: 400% 400%;
-
-  background: linear-gradient(60deg, #5f86f2, #a65ff2, #f25fd0, #f25f61, #f2cb5f, #abf25f, #5ff281, #5ff2f0) !important;
-    background-size: 1000% 1000% !important;
-
-    -webkit-animation: AnimationName 10s ease infinite;
-    -moz-animation: AnimationName 10s ease infinite;
-    animation: AnimationName 10s ease infinite; */
 }
 
 #status_icon {
@@ -4295,12 +4286,12 @@ font-size: 13px;
     vertical-align: top;
     font-weight: 400;
     font-family: "RobotoMono";
-    width: 110px;
+    width: 90px;
     display: inline-block;
     overflow: hidden;
     text-overflow: ellipsis;
     position: absolute;
-    top: 10%;
+    top: 2%;
     right: 4%;
     z-index: 999;
     cursor: pointer;
@@ -4555,4 +4546,8 @@ height: 0;
   top: 33px;
   display: inline-block;
 
+}
+
+#daemon_status:hover {
+  opacity: 1;
 }
