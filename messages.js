@@ -3986,35 +3986,35 @@ ipcRenderer.on('new-message', async (event, transaction) => {
           //
           // console.log( 'waddafakk', payload_json.from != $('.currentAddr').text() );
 
-          // await require("fs").writeFile(userDataDir + "/" +payload_json.from + ".png", get_avatar(payload_json.from, 'png'), 'base64', function(err) {
-          //   // console.log(err);
-          // });
+          await require("fs").writeFile(userDataDir + "/" +payload_json.from + ".png", get_avatar(payload_json.from, 'png'), 'base64', function(err) {
+            // console.log(err);
+          });
          let actions = [];
          if (payload_json.msg.substring(0,1) == "Δ" || payload_json.msg.substring(0,1) == "Λ") {
            actions = ["Answer", "Decline"];
          }
-         //  notifier.notify({
-         //    title: await get_translation(payload_json.from),
-         //    message: handleMagnetListed(parseCall(payload_json.msg, payload_json.from)),
-         //    icon: userDataDir + "/" +payload_json.from + ".png",
-         //    wait: true, // Wait with callback, until user action is taken against notification,
-         //   actions: actions
-         //  },function (err, response, metadata) {
-         //   // Response is response from notification
-         //   // Metadata contains activationType, activationAt, deliveredAt
-         //   console.log(response, metadata.activationValue, err);
-         //
-         //   if (response == 'activate') {
-         //     ipcRenderer.send('show-window');
-         //     print_conversation(payload_json.from);
-         //      $('#message_icon').click();
-         //   }
-         //   if(metadata.activationValue == "Answer" || metadata.button == "Answer" ) {
-         //
-         //     $('#answerCall').click();
-         //
-         //   }
-         // });
+          notifier.notify({
+            title: await get_translation(payload_json.from),
+            message: handleMagnetListed(parseCall(payload_json.msg, payload_json.from)),
+            icon: userDataDir + "/" +payload_json.from + ".png",
+            wait: true, // Wait with callback, until user action is taken against notification,
+           actions: actions
+          },function (err, response, metadata) {
+           // Response is response from notification
+           // Metadata contains activationType, activationAt, deliveredAt
+           console.log(response, metadata.activationValue, err);
+
+           if (response == 'activate') {
+             ipcRenderer.send('show-window');
+             print_conversation(payload_json.from);
+              $('#message_icon').click();
+           }
+           if(metadata.activationValue == "Answer" || metadata.button == "Answer" ) {
+
+             $('#answerCall').click();
+
+           }
+         });
         }
         //
         //
