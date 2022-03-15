@@ -4635,36 +4635,53 @@ let message_was_unknown;
                      $('#messages_pane').find('audio').remove();
                      $('#messages_pane').append('<audio autoplay><source src="static/boardmessage.mp3" type="audio/mpeg"></audio>');
                      $('.board_icon[invitekey='+ to_board + ']').addClass('unread_board');
+                     console.log('to_board', to_board);
                       }
                       let board_name;
                      if (to_board.substring(59,64) == '00000' || to_board == '0b66b223812861ad15e5310b4387f475c414cd7bda76be80be6d3a55199652fc') {
                        board_name = letter_from_spend_key(to_board);
+                       notifier.notify({
+                         title: name + " in " + board_name,
+                         message: message,
+                         icon: userDataDir + "/" + senderKey + ".png",
+                        appID: "Hugin Messenger",
+                         wait: true // Wait with callback, until user action is taken against notification
+                       },function (err, response, metadata) {
+                        console.log(err, response, metadata);
+                      });
+
+                     notifier.on('click', function(notifierObject, options) {
+                       // Triggers if `wait: true` and user clicks notification
+                       ipcRenderer.send('show-window');
+
+                     });
                    } else {
-                        await dictionary.find({ original: to_board }, async function (err,docs){
+                        await dictionary.find({ original: to_board }, function (err,docs){
 
                         if (!docs.length == 0) {
                           board_name = docs[0].translation;
+
                         } else {
-                          board_name = to_board;
+                          board_name = to_board.substring(0, 8);
                         }
+                        notifier.notify({
+                          title: name + " in " + board_name,
+                          message: message,
+                          icon: userDataDir + "/" + senderKey + ".png",
+                          appID: "Hugin Messenger",
+                          wait: true // Wait with callback, until user action is taken against notification
+                        },function (err, response, metadata) {
+                         console.log(err, response, metadata);
+                       });
+
+                      notifier.on('click', function(notifierObject, options) {
+                        // Triggers if `wait: true` and user clicks notification
+                        ipcRenderer.send('show-window');
+
+                      });
                      })
                    }
-       				      notifier.notify({
-       				        title: name + " in " + board_name,
-       				        message: message,
-       				        icon: userDataDir + "/" + senderKey + ".png",
-                      appID: "Hugin Messenger",
-       				        wait: true // Wait with callback, until user action is taken against notification
-       				      },function (err, response, metadata) {
-       				 			 console.log(err, response, metadata);
-       				 		 });
 
-       				    notifier.on('click', function(notifierObject, options) {
-       				      // Triggers if `wait: true` and user clicks notification
-       				 			ipcRenderer.send('show-window');
-
-
-       				    });
 
                    // if ($('.board_icon.current').attr('invitekey') == transaction.transfers[0].publicKey || $('.board_icon.current').attr('id') == "home_board") {
                    //
