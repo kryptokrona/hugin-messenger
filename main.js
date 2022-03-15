@@ -161,7 +161,7 @@ let start_js_wallet = async () => {
      } else {
        if ((localDaemonBlockCount - walletBlockCount) > 9000 ) {
        console.log('rewinding forward');
-       js_wallet.rewind(networkBlockCount - 1000);
+       js_wallet.rewind(networkBlockCount - 5000);
        await sleep(3000 * 10);
      }
      }
