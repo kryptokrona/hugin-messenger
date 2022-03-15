@@ -2186,6 +2186,11 @@ margin-bottom: -16px;
 
 @media (prefers-color-scheme: light) {
 
+  .react_menu i:hover {
+    opacity: 1;
+    color: black;
+  }
+
   #replyto,  #replyto_exit {
     color: black;
   }
@@ -4333,9 +4338,13 @@ font-size: 13px;
     background: rgba(0,0,0,0.2);
     padding: 5px;
     border-radius: 5px;
+    opacity: 0.9
   }
 
-
+  .react_menu i:hover {
+    opacity: 1;
+    color: white;
+  }
 #profile_balance {
   position: relative;
   padding: 10px;
