@@ -2877,8 +2877,6 @@ ipcRenderer.on('wallet-started', async () => {
               // }
 
               ipcRenderer.send('get-profile');
-              await sleep(2000);
-              sync_messages();
 						// window.setInterval(function(){
             //
 						// },1000);
@@ -2958,7 +2956,8 @@ ipcRenderer.on('wallet-started', async () => {
 			        });
 
 			      });
-
+            await sleep(2000);
+            sync_messages();
             check_protections();
 });
 
@@ -4144,19 +4143,19 @@ async function sync_messages() {
 
          }
 
-         for (t in confirmed_transactions) {
-         let tx_json = JSON.parse(confirmed_transactions[t]);
-         await db.find({timestamp : tx_json.t}, function (err,docs){
-           if (docs.length > 0) {
-             console.log('Old msg', tx_json.t);
-             return;
-           } else {
-             console.log('New msg');
-           }
-           });
-         }
+
          for (n in confirmed_transactions) {
 
+
+           let tx_json = JSON.parse(confirmed_transactions[n]);
+           await db.find({timestamp : tx_json.t}, function (err,docs){
+             if (docs.length > 0) {
+               console.log('Old msg', tx_json.t);
+               return;
+             } else {
+               console.log('New msg');
+             }
+             });
 
            try {
 
