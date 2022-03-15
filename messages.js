@@ -108,6 +108,7 @@ let reply_to_board_message = (hash) => {
   current_reply_to = hash;
   $('.board_message').removeClass('reply-border-rgb');
   $('#boards_message_form').addClass('reply-border-rgb');
+  $('#boards_message_form').focus();
   let nickname = false;
 
   try {
@@ -2622,6 +2623,7 @@ $("document").ready(function(){
     $('.board_icon').removeClass('current');
     $('#board_box').removeClass('show');
     $('#board_box').addClass('hidden');
+    $('.active_contact').removeClass('border-rgb');
     if ($('#flip-box-inner').hasClass('flip')) {
     flip();
     }
@@ -4584,6 +4586,10 @@ let message_was_unknown;
             let senderKey = escape(hex_json.k);
             let message = escapeHtml(hex_json.m);
 
+            await require("fs").writeFile(userDataDir + "/" + senderKey + ".png", get_avatar(senderKey, 'png'), 'base64', function(err) {
+             console.log(err);
+
+           });
 
 
        				      if (message.length < 1) {
@@ -4602,7 +4608,6 @@ let message_was_unknown;
                   if ($('#recent_messages .board_message').length > 4) {
                     $('#recent_messages .board_message')[$('#recent_messages .board_message').length -1].remove();
                   }
-
 
                         let boards_addresses = rmt.getGlobal('boards_addresses');
                         let boards_keys = [];
@@ -4626,13 +4631,29 @@ let message_was_unknown;
        				 		if (senderKey != currentAddr && message_was_unknown && to_board != $('.current').attr('invitekey') && known_board || known_board && containsOnlyEmojis(message) && message.length < 8) {
                     print_board_message(thisHash, senderKey, message, time, to_board, name, hex_json.r, '#recent_messages');
                      last_block_checked = transaction.hash;
+                     if (to_board != $('.current').attr('invitekey')) {
                      $('#messages_pane').find('audio').remove();
                      $('#messages_pane').append('<audio autoplay><source src="static/boardmessage.mp3" type="audio/mpeg"></audio>');
                      $('.board_icon[invitekey='+ to_board + ']').addClass('unread_board');
+                      }
+                      let board_name;
+                     if (to_board.substring(59,64) == '00000' || to_board == '0b66b223812861ad15e5310b4387f475c414cd7bda76be80be6d3a55199652fc') {
+                       board_name = letter_from_spend_key(to_board);
+                   } else {
+                        await dictionary.find({ original: to_board }, async function (err,docs){
+
+                        if (!docs.length == 0) {
+                          board_name = docs[0].translation;
+                        } else {
+                          board_name = to_board;
+                        }
+                     })
+                   }
        				      notifier.notify({
-       				        title: name + " in " + to_board,
+       				        title: name + " in " + board_name,
        				        message: message,
        				        icon: userDataDir + "/" + senderKey + ".png",
+                      appID: "Hugin Messenger",
        				        wait: true // Wait with callback, until user action is taken against notification
        				      },function (err, response, metadata) {
        				 			 console.log(err, response, metadata);
