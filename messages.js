@@ -2477,7 +2477,7 @@ async function print_conversation(conversation) {
          nickname_element = '<span class="contact_address">' + nickname + '</span>';
        }
 
-       $('#messages').append('<li id="' + messages[n].timestamp + '" timestamp="' + messages[n].timestamp + '" class="' + messages[n].type + '_message"><img class="message_avatar" src="data:image/png;base64,' + avatar_sender + '">' + nickname_element + '<p>' + parseCall(messages[n].message, false, false) +'</p><span class="time" timestamp="' + messages[n].timestamp + '">' + moment(messages[n].timestamp).fromNow() + '</span></li>');
+       $('#messages').append('<li id="' + messages[n].timestamp + '" timestamp="' + messages[n].timestamp + '" class="' + messages[n].type + '_message"><img class="message_avatar" src="data:image/png;base64,' + avatar_base64 + '">' + nickname_element + '<p>' + parseCall(messages[n].message, false, false) +'</p><span class="time" timestamp="' + messages[n].timestamp + '">' + moment(messages[n].timestamp).fromNow() + '</span></li>');
 
 
       let magnetLinks = /(magnet:\?[^\s\"]*)/gmi.exec(messages[n].message);
@@ -4154,18 +4154,18 @@ ipcRenderer.on('new-message', async (event, transaction) => {
       }
 
 
+      console.log('conversation', conversation_address);
 
-
-      if ( $('.' + conversation_address).attr("address") == conversation_address ) {
+      if ( $('.active_contact .' + conversation_address).attr("address") == conversation_address ) {
         // If there is a contact in the sidebar,
         // then we update it, and move it to the top.
 
         let listed_msg = handleMagnetListed(payload_json.msg);
 
       if (listed_msg && payload_json.from != currentAddr) {
-      $('.' + conversation_address).find('.listed_message').text(listed_msg).parent().detach().prependTo("#messages_contacts");
+      $('.active_contact .' + conversation_address).find('.listed_message').text(listed_msg).parent().detach().prependTo("#messages_contacts");
       if (payload_json.from != currentAddr) {
-        $('.' + conversation_address).addClass('unread_message');
+        $('.active_contact .' + conversation_address).addClass('unread_message');
       }
       }
     } else if (conversation_address != currentAddr) {
