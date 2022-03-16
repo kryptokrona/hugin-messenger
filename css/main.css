@@ -2177,6 +2177,14 @@ margin-bottom: -16px;
 
 @media (prefers-color-scheme: light) {
 
+  #boards_profile {
+    background: white !important;
+  }
+
+  #boards_profile input {
+    color: black !important;
+  }
+
   .react_menu i:hover {
     opacity: 1;
     color: black;
@@ -2378,7 +2386,7 @@ header  {
 }
 
 .status-content a {
-  color: #53565c;
+  color: #53565c !important;
 }
 
   #board_box {
@@ -4559,6 +4567,7 @@ height: 0;
   padding-top: 10px;
   border-radius: 5px;
   right: 201px;
+  text-overflow: ellipsis;
   font-style: italic;
   font-size: 13px;
 }
