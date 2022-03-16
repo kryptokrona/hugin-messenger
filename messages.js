@@ -3000,7 +3000,7 @@ ipcRenderer.on('wallet-started', async () => {
 
 			      });
             await sleep(2000);
-            sync_messages();
+            await sync_messages();
             check_protections();
 });
 
@@ -4190,7 +4190,7 @@ let check_protections = async () => {
   try {
     if (checked_warnings > 0 && last_check_counter == counter) {
       console.log('No checks for 120s, restarting service.');
-      sync_messages(true);
+      sync_messages();
       last_checked_warnings = 0;
     } else if (last_check_counter == counter && checked_warnings == 0) {
       checked_warnings += 1;
@@ -4269,10 +4269,9 @@ async function sync_messages() {
            if (known_message.length == 0 ) {
                try {
 
-                 payload_json = await decrypt_message(confirmed_transactions[n]);
-                 console.log(payload_json);
-                 print_pm(payload_json);
-                 save_message(payload_json);
+                 let confirmed_message = await decrypt_message(confirmed_transactions[n]);
+                 await print_pm(confirmed_message);
+                 save_message(confirmed_message);
 
                } catch (err) {
                  console.log(err);
