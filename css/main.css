@@ -4551,3 +4551,32 @@ height: 0;
 #daemon_status:hover {
   opacity: 1;
 }
+
+#boards_profile {
+  background: #333;
+  padding: 20px;
+  padding-bottom: 10px;
+  padding-top: 10px;
+  border-radius: 5px;
+  right: 201px;
+  font-style: italic;
+  font-size: 13px;
+}
+
+#boards_profile .address {
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+
+#boards_profile .label {
+  font-size: 10px;
+  font-weight: 600;
+  font-family: "Montserrat";
+  font-style: normal;
+}
+
+#boards_profile input {
+  width: 95%;
+}

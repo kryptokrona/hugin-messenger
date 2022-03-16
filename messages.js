@@ -1081,12 +1081,53 @@ let appPath = rmt.getGlobal('appPath');
 
 let db = new Datastore({ filename: userDataDir+'/messages.db', autoload: true });
 let boards_db = new Datastore({ filename: userDataDir+'/boards.db', autoload: true });
-
 let misc = new Datastore({ filename: userDataDir+'/misc.db', autoload: true });
 
 let keychain = new Datastore({ filename: userDataDir+'/keychain.db', autoload: true });
 
 let dictionary = new Datastore({ filename: userDataDir+'/dict.db', autoload: true });
+
+
+let get_user_profile = async (address) => {
+  let post_count = 0;
+  let common_boards = [];
+  let nicknames = [];
+  let message_key;
+  // Get amount of posts by user
+  let board_messages = await find(boards_db, {sender: address});
+  let pms = await find(db, {conversation: address});
+  let keys = await find(keychain, {address: address});
+  let last_seen = 0;
+
+  post_count = board_messages.length + pms.length;
+
+  for (m in pms) {
+    let message = pms[m];
+    if (message.timestamp > last_seen) {
+      last_seen = message.timestamp;
+    }
+  }
+
+  for(m in board_messages) {
+    let message = board_messages[m];
+    if (common_boards.indexOf(message.board) == -1) {
+      common_boards.push(message.board);
+    }
+    if (nicknames.indexOf(message.nickname) == -1) {
+
+      nicknames.push(message.nickname);
+    }
+    if (message.timestamp * 1000 > last_seen) {
+      last_seen = message.timestamp * 1000;
+    }
+  }
+
+  if (keys.length) {
+    message_key = keys[0].key;
+  }
+  return {last_seen: last_seen, post_count: post_count, common_boards: common_boards, nicknames: nicknames, message_key: message_key};
+}
+
 
 const prompt = require('electron-prompt');
 
@@ -3388,7 +3429,72 @@ let print_active_hugins = () => {
     let address = active_hugins_sorted[hugin];
     let nickname = hugin_nicknames[address];
     print_active_hugin(address, nickname);
+    $('#active_hugins .' + address).click(async function(e){
+      if ($(this).find('#boards_profile').length) {
+        $(this).find('#boards_profile').toggleClass('hidden');
+      } else {
+        $('#boards_profile').remove();
+
+      let profile = await get_user_profile(address);
+      console.log(profile);
+      $(this).append('<div id="boards_profile"></div>');
+
+      if (profile.nicknames.length > 1) {
+        profile.nicknames.shift();
+        let nickname_component =  `
+        <span class="label">AKA</span><br>
+        <span class="nicknames">
+          ${profile.nicknames.toString().replace(',', ', ')}
+        </span><br><br>
+        `
+        $(this).find('#boards_profile').append(nickname_component);
+      }
+
+      let profile_component = `
+          <span class="label">Last seen</span><br>
+          <span class="last_seen" timestamp="${profile.last_seen}">
+            ${moment(profile.last_seen).fromNow()}
+          </span><br><br>
+          <span class="label">Address</span><br>
+          <span class="address">
+            ${address}
+          </span><br>
+          <span class="label">Posts</span><br>
+          <span class="post_count">
+            ${profile.post_count}
+          </span><br><br>
+        </div>
+      `;
+
+      $(this).find('#boards_profile').append(profile_component);
+
+      if (profile.message_key && address != currentAddr) {
+        let message_component = `
+          <input id="profile_message_input" type="text"></input>
+        `;
+        $(this).find('#boards_profile').append(message_component);
+        $("#profile_message_input").click(function(e) {
+           // Do something
+           e.stopPropagation();
+        });
+        $('#profile_message_input').keypress(function (e) {
+
+          if (e.which == 13  && !e.shiftKey) {
+            // Do something
+            e.stopPropagation();
+            $('#message_icon').click();
+            $('#messages_contacts .'+address).click();
+            $('#message_form').val($('#profile_message_input').val()).focus();
+            return false;    //<---- Add this line
+          }
+
+        });
+      }
+      }
+
+    });
   }
+
 }
 
 let print_active_hugin = (address, nickname) => {
@@ -3401,7 +3507,6 @@ for (a in board_posters){
 if (!already_known) {
    board_posters.push({address: address, nickname: nickname});
    $('#active_hugins').append('<li class="active_user ' + address + '" id=""><div class="board_message_user"><span class="board_message_pubkey">' + address + '</span></div><img class="board_avatar" src="data:image/png;base64,' + get_avatar(address) + '"><span class="boards_nickname">' + escapeHtml(nickname) + '</span></li>');
-
  } else {
    let known_nickname = $('#active_hugins .' + address + ' .boards_nickname').text();
    if (nickname != known_nickname) {
