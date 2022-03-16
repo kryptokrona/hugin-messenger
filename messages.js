@@ -4270,20 +4270,17 @@ async function sync_messages() {
                try {
 
                  payload_json = await decrypt_message(confirmed_transactions[n]);
+                 console.log(payload_json);
+                 print_pm(payload_json);
+                 save_message(payload_json);
 
                } catch (err) {
                  console.log(err);
                  continue;
                 }
-                if (payload_json.from != currentAddr) {
-
-               print_pm(payload_json);
-               save_message(payload_json);
-            }
-
          } else {
-           continue;
-         }
+             continue;
+           }
        }
        return;
        }
@@ -4462,15 +4459,16 @@ let message_was_unknown;
           let thisHash = transactions[transaction].transactionPrefixInfotxHash;
           if (known_pool_txs.indexOf(thisHash) === -1) {
              known_pool_txs.push(thisHash);
-
+             message_was_unknown = true;
            } else {
+             message_was_unknown = false;
              console.log("This transaction is already known", thisHash);
              continue;
            }
             if (thisHash.length == 64) {
-
+              console.log('');
            } else {
-                console.log('err', err);
+               console.log('err', err);
                message_was_unknown = false;
                console.log('not a hash');
                continue;
