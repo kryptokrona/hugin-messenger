@@ -3470,7 +3470,7 @@ let print_active_hugins = () => {
 
       if (profile.message_key && address != currentAddr) {
         let message_component = `
-          <input id="profile_message_input" type="text"></input>
+          <input id="profile_message_input" type="text" placeholder="Type a message"></input>
         `;
         $(this).find('#boards_profile').append(message_component);
         $("#profile_message_input").click(function(e) {
@@ -3489,6 +3489,7 @@ let print_active_hugins = () => {
           }
 
         });
+        $('#profile_message_input').focus();
       }
       }
 
