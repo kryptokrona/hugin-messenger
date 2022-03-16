@@ -4157,16 +4157,17 @@ ipcRenderer.on('new-message', async (event, transaction) => {
 
       console.log('conversation', conversation_address);
 
-      if ( $('.active_contact .' + conversation_address).attr("address") == conversation_address ) {
+      if ( $('.' + conversation_address).attr("address") == conversation_address ) {
         // If there is a contact in the sidebar,
         // then we update it, and move it to the top.
 
         let listed_msg = handleMagnetListed(payload_json.msg);
+        console.log('', listed_msg);
 
       if (listed_msg && payload_json.from != currentAddr) {
-      $('.active_contact .' + conversation_address).find('.listed_message').text(listed_msg).parent().detach().prependTo("#messages_contacts");
+      $('.' + conversation_address).find('.listed_message').text(listed_msg).parent().detach().prependTo("#messages_contacts");
       if (payload_json.from != currentAddr) {
-        $('.active_contact .' + conversation_address).addClass('unread_message');
+        $('.' + conversation_address).addClass('unread_message');
       }
       }
     } else if (conversation_address != currentAddr) {
@@ -4262,33 +4263,29 @@ async function sync_messages() {
 
          for (n in confirmed_transactions) {
 
-
            let tx_json = JSON.parse(confirmed_transactions[n]);
-           await db.find({timestamp : tx_json.t}, function (err,docs){
-             if (docs.length > 0) {
-               console.log('Old msg', tx_json.t);
-               return;
-             } else {
-               console.log('New msg');
-             }
-             });
+           let known_message = await find(db, {timestamp: tx_json.t});
 
-           try {
+           if (known_message.length == 0 ) {
+               try {
 
-           payload_json = await decrypt_message(confirmed_transactions[n]);
-           console.log(payload_json);
+                 payload_json = await decrypt_message(confirmed_transactions[n]);
 
-           } catch (err) {
-             console.log(err);
-             return;
-            }
-            if (payload_json.from != currentAddr) {
+               } catch (err) {
+                 console.log(err);
+                 continue;
+                }
+                if (payload_json.from != currentAddr) {
 
-             save_message(payload_json);
-             print_pm(payload_json);
+               print_pm(payload_json);
+               save_message(payload_json);
             }
 
+         } else {
+           continue;
          }
+       }
+       return;
        }
 
 async function decrypt_message (transaction) {
@@ -4468,24 +4465,15 @@ let message_was_unknown;
 
            } else {
              console.log("This transaction is already known", thisHash);
-             return;
+             continue;
            }
             if (thisHash.length == 64) {
-              boards_db.find({ hash: thisHash }, function (err, docs) {
-                  message_was_unknown = false;
-                  if (docs.length == 0) {
-                      message_was_unknown = true;
-                      return;
-                  } else {
-                    known_pool_txs.push(thisHash);
-                  }
-             })
 
            } else {
                 console.log('err', err);
                message_was_unknown = false;
                console.log('not a hash');
-                return;
+               continue;
               }
 
 
@@ -4832,7 +4820,7 @@ let message_was_unknown;
       }
           } else {
             console.log("Not a board or box");
-          return;
+          continue;
           }
           } catch (err) {
           await sleep(sleepAmount);
