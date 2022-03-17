@@ -2057,6 +2057,10 @@ width: 75%;
 opacity: 0.9;
 }
 
+.status-content span:hover {
+  opacity: 1;
+}
+
 .status-content a {
   font-size: 10pt;
   color: #f5f6f7;
