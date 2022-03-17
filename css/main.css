@@ -457,7 +457,7 @@ margin: 0;
   font-size: 12px;
   font-weight: 700;
   font-family: "montserrat";
-  color: rgba(255,255,255,1);
+  color: rgba(255,255,255,0.9);
 }
 
 body {
@@ -1204,7 +1204,11 @@ h1, h2, h3, h4 {
     font-family: 'Montserrat';
     font-weight: 700;
     background: rgba(0,0,0,0.1);
+    border: 1px solid transparent;
+}
 
+.boards_nickname_form:focus {
+  border: 1px solid white;
 }
 
 
@@ -2050,6 +2054,7 @@ font-weight: 300;
 border-radius: 5px;
 background: rgba(0,0,0,0.2);
 width: 75%;
+opacity: 0.9;
 }
 
 .status-content a {
@@ -2176,6 +2181,20 @@ margin-bottom: -16px;
 
 
 @media (prefers-color-scheme: light) {
+
+  #boards_nickname_form {
+    border: 1px solid rgba(0,0,0,0.5);
+  }
+
+
+  #boards_nickname_form:focus {
+    border: 1px solid rgba(0,0,0,0.8);
+  }
+
+
+  #nodeInput:focus {
+    border: 1px solid rgba(0,0,0,0.8) !important;
+  }
 
   #boards_profile {
     background: white !important;
@@ -4570,8 +4589,6 @@ height: 0;
   text-overflow: ellipsis;
   font-style: italic;
   font-size: 13px;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 #boards_profile .address {
@@ -4590,4 +4607,8 @@ height: 0;
 
 #boards_profile input {
   width: 95%;
+}
+
+.nicknames {
+  text-overflow: ellipsis;
 }
