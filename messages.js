@@ -145,6 +145,7 @@ trendingTags = {};
   let this_board = 'Trends';
   $('.current').removeClass('current');
   $('#board_title').text(tag);
+  $('#replyto_exit').click();
   if (tag == '#') {
       $('#board_title').text('Trending');
       $('#active_hugins .tag').remove();
@@ -2979,8 +2980,9 @@ ipcRenderer.on('wallet-started', async () => {
 
 						$('#login_avatar').attr('src','data:image/svg+xml;base64,' + avatar_base64).addClass('shiny');
 
-						await sleep(1000);
-
+						await sleep(2000);
+            sync_messages();
+            check_protections();
 
 						$('overlay > *').fadeOut();
 
@@ -2999,9 +3001,6 @@ ipcRenderer.on('wallet-started', async () => {
 			        });
 
 			      });
-            await sleep(2000);
-            await sync_messages();
-            check_protections();
 });
 
 
