@@ -621,7 +621,7 @@ border-radius: 5px;
 }
 
 #daemon_status {
-  opacity: 0.85;
+  /* opacity: 0.85; */
   height: 50px;
   vertical-align: middle;
   line-height: 48px;
