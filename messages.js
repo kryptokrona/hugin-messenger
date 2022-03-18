@@ -4764,9 +4764,9 @@ let message_was_unknown;
                         } else {
                           known_board = false;
                           }
+                          let this_board = $('.current').attr('invitekey');
 
-
-       				 		if (senderKey != currentAddr && message_was_unknown && to_board != $('.current').attr('invitekey') && known_board || known_board && containsOnlyEmojis(message) && message.length < 8) {
+       				 		if (senderKey != currentAddr && message_was_unknown && to_board != this_board && known_board || to_board != this_board && known_board && containsOnlyEmojis(message) && message.length < 8) {
                     print_board_message(thisHash, senderKey, message, time, to_board, name, hex_json.r, '#recent_messages');
                      last_block_checked = transaction.hash;
                      if (to_board != $('.current').attr('invitekey')) {
@@ -4829,7 +4829,7 @@ let message_was_unknown;
 
                    // print_single_board_message(thisHash, '#board_box .inner');
 
-       				 } if (senderKey != currentAddr && message_was_unknown && to_board == $('.current').attr('invitekey')) {
+       				 } if (senderKey != currentAddr && message_was_unknown && to_board == this_board && known_board) {
                  print_board_message(thisHash, senderKey, message, time, to_board, name, hex_json.r, '#boards_messages');
                  $('#boards .board_message').each(function(index){
                    console.log( index + ": " + $( this ).text() );
