@@ -147,6 +147,7 @@ trendingTags = {};
   $('#board_title').text(tag);
   $('#replyto_exit').click();
   if (tag == '#') {
+      $('#boards_messages .default').fadeIn();
       $('#board_title').text('Trending');
       $('#active_hugins .tag').remove();
   }
@@ -194,6 +195,7 @@ await print_hashtags(trendingTags);
 let print_board = (board) => {
 
   $('#boards .board_message').remove();
+  $('#boards_messages .default').fadeIn();
   reactions = {};
   board_posters = [];
   hugin_nicknames = {};
@@ -3024,7 +3026,6 @@ $('#board-menu .recent').click(function(){
     // $('#active_hugins').toggleClass('hidden');
     // $('.close_recent').toggleClass('show');
     // $('.box_header').text('Recent Messages');
-
     $('#board_title').text('Recent messages');
     $('.current').removeClass('current');
 
@@ -3046,8 +3047,26 @@ $('#board-menu .recent').click(function(){
   $('#send_payment').addClass('hidden');
   $('#modal').addClass('hidden');
   let recent_msgs = $('#recent_messages').html();
-  $('#boards_messages').empty().append(recent_msgs);
+  $('#boards_messages .board_message').remove();
+  $('#boards_messages').append(recent_msgs);
   $('.active_user').remove();
+  $('#boards .in_board').click(function(){
+    $('.current').removeClass('current');
+    let recent_board = $(this).prop("classList")[1];
+    $('#board_title').text($(this).text());
+    current_board = '';
+    let board_icon = $('.board_icon[invitekey='+ recent_board + ']');
+    board_title = board_icon.attr('title');
+    this_board = board_icon.attr('id');
+    $('.board_icon[invitekey='+ recent_board + ']').addClass('current');
+    print_board(recent_board);
+  });
+  if ($('#boards .board_message').length == 0) {
+    $('#boards_messages .default').fadeIn();
+    return;
+  } else {
+    $('#boards_messages .default').hide();
+  }
   $('#boards .board_message').each(function(index){
     let nickname = $(this).find('.boards_nickname').text();
     let address =  $(this).find('.board_message_pubkey').text();
@@ -3060,17 +3079,7 @@ $('#board-menu .recent').click(function(){
     });
 
   })
-  $('#boards .in_board').click(function(){
-    $('.current').removeClass('current');
-    let recent_board = $(this).prop("classList")[1];
-    $('#board_title').text($(this).text());
-    current_board = '';
-    let board_icon = $('.board_icon[invitekey='+ recent_board + ']');
-    board_title = board_icon.attr('title');
-    this_board = board_icon.attr('id');
-    $('.board_icon[invitekey='+ recent_board + ']').addClass('current');
-    print_board(recent_board);
-  });
+
 });
 
 
@@ -3579,6 +3588,7 @@ let print_board_message = async (hash, address, message, timestamp, fetching_boa
 
   let tips = 0;
 
+  $('#boards_messages .default').hide();
 
   let avatar_base64 = get_avatar(address);
 

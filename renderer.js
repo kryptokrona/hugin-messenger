@@ -213,19 +213,19 @@ async function getHistory() {
       '')
     .then(resp => {
 
-      $('#recent_transactions .inner').empty();
+      $('#recent_transactions .inner li').remove();
       // When historic data about transactions is recieved
       transactions = resp.body.result.items.reverse();
       $('#history_list').empty();
 
       // Iterate through transactions
       var txsLength = transactions.length;
-      for (var i = 0; i < 15; i++) {
-          var thisAddr = transactions[i].transactions[0].transfers[0].address;
-          var d = new Date(transactions[i].transactions[0].timestamp * 1000);
+      for (tx in transactions) {
+          var thisAddr = transactions[tx].transactions[0].transfers[0].address;
+          var d = new Date(transactions[tx].transactions[0].timestamp * 1000);
           var liClass = "unknown";
           var sign = "";
-          var thisAmount = Math.abs(parseFloat(transactions[i].transactions[0].transfers[0].amount) / 100000);
+          var thisAmount = Math.abs(parseFloat(transactions[tx].transactions[0].transfers[0].amount) / 100000);
 
           if ($.inArray(thisAddr, allAddresses) != -1) {
             // If payment is incoming, i.e. a recieved transaction
