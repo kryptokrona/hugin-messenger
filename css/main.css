@@ -4614,5 +4614,7 @@ height: 0;
 }
 
 .nicknames {
+  overflow: hidden;
+  display: block;
   text-overflow: ellipsis;
 }
