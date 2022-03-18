@@ -840,6 +840,9 @@ $('#messages_pane').scrollTop($('#messages').height());
 $('#currentchat_footer').removeClass('hidden');
 $('#board_box').removeClass('show');
 $('#board_box').addClass('hidden');
+if ($('#recipient_form').val() == "") {
+  $('#currentchat_header_wrapper').removeClass('toggled_addr');
+}
 let active_chat = $('#recipient_form').val();
 $('.' + active_chat).addClass('border-rgb');
 $('#recipient_form').val()
