@@ -7,7 +7,7 @@ const { desktopCapturer, shell } = require('electron');
 const contextMenu = require('electron-context-menu');
 const path = require('path');
 const emojione = require('emojione');
-
+const complementaryColors = require('complementary-colors');
 const {
     Address,
     AddressPrefix,
@@ -228,6 +228,16 @@ let print_board = (board) => {
 }
 let board_posters = [];
 
+function componentToHex(c) {
+  var hex = c.toString(16);
+  return hex.length == 1 ? "0" + hex : hex;
+}
+
+function rgbToHex(r, g, b) {
+  return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+}
+
+
 let print_boards = async () => {
 
 
@@ -239,6 +249,10 @@ let print_boards = async () => {
     }
 
     let board_color = intToRGB(hashCode((this_address[1])));
+    let comp_color = new complementaryColors(rgbToHex(board_color.red, board_color.green, board_color.blue));
+    let first_color = comp_color.complementary();
+    console.log('first_color', first_color);
+    let color = 'rgb(' + first_color[1].r + ',' + first_color[1].g + ',' + first_color[1].b + ')';
     if (this_address[0] == "SEKReSxkQgANbzXf4Hc8USCJ8tY9eN9eadYNdbqb5jUG5HEDkb2pZPijE2KGzVLvVKTniMEBe5GSuJbGPma7FDRWUhXXDVSKHWc") {
       $('#boards_picker').append('<div class="board_icon rgb" id="home_board" title="Home" invitekey="0b66b223812861ad15e5310b4387f475c414cd7bda76be80be6d3a55199652fc" style=""><i class="fa fa-home"></i></div>');
       $('.board_icon').click(function() {
@@ -269,14 +283,14 @@ let print_boards = async () => {
     } else {
 			await dictionary.find({ original: this_address[1] }, function (err,docs){
 
-
 					if (!docs.length == 0) {
 
 						let translation  = docs[0].translation;
-					$('#boards_picker').append('<div class="board_icon" inviteKey="' + this_address[1] + '" title="' + translation +  '" id="' + this_address[0] + '" style="background: rgb(' + board_color.red + ',' +  board_color.green + ',' +  board_color.blue + ')">' + docs[0].translation.substring(0, 1) + '</div>');
+					$('#boards_picker').append('<div class="board_icon" inviteKey="' + this_address[1] + '" title="' + translation +  '" id="' + this_address[0] + '" style="color:' + color + '; background: rgb(' + board_color.red + ',' +  board_color.green + ',' +  board_color.blue + ')">' + docs[0].translation.substring(0, 1) + '</div>');
+
 
 				} else {
-      $('#boards_picker').append('<div class="board_icon" inviteKey="' + this_address[1] + '" title="' + letter_from_spend_key(this_address[1]) +  '" id="' + this_address[0] + '" style="background: rgb(' + board_color.red + ',' +  board_color.green + ',' +  board_color.blue + ')">' + letter_from_spend_key(this_address[1]).substring(0, 1) + '</div>');
+      $('#boards_picker').append('<div class="board_icon" inviteKey="' + this_address[1] + '" title="' + letter_from_spend_key(this_address[1]) +  '" id="' + this_address[0] + '" style="color:' + color + '; background: rgb(' + board_color.red + ',' +  board_color.green + ',' +  board_color.blue + ')">' + letter_from_spend_key(this_address[1]).substring(0, 1) + '</div>');
 		}
 
 
@@ -1114,9 +1128,10 @@ let get_user_profile = async (address) => {
     if (common_boards.indexOf(message.board) == -1) {
       common_boards.push(message.board);
     }
-    if (nicknames.indexOf(message.nickname) == -1) {
-
-      nicknames.push(message.nickname);
+    if (nicknames.indexOf(message.nickname) == -1 && message.nickname) {
+        if (message.nickname.length > 2){
+        nicknames.push(message.nickname);
+      }
     }
     if (message.timestamp * 1000 > last_seen) {
       last_seen = message.timestamp * 1000;
@@ -3466,6 +3481,21 @@ let print_active_hugins = () => {
       `;
 
       $(this).find('#boards_profile').append(profile_component);
+
+      $('#boards_profile .address').click(function(){
+        $('#boards_messages').addClass('menu');
+        $('#board_box').removeClass('show');
+        $('#board_box').addClass('hidden');
+        e.preventDefault();
+        e.stopPropagation();
+        let address = $(this).text().trim();
+        $('#payment_rec_addr').val(address);
+        $('#send_payment').removeClass('hidden');
+        if (!$('#modal').hasClass('hidden')) {
+          $('#modal').addClass('hidden');
+          $('#boards_messages').addClass('menu');
+        }
+      })
 
       if (profile.message_key && address != currentAddr) {
         let message_component = `
