@@ -1114,9 +1114,10 @@ let get_user_profile = async (address) => {
     if (common_boards.indexOf(message.board) == -1) {
       common_boards.push(message.board);
     }
-    if (nicknames.indexOf(message.nickname) == -1) {
-
-      nicknames.push(message.nickname);
+    if (nicknames.indexOf(message.nickname) == -1 && message.nickname) {
+        if (message.nickname.length > 2){
+        nicknames.push(message.nickname);
+      }
     }
     if (message.timestamp * 1000 > last_seen) {
       last_seen = message.timestamp * 1000;
@@ -3466,6 +3467,21 @@ let print_active_hugins = () => {
       `;
 
       $(this).find('#boards_profile').append(profile_component);
+
+      $('#boards_profile .address').click(function(){
+        $('#boards_messages').addClass('menu');
+        $('#board_box').removeClass('show');
+        $('#board_box').addClass('hidden');
+        e.preventDefault();
+        e.stopPropagation();
+        let address = $(this).text().trim();
+        $('#payment_rec_addr').val(address);
+        $('#send_payment').removeClass('hidden');
+        if (!$('#modal').hasClass('hidden')) {
+          $('#modal').addClass('hidden');
+          $('#boards_messages').addClass('menu');
+        }
+      })
 
       if (profile.message_key && address != currentAddr) {
         let message_component = `
