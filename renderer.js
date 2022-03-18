@@ -779,7 +779,7 @@ $("document").ready(async function(){
 
   $('.sent_message').fadeOut();
   $('.recieved_message').fadeOut();
-
+  $('.active_contact').removeClass('border-rgb');
   // $('header').toggleClass('toggled');
   $('#messages .received_message, #messages .sent_message').hide();
   $('#welcome_alpha').removeClass('hidden');
@@ -840,6 +840,12 @@ $('#messages_pane').scrollTop($('#messages').height());
 $('#currentchat_footer').removeClass('hidden');
 $('#board_box').removeClass('show');
 $('#board_box').addClass('hidden');
+if ($('#recipient_form').val() == "") {
+  $('#currentchat_header_wrapper').removeClass('toggled_addr');
+}
+let active_chat = $('#recipient_form').val();
+$('.' + active_chat).addClass('border-rgb');
+$('#recipient_form').val()
 if ($('#boards').hasClass('hidden') && $('#flip-box-inner').hasClass('flip')) {
 flip();
 }
