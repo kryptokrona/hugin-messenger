@@ -752,7 +752,8 @@ if (process.platform !== 'darwin') {
  autoUpdater.on('update-downloaded', () => {
 
    notifier.notify({
-     title: "Hugin Messenger",
+     title: "Hugin Update",
+     appID: "Hugin Messenger",
      message: "A new update is available, would you like to install it now?",
      wait: true, // Wait with callback, until user action is taken against notification,
      actions: ['Yes', 'Later']
@@ -774,6 +775,7 @@ if (process.platform !== 'darwin') {
    autoUpdater.on('update-available', () => {
      notifier.notify({
        title: "Hugin Messenger",
+       appID: "Hugin Messenger",
        message: "A new update is available, would you like to install it now?",
        wait: true, // Wait with callback, until user action is taken against notification,
        actions: ['Yes', 'Later']
