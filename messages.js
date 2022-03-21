@@ -66,6 +66,8 @@ let endCall = (peer, stream, contact_address) => {
   stream.getTracks().forEach(function(track) {
     track.stop();
   });
+
+  active_calls[contact_address] = "";
   var myvideo = document.getElementById('myvideo');
 
   try {
@@ -464,6 +466,8 @@ try {
 }
 }
 
+let active_calls = {};
+
 function handleError (e) {
   console.log(e)
 }
@@ -471,9 +475,14 @@ function handleError (e) {
 let startCall = (audio, video, screenshare=false) => {
 
   let contact_address = $('#recipient_form').val();
+  if (active_calls[contact_address]) {
+      console.log('already calling you');
+  } else {
+      active_calls[contact_address] = Date.now();
+      console.log('Calling', active_calls[contact_address]);
+  }
 
   console.log('Starting call..');
-
   $('#messages_pane').find('audio').remove();
   $('#messages_pane').append('<audio autoplay><source src="static/startcall.mp3" type="audio/mpeg"></audio>');
   $('.active_contact').removeClass('border-rgb');
@@ -4085,6 +4094,14 @@ ipcRenderer.on('new-message', async (event, transaction) => {
 
     async function print_pm (payload_json) {
 
+      if (active_calls[payload_json.from]) {
+          if (payload_json.t > active_calls[payload_json.from]) {
+            console.log('Already calling this guy');
+            return;
+          }
+      } else {
+          active_calls[payload_json.from] = Date.now();
+      }
       if ($('#recipient_form').val() == payload_json.from  && payload_json.from != $('#currentAddrSpan').text()){
 
         // If a new message is received, and it's from the active contacts
