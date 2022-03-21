@@ -4143,6 +4143,9 @@ ipcRenderer.on('new-message', async (event, transaction) => {
           });
          let actions = [];
          if (payload_json.msg.substring(0,1) == "Δ" || payload_json.msg.substring(0,1) == "Λ") {
+           if (payload_json.t < (parseInt(Date.now() - 100000))) {
+             payload_json.msg = "Missed call"
+           }
            actions = ["Answer", "Decline"];
          }
           notifier.notify({
@@ -4182,6 +4185,7 @@ ipcRenderer.on('new-message', async (event, transaction) => {
 
       }
 
+      save_message(payload_json);
       let conversation_address = '';
 
       if ($('#currentAddrSpan').text() == payload_json.from) {
@@ -4310,7 +4314,6 @@ async function sync_messages() {
 
                  let confirmed_message = await decrypt_message(confirmed_transactions[n]);
                  await print_pm(confirmed_message);
-                 save_message(confirmed_message);
 
                } catch (err) {
                  console.log(err);
